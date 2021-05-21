@@ -2,4 +2,11 @@
 GET {{baseUrl}}/v1
 Accept: application/json
 
-###
+### get certs
+GET {{baseUrl}}/v1/certs?since={{since}}&certFormat={{certFormat}}
+Accept: application/json
+
+### get active cert key ids
+GET {{baseUrl}}/v1/certs/active
+Accept: application/json
+ETag: a1b2c3
