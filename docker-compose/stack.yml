@@ -1,0 +1,17 @@
+version: '3.1'
+
+services:
+
+  covidcert_db:
+    image: postgres:11
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: covidcert
+      POSTGRES_DB: covidcert
+      POSTGRES_USER: covidcert
+    ports:
+      - "5432:5432"
+    volumes:
+      - covidcert_db_data:/var/lib/postgresql/data
+volumes:
+  covidcert_db_data:
