@@ -52,34 +52,25 @@ public class RevocationListController {
             responses = {"200 => full list of revoked certificates"})
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "/revocation-list")
-    public @ResponseBody ResponseEntity<RevocationResponse> getCerts() throws HttpStatusCodeException {
+    public @ResponseBody ResponseEntity<RevocationResponse> getCerts()
+            throws HttpStatusCodeException {
         final var response = new RevocationResponse();
         final List<String> certs = new ArrayList<>();
         final var requestEndpoint = baseurl + "/v1/revocation-list";
         final var uri = UriComponentsBuilder.fromHttpUrl(requestEndpoint).build().toUri();
         final RequestEntity<Void> requestEntity =
                 RequestEntity.get(uri).headers(createDownloadHeaders()).build();
-        try {
-            final var responseEntity = rt.exchange(requestEntity, String[].class);
-            final var body = responseEntity.getBody();
-            if (body != null) {
-                certs.addAll(Arrays.asList(body));
-            }
-        } catch (HttpStatusCodeException e) {
-            // TODO: Make more fine-grained
-            logger.info(
-                    "Request returned error code: {} {}",
-                    e.getStatusCode(),
-                    e.getStatusCode().getReasonPhrase());
-            throw e;
+        final var responseEntity = rt.exchange(requestEntity, String[].class);
+        final var body = responseEntity.getBody();
+        if (body != null) {
+            certs.addAll(Arrays.asList(body));
         }
+
         response.setRevokedCerts(certs);
         return ResponseEntity.ok().body(response);
     }
 
-    @ExceptionHandler({
-        HttpStatusCodeException.class
-    })
+    @ExceptionHandler({HttpStatusCodeException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> requestFailed() {
         return ResponseEntity.badRequest().build();

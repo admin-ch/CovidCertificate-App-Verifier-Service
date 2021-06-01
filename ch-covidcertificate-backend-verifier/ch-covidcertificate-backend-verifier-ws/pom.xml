@@ -25,6 +25,10 @@
   <packaging>jar</packaging>
   <version>1.0.0-SNAPSHOT</version>
 
+  <properties>
+    <testcontainers.version>1.15.1</testcontainers.version>
+  </properties>
+
   <dependencies>
     <!-- ch covidcertificate backend verifier modules -->
     <dependency>
@@ -54,6 +58,17 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -108,6 +123,13 @@
         <artifactId>spring-boot-dependencies</artifactId>
         <type>pom</type>
         <version>${spring-boot-version}</version>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>${testcontainers.version}</version>
+        <type>pom</type>
         <scope>import</scope>
       </dependency>
     </dependencies>
@@ -168,6 +190,9 @@
           <controllers>
             <controller>
               ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerifierController
+            </controller>
+            <controller>
+              ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController
             </controller>
           </controllers>
           <description>CH Covidcertificate Verifier API</description>
