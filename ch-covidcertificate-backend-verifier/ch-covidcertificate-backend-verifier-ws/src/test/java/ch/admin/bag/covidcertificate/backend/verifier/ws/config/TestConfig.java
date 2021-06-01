@@ -11,21 +11,36 @@
 package ch.admin.bag.covidcertificate.backend.verifier.ws.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.RestTemplateHelper;
 import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.web.client.RestTemplate;
 
 @Profile("test")
 @Configuration
 public class TestConfig {
+    private static final Logger logger = LoggerFactory.getLogger(TestConfig.class);
+
     // TODO: Mock endpoint (otherwise tests will fail once BIT turns off endpoint)
-    private static final String baseurl = "https://covidcertificate-management-d.bag.admin.ch/api";
+    @Value("${revocationList.baseurl}")
+    String baseurl = "https://covidcertificate-management-d.bag.admin.ch/api";
+
     @Autowired DataSource dataSource;
 
     @Bean
     public RevocationListController revocationListController() {
         return new RevocationListController(baseurl);
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        logger.info("Instantiated RevocationListController with baseurl: {}", baseurl);
+        return RestTemplateHelper.getRestTemplate();
     }
 }

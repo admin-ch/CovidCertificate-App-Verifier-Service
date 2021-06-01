@@ -10,13 +10,13 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
-import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.RestTemplateHelper;
 import ch.ubique.openapi.docannotations.Documentation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -40,11 +40,11 @@ public class RevocationListController {
     private static final Logger logger = LoggerFactory.getLogger(RevocationListController.class);
 
     private final String baseurl;
-    private final RestTemplate rt;
+    @Autowired RestTemplate rt;
 
     public RevocationListController(String revokedCertsBaseUrl) {
+        logger.info("Instantiated controller with baseurl: {}", revokedCertsBaseUrl);
         this.baseurl = revokedCertsBaseUrl;
-        this.rt = RestTemplateHelper.getRestTemplate();
     }
 
     @Documentation(

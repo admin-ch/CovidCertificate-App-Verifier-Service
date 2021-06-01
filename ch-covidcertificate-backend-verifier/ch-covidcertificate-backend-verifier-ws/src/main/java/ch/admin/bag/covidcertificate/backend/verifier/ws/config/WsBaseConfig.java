@@ -13,6 +13,7 @@ package ch.admin.bag.covidcertificate.backend.verifier.ws.config;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerifierController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.interceptor.HeaderInjector;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.RestTemplateHelper;
 import java.util.Map;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -60,5 +62,10 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     @Bean
     public RevocationListController revocationListController() {
         return new RevocationListController(revokedCertsBaseUrl);
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return RestTemplateHelper.getRestTemplate();
     }
 }
