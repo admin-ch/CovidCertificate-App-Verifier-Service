@@ -6,6 +6,13 @@ import java.util.List;
 public class ActiveCertsResponse {
     private List<String> activeKeyIds = new ArrayList<>();
 
+    public ActiveCertsResponse(List<String> activeKeyIds) {
+        if (activeKeyIds == null) {
+            activeKeyIds = new ArrayList<>();
+        }
+        this.activeKeyIds = activeKeyIds;
+    }
+
     public List<String> getActiveKeyIds() {
         return activeKeyIds;
     }
