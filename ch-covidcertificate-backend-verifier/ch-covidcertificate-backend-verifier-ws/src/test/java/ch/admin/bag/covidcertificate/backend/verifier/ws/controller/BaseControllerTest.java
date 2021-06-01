@@ -19,7 +19,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.utility.DockerImageName;
 
 @ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
+@ActiveProfiles({"test", "postgres"})
 @AutoConfigureMockMvc
 @TestPropertySource("classpath:application-test.properties")
 @ContextConfiguration(initializers = BaseControllerTest.DockerPostgresDataSourceInitializer.class)

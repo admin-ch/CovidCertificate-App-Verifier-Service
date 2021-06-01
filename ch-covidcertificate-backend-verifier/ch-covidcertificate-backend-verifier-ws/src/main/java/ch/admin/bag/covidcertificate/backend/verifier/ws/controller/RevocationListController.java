@@ -71,9 +71,9 @@ public class RevocationListController {
     }
 
     @ExceptionHandler({HttpStatusCodeException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<Object> requestFailed() {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.notFound().build();
     }
 
     private HttpHeaders createDownloadHeaders() {
