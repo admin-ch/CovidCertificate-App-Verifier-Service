@@ -10,10 +10,13 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ActiveCertsResponse;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertsResponse;
+import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.ubique.openapi.docannotations.Documentation;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,6 +33,11 @@ public class VerifierController {
     private static final String NEXT_SINCE_HEADER = "X-Next-Since";
     private static final String ETAG_HEADER = "ETag";
     private static final int MAX_CERT_BATCH_SIZE = 1000;
+    private final VerifierDataService verifierDataService;
+
+    public VerifierController(VerifierDataService verifierDataService) {
+        this.verifierDataService = verifierDataService;
+    }
 
     @Documentation(
             description = "Echo endpoint",
@@ -50,9 +58,11 @@ public class VerifierController {
     @GetMapping(value = "certs")
     public @ResponseBody ResponseEntity<CertsResponse> getSignerCerts(
             @RequestParam(required = false) Long since, @RequestParam CertFormat certFormat) {
+        // TODO etag
+        List<ClientCert> dscs = verifierDataService.findDscs(since, certFormat);
         return ResponseEntity.ok()
-                .header(NEXT_SINCE_HEADER, "123")
-                .body(new CertsResponse()); // TODO implement
+                .header(NEXT_SINCE_HEADER, "123") // TODO etag
+                .body(new CertsResponse(dscs));
     }
 
     @Documentation(
@@ -66,8 +76,10 @@ public class VerifierController {
     @GetMapping(value = "certs/active")
     public @ResponseBody ResponseEntity<ActiveCertsResponse> getActiveSignerCertKeyIds(
             @RequestHeader(value = "ETag", required = false) String etag) {
+        // TODO etag
+        List<String> activeKeyIds = verifierDataService.findActiveDscKeyIds();
         return ResponseEntity.ok()
-                .header(ETAG_HEADER, "a1b2c3")
-                .body(new ActiveCertsResponse()); // TODO implement
+                .header(ETAG_HEADER, "a1b2c3") // TODO etag
+                .body(new ActiveCertsResponse(activeKeyIds));
     }
 }
