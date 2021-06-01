@@ -10,6 +10,7 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.ws.config;
 
+import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerifierController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.interceptor.HeaderInjector;
 import java.util.Map;
@@ -28,15 +29,18 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Value(
+            "#{${ws.security.headers: {'X-Content-Type-Options':'nosniff', 'X-Frame-Options':'DENY','X-Xss-Protection':'1; mode=block'}}}")
+    Map<String, String> additionalHeaders;
+
+    @Value("${revocationList.baseurl}")
+    String revokedCertsBaseUrl;
+
     public abstract DataSource dataSource();
 
     public abstract Flyway flyway();
 
     public abstract String getDbType();
-
-    @Value(
-            "#{${ws.security.headers: {'X-Content-Type-Options':'nosniff', 'X-Frame-Options':'DENY','X-Xss-Protection':'1; mode=block'}}}")
-    Map<String, String> additionalHeaders;
 
     @Bean
     public HeaderInjector securityHeaderInjector() {
@@ -51,5 +55,10 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     @Bean
     public VerifierController verifierController() {
         return new VerifierController();
+    }
+
+    @Bean
+    public RevocationListController revocationListController() {
+        return new RevocationListController(revokedCertsBaseUrl);
     }
 }

@@ -35,12 +35,11 @@ public class RevocationListController {
 
     private static final Logger logger = LoggerFactory.getLogger(RevocationListController.class);
 
-    private final String revocationListEndpoint;
+    private final String baseurl;
     private final RestTemplate rt;
 
-    // TODO: Instantiate bean in BaseConfig & define property for endpoint url
-    public RevocationListController(String revocationListEndpoint) {
-        this.revocationListEndpoint = revocationListEndpoint;
+    public RevocationListController(String revokedCertsBaseUrl) {
+        this.baseurl = revokedCertsBaseUrl;
         // TODO: Implement
         this.rt = RestTemplateHelper.getRestTemplate();
     }
@@ -53,7 +52,8 @@ public class RevocationListController {
     public @ResponseBody ResponseEntity<RevocationResponse> getCerts() {
         final var response = new RevocationResponse();
         final List<String> certs = new ArrayList<>();
-        final var uri = UriComponentsBuilder.fromHttpUrl(revocationListEndpoint).build().toUri();
+        final var requestEndpoint = baseurl + "/v1/revocation-list";
+        final var uri = UriComponentsBuilder.fromHttpUrl(requestEndpoint).build().toUri();
         final RequestEntity<Void> requestEntity =
                 RequestEntity.get(uri).headers(createDownloadHeaders()).build();
         try {
@@ -63,7 +63,10 @@ public class RevocationListController {
                 certs.addAll(Arrays.asList(body));
             }
         } catch (HttpStatusCodeException e) {
-            logger.info("Request returned error code: {} {}", e.getStatusCode(), e.getStatusCode().getReasonPhrase());
+            logger.info(
+                    "Request returned error code: {} {}",
+                    e.getStatusCode(),
+                    e.getStatusCode().getReasonPhrase());
             throw e;
         }
         response.setRevokedCerts(certs);
