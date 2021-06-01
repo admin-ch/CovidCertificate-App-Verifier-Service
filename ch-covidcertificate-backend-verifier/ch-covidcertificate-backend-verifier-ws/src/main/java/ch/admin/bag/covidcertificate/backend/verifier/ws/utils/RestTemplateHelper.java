@@ -42,20 +42,14 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-// TODO: Adjust to new endpoint
 public class RestTemplateHelper {
 
-    private static final String DP3T_INTEROPS = "dp3t-interops";
+    private static final String COVIDCERT_VERIFIER = "covidcert-verifier";
     private static final int CONNECT_TIMEOUT = 20000;
     private static final int SOCKET_TIMEOUT = 20000;
 
     public static RestTemplate getRestTemplate() {
         return buildRestTemplate(null, null, null);
-    }
-
-    public static RestTemplate getRestTemplateWithClientCerts(
-            String authClientCert, String authClientCertPassword, List<String> allowedHostnames) {
-        return buildRestTemplate(authClientCert, authClientCertPassword, allowedHostnames);
     }
 
     private static RestTemplate buildRestTemplate(
@@ -85,7 +79,7 @@ public class RestTemplateHelper {
 
         HttpClientBuilder builder = HttpClients.custom();
         builder.useSystemProperties()
-                .setUserAgent(DP3T_INTEROPS)
+                .setUserAgent(COVIDCERT_VERIFIER)
                 .setConnectionManager(manager)
                 .disableCookieManagement()
                 .setDefaultRequestConfig(

@@ -18,19 +18,23 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 @RequestMapping("/v1")
+@Documentation(description = "Endpoint to obtain the list of revoked certificates")
 public class RevocationListController {
 
     private static final Logger logger = LoggerFactory.getLogger(RevocationListController.class);
@@ -40,7 +44,6 @@ public class RevocationListController {
 
     public RevocationListController(String revokedCertsBaseUrl) {
         this.baseurl = revokedCertsBaseUrl;
-        // TODO: Implement
         this.rt = RestTemplateHelper.getRestTemplate();
     }
 
@@ -49,7 +52,7 @@ public class RevocationListController {
             responses = {"200 => full list of revoked certificates"})
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "/revocation-list")
-    public @ResponseBody ResponseEntity<RevocationResponse> getCerts() {
+    public @ResponseBody ResponseEntity<RevocationResponse> getCerts() throws HttpStatusCodeException {
         final var response = new RevocationResponse();
         final List<String> certs = new ArrayList<>();
         final var requestEndpoint = baseurl + "/v1/revocation-list";
@@ -63,6 +66,7 @@ public class RevocationListController {
                 certs.addAll(Arrays.asList(body));
             }
         } catch (HttpStatusCodeException e) {
+            // TODO: Make more fine-grained
             logger.info(
                     "Request returned error code: {} {}",
                     e.getStatusCode(),
@@ -71,6 +75,14 @@ public class RevocationListController {
         }
         response.setRevokedCerts(certs);
         return ResponseEntity.ok().body(response);
+    }
+
+    @ExceptionHandler({
+        HttpStatusCodeException.class
+    })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> requestFailed() {
+        return ResponseEntity.badRequest().build();
     }
 
     private HttpHeaders createDownloadHeaders() {
