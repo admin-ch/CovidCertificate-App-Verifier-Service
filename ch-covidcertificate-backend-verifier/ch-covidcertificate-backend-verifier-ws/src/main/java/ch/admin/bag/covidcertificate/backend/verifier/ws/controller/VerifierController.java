@@ -41,14 +41,14 @@ public class VerifierController {
     }
 
     @Documentation(
-            description = "get certificates",
+            description = "get signer certificates",
             responses = {
                 "200 => next certificate batch after `since`. keep requesting until empty certs list is returned"
             },
             responseHeaders = {"X-Next-Since:`since` to set for next request:long"})
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "certs")
-    public @ResponseBody ResponseEntity<CertsResponse> getCerts(
+    public @ResponseBody ResponseEntity<CertsResponse> getSignerCerts(
             @RequestParam(required = false) Long since, @RequestParam CertFormat certFormat) {
         return ResponseEntity.ok()
                 .header(NEXT_SINCE_HEADER, "123")
@@ -56,15 +56,15 @@ public class VerifierController {
     }
 
     @Documentation(
-            description = "get all key IDs of active certs",
+            description = "get all key IDs of active signer certs",
             responses = {
-                "200 => list of Key IDs of all active certs",
+                "200 => list of Key IDs of all active signer certs",
                 "304 => no changes since last request"
             },
             responseHeaders = {"ETag:etag to set for next request:string"})
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "certs/active")
-    public @ResponseBody ResponseEntity<ActiveCertsResponse> getActiveCertKeyIds(
+    public @ResponseBody ResponseEntity<ActiveCertsResponse> getActiveSignerCertKeyIds(
             @RequestHeader(value = "ETag", required = false) String etag) {
         return ResponseEntity.ok()
                 .header(ETAG_HEADER, "a1b2c3")
