@@ -27,15 +27,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/v1")
-public class VerifierController {
+@RequestMapping("/v1/keys")
+public class KeyController {
 
     private static final String NEXT_SINCE_HEADER = "X-Next-Since";
     private static final String ETAG_HEADER = "ETag";
     private static final int MAX_CERT_BATCH_SIZE = 1000;
     private final VerifierDataService verifierDataService;
 
-    public VerifierController(VerifierDataService verifierDataService) {
+    public KeyController(VerifierDataService verifierDataService) {
         this.verifierDataService = verifierDataService;
     }
 
@@ -55,7 +55,7 @@ public class VerifierController {
             },
             responseHeaders = {"X-Next-Since:`since` to set for next request:long"})
     @CrossOrigin(origins = {"https://editor.swagger.io"})
-    @GetMapping(value = "certs")
+    @GetMapping(value = "updates")
     public @ResponseBody ResponseEntity<CertsResponse> getSignerCerts(
             @RequestParam(required = false) Long since, @RequestParam CertFormat certFormat) {
         // TODO etag
@@ -74,7 +74,7 @@ public class VerifierController {
             },
             responseHeaders = {"ETag:etag to set for next request:string"})
     @CrossOrigin(origins = {"https://editor.swagger.io"})
-    @GetMapping(value = "certs/active")
+    @GetMapping(value = "list")
     public @ResponseBody ResponseEntity<ActiveCertsResponse> getActiveSignerCertKeyIds(
             @RequestHeader(value = "ETag", required = false) String etag) {
         // TODO etag

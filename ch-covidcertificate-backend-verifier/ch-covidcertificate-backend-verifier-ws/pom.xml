@@ -162,7 +162,7 @@
                     </basePackages>
                     <controllers>
                         <controller>
-                            ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerifierController
+                          ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyController
                         </controller>
                     </controllers>
                     <description>CH Covidcertificate Verifier API</description>
