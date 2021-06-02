@@ -97,6 +97,19 @@
             <artifactId>doc-annotations</artifactId>
             <version>1.0.4</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.7.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.7.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -135,6 +148,14 @@
                     </compilerArgs>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.22.2</version>
+            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
@@ -153,6 +174,7 @@
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <version>${spring-boot-version}</version>
                 </plugin>
+
             </plugins>
         </pluginManagement>
     </build>

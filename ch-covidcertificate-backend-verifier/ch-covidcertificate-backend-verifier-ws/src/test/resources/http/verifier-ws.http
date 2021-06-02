@@ -10,3 +10,7 @@ Accept: application/json
 GET {{baseUrl}}/v1/keys/list
 Accept: application/json
 ETag: a1b2c3
+
+### get revocation list
+GET {{baseUrl}}/v1/revocationList
+Accept: application/json
