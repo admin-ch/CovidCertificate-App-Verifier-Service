@@ -189,7 +189,7 @@
           </basePackages>
           <controllers>
             <controller>
-              ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerifierController
+              ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyController
             </controller>
             <controller>
               ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController

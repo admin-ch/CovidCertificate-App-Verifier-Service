@@ -18,6 +18,7 @@ public class ClientCertRowMapper implements RowMapper<ClientCert> {
     @Override
     public ClientCert mapRow(ResultSet rs, int rowNum) throws SQLException {
         var clientCert = new ClientCert();
+        clientCert.setPkId(rs.getLong("pk_dsc_id"));
         clientCert.setKeyId(rs.getString("key_id"));
         clientCert.setUse(rs.getString("use"));
         clientCert.setAlg(Algorithm.valueOf(rs.getString("alg")));
