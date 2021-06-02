@@ -41,6 +41,7 @@ public class RevocationListController {
     private static final Logger logger = LoggerFactory.getLogger(RevocationListController.class);
 
     private final String baseurl;
+    private final String endpoint = "/v1/revocation-list";
     @Autowired RestTemplate rt;
 
     public RevocationListController(String revokedCertsBaseUrl) {
@@ -57,7 +58,7 @@ public class RevocationListController {
             throws HttpStatusCodeException {
         final var response = new RevocationResponse();
         final List<String> certs = new ArrayList<>();
-        final var requestEndpoint = baseurl + "/v1/revocation-list";
+        final var requestEndpoint = baseurl + endpoint;
         final var uri = UriComponentsBuilder.fromHttpUrl(requestEndpoint).build().toUri();
         final RequestEntity<Void> requestEntity =
                 RequestEntity.get(uri).headers(createDownloadHeaders()).build();
