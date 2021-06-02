@@ -27,6 +27,7 @@
 
     <properties>
         <testcontainers.version>1.15.1</testcontainers.version>
+        <sonar.projectKey>${env.SONAR_PROJECTKEY}</sonar.projectKey>
     </properties>
 
     <dependencies>
