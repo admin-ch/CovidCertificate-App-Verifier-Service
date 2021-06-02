@@ -22,9 +22,13 @@ public class DbDsc {
     private String origin;
     private String use;
     private Algorithm alg;
+
+    // RSA only
     private String n;
     private String e;
     private String subjectPublicKeyInfo;
+
+    // EC only
     private String crv;
     private String x;
     private String y;
