@@ -35,10 +35,10 @@
 
         <build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
 
-        <sonar.projectKey>${env.SONAR_PROJECTKEY}</sonar.projectKey>
+        <sonar.projectKey>admin-ch_CovidCertificate-App-Verifier-Service</sonar.projectKey>
         <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.organization>${env.SONAR_ORGANIZATION}</sonar.organization>
+        <sonar.organization>admin-ch</sonar.organization>
         <sonar.login>${env.SONAR_TOKEN}</sonar.login>
     </properties>
 
