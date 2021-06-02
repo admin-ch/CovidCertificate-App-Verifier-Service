@@ -8,7 +8,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController.RevocationResponse;
+import ch.admin.bag.covidcertificate.backend.verifier.model.RevocationResponse;
 import java.net.URI;
 import java.util.Collections;
 import org.junit.jupiter.api.Test;

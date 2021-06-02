@@ -10,6 +10,7 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
+import ch.admin.bag.covidcertificate.backend.verifier.model.RevocationResponse;
 import ch.ubique.openapi.docannotations.Documentation;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,17 +81,5 @@ public class RevocationListController {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, "application/json");
         return headers;
-    }
-
-    public static class RevocationResponse {
-        private List<String> revokedCerts;
-
-        public List<String> getRevokedCerts() {
-            return revokedCerts;
-        }
-
-        public void setRevokedCerts(List<String> revokedCerts) {
-            this.revokedCerts = revokedCerts;
-        }
     }
 }
