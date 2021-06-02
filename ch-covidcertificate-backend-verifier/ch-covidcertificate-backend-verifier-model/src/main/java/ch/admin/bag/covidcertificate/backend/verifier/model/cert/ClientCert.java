@@ -1,8 +1,11 @@
 package ch.admin.bag.covidcertificate.backend.verifier.model.cert;
 
 import ch.ubique.openapi.docannotations.Documentation;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ClientCert {
+
+    @JsonIgnore private Long pkId;
 
     @Documentation(description = "base64 encoded. shasum of x509")
     private String keyId;
@@ -34,6 +37,14 @@ public class ClientCert {
 
     @Documentation(description = "base64 encoded. EC only")
     private String y;
+
+    public Long getPkId() {
+        return pkId;
+    }
+
+    public void setPkId(Long pkId) {
+        this.pkId = pkId;
+    }
 
     public String getKeyId() {
         return keyId;

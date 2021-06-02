@@ -60,8 +60,9 @@ public class VerifierController {
             @RequestParam(required = false) Long since, @RequestParam CertFormat certFormat) {
         // TODO etag
         List<ClientCert> dscs = verifierDataService.findDscs(since, certFormat);
+        Long nextSince = dscs.stream().mapToLong(dsc -> dsc.getPkId()).max().orElse(0L);
         return ResponseEntity.ok()
-                .header(NEXT_SINCE_HEADER, "123") // TODO etag
+                .header(NEXT_SINCE_HEADER, nextSince.toString())
                 .body(new CertsResponse(dscs));
     }
 

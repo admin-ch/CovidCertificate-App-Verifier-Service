@@ -28,6 +28,8 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     private final SimpleJdbcInsert cscaInsert;
     private final SimpleJdbcInsert dscInsert;
 
+    private static final int MAX_DSC_BATCH_COUNT = 1000;
+
     public JdbcVerifierDataServiceImpl(DataSource dataSource) {
         this.jt = new NamedParameterJdbcTemplate(dataSource);
         this.cscaInsert =
@@ -85,7 +87,9 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
                         + String.join(", ", formatSpecificSelectFields)
                         + " from t_document_signer_certificate"
                         + " where pk_dsc_id > :pk_dsc_id"
-                        + " order by pk_dsc_id";
+                        + " order by pk_dsc_id asc"
+                        + " limit "
+                        + MAX_DSC_BATCH_COUNT;
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pk_dsc_id", since);
         return jt.query(sql, params, new ClientCertRowMapper(certFormat));
