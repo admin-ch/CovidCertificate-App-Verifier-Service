@@ -18,9 +18,7 @@ public class DbCsca {
     private String certificateRaw;
     private LocalDateTime importedAt;
     private String origin;
-    private String commonName;
-    private String issuerName;
-    private String principalName;
+    private String subjectPrincipalName;
 
     public Long getId() {
         return id;
@@ -62,27 +60,11 @@ public class DbCsca {
         this.origin = origin;
     }
 
-    public String getCommonName() {
-        return commonName;
+    public String getSubjectPrincipalName() {
+        return subjectPrincipalName;
     }
 
-    public void setCommonName(String commonName) {
-        this.commonName = commonName;
-    }
-
-    public String getIssuerName() {
-        return issuerName;
-    }
-
-    public void setIssuerName(String issuerName) {
-        this.issuerName = issuerName;
-    }
-
-    public String getPrincipalName() {
-        return principalName;
-    }
-
-    public void setPrincipalName(String principalName) {
-        this.principalName = principalName;
+    public void setSubjectPrincipalName(String subjectPrincipalName) {
+        this.subjectPrincipalName = subjectPrincipalName;
     }
 }
