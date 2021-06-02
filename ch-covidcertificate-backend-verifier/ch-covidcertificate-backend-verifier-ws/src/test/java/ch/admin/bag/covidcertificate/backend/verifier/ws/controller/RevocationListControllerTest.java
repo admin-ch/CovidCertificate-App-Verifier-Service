@@ -42,7 +42,7 @@ class RevocationListControllerTest extends BaseControllerTest {
                                 .body(objectMapper.writeValueAsString(new String[]{expected})));
 
         MockHttpServletResponse response =
-                mockMvc.perform(get("/v1/revocation-list"))
+                mockMvc.perform(get("/v1/revocationList"))
                         .andExpect(status().is2xxSuccessful())
                         .andReturn()
                         .getResponse();
