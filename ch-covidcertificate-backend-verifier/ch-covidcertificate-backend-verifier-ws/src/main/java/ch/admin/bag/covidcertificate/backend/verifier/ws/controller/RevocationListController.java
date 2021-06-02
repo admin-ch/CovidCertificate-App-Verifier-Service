@@ -53,7 +53,7 @@ public class RevocationListController {
             description = "get list of revoked certificates",
             responses = {"200 => full list of revoked certificates"})
     @CrossOrigin(origins = {"https://editor.swagger.io"})
-    @GetMapping(value = "/revocation-list")
+    @GetMapping(value = "/revocationList")
     public @ResponseBody ResponseEntity<RevocationResponse> getCerts()
             throws HttpStatusCodeException {
         final var response = new RevocationResponse();
