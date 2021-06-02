@@ -17,7 +17,6 @@ public class FlywayConfig {
                         .dataSource(dataSource)
                         .locations("classpath:/db/migration/pgsql")
                         .validateOnMigrate(true)
-                        .baselineOnMigrate(true)
                         .load();
         flyway.migrate();
         return flyway;
