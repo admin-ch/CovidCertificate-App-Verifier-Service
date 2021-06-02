@@ -75,7 +75,7 @@ public class RevocationListController {
     @ExceptionHandler({HttpStatusCodeException.class})
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
     public ResponseEntity<Object> requestFailed(HttpStatusCodeException e) {
-        logger.error("{} returned non-2xx status code: {}", endpoint, e.getStatusCode());
+        logger.error("{} returned non-2xx status code: {}", endpoint, e.getStatusCode(), e);
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
     }
 
