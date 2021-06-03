@@ -22,6 +22,10 @@
     <artifactId>ch-covidcertificate-backend-verifier-sync</artifactId>
     <name>CH Covidcertificate Backend Verifier Sync</name>
 
+    <properties>
+        <sonar.projectKey>${env.SONAR_PROJECTKEY}</sonar.projectKey>
+    </properties>
+
     <dependencies>
         <!-- ch covidcertificate backend verifier modules -->
         <dependency>
@@ -87,6 +91,28 @@
                     <execution>
                         <goals>
                             <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.5</version>
+                <executions>
+                    <!-- to avoid bugs in some situations -->
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- create report during maven verify phase -->
+                    <execution>
+                        <id>default-report</id>
+                        <goals>
+                            <goal>report</goal>
                         </goals>
                     </execution>
                 </executions>

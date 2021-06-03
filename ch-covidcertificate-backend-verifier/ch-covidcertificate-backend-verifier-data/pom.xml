@@ -22,6 +22,10 @@
     <artifactId>ch-covidcertificate-backend-verifier-data</artifactId>
     <name>CH Covidcertificate Backend Verifier Data</name>
 
+    <properties>
+        <sonar.projectKey>${env.SONAR_PROJECTKEY}</sonar.projectKey>
+    </properties>
+
     <packaging>jar</packaging>
     <version>1.0.0-SNAPSHOT</version>
 
@@ -59,5 +63,32 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.5</version>
+                <executions>
+                    <!-- to avoid bugs in some situations -->
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- create report during maven verify phase -->
+                    <execution>
+                        <id>default-report</id>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
