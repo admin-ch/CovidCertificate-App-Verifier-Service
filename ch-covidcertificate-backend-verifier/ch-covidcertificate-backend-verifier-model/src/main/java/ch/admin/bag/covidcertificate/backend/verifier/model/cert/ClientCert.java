@@ -19,17 +19,17 @@ public class ClientCert {
     private Algorithm alg;
 
     // RSA ONLY
-    @Documentation(description = "base64 encoded. RSA only")
+    @Documentation(description = "base64 encoded. RSA only (android)")
     private String n;
 
-    @Documentation(description = "base64 encoded. RSA only")
+    @Documentation(description = "base64 encoded. RSA only (android)")
     private String e;
 
-    @Documentation(description = "base64 encoded. RSA only")
+    @Documentation(description = "base64 encoded. RSA only (ios)")
     private String subjectPublicKeyInfo;
 
     // EC ONLY
-    @Documentation(description = "EC only")
+    @Documentation(description = "EC only. only 'P-256' is supported at this time")
     private String crv;
 
     @Documentation(description = "base64 encoded. EC only")
