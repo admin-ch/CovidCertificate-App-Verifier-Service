@@ -56,7 +56,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     }
 
     @Override
-    public void insertDsc(DbDsc dsc) {
+    public void insertDsc(List<DbDsc> dsc) {
         // TODO
     }
 

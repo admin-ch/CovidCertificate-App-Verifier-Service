@@ -38,7 +38,7 @@ public interface VerifierDataService {
      *
      * @param dsc
      */
-    public void insertDsc(DbDsc dsc);
+    public void insertDsc(List<DbDsc> dsc);
 
     /**
      * removes all dscs with key ids not in the given list
