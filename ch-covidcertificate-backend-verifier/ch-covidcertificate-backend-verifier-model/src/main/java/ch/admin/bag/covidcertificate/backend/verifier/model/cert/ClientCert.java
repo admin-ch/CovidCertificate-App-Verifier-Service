@@ -12,10 +12,13 @@ public class ClientCert {
 
     @Documentation(
             description =
-                    "either 'sig' (all) or one or more of: 'r' (recovery), 't' (test), 'v' (vaccine)")
+                    "either 'sig' (all) or one or more of: 'r' (recovery), 't' (test), 'v' (vaccine)",
+            example = "sig")
     private String use;
 
-    @Documentation(description = "ES256 or RS256. key type can be derived from algorithm")
+    @Documentation(
+            description = "ES256 or RS256. key type can be derived from algorithm",
+            example = "ES256")
     private Algorithm alg;
 
     // RSA ONLY
@@ -29,7 +32,9 @@ public class ClientCert {
     private String subjectPublicKeyInfo;
 
     // EC ONLY
-    @Documentation(description = "EC only. only 'P-256' is supported at this time")
+    @Documentation(
+            description = "EC only. only 'P-256' is supported at this time",
+            example = "P-256")
     private String crv;
 
     @Documentation(description = "base64 encoded. EC only")

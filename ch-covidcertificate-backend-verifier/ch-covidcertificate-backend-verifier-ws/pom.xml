@@ -184,7 +184,7 @@
         <groupId>ch.ubique.openapi</groupId>
         <artifactId>springboot-swagger-3</artifactId>
         <configuration>
-          <apiVersion>1.0.0</apiVersion>
+          <apiVersion>1.1.0</apiVersion>
           <basePackages>
             ch.admin.bag.covidcertificate.backend.verifier
           </basePackages>
@@ -198,7 +198,9 @@
           </controllers>
           <description>CH Covidcertificate Verifier API</description>
           <apiUrls>
-            <apiUrl>https://TODO</apiUrl>
+            <apiUrl>https://www.cc-d.bit.admin.ch</apiUrl>
+            <apiUrl>https://www.cc-a.bit.admin.ch</apiUrl>
+            <apiUrl>https://www.cc.bit.admin.ch</apiUrl>
           </apiUrls>
           <title>CH Covidcertificate Verifier API</title>
         </configuration>
