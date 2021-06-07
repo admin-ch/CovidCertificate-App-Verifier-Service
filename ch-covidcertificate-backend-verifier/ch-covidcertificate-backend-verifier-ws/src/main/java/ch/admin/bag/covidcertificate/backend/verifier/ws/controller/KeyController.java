@@ -27,12 +27,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/v1/keys")
+@RequestMapping("trust/v1/keys")
 public class KeyController {
 
     private static final String NEXT_SINCE_HEADER = "X-Next-Since";
     private static final String ETAG_HEADER = "ETag";
-    private static final int MAX_CERT_BATCH_SIZE = 1000;
     private final VerifierDataService verifierDataService;
 
     public KeyController(VerifierDataService verifierDataService) {

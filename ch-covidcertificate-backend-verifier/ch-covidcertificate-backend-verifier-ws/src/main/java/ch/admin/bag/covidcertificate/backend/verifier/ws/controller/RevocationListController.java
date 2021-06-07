@@ -34,7 +34,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
-@RequestMapping("/v1")
+@RequestMapping("trust/v1")
 @Documentation(description = "Endpoint to obtain the list of revoked certificates")
 public class RevocationListController {
 
