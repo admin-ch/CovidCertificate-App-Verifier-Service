@@ -21,17 +21,24 @@ public class ClientCertRowMapper implements RowMapper<ClientCert> {
         clientCert.setPkId(rs.getLong("pk_dsc_id"));
         clientCert.setKeyId(rs.getString("key_id"));
         clientCert.setUse(rs.getString("use"));
-        clientCert.setAlg(Algorithm.valueOf(rs.getString("alg")));
-        switch (certFormat) {
-            case IOS:
-                clientCert.setSubjectPublicKeyInfo(rs.getString("subject_public_key_info"));
+        Algorithm alg = Algorithm.valueOf(rs.getString("alg"));
+        clientCert.setAlg(alg);
+        switch (alg) {
+            case ES256:
                 clientCert.setCrv(rs.getString("crv"));
                 clientCert.setX(rs.getString("x"));
                 clientCert.setY(rs.getString("y"));
                 break;
-            case ANDROID:
-                clientCert.setN(rs.getString("n"));
-                clientCert.setE(rs.getString("e"));
+            case RS256:
+                switch (certFormat) {
+                    case IOS:
+                        clientCert.setSubjectPublicKeyInfo(rs.getString("subject_public_key_info"));
+                        break;
+                    case ANDROID:
+                        clientCert.setN(rs.getString("n"));
+                        clientCert.setE(rs.getString("e"));
+                        break;
+                }
                 break;
         }
         return clientCert;

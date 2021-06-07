@@ -69,7 +69,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
         List<String> formatSpecificSelectFields;
         switch (certFormat) {
             case IOS:
-                formatSpecificSelectFields = List.of("subject_public_key_info", "crv", "x", "y");
+                formatSpecificSelectFields = List.of("subject_public_key_info");
                 break;
             case ANDROID:
                 formatSpecificSelectFields = List.of("n", "e");
@@ -83,7 +83,10 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
                         + " key_id,"
                         + " origin,"
                         + " use,"
-                        + " alg, "
+                        + " alg,"
+                        + " crv,"
+                        + " x,"
+                        + " y, "
                         + String.join(", ", formatSpecificSelectFields)
                         + " from t_document_signer_certificate"
                         + " where pk_dsc_id > :pk_dsc_id"
