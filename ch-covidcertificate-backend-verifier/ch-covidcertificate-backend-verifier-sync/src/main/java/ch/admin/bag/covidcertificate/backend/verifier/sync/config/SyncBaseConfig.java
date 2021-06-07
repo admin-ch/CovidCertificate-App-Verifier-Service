@@ -10,11 +10,14 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
+import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public abstract class SyncBaseConfig {
@@ -26,4 +29,10 @@ public abstract class SyncBaseConfig {
     public abstract Flyway flyway();
 
     public abstract String getDbType();
+
+    @Bean
+    public RestTemplate restTemplate() {
+        // TODO: Use cert & key for mTLS
+        return RestTemplateHelper.getRestTemplate();
+    }
 }
