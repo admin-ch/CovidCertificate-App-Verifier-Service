@@ -44,7 +44,7 @@ import org.springframework.web.client.RestTemplate;
 
 public class RestTemplateHelper {
 
-  private static final String DP3T_INTEROPS = "dp3t-interops";
+  private static final String COVIDCERT_VERIFIER = "covidcert-verifier";
   private static final int CONNECT_TIMEOUT = 20000;
   private static final int SOCKET_TIMEOUT = 20000;
 
@@ -82,7 +82,7 @@ public class RestTemplateHelper {
     HttpClientBuilder builder = HttpClients.custom();
     builder
         .useSystemProperties()
-        .setUserAgent(DP3T_INTEROPS)
+        .setUserAgent(COVIDCERT_VERIFIER)
         .setConnectionManager(manager)
         .disableCookieManagement()
         .setDefaultRequestConfig(
