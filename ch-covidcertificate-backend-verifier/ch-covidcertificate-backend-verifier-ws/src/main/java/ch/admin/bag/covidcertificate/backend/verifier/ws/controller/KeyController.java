@@ -56,7 +56,8 @@ public class KeyController {
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "updates")
     public @ResponseBody ResponseEntity<CertsResponse> getSignerCerts(
-            @RequestParam(required = false) Long since, @RequestParam CertFormat certFormat) {
+            @RequestParam(required = false, defaultValue = "0") Long since,
+            @RequestParam CertFormat certFormat) {
         // TODO etag
         List<ClientCert> dscs = verifierDataService.findDscs(since, certFormat);
         Long nextSince = dscs.stream().mapToLong(dsc -> dsc.getPkId()).max().orElse(0L);
