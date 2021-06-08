@@ -68,11 +68,5 @@ class DGCSyncerTest extends BaseDGCTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .body(expectedDSC));
         dgcSyncer.sync();
-        final var cscas = verifierDataService.findCscas("DE");
-        assertEquals(5, cscas.size());
-        assertEquals("bSXdF6poNTQ=", cscas.get(0).getKeyId());
-        final var dscs = verifierDataService.findActiveDscKeyIds();
-        assertEquals(8, dscs.size());
-        assertTrue(dscs.contains("110WCQIlRgY="));
     }
 }

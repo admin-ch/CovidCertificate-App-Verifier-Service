@@ -87,9 +87,9 @@ public class DGCSyncer {
                 dbDsc.setFkCsca(dbCsca.getId());
                 return true;
             } catch (CertificateException e) {
-                logger.error("Raw certificate strings couldn't be decoded to X509 certificates for kid {}.", dbDsc.getKeyId());
+                logger.error("Encoding error when decoding raw certificate for kid {}.", dbDsc.getKeyId());
             } catch (NoSuchAlgorithmException e) {
-                logger.error("Signature algorithm isn't supported for kid {}.", dbDsc.getKeyId());
+                logger.error("Signature algorithm for kid {} isn't supported", dbDsc.getKeyId());
             } catch (SignatureException e) {
                 logger.error("The signature contained errors for kid {}", dbDsc.getKeyId());
             } catch (InvalidKeyException e) {
