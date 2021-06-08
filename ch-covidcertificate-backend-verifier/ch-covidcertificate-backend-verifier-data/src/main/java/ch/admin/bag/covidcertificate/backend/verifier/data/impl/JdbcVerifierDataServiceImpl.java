@@ -62,33 +62,52 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     @Override
     @Transactional
     public int removeCscasNotIn(List<String> keyIdsToKeep) {
-        final var sql = "delete from t_country_specific_certificate_authority where key_id not in (:kids)";
+        var sql =
+                "delete from t_country_specific_certificate_authority";
         final var params = new MapSqlParameterSource();
-        params.addValue("kids", keyIdsToKeep);
+        if(!keyIdsToKeep.isEmpty()) {
+            sql += " where key_id not in (:kids)";
+            params.addValue("kids", keyIdsToKeep);
+        }
         return jt.update(sql, params);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<DbCsca> findCscas(String origin) {
-        final var sql = "select * from t_country_specific_certificate_authority where origin = :origin";
+        final var sql =
+                "select * from t_country_specific_certificate_authority where origin = :origin";
         final var params = new MapSqlParameterSource();
         params.addValue("origin", origin);
         return jt.query(sql, params, new CSCARowMapper());
     }
 
     @Override
+    @Transactional
     public void insertDsc(List<DbDsc> dsc) {
-        // TODO
+        List<SqlParameterSource> batchParams = new ArrayList<>();
+        if (!dsc.isEmpty()) {
+            for (DbDsc dbDsc : dsc) {
+                batchParams.add(getDSCParams(dbDsc));
+            }
+            dscInsert.executeBatch(batchParams.toArray(new SqlParameterSource[batchParams.size()]));
+        }
     }
 
     @Override
+    @Transactional
     public int removeDscsNotIn(List<String> keyIdsToKeep) {
-        // TODO
-        return 0;
+        var sql = "delete from t_document_signer_certificate";
+        final var params = new MapSqlParameterSource();
+        if(!keyIdsToKeep.isEmpty()) {
+            sql += " where key_id not in (:kids)";
+            params.addValue("kids", keyIdsToKeep);
+        }
+        return jt.update(sql, params);
     }
 
     @Override
+    @Transactional
     public List<ClientCert> findDscs(Long since, CertFormat certFormat) {
         List<String> formatSpecificSelectFields;
         switch (certFormat) {
@@ -153,6 +172,23 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
         params.addValue("certificate_raw", dbCsca.getCertificateRaw());
         params.addValue("origin", dbCsca.getOrigin());
         params.addValue("subject_principal_name", dbCsca.getSubjectPrincipalName());
+        return params;
+    }
+
+    private MapSqlParameterSource getDSCParams(DbDsc dbDsc) {
+        var params = new MapSqlParameterSource();
+        params.addValue("key_id", dbDsc.getKeyId());
+        params.addValue("fk_csca_id", dbDsc.getFkCsca());
+        params.addValue("certificate_raw", dbDsc.getCertificateRaw());
+        params.addValue("origin", dbDsc.getOrigin());
+        params.addValue("use", dbDsc.getUse());
+        params.addValue("alg", dbDsc.getAlg().name());
+        params.addValue("n", dbDsc.getN());
+        params.addValue("e", dbDsc.getE());
+        params.addValue("subject_public_key_info", dbDsc.getSubjectPublicKeyInfo());
+        params.addValue("crv", dbDsc.getCrv());
+        params.addValue("x", dbDsc.getX());
+        params.addValue("y", dbDsc.getY());
         return params;
     }
 }
