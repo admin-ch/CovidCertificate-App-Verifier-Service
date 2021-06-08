@@ -18,9 +18,11 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import java.util.List;
 import javax.sql.DataSource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.transaction.annotation.Transactional;
 
 public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
@@ -102,5 +104,19 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     public List<String> findActiveDscKeyIds() {
         String sql = "select key_id from t_document_signer_certificate order by pk_dsc_id";
         return jt.queryForList(sql, new MapSqlParameterSource(), String.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long findMaxDscPkId() {
+        try {
+            String sql =
+                    "select pk_dsc_id from t_document_signer_certificate"
+                            + " order by pk_dsc_id desc"
+                            + " limit 1";
+            return jt.queryForObject(sql, new MapSqlParameterSource(), Long.class);
+        } catch (EmptyResultDataAccessException e) {
+            return 0L;
+        }
     }
 }

@@ -60,7 +60,11 @@ public class KeyController {
             @RequestParam CertFormat certFormat) {
         // TODO etag
         List<ClientCert> dscs = verifierDataService.findDscs(since, certFormat);
-        Long nextSince = dscs.stream().mapToLong(dsc -> dsc.getPkId()).max().orElse(0L);
+        Long nextSince =
+                dscs.stream()
+                        .mapToLong(dsc -> dsc.getPkId())
+                        .max()
+                        .orElse(verifierDataService.findMaxDscPkId());
         return ResponseEntity.ok()
                 .header(NEXT_SINCE_HEADER, nextSince.toString())
                 .body(new CertsResponse(dscs));

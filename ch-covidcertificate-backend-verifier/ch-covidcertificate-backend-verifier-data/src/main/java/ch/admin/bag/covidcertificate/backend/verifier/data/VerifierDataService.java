@@ -63,4 +63,11 @@ public interface VerifierDataService {
      * @return
      */
     public List<String> findActiveDscKeyIds();
+
+    /**
+     * returns the highest dsc pk id
+     *
+     * @return
+     */
+    public long findMaxDscPkId();
 }
