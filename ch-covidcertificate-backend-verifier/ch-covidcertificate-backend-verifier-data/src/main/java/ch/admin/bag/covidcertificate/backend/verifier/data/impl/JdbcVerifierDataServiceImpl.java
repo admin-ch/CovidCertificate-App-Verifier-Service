@@ -11,26 +11,28 @@
 package ch.admin.bag.covidcertificate.backend.verifier.data.impl;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.mapper.CSCARowMapper;
 import ch.admin.bag.covidcertificate.backend.verifier.data.mapper.ClientCertRowMapper;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
+import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.transaction.annotation.Transactional;
 
 public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
+    private static final int MAX_DSC_BATCH_COUNT = 1000;
     private final NamedParameterJdbcTemplate jt;
     private final SimpleJdbcInsert cscaInsert;
     private final SimpleJdbcInsert dscInsert;
-
-    private static final int MAX_DSC_BATCH_COUNT = 1000;
 
     public JdbcVerifierDataServiceImpl(DataSource dataSource) {
         this.jt = new NamedParameterJdbcTemplate(dataSource);
@@ -45,14 +47,34 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     }
 
     @Override
+    @Transactional
     public void insertCscas(List<DbCsca> cscas) {
-        // TODO
+        List<SqlParameterSource> batchParams = new ArrayList<>();
+        if (!cscas.isEmpty()) {
+            for (DbCsca dbCsca : cscas) {
+                batchParams.add(getCSCAParams(dbCsca));
+            }
+            cscaInsert.executeBatch(
+                    batchParams.toArray(new SqlParameterSource[batchParams.size()]));
+        }
     }
 
     @Override
+    @Transactional
     public int removeCscasNotIn(List<String> keyIdsToKeep) {
-        // TODO
-        return 0;
+        final var sql = "delete from t_country_specific_certificate_authority where key_id not in (:kids)";
+        final var params = new MapSqlParameterSource();
+        params.addValue("kids", keyIdsToKeep);
+        return jt.update(sql, params);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DbCsca> findCscas(String origin) {
+        final var sql = "select * from t_country_specific_certificate_authority where origin = :origin";
+        final var params = new MapSqlParameterSource();
+        params.addValue("origin", origin);
+        return jt.query(sql, params, new CSCARowMapper());
     }
 
     @Override
@@ -123,5 +145,14 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     @Override
     public int getMaxDscBatchCount() {
         return MAX_DSC_BATCH_COUNT;
+    }
+
+    private MapSqlParameterSource getCSCAParams(DbCsca dbCsca) {
+        var params = new MapSqlParameterSource();
+        params.addValue("key_id", dbCsca.getKeyId());
+        params.addValue("certificate_raw", dbCsca.getCertificateRaw());
+        params.addValue("origin", dbCsca.getOrigin());
+        params.addValue("subject_principal_name", dbCsca.getSubjectPrincipalName());
+        return params;
     }
 }

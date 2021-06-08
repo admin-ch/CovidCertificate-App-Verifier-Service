@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.client.RestTemplate;
 
@@ -30,10 +29,9 @@ public class TestConfig {
     String baseurl = "https://testurl.europa.eu";
 
     @Bean
-    @DependsOn("restTemplate")
-    public DGCClient dgcSyncer() {
+    public DGCClient dgcSyncer(RestTemplate restTemplate) {
         logger.info("Instantiated DGC Syncer with baseurl: {}", baseurl);
-        return new DGCClient(baseurl);
+        return new DGCClient(baseurl, restTemplate);
     }
 
     @Bean

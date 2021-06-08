@@ -34,6 +34,14 @@ public interface VerifierDataService {
     public int removeCscasNotIn(List<String> keyIdsToKeep);
 
     /**
+     * finds all CSCAs of the given origin country
+     *
+     * @param origin abbreviation for country of origin (e.g. "CH")
+     * @return list of all CSCAs with the corresponding origin
+     */
+    public List<DbCsca> findCscas(String origin);
+
+    /**
      * inserts the given dsc into the db
      *
      * @param dsc

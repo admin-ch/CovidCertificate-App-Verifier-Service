@@ -26,6 +26,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.InvalidParameterSpecException;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
@@ -71,7 +72,7 @@ public class X509Test {
         DbCsca csca = new DbCsca();
         csca.setKeyId(createKeyId(cscaX509));
         csca.setCertificateRaw(getBase64EncodedStr(cscaX509));
-        csca.setImportedAt(LocalDateTime.now());
+        csca.setImportedAt(Instant.now());
         csca.setOrigin(origin);
         csca.setSubjectPrincipalName(cscaX509.getSubjectX500Principal().getName());
         return csca;
