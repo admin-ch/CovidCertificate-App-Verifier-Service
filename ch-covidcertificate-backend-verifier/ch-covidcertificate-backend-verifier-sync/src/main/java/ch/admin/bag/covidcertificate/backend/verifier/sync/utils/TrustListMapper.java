@@ -94,7 +94,7 @@ public class TrustListMapper {
         return Base64.getEncoder().encodeToString(x509.getEncoded());
     }
 
-    private X509Certificate fromBase64EncodedStr(String base64) throws CertificateException {
+    public X509Certificate fromBase64EncodedStr(String base64) throws CertificateException {
         var cf = CertificateFactory.getInstance("X.509");
         return (X509Certificate)
                 cf.generateCertificate(

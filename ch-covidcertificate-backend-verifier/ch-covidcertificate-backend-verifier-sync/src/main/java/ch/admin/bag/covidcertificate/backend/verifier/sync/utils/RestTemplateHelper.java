@@ -100,7 +100,8 @@ public class RestTemplateHelper {
                   clientCertPassword.toCharArray(),
                   clientCertPassword.toCharArray(),
                   (aliases, socket) ->
-                      !aliases.keySet().isEmpty() ? aliases.keySet().iterator().next() : null)
+                      !aliases.keySet().isEmpty() ? aliases.keySet().iterator().next() : null
+              )
               .build();
       builder.setSSLContext(sslContext);
 

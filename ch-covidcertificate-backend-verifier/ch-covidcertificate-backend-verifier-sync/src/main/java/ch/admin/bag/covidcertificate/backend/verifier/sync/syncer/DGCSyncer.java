@@ -6,7 +6,10 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CertificateType;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.TrustList;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.TrustListMapper;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -24,6 +27,7 @@ public class DGCSyncer {
     public DGCSyncer(DGCClient dgcClient, VerifierDataService verifierDataService) {
         this.dgcClient = dgcClient;
         this.verifierDataService = verifierDataService;
+        sync();
     }
 
     public void sync() {
@@ -61,8 +65,6 @@ public class DGCSyncer {
                 // Verify signature for corresponding csca
                 if(isValid(dbDsc, dscTrustList.getSignature())) {
                     dbDscList.add(dbDsc);
-                } else {
-                    logger.error("Signature for kid {} was invalid", dbDsc.getKeyId());
                 }
             } catch(CertificateException | NoSuchAlgorithmException e) {
                 logger.error("Couldn't map dsc trustlist to X509 certificate");
@@ -74,8 +76,29 @@ public class DGCSyncer {
     }
 
     private boolean isValid(DbDsc dbDsc, String signature) {
-        // TODO: Implement
-        return true;
+        final var dbCscaOpt = verifierDataService.findCscas(dbDsc.getOrigin()).stream()
+            .filter(dbCsca -> dbCsca.getId().equals(dbDsc.getFkCsca())).findFirst();
+        if(dbCscaOpt.isPresent()) {
+            final var dbCsca = dbCscaOpt.get();
+            try {
+                final var dscX509 = trustListMapper
+                    .fromBase64EncodedStr(dbDsc.getCertificateRaw());
+                final var cscaX509 = trustListMapper.fromBase64EncodedStr(dbCsca.getCertificateRaw());
+                dscX509.verify(cscaX509.getPublicKey());
+                return true;
+            } catch (CertificateException e) {
+                logger.error("Raw certificate strings couldn't be decoded to X509 certificates for kid {}.", dbDsc.getKeyId());
+            } catch (NoSuchAlgorithmException e) {
+                logger.error("Signature algorithm isn't supported for kid {}.", dbDsc.getKeyId());
+            } catch (SignatureException e) {
+                logger.error("The signature contained errors for kid {}", dbDsc.getKeyId());
+            } catch (InvalidKeyException e) {
+                logger.error("The public key didn't match the signature for kid {}.", dbDsc.getKeyId());
+            } catch (NoSuchProviderException e) {
+                logger.error("No default provider for the given signature type for kid {}.", dbDsc.getKeyId());
+            }
+        }
+        return false;
     }
 
     private void upload() {

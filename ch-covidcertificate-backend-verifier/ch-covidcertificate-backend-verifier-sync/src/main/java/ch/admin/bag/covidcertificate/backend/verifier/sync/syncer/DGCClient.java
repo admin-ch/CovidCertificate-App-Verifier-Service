@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -22,10 +21,11 @@ public class DGCClient {
     private static final String UPLOAD_PATH = "/signerCertificate";
     private static final String DOWNLOAD_PATH = "/trustList/%s";
     private final String baseUrl;
-    @Autowired RestTemplate rt;
+    private final RestTemplate rt;
 
-    public DGCClient(String baseUrl) {
+    public DGCClient(String baseUrl, RestTemplate rt) {
         this.baseUrl = baseUrl;
+        this.rt = rt;
     }
 
     public TrustList[] download(CertificateType certType) {

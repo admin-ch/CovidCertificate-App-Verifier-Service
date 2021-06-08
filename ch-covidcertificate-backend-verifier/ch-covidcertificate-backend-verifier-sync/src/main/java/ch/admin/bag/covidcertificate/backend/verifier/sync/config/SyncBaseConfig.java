@@ -10,19 +10,31 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DGCClient;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DGCSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
+import java.util.List;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Configuration
 public abstract class SyncBaseConfig {
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    @Value("${dgc.baseurl}")
+    String baseurl;
+
+    @Value("${dgc.clientcert}")
+    String authClientCert;
+
+    @Value("${dgc.clientcert.password}")
+    String authClientCertPassword;
 
     public abstract DataSource dataSource();
 
@@ -32,7 +44,25 @@ public abstract class SyncBaseConfig {
 
     @Bean
     public RestTemplate restTemplate() {
-        // TODO: Use cert & key for mTLS
-        return RestTemplateHelper.getRestTemplate();
+        final var rt = RestTemplateHelper.getRestTemplateWithClientCerts(
+            authClientCert,
+            authClientCertPassword,
+            List.of(UriComponentsBuilder.fromHttpUrl(baseurl).build().toUri().getHost()));
+        return rt;
+    }
+
+    @Bean
+    public VerifierDataService verifierDataService(DataSource dataSource) {
+        return new JdbcVerifierDataServiceImpl(dataSource);
+    }
+
+    @Bean
+    public DGCClient dgcClient(RestTemplate restTemplate) {
+        return new DGCClient(baseurl, restTemplate);
+    }
+
+    @Bean
+    public DGCSyncer dgcSyncer(DGCClient dgcClient, VerifierDataService verifierDataService) {
+        return new DGCSyncer(dgcClient, verifierDataService);
     }
 }
