@@ -87,7 +87,7 @@ public class X509Test {
         DbDsc dsc = new DbDsc();
         dsc.setKeyId(createKeyId(dscX509));
         dsc.setCertificateRaw(getBase64EncodedStr(dscX509));
-        dsc.setImportedAt(LocalDateTime.now());
+        dsc.setImportedAt(Instant.now());
         dsc.setOrigin(origin);
         dsc.setUse(getUse(dscX509.getExtendedKeyUsage()));
 

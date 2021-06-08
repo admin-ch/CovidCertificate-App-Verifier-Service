@@ -16,6 +16,7 @@ import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
@@ -40,7 +41,6 @@ public class TrustListMapper {
         DbCsca csca = new DbCsca();
         csca.setKeyId(createKeyId(cscaX509));
         csca.setCertificateRaw(getBase64EncodedStr(cscaX509));
-        csca.setImportedAt(LocalDateTime.now());
         csca.setOrigin(origin);
         csca.setSubjectPrincipalName(cscaX509.getSubjectX500Principal().getName());
         return csca;
@@ -56,7 +56,6 @@ public class TrustListMapper {
         var dsc = new DbDsc();
         dsc.setKeyId(createKeyId(dscX509));
         dsc.setCertificateRaw(getBase64EncodedStr(dscX509));
-        dsc.setImportedAt(LocalDateTime.now());
         dsc.setOrigin(origin);
         dsc.setUse(getUse(dscX509.getExtendedKeyUsage()));
 
@@ -73,7 +72,7 @@ public class TrustListMapper {
                 break;
             case RS256:
             case PS256:
-                // TODO: Does this work?
+                // TODO: Does this work for PS256?
                 dsc.setN(getN(dscX509));
                 dsc.setE(getE(dscX509));
                 dsc.setSubjectPublicKeyInfo(getSubjectPublicKeyInfo(dscX509));
