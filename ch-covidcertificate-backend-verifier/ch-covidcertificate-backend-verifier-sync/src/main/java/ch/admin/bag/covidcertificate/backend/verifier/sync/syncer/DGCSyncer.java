@@ -27,7 +27,6 @@ public class DGCSyncer {
     public DGCSyncer(DGCClient dgcClient, VerifierDataService verifierDataService) {
         this.dgcClient = dgcClient;
         this.verifierDataService = verifierDataService;
-        sync();
     }
 
     public void sync() {
@@ -63,7 +62,7 @@ public class DGCSyncer {
             try {
                 final var dbDsc = trustListMapper.mapDsc(dscTrustList);
                 // Verify signature for corresponding csca
-                if(isValid(dbDsc, dscTrustList.getSignature())) {
+                if(isValid(dbDsc)) {
                     dbDscList.add(dbDsc);
                 }
             } catch(CertificateException | NoSuchAlgorithmException e) {
@@ -75,16 +74,17 @@ public class DGCSyncer {
         logger.info("Finished download in {} ms", end.toEpochMilli() - start.toEpochMilli());
     }
 
-    private boolean isValid(DbDsc dbDsc, String signature) {
-        final var dbCscaOpt = verifierDataService.findCscas(dbDsc.getOrigin()).stream()
-            .filter(dbCsca -> dbCsca.getId().equals(dbDsc.getFkCsca())).findFirst();
-        if(dbCscaOpt.isPresent()) {
-            final var dbCsca = dbCscaOpt.get();
+    private boolean isValid(DbDsc dbDsc) {
+        logger.info("Verifying signature of dsc with kid {}", dbDsc.getKeyId());
+        final var dbCscaList = verifierDataService.findCscas(dbDsc.getOrigin());
+        for(DbCsca dbCsca: dbCscaList) {
             try {
                 final var dscX509 = trustListMapper
                     .fromBase64EncodedStr(dbDsc.getCertificateRaw());
                 final var cscaX509 = trustListMapper.fromBase64EncodedStr(dbCsca.getCertificateRaw());
                 dscX509.verify(cscaX509.getPublicKey());
+                logger.info("Successfully verified dsc {} with csca {}", dbDsc.getKeyId(), dbCsca.getKeyId());
+                dbDsc.setFkCsca(dbCsca.getId());
                 return true;
             } catch (CertificateException e) {
                 logger.error("Raw certificate strings couldn't be decoded to X509 certificates for kid {}.", dbDsc.getKeyId());

@@ -10,8 +10,12 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DGCClient;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DGCSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
+import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,9 +33,20 @@ public class TestConfig {
     String baseurl = "https://testurl.europa.eu";
 
     @Bean
-    public DGCClient dgcSyncer(RestTemplate restTemplate) {
+    public DGCSyncer dgcSyncer(DGCClient dgcClient, VerifierDataService verifierDataService) {
+        logger.info("Instantiated DGC Syncer with baseurl: {}", baseurl);
+        return new DGCSyncer(dgcClient, verifierDataService);
+    }
+
+    @Bean
+    public DGCClient dgcClient(RestTemplate restTemplate) {
         logger.info("Instantiated DGC Syncer with baseurl: {}", baseurl);
         return new DGCClient(baseurl, restTemplate);
+    }
+
+    @Bean
+    public VerifierDataService verifierDataService(DataSource dataSource) {
+        return new JdbcVerifierDataServiceImpl(dataSource);
     }
 
     @Bean

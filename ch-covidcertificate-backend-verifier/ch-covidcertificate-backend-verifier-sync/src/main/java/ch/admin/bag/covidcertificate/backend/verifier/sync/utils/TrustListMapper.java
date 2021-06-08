@@ -5,9 +5,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ExtendedKeyUsag
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.TrustList;
-import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DGCSyncer;
 import java.io.ByteArrayInputStream;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
@@ -16,9 +14,6 @@ import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPublicKey;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import org.slf4j.Logger;
@@ -33,13 +28,16 @@ public class TrustListMapper {
 
     public DbCsca mapCsca(TrustList trustList)
             throws CertificateException, NoSuchAlgorithmException {
-        return mapCsca(fromBase64EncodedStr(trustList.getRawData()), trustList.getCountry());
+        return mapCsca(
+                fromBase64EncodedStr(trustList.getRawData()),
+                trustList.getCountry(),
+                trustList.getKid());
     }
 
-    private DbCsca mapCsca(X509Certificate cscaX509, String origin)
-            throws CertificateEncodingException, NoSuchAlgorithmException {
+    private DbCsca mapCsca(X509Certificate cscaX509, String origin, String kid)
+            throws CertificateEncodingException {
         DbCsca csca = new DbCsca();
-        csca.setKeyId(createKeyId(cscaX509));
+        csca.setKeyId(kid);
         csca.setCertificateRaw(getBase64EncodedStr(cscaX509));
         csca.setOrigin(origin);
         csca.setSubjectPrincipalName(cscaX509.getSubjectX500Principal().getName());
@@ -47,32 +45,33 @@ public class TrustListMapper {
     }
 
     public DbDsc mapDsc(TrustList trustList) throws CertificateException, NoSuchAlgorithmException {
-        return mapDsc(fromBase64EncodedStr(trustList.getRawData()), trustList.getCountry());
+        return mapDsc(
+                fromBase64EncodedStr(trustList.getRawData()),
+                trustList.getCountry(),
+                trustList.getKid());
     }
 
-    private DbDsc mapDsc(X509Certificate dscX509, String origin)
-            throws CertificateEncodingException, CertificateParsingException,
-                    NoSuchAlgorithmException {
+    private DbDsc mapDsc(X509Certificate dscX509, String origin, String kid)
+            throws CertificateEncodingException, CertificateParsingException {
         var dsc = new DbDsc();
-        dsc.setKeyId(createKeyId(dscX509));
+        dsc.setKeyId(kid);
         dsc.setCertificateRaw(getBase64EncodedStr(dscX509));
         dsc.setOrigin(origin);
         dsc.setUse(getUse(dscX509.getExtendedKeyUsage()));
 
         final String sigAlgName = dscX509.getSigAlgName();
-        logger.debug("Alg name: {}", sigAlgName);
+        logger.debug("Reading parameters for kid {} with sig algorithm {}", kid, sigAlgName);
         var algorithm = Algorithm.forSigAlgName(sigAlgName);
         dsc.setAlg(algorithm);
 
         switch (algorithm) {
             case ES256:
+            case PS256:
                 dsc.setCrv(P256);
                 dsc.setX(getX(dscX509));
                 dsc.setY(getY(dscX509));
                 break;
             case RS256:
-            case PS256:
-                // TODO: Does this work for PS256?
                 dsc.setN(getN(dscX509));
                 dsc.setE(getE(dscX509));
                 dsc.setSubjectPublicKeyInfo(getSubjectPublicKeyInfo(dscX509));
@@ -81,13 +80,6 @@ public class TrustListMapper {
                 throw new RuntimeException("unexpected algorithm: " + algorithm);
         }
         return dsc;
-    }
-
-    private String createKeyId(X509Certificate x509)
-            throws NoSuchAlgorithmException, CertificateEncodingException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] hash = digest.digest(x509.getEncoded());
-        return Base64.getEncoder().encodeToString(Arrays.copyOfRange(hash, 0, 8));
     }
 
     private String getBase64EncodedStr(X509Certificate x509) throws CertificateEncodingException {

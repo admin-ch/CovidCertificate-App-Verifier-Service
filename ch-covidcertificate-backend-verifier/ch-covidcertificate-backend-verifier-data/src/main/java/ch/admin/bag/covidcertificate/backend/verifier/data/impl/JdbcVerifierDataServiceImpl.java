@@ -107,7 +107,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ClientCert> findDscs(Long since, CertFormat certFormat) {
         List<String> formatSpecificSelectFields;
         switch (certFormat) {
@@ -142,6 +142,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<String> findActiveDscKeyIds() {
         String sql = "select key_id from t_document_signer_certificate order by pk_dsc_id";
         return jt.queryForList(sql, new MapSqlParameterSource(), String.class);

@@ -4,7 +4,6 @@ public class TrustList {
 
     private String kid;
 
-    // TODO: Can this be directly parsed into data-time format?
     private String timestamp;
 
     private String country;
@@ -15,7 +14,6 @@ public class TrustList {
 
     private String signature;
 
-    // TODO: String or byte array?
     private String rawData;
 
     public String getKid() {
