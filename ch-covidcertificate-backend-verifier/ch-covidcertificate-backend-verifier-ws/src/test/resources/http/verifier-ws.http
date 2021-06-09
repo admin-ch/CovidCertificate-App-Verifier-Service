@@ -14,3 +14,7 @@ ETag: a1b2c3
 ### get revocation list
 GET {{baseUrl}}/v1/revocationList
 Accept: application/json
+
+### get verification rules
+GET {{baseUrl}}/v1/verificationRules
+Accept: application/json

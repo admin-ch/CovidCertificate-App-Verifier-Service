@@ -12,10 +12,14 @@ package ch.admin.bag.covidcertificate.backend.verifier.ws.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
-import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyController;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerificationRulesController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.interceptor.HeaderInjector;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.RestTemplateHelper;
+import java.io.IOException;
+import java.time.Duration;
 import java.util.Map;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
@@ -46,6 +50,16 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
 
     public abstract String getDbType();
 
+    @Value("${ws.revocationList.max-age:PT1M}")
+    public void setRevocationListMaxAge(Duration maxAge) {
+        CacheUtil.REVOCATION_LIST_MAX_AGE = maxAge;
+    }
+
+    @Value("${ws.verificationRules.max-age:PT1M}")
+    public void setVerificationRulesMaxAge(Duration maxAge) {
+        CacheUtil.VERIFICATION_RULES_MAX_AGE = maxAge;
+    }
+
     @Bean
     public HeaderInjector securityHeaderInjector() {
         return new HeaderInjector(additionalHeaders);
@@ -69,6 +83,11 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     @Bean
     public RevocationListController revocationListController() {
         return new RevocationListController(revokedCertsBaseUrl);
+    }
+
+    @Bean
+    public VerificationRulesController verificationRulesController() throws IOException {
+        return new VerificationRulesController();
     }
 
     @Bean
