@@ -58,14 +58,13 @@ public class DGCClient {
                 throw e;
             }
         }
-        if (response.getBody() != null) {
+        final var body = response.getBody();
+        if (body != null) {
             final TrustList[] trustList;
             try {
-                trustList = new ObjectMapper().readValue(response.getBody(), TrustList[].class);
+                trustList = new ObjectMapper().readValue(body, TrustList[].class);
             } catch (IOException e) {
-                logger.error(
-                        "Error parsing trustList response: {}...",
-                        response.getBody().toString().substring(0, 100));
+                logger.error("Error parsing trustList response: {}...", body.substring(0, 100));
                 return new TrustList[0];
             }
             return trustList;
