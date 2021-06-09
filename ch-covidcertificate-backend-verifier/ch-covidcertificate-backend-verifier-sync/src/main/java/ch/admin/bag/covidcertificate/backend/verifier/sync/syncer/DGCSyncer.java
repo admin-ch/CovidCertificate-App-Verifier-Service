@@ -50,7 +50,7 @@ public class DGCSyncer {
             try {
                 final var dbCsca = trustListMapper.mapCsca(cscaTrustList);
                 dbCscaList.add(dbCsca);
-            } catch (CertificateException | NoSuchAlgorithmException e) {
+            } catch (CertificateException e) {
                 logger.error(
                         "Couldn't map CSCA trustlist {} to X509 certificate",
                         cscaTrustList.getKid());
