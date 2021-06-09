@@ -13,6 +13,7 @@ package ch.admin.bag.covidcertificate.backend.verifier.sync.utils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpRequest;
@@ -33,47 +34,50 @@ public class LoggingRequestInterceptor implements ClientHttpRequestInterceptor {
         return traceResponse(response);
     }
 
-    private void traceRequest(HttpRequest request, byte[] body) throws IOException {
-        if (!LOGGER.isDebugEnabled()) {
-            return;
+    private void traceRequest(HttpRequest request, byte[] body) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
+                    "==========================request begin==============================================");
+            LOGGER.debug("{} {}", request.getMethod(), request.getURI());
+            LOGGER.debug("Headers: {}", request.getHeaders());
+            LOGGER.debug("Body:    {}", new String(body, StandardCharsets.UTF_8));
+            LOGGER.debug(
+                    "==========================request end================================================");
         }
-        LOGGER.debug(
-                "==========================request begin==============================================");
-        LOGGER.debug(request.getMethod() + " " + request.getURI());
-        LOGGER.debug("Headers: {}", request.getHeaders());
-        LOGGER.debug("Body:    {}", new String(body, "UTF-8"));
-        LOGGER.debug(
-                "==========================request end================================================");
     }
 
     private ClientHttpResponse traceResponse(ClientHttpResponse response) throws IOException {
-        if (!LOGGER.isDebugEnabled()) {
+        if (LOGGER.isDebugEnabled()) {
+            final ClientHttpResponse responseWrapper =
+                    new BufferingClientHttpResponseWrapper(response);
+            var inputStringBuilder = new StringBuilder();
+            var bufferedReader =
+                    new BufferedReader(
+                            new InputStreamReader(
+                                    responseWrapper.getBody(), StandardCharsets.UTF_8));
+            String line = bufferedReader.readLine();
+            while (line != null) {
+                inputStringBuilder.append(line);
+                inputStringBuilder.append('\n');
+                line = bufferedReader.readLine();
+            }
+            LOGGER.debug(
+                    "==========================response begin=============================================");
+            LOGGER.debug("Status:  {}", responseWrapper.getStatusCode());
+            LOGGER.debug("Headers: {}", responseWrapper.getHeaders());
+            LOGGER.debug(
+                    "Body:    {}",
+                    inputStringBuilder
+                            .toString()
+                            .replaceAll("\"thumbprint\":\".*?(?=\")\"", "\"thumbprint\":\"...\"")
+                            .replaceAll("\"signature\":\".*?(?=\")\"", "\"signature\":\"...\"")
+                            .replaceAll("\"rawData\":\".*?(?=\")\"", "\"rawData\":\"...\"")
+                            .replace("{", "\n{"));
+            LOGGER.debug(
+                    "==========================response end===============================================");
+            return responseWrapper;
+        } else {
             return response;
         }
-        final ClientHttpResponse responseWrapper = new BufferingClientHttpResponseWrapper(response);
-        StringBuilder inputStringBuilder = new StringBuilder();
-        BufferedReader bufferedReader =
-                new BufferedReader(new InputStreamReader(responseWrapper.getBody(), "UTF-8"));
-        String line = bufferedReader.readLine();
-        while (line != null) {
-            inputStringBuilder.append(line);
-            inputStringBuilder.append('\n');
-            line = bufferedReader.readLine();
-        }
-        LOGGER.debug(
-                "==========================response begin=============================================");
-        LOGGER.debug("Status:  {}", responseWrapper.getStatusCode());
-        LOGGER.debug("Headers: {}", responseWrapper.getHeaders());
-        LOGGER.debug(
-                "Body:    {}",
-                inputStringBuilder
-                        .toString()
-                        .replaceAll("\"thumbprint\":\".*?(?=\")\"", "\"thumbprint\":\"...\"")
-                        .replaceAll("\"signature\":\".*?(?=\")\"", "\"signature\":\"...\"")
-                        .replaceAll("\"rawData\":\".*?(?=\")\"", "\"rawData\":\"...\"")
-                        .replaceAll("\\{", "\n{"));
-        LOGGER.debug(
-                "==========================response end===============================================");
-        return responseWrapper;
     }
 }

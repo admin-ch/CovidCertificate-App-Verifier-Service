@@ -6,7 +6,6 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.TrustList;
 import java.io.ByteArrayInputStream;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -26,8 +25,7 @@ public class TrustListMapper {
     private static final String P256 = "P-256";
     private static final String USE_SIG = "sig";
 
-    public DbCsca mapCsca(TrustList trustList)
-            throws CertificateException, NoSuchAlgorithmException {
+    public DbCsca mapCsca(TrustList trustList) throws CertificateException {
         return mapCsca(
                 fromBase64EncodedStr(trustList.getRawData()),
                 trustList.getCountry(),
@@ -36,7 +34,7 @@ public class TrustListMapper {
 
     private DbCsca mapCsca(X509Certificate cscaX509, String origin, String kid)
             throws CertificateEncodingException {
-        DbCsca csca = new DbCsca();
+        var csca = new DbCsca();
         csca.setKeyId(kid);
         csca.setCertificateRaw(getBase64EncodedStr(cscaX509));
         csca.setOrigin(origin);
@@ -100,15 +98,16 @@ public class TrustListMapper {
     }
 
     private String getUse(List<String> extendedKeyUsage) {
-        String use = "";
+        var strBldr = new StringBuilder();
         if (extendedKeyUsage != null) {
             for (String oid : extendedKeyUsage) {
-                ExtendedKeyUsage usage = ExtendedKeyUsage.forOid(oid);
+                var usage = ExtendedKeyUsage.forOid(oid);
                 if (usage != null) {
-                    use += usage.getCode();
+                    strBldr.append(usage.getCode());
                 }
             }
         }
+        var use = strBldr.toString();
         return !use.isBlank() ? use : USE_SIG;
     }
 
