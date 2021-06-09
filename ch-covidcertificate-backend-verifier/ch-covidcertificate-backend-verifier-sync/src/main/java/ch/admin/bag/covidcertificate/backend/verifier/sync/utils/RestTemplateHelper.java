@@ -82,14 +82,7 @@ public class RestTemplateHelper {
     HttpClientBuilder builder = HttpClients.custom();
     builder
         .useSystemProperties()
-        .setUserAgent(COVIDCERT_VERIFIER)
-        .setConnectionManager(manager)
-        .disableCookieManagement()
-        .setDefaultRequestConfig(
-            RequestConfig.custom()
-                .setConnectTimeout(CONNECT_TIMEOUT)
-                .setSocketTimeout(SOCKET_TIMEOUT)
-                .build());
+        .setUserAgent(COVIDCERT_VERIFIER);
 
     if (clientCert != null && clientCertPassword != null) {
       Path clientCertFile = getFile(clientCert);
@@ -98,9 +91,7 @@ public class RestTemplateHelper {
               .loadKeyMaterial(
                   clientCertFile.toFile(),
                   clientCertPassword.toCharArray(),
-                  clientCertPassword.toCharArray(),
-                  (aliases, socket) ->
-                      !aliases.keySet().isEmpty() ? aliases.keySet().iterator().next() : null
+                  clientCertPassword.toCharArray()
               )
               .build();
       builder.setSSLContext(sslContext);

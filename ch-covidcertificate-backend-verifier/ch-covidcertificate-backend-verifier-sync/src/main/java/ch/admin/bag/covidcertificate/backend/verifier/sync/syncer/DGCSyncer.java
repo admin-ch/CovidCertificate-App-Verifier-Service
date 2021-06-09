@@ -6,6 +6,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CertificateType;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.TrustList;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.TrustListMapper;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.UnexpectedAlgorithmException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -67,6 +68,8 @@ public class DGCSyncer {
                 }
             } catch(CertificateException | NoSuchAlgorithmException e) {
                 logger.error("Couldn't map dsc trustlist to X509 certificate");
+            } catch (UnexpectedAlgorithmException e) {
+                logger.error(e.getMessage());
             }
         }
         verifierDataService.insertDsc(dbDscList);

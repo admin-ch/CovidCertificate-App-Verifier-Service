@@ -19,7 +19,10 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -28,6 +31,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.transaction.annotation.Transactional;
 
 public class JdbcVerifierDataServiceImpl implements VerifierDataService {
+
+    private static final Logger logger = LoggerFactory.getLogger(JdbcVerifierDataServiceImpl.class);
 
     private static final int MAX_DSC_BATCH_COUNT = 1000;
     private final NamedParameterJdbcTemplate jt;
@@ -49,6 +54,9 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     @Override
     @Transactional
     public void insertCscas(List<DbCsca> cscas) {
+        logger.info(
+                "Inserting CSCA certificates with kid's: {}",
+                cscas.stream().map(dbCsca -> dbCsca.getKeyId()).collect(Collectors.toList()));
         List<SqlParameterSource> batchParams = new ArrayList<>();
         if (!cscas.isEmpty()) {
             for (DbCsca dbCsca : cscas) {
@@ -62,10 +70,9 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     @Override
     @Transactional
     public int removeCscasNotIn(List<String> keyIdsToKeep) {
-        var sql =
-                "delete from t_country_specific_certificate_authority";
+        var sql = "delete from t_country_specific_certificate_authority";
         final var params = new MapSqlParameterSource();
-        if(!keyIdsToKeep.isEmpty()) {
+        if (!keyIdsToKeep.isEmpty()) {
             sql += " where key_id not in (:kids)";
             params.addValue("kids", keyIdsToKeep);
         }
@@ -99,7 +106,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     public int removeDscsNotIn(List<String> keyIdsToKeep) {
         var sql = "delete from t_document_signer_certificate";
         final var params = new MapSqlParameterSource();
-        if(!keyIdsToKeep.isEmpty()) {
+        if (!keyIdsToKeep.isEmpty()) {
             sql += " where key_id not in (:kids)";
             params.addValue("kids", keyIdsToKeep);
         }

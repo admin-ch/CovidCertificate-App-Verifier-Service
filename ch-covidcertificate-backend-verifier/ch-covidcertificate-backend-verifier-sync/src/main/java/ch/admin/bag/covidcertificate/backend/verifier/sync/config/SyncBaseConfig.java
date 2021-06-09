@@ -44,11 +44,10 @@ public abstract class SyncBaseConfig {
 
     @Bean
     public RestTemplate restTemplate() {
-        final var rt = RestTemplateHelper.getRestTemplateWithClientCerts(
+        return RestTemplateHelper.getRestTemplateWithClientCerts(
             authClientCert,
             authClientCertPassword,
             List.of(UriComponentsBuilder.fromHttpUrl(baseurl).build().toUri().getHost()));
-        return rt;
     }
 
     @Bean

@@ -44,7 +44,8 @@ public class TrustListMapper {
         return csca;
     }
 
-    public DbDsc mapDsc(TrustList trustList) throws CertificateException, NoSuchAlgorithmException {
+    public DbDsc mapDsc(TrustList trustList)
+            throws CertificateException, NoSuchAlgorithmException, UnexpectedAlgorithmException {
         return mapDsc(
                 fromBase64EncodedStr(trustList.getRawData()),
                 trustList.getCountry(),
@@ -52,21 +53,25 @@ public class TrustListMapper {
     }
 
     private DbDsc mapDsc(X509Certificate dscX509, String origin, String kid)
-            throws CertificateEncodingException, CertificateParsingException {
+            throws CertificateEncodingException, CertificateParsingException,
+                    UnexpectedAlgorithmException {
         var dsc = new DbDsc();
         dsc.setKeyId(kid);
         dsc.setCertificateRaw(getBase64EncodedStr(dscX509));
         dsc.setOrigin(origin);
         dsc.setUse(getUse(dscX509.getExtendedKeyUsage()));
 
-        final String sigAlgName = dscX509.getSigAlgName();
-        logger.debug("Reading parameters for kid {} with sig algorithm {}", kid, sigAlgName);
-        var algorithm = Algorithm.forSigAlgName(sigAlgName);
+        logger.debug(
+                "Reading parameters for DSC of origin {} with kid {} and public key algorithm {}",
+                origin,
+                kid,
+                dscX509.getPublicKey().getAlgorithm());
+        var keyType = dscX509.getPublicKey().getAlgorithm();
+        var algorithm = Algorithm.forPubKeyType(keyType);
         dsc.setAlg(algorithm);
 
         switch (algorithm) {
             case ES256:
-            case PS256:
                 dsc.setCrv(P256);
                 dsc.setX(getX(dscX509));
                 dsc.setY(getY(dscX509));
@@ -76,8 +81,9 @@ public class TrustListMapper {
                 dsc.setE(getE(dscX509));
                 dsc.setSubjectPublicKeyInfo(getSubjectPublicKeyInfo(dscX509));
                 break;
+            case UNSUPPORTED:
             default:
-                throw new RuntimeException("unexpected algorithm: " + algorithm);
+                throw new UnexpectedAlgorithmException(keyType);
         }
         return dsc;
     }
