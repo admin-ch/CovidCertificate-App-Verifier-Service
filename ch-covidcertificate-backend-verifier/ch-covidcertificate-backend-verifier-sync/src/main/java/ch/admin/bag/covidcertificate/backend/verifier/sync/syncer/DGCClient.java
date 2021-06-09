@@ -37,7 +37,7 @@ public class DGCClient {
         final var request = RequestEntity.get(uri).headers(createDownloadHeaders()).build();
         final ResponseEntity<String> response;
         try {
-            logger.info("Downloading certificates of type {}", certType.name());
+            logger.debug("Downloading certificates of type {}", certType.name());
             response = rt.exchange(request, String.class);
         } catch (HttpStatusCodeException e) {
             var responseBody = e.getResponseBodyAsString();
@@ -61,10 +61,11 @@ public class DGCClient {
         if (response.getBody() != null) {
             final TrustList[] trustList;
             try {
-                trustList =
-                        new ObjectMapper().readValue(response.getBody(), TrustList[].class);
+                trustList = new ObjectMapper().readValue(response.getBody(), TrustList[].class);
             } catch (IOException e) {
-                logger.error("Error parsing trustList response: {}...", response.getBody().toString().substring(0, 100));
+                logger.error(
+                        "Error parsing trustList response: {}...",
+                        response.getBody().toString().substring(0, 100));
                 return new TrustList[0];
             }
             return trustList;

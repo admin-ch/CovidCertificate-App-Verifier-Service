@@ -25,7 +25,6 @@ import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import javax.net.ssl.SSLContext;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -49,21 +48,21 @@ public class RestTemplateHelper {
   private static final int SOCKET_TIMEOUT = 20000;
 
   public static RestTemplate getRestTemplate() {
-    return buildRestTemplate(null, null, null);
+    return buildRestTemplate(null, null);
   }
 
   public static RestTemplate getRestTemplateWithClientCerts(
-      String authClientCert, String authClientCertPassword, List<String> allowedHostnames) {
-    return buildRestTemplate(authClientCert, authClientCertPassword, allowedHostnames);
+      String authClientCert, String authClientCertPassword) {
+    return buildRestTemplate(authClientCert, authClientCertPassword);
   }
 
   private static RestTemplate buildRestTemplate(
-      String authClientCert, String authClientCertPassword, List<String> allowedHostnames) {
+      String authClientCert, String authClientCertPassword) {
     try {
       RestTemplate rt =
           new RestTemplate(
               new HttpComponentsClientHttpRequestFactory(
-                  httpClient(authClientCert, authClientCertPassword, allowedHostnames)));
+                  httpClient(authClientCert, authClientCertPassword)));
       List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
       interceptors.add(new LoggingRequestInterceptor());
       rt.setInterceptors(interceptors);
@@ -74,10 +73,10 @@ public class RestTemplateHelper {
   }
 
   private static CloseableHttpClient httpClient(
-      String clientCert, String clientCertPassword, List<String> allowedHostnames)
+      String clientCert, String clientCertPassword)
       throws IOException, KeyManagementException, UnrecoverableKeyException,
           NoSuchAlgorithmException, KeyStoreException, CertificateException {
-    PoolingHttpClientConnectionManager manager = new PoolingHttpClientConnectionManager();
+    var manager = new PoolingHttpClientConnectionManager();
 
     HttpClientBuilder builder = HttpClients.custom();
     builder
@@ -86,7 +85,7 @@ public class RestTemplateHelper {
 
     if (clientCert != null && clientCertPassword != null) {
       Path clientCertFile = getFile(clientCert);
-      SSLContext sslContext =
+      var sslContext =
           SSLContexts.custom()
               .loadKeyMaterial(
                   clientCertFile.toFile(),
@@ -96,7 +95,7 @@ public class RestTemplateHelper {
               .build();
       builder.setSSLContext(sslContext);
 
-      SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext);
+      var sslsf = new SSLConnectionSocketFactory(sslContext);
       Registry<ConnectionSocketFactory> socketFactoryRegistry =
           RegistryBuilder.<ConnectionSocketFactory>create()
               .register("https", sslsf)

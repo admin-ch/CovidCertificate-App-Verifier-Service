@@ -15,14 +15,12 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierData
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DGCClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DGCSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
-import java.util.List;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Configuration
 public abstract class SyncBaseConfig {
@@ -45,9 +43,7 @@ public abstract class SyncBaseConfig {
     @Bean
     public RestTemplate restTemplate() {
         return RestTemplateHelper.getRestTemplateWithClientCerts(
-            authClientCert,
-            authClientCertPassword,
-            List.of(UriComponentsBuilder.fromHttpUrl(baseurl).build().toUri().getHost()));
+                authClientCert, authClientCertPassword);
     }
 
     @Bean

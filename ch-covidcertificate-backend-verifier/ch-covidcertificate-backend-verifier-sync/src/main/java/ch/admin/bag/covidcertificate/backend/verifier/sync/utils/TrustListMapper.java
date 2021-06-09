@@ -45,7 +45,7 @@ public class TrustListMapper {
     }
 
     public DbDsc mapDsc(TrustList trustList)
-            throws CertificateException, NoSuchAlgorithmException, UnexpectedAlgorithmException {
+            throws CertificateException, UnexpectedAlgorithmException {
         return mapDsc(
                 fromBase64EncodedStr(trustList.getRawData()),
                 trustList.getCountry(),
@@ -62,9 +62,9 @@ public class TrustListMapper {
         dsc.setUse(getUse(dscX509.getExtendedKeyUsage()));
 
         logger.debug(
-                "Reading parameters for DSC of origin {} with kid {} and public key algorithm {}",
-                origin,
+                "Reading parameters for DSC {} of origin {} with public key algorithm {}",
                 kid,
+                origin,
                 dscX509.getPublicKey().getAlgorithm());
         var keyType = dscX509.getPublicKey().getAlgorithm();
         var algorithm = Algorithm.forPubKeyType(keyType);

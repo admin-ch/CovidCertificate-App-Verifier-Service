@@ -51,7 +51,9 @@ public class DGCSyncer {
                 final var dbCsca = trustListMapper.mapCsca(cscaTrustList);
                 dbCscaList.add(dbCsca);
             } catch (CertificateException | NoSuchAlgorithmException e) {
-                logger.error("Couldn't map csca trustlist to X509 certificate");
+                logger.error(
+                        "Couldn't map CSCA trustlist {} to X509 certificate",
+                        cscaTrustList.getKid());
             }
         }
         verifierDataService.insertCscas(dbCscaList);
@@ -59,15 +61,15 @@ public class DGCSyncer {
         // Download and insert DSC certificates
         final var dscTrustLists = dgcClient.download(CertificateType.DSC);
         final var dbDscList = new ArrayList<DbDsc>();
-        for (TrustList dscTrustList: dscTrustLists) {
+        for (TrustList dscTrustList : dscTrustLists) {
             try {
                 final var dbDsc = trustListMapper.mapDsc(dscTrustList);
                 // Verify signature for corresponding csca
-                if(isValid(dbDsc)) {
+                if (isValid(dbDsc)) {
                     dbDscList.add(dbDsc);
                 }
-            } catch(CertificateException | NoSuchAlgorithmException e) {
-                logger.error("Couldn't map dsc trustlist to X509 certificate");
+            } catch (CertificateException e) {
+                logger.error("Couldn't map DSC trustlist to X509 certificate");
             } catch (UnexpectedAlgorithmException e) {
                 logger.error(e.getMessage());
             }
@@ -78,27 +80,26 @@ public class DGCSyncer {
     }
 
     private boolean isValid(DbDsc dbDsc) {
-        logger.info("Verifying signature of dsc with kid {}", dbDsc.getKeyId());
+        logger.debug("Verifying signature of DSC with kid {}", dbDsc.getKeyId());
         final var dbCscaList = verifierDataService.findCscas(dbDsc.getOrigin());
-        for(DbCsca dbCsca: dbCscaList) {
+        for (DbCsca dbCsca : dbCscaList) {
             try {
-                final var dscX509 = trustListMapper
-                    .fromBase64EncodedStr(dbDsc.getCertificateRaw());
-                final var cscaX509 = trustListMapper.fromBase64EncodedStr(dbCsca.getCertificateRaw());
+                final var dscX509 = trustListMapper.fromBase64EncodedStr(dbDsc.getCertificateRaw());
+                final var cscaX509 =
+                        trustListMapper.fromBase64EncodedStr(dbCsca.getCertificateRaw());
                 dscX509.verify(cscaX509.getPublicKey());
-                logger.info("Successfully verified dsc {} with csca {}", dbDsc.getKeyId(), dbCsca.getKeyId());
+                logger.debug(
+                        "Successfully verified DSC {} with CSCA {}",
+                        dbDsc.getKeyId(),
+                        dbCsca.getKeyId());
                 dbDsc.setFkCsca(dbCsca.getId());
                 return true;
-            } catch (CertificateException e) {
-                logger.error("Encoding error when decoding raw certificate for kid {}.", dbDsc.getKeyId());
-            } catch (NoSuchAlgorithmException e) {
-                logger.error("Signature algorithm for kid {} isn't supported", dbDsc.getKeyId());
-            } catch (SignatureException e) {
-                logger.error("The signature contained errors for kid {}", dbDsc.getKeyId());
-            } catch (InvalidKeyException e) {
-                logger.error("The public key didn't match the signature for kid {}.", dbDsc.getKeyId());
-            } catch (NoSuchProviderException e) {
-                logger.error("No default provider for the given signature type for kid {}.", dbDsc.getKeyId());
+            } catch (CertificateException
+                    | NoSuchAlgorithmException
+                    | NoSuchProviderException
+                    | InvalidKeyException
+                    | SignatureException e) {
+                logger.error("Couldn't verify DSC {} signature", dbDsc.getKeyId());
             }
         }
         return false;
