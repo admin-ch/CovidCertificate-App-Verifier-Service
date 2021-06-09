@@ -11,6 +11,7 @@
 package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
 import ch.admin.bag.covidcertificate.backend.verifier.model.RevocationResponse;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
 import ch.ubique.openapi.docannotations.Documentation;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +19,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -69,7 +71,9 @@ public class RevocationListController {
         }
 
         response.setRevokedCerts(certs);
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(CacheUtil.REVOCATION_LIST_MAX_AGE))
+                .body(response);
     }
 
     @ExceptionHandler({HttpStatusCodeException.class})
