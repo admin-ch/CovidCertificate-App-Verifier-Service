@@ -12,7 +12,8 @@ package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DGCSyncer;
 import javax.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
+import org.flywaydb.core.Flyway;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,6 +30,11 @@ public class SyncSchedulingBaseConfig {
 
     @Scheduled(cron = "${dgc.sync.cron}")
     public void dgcSyncCron() {
+        dgcSyncer.sync();
+    }
+
+    @Scheduled(fixedRate = Long.MAX_VALUE, initialDelay = 0)
+    public void dgcSyncOnStartup() {
         dgcSyncer.sync();
     }
 }

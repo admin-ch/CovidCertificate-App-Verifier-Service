@@ -32,7 +32,6 @@ public class DGCSyncer {
         this.verifierDataService = verifierDataService;
     }
 
-    @PostConstruct
     public void sync() {
         logger.info("Start sync with DGC Gateway");
         var start = Instant.now();
