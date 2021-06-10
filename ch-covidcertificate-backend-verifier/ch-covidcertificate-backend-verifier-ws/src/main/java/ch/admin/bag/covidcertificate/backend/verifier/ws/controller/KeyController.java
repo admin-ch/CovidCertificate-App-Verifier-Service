@@ -15,8 +15,10 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ActiveCertsResp
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertsResponse;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
 import ch.ubique.openapi.docannotations.Documentation;
 import java.util.List;
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -67,6 +69,7 @@ public class KeyController {
                         .orElse(verifierDataService.findMaxDscPkId());
         return ResponseEntity.ok()
                 .header(NEXT_SINCE_HEADER, nextSince.toString())
+                .cacheControl(CacheControl.maxAge(CacheUtil.KEYS_UPDATE_MAX_AGE))
                 .body(new CertsResponse(dscs));
     }
 
@@ -85,6 +88,7 @@ public class KeyController {
         List<String> activeKeyIds = verifierDataService.findActiveDscKeyIds();
         return ResponseEntity.ok()
                 .header(ETAG_HEADER, "a1b2c3") // TODO etag
+                .cacheControl(CacheControl.maxAge(CacheUtil.KEYS_LIST_MAX_AGE))
                 .body(new ActiveCertsResponse(activeKeyIds));
     }
 }
