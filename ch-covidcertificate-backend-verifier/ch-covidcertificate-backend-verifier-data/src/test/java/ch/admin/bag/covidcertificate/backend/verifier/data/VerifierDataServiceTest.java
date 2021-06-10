@@ -1,6 +1,7 @@
 package ch.admin.bag.covidcertificate.backend.verifier.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -83,13 +84,35 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
     @Transactional
     void removeDscsNotInTest() {
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCSCA(0, "CH")));
-        final var cscaId = verifierDataService.findCscas("CH").get(0).getId();
-        verifierDataService.removeDscsNotIn(Collections.emptyList());
-        verifierDataService.removeDscsNotIn(Collections.singletonList("keyid_0"));
+        final var cscas = verifierDataService.findCscas("CH");
+        assertEquals(1, cscas.size());
+        final var cscaId = cscas.get(0).getId();
         final var rsaDsc = getRSADsc(0, "CH", cscaId);
+        verifierDataService.insertDsc(Collections.singletonList(rsaDsc));
+        verifierDataService.removeDscsNotIn(Collections.emptyList());
+        assertTrue(verifierDataService.findActiveDscKeyIds().isEmpty());
+        verifierDataService.removeDscsNotIn(Collections.singletonList("keyid_0"));
         final var ecDsc = getECDsc(1, "CH", cscaId);
         verifierDataService.insertDsc(List.of(rsaDsc, ecDsc));
         verifierDataService.removeDscsNotIn(Collections.singletonList(rsaDsc.getKeyId()));
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+    }
+
+    @Test
+    @Transactional
+    void removeDscsWithCSCAIn() {
+        verifierDataService.insertCscas(Collections.singletonList(getDefaultCSCA(0, "DE")));
+        verifierDataService.insertCscas(Collections.singletonList(getDefaultCSCA(1, "DE")));
+        final var cscas = verifierDataService.findCscas("DE");
+        assertEquals(2, cscas.size());
+        final var cscaId0 = cscas.get(0).getId();
+        final var cscaId1 = cscas.get(1).getId();
+        final var rsaDsc = getRSADsc(0, "DE", cscaId0);
+        final var ecDsc = getECDsc(1, "DE", cscaId1);
+        verifierDataService.insertDsc(List.of(rsaDsc, ecDsc));
+        verifierDataService.removeDscsWithCSCAIn(Collections.emptyList());
+        assertEquals(2, verifierDataService.findActiveDscKeyIds().size());
+        verifierDataService.removeDscsWithCSCAIn(List.of(cscaId0));
         assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
     }
 
