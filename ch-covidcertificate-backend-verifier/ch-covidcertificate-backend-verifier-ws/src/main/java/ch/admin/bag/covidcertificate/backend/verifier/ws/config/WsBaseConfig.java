@@ -64,6 +64,16 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
 
     public abstract Flyway flyway();
 
+    @Value("${ws.keys.update.max-age:PT1M}")
+    public void setKeysUpdateMaxAge(Duration maxAge) {
+        CacheUtil.KEYS_UPDATE_MAX_AGE = maxAge;
+    }
+
+    @Value("${ws.keys.list.max-age:PT1M}")
+    public void setKeysListMaxAge(Duration maxAge) {
+        CacheUtil.KEYS_LIST_MAX_AGE = maxAge;
+    }
+
     @Value("${ws.revocationList.max-age:PT1M}")
     public void setRevocationListMaxAge(Duration maxAge) {
         CacheUtil.REVOCATION_LIST_MAX_AGE = maxAge;
