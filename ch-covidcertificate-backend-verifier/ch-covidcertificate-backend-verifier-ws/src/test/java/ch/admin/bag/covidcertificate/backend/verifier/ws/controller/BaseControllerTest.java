@@ -67,7 +67,9 @@ public abstract class BaseControllerTest {
     @Test
     public void testSecurityHeaders() throws Exception {
         final MockHttpServletResponse response =
-                mockMvc.perform(get(getUrlForSecurityHeadersTest()).accept(MediaType.TEXT_PLAIN))
+                mockMvc.perform(
+                                get(getUrlForSecurityHeadersTest())
+                                        .accept(getSecurityHeadersRequestMediaType()))
                         .andExpect(status().is2xxSuccessful())
                         .andReturn()
                         .getResponse();
@@ -78,4 +80,8 @@ public abstract class BaseControllerTest {
     }
 
     protected abstract String getUrlForSecurityHeadersTest();
+
+    protected MediaType getSecurityHeadersRequestMediaType() {
+        return MediaType.TEXT_PLAIN;
+    }
 }

@@ -42,6 +42,10 @@ public class TestHelper {
         this.objectMapper = objectMapper;
     }
 
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
+
     public <T> T verifyAndReadValue(
             MockHttpServletResponse result, MediaType mediaType, String pathToCaPem, Class<T> clazz)
             throws JsonProcessingException, UnsupportedEncodingException {

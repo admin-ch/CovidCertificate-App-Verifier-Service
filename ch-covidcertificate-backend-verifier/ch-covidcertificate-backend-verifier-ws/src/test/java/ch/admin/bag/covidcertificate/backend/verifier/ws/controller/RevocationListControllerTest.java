@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ch.admin.bag.covidcertificate.backend.verifier.model.RevocationResponse;
-import ch.admin.bag.covidcertificate.backend.verifier.ws.security.signature.JwsMessageConverter;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.util.TestHelper;
 import java.net.URI;
 import org.junit.jupiter.api.BeforeAll;
