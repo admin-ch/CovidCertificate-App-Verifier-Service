@@ -78,9 +78,14 @@ public class DGCSyncer {
                         .distinct()
                         .filter(activeCscaKeyIds::contains)
                         .collect(Collectors.toList());
-        // Remove certificates that weren't returned by the download
+        // Remove DSCs whose CSCA is about to be removed
+        final var removedCscaList = new ArrayList<String>(activeCscaKeyIds);
+        activeCscaKeyIds.forEach(removedCscaList::remove);
+        verifierDataService.removeDscsWithCSCAIn(removedCscaList);
+        // Remove CSCAs that weren't returned by the download
+        // TODO: Remove certificates that have expired
         verifierDataService.removeCscasNotIn(cscaIntersection);
-        // TODO: Remove DSCs whose CSCA was just removed
+
         // Insert CSCAs
         verifierDataService.insertCscas(cscaListToInsert);
         return dbCscaList;
