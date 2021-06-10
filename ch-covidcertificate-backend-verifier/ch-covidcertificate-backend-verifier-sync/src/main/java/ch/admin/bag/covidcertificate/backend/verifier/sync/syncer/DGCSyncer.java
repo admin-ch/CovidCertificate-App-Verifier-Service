@@ -14,7 +14,6 @@ import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,13 +43,13 @@ public class DGCSyncer {
     private void download() {
         logger.info("Downloading certificates from DGC Gateway");
         var start = Instant.now();
-        final ArrayList<DbCsca> cscaList = downloadCSCAs();
-        downloadDSCs(cscaList);
+        downloadCSCAs();
+        downloadDSCs();
         var end = Instant.now();
         logger.info("Finished download in {} ms", end.toEpochMilli() - start.toEpochMilli());
     }
 
-    private ArrayList<DbCsca> downloadCSCAs() {
+    private void downloadCSCAs() {
         // Check which CSCAs are currently stored in the db
         final var activeCscaKeyIds = verifierDataService.findActiveCscaKeyIds();
         // Download CSCAs and check validity
@@ -83,15 +82,12 @@ public class DGCSyncer {
         activeCscaKeyIds.forEach(removedCscaList::remove);
         verifierDataService.removeDscsWithCSCAIn(removedCscaList);
         // Remove CSCAs that weren't returned by the download
-        // TODO: Remove certificates that have expired
         verifierDataService.removeCscasNotIn(cscaIntersection);
-
         // Insert CSCAs
         verifierDataService.insertCscas(cscaListToInsert);
-        return dbCscaList;
     }
 
-    private void downloadDSCs(ArrayList<DbCsca> cscaList) {
+    private void downloadDSCs() {
         // Check which DSCs are currently stored in the db
         final var activeDscKeyIds = verifierDataService.findActiveDscKeyIds();
         // Download and insert DSC certificates
@@ -102,7 +98,7 @@ public class DGCSyncer {
             try {
                 final var dbDsc = trustListMapper.mapDsc(dscTrustList);
                 // Verify signature
-                if (verify(dbDsc, cscaList)) {
+                if (verify(dbDsc)) {
                     dbDscList.add(dbDsc);
                     // Only insert DSC if it isn't already in the db
                     if (!activeDscKeyIds.contains(dbDsc.getKeyId())) {
@@ -128,14 +124,10 @@ public class DGCSyncer {
         verifierDataService.insertDsc(dscListToInsert);
     }
 
-    private boolean verify(DbDsc dbDsc, List<DbCsca> dbCscaList) {
+    private boolean verify(DbDsc dbDsc) {
         logger.debug("Verifying signature of DSC with kid {}", dbDsc.getKeyId());
-        // Filter list of CSCAs to only consider CSCAs of the same country
-        final var usableCSCAs =
-                dbCscaList.stream()
-                        .filter(dbCsca -> dbCsca.getOrigin().equals(dbDsc.getOrigin()))
-                        .collect(Collectors.toList());
-        for (DbCsca dbCsca : usableCSCAs) {
+        final var cscas = verifierDataService.findCscas(dbDsc.getOrigin());
+        for (DbCsca dbCsca : cscas) {
             try {
                 final var dscX509 = trustListMapper.fromBase64EncodedStr(dbDsc.getCertificateRaw());
                 final var cscaX509 =
