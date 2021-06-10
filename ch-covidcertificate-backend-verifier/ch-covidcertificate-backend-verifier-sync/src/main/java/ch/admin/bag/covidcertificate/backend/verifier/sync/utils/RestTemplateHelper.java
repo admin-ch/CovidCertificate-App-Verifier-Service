@@ -132,7 +132,7 @@ public class RestTemplateHelper {
             file = Files.createTempFile(null, null);
             Files.write(file.toAbsolutePath(), decodedBytes);
         } else if (path.startsWith("classpath:/")) {
-            InputStream in = createInputStream(path);
+            var in = createInputStream(path);
             file = Files.createTempFile(null, null);
             Files.copy(in, file, StandardCopyOption.REPLACE_EXISTING);
             in.close();
