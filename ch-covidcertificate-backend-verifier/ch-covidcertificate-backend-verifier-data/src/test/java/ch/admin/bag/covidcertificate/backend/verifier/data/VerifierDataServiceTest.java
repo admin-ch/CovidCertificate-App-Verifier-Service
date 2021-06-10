@@ -52,6 +52,20 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
 
     @Test
     @Transactional
+    void findActiveCscaKeyIdsTest() {
+        final var chCSCA = getDefaultCSCA(0, "CH");
+        final var deCSCA = getDefaultCSCA(1, "DE");
+        verifierDataService.insertCscas(List.of(chCSCA, deCSCA));
+        final var actualKeyIds = List.of(chCSCA.getKeyId(), deCSCA.getKeyId());
+        final var activeCscaKeyIds = verifierDataService.findActiveCscaKeyIds();
+        assertTrue(
+                activeCscaKeyIds.size() == actualKeyIds.size()
+                        && activeCscaKeyIds.containsAll(actualKeyIds)
+                        && actualKeyIds.containsAll(activeCscaKeyIds));
+    }
+
+    @Test
+    @Transactional
     void insertDscTest() {
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCSCA(0, "CH")));
         final var cscaId = verifierDataService.findCscas("CH").get(0).getId();
@@ -84,7 +98,8 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
     void findDscsTest() {
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCSCA(0, "CH")));
         final var cscaId = verifierDataService.findCscas("CH").get(0).getId();
-        verifierDataService.insertDsc(List.of(getRSADsc(0, "CH", cscaId), getECDsc(1, "DE", cscaId)));
+        verifierDataService.insertDsc(
+                List.of(getRSADsc(0, "CH", cscaId), getECDsc(1, "DE", cscaId)));
         assertEquals(2, verifierDataService.findDscs(0L, CertFormat.IOS).size());
     }
 
@@ -93,10 +108,11 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
     void findMaxDscsTest() {
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCSCA(0, "CH")));
         final var cscaId = verifierDataService.findCscas("CH").get(0).getId();
-        verifierDataService.insertDsc(List.of(getRSADsc(0, "CH", cscaId), getECDsc(1, "DE", cscaId)));
+        verifierDataService.insertDsc(
+                List.of(getRSADsc(0, "CH", cscaId), getECDsc(1, "DE", cscaId)));
         final var maxDscPkId = verifierDataService.findMaxDscPkId();
         assertTrue(verifierDataService.findDscs(maxDscPkId, CertFormat.IOS).isEmpty());
-        assertEquals(1, verifierDataService.findDscs(maxDscPkId-1, CertFormat.IOS).size());
+        assertEquals(1, verifierDataService.findDscs(maxDscPkId - 1, CertFormat.IOS).size());
     }
 
     private DbCsca getDefaultCSCA(int idSuffix, String origin) {

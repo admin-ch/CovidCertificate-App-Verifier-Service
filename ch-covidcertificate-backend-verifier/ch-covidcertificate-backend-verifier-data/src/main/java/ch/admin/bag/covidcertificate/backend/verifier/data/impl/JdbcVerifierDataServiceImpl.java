@@ -90,6 +90,13 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     }
 
     @Override
+    public List<String> findActiveCscaKeyIds() {
+        final var sql =
+            "select key_id from t_country_specific_certificate_authority";
+        return jt.queryForList(sql, new MapSqlParameterSource(), String.class);
+    }
+
+    @Override
     @Transactional
     public void insertDsc(List<DbDsc> dsc) {
         List<SqlParameterSource> batchParams = new ArrayList<>();

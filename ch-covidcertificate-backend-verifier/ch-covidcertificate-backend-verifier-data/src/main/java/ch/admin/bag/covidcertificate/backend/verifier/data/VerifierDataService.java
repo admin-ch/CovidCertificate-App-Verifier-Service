@@ -42,6 +42,13 @@ public interface VerifierDataService {
     public List<DbCsca> findCscas(String origin);
 
     /**
+     * returns a list of key ids of all active CSCAs
+     *
+     * @return
+     */
+    public List<String> findActiveCscaKeyIds();
+
+    /**
      * inserts the given dsc into the db
      *
      * @param dsc
