@@ -31,5 +31,6 @@ public class RevocationListControllerJsonTest extends RevocationListControllerTe
     @BeforeAll
     public void setup() {
         this.acceptMediaType = MediaType.APPLICATION_JSON;
+        super.setup();
     }
 }

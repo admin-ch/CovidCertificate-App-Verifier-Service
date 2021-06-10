@@ -31,5 +31,6 @@ public class RevocationListControllerJwsTest extends RevocationListControllerTes
     @BeforeAll
     public void setup() {
         this.acceptMediaType = JwsMessageConverter.JWS_MEDIA_TYPE;
+        super.setup();
     }
 }

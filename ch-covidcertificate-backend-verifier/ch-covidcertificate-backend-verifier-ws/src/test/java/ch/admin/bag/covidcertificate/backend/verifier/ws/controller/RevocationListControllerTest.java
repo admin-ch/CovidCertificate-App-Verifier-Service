@@ -9,9 +9,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ch.admin.bag.covidcertificate.backend.verifier.model.RevocationResponse;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.security.signature.JwsMessageConverter;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.util.TestHelper;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,14 +27,21 @@ import org.springframework.web.client.RestTemplate;
 public abstract class RevocationListControllerTest extends BaseControllerTest {
     @Autowired RestTemplate rt;
 
+    protected MediaType acceptMediaType;
+
     @Value("${revocationList.baseurl}")
     private String baseurl = "https://covidcertificate-management-d.bag.admin.ch/api";
 
-    protected MediaType acceptMediaType;
+    private String revocationListUrl = "/trust/v1/revocationList";
+    private MockRestServiceServer mockServer;
+
+    @BeforeAll
+    public void setup() {
+        this.mockServer = MockRestServiceServer.createServer(rt);
+    }
 
     @Test
     public void getCertsTest() throws Exception {
-        final var mockServer = MockRestServiceServer.createServer(rt);
         var expected = "urn:uvci:01:CH:F0FDABC1708A81BB1A843891";
 
         // setup mock server
@@ -47,7 +55,7 @@ public abstract class RevocationListControllerTest extends BaseControllerTest {
 
         // get revocation list
         MockHttpServletResponse response =
-                mockMvc.perform(get("/trust/v1/revocationList").accept(acceptMediaType))
+                mockMvc.perform(get(revocationListUrl).accept(acceptMediaType))
                         .andExpect(status().is2xxSuccessful())
                         .andReturn()
                         .getResponse();
@@ -65,5 +73,24 @@ public abstract class RevocationListControllerTest extends BaseControllerTest {
         assertNotNull(revocationList.getRevokedCerts());
         assertEquals(1, revocationList.getRevokedCerts().size());
         assertEquals(expected, revocationList.getRevokedCerts().get(0));
+    }
+
+    @Override
+    protected String getUrlForSecurityHeadersTest() {
+        return revocationListUrl;
+    }
+
+    @Override
+    public void testSecurityHeaders() throws Exception {
+        // setup mock server
+        mockServer
+                .expect(ExpectedCount.once(), requestTo(new URI(baseurl + "v1/revocation-list")))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(
+                        withStatus(HttpStatus.OK)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body(objectMapper.writeValueAsString(new String[] {})));
+
+        super.testSecurityHeaders();
     }
 }

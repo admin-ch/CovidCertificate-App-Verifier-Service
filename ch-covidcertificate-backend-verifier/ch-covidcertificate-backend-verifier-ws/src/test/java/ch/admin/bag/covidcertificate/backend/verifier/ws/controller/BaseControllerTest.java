@@ -1,14 +1,23 @@
 package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
+import static ch.admin.bag.covidcertificate.backend.verifier.ws.util.TestHelper.SECURITY_HEADERS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import ch.admin.bag.covidcertificate.backend.verifier.ws.util.TestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.validation.constraints.NotNull;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -54,4 +63,19 @@ public abstract class BaseControllerTest {
                     "spring.datasource.password=" + postgreSQLContainer.getPassword());
         }
     }
+
+    @Test
+    public void testSecurityHeaders() throws Exception {
+        final MockHttpServletResponse response =
+                mockMvc.perform(get(getUrlForSecurityHeadersTest()).accept(MediaType.TEXT_PLAIN))
+                        .andExpect(status().is2xxSuccessful())
+                        .andReturn()
+                        .getResponse();
+        for (final var header : SECURITY_HEADERS.keySet()) {
+            assertTrue(response.containsHeader(header));
+            assertEquals(SECURITY_HEADERS.get(header), response.getHeader(header));
+        }
+    }
+
+    protected abstract String getUrlForSecurityHeadersTest();
 }
