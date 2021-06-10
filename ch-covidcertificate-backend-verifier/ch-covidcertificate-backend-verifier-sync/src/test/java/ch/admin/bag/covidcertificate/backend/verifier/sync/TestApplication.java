@@ -10,7 +10,17 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync;
 
+import ch.admin.bag.covidcertificate.backend.verifier.sync.config.SyncSchedulingBaseConfig;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 
-@SpringBootApplication(scanBasePackages = {"ch.admin.bag.covidcertificate.backend.verifier.sync.config"})
+@SpringBootApplication
+@ComponentScan(
+        basePackages = {"ch.admin.bag.covidcertificate.backend.verifier.sync.config"},
+        excludeFilters = {
+            @ComponentScan.Filter(
+                    type = FilterType.ASSIGNABLE_TYPE,
+                    value = {SyncSchedulingBaseConfig.class})
+        })
 public class TestApplication {}

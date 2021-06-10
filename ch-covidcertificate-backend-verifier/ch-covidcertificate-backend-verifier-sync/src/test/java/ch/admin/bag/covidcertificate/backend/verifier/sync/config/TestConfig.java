@@ -51,10 +51,6 @@ public class TestConfig {
 
     @Bean
     public RestTemplate restTemplate() {
-        final var rt = RestTemplateHelper.getRestTemplate();
-        if (rt == null) {
-            logger.error("Couldn't instantiate rt bean");
-        }
-        return rt;
+        return RestTemplateHelper.getRestTemplate();
     }
 }
