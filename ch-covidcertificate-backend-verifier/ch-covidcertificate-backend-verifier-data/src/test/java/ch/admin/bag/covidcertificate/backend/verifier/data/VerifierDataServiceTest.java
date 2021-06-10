@@ -112,8 +112,8 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         verifierDataService.insertDsc(List.of(rsaDsc, ecDsc));
         verifierDataService.removeDscsWithCSCAIn(Collections.emptyList());
         assertEquals(2, verifierDataService.findActiveDscKeyIds().size());
-        verifierDataService.removeDscsWithCSCAIn(List.of(cscaId0));
-        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+        verifierDataService.removeDscsWithCSCAIn(List.of(cscas.get(0).getKeyId()));
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size(gt ));
     }
 
     @Test
