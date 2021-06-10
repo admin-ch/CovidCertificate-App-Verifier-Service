@@ -65,7 +65,7 @@ public class DGCSyncer {
             try {
                 final var dbDsc = trustListMapper.mapDsc(dscTrustList);
                 // Verify signature for corresponding csca
-                if (isValid(dbDsc)) {
+                if (verify(dbDsc)) {
                     dbDscList.add(dbDsc);
                 }
             } catch (CertificateException e) {
@@ -79,7 +79,7 @@ public class DGCSyncer {
         logger.info("Finished download in {} ms", end.toEpochMilli() - start.toEpochMilli());
     }
 
-    private boolean isValid(DbDsc dbDsc) {
+    private boolean verify(DbDsc dbDsc) {
         logger.debug("Verifying signature of DSC with kid {}", dbDsc.getKeyId());
         final var dbCscaList = verifierDataService.findCscas(dbDsc.getOrigin());
         for (DbCsca dbCsca : dbCscaList) {

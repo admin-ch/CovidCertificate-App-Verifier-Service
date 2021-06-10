@@ -8,7 +8,9 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.sync.TrustList;
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateFactory;
+import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.ECPublicKey;
@@ -25,6 +27,13 @@ public class TrustListMapper {
     private static final String P256 = "P-256";
     private static final String USE_SIG = "sig";
 
+    /**
+     * Map a TrustList as returned by the DGC gateway to a DbCsca object. Note that an exception is
+     * thrown if the certificate is no longer valid.
+     *
+     * @throws CertificateException if the certificate's encoding was invalid or its validity has
+     *     expired
+     */
     public DbCsca mapCsca(TrustList trustList) throws CertificateException {
         return mapCsca(
                 fromBase64EncodedStr(trustList.getRawData()),
@@ -33,7 +42,9 @@ public class TrustListMapper {
     }
 
     private DbCsca mapCsca(X509Certificate cscaX509, String origin, String kid)
-            throws CertificateEncodingException {
+            throws CertificateEncodingException, CertificateNotYetValidException,
+                    CertificateExpiredException {
+        cscaX509.checkValidity();
         var csca = new DbCsca();
         csca.setKeyId(kid);
         csca.setCertificateRaw(getBase64EncodedStr(cscaX509));
@@ -42,6 +53,14 @@ public class TrustListMapper {
         return csca;
     }
 
+    /**
+     * Map a TrustList as returned by the DGC gateway to a DbDsc object. Note that an exception is
+     * thrown if the certificate is no longer valid.
+     *
+     * @throws CertificateException if the certificate's encoding was invalid or its validity has
+     *     expired
+     * @throws UnexpectedAlgorithmException if the public key's signing algorithm isn't EC or RSA
+     */
     public DbDsc mapDsc(TrustList trustList)
             throws CertificateException, UnexpectedAlgorithmException {
         return mapDsc(
@@ -52,7 +71,9 @@ public class TrustListMapper {
 
     private DbDsc mapDsc(X509Certificate dscX509, String origin, String kid)
             throws CertificateEncodingException, CertificateParsingException,
-                    UnexpectedAlgorithmException {
+                    UnexpectedAlgorithmException, CertificateNotYetValidException,
+                    CertificateExpiredException {
+        dscX509.checkValidity();
         var dsc = new DbDsc();
         dsc.setKeyId(kid);
         dsc.setCertificateRaw(getBase64EncodedStr(dscX509));
