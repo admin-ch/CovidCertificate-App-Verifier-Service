@@ -1,5 +1,5 @@
 ### hello
-GET {{baseUrl}}/v1
+GET {{baseUrl}}/v1/keys
 Accept: application/json
 
 ### get certs

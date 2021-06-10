@@ -11,6 +11,8 @@
 package ch.admin.bag.covidcertificate.backend.verifier.ws;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication(scanBasePackages = {"ch.admin.bag.covidcertificate.backend.verifier.ws.config"})
+@ComponentScan(basePackages = {"ch.admin.bag.covidcertificate.backend.verifier.ws.config"})
+@SpringBootApplication
 public class TestApplication {}

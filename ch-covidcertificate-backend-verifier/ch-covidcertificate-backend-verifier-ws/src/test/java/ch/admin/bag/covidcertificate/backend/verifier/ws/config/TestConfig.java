@@ -13,6 +13,7 @@ package ch.admin.bag.covidcertificate.backend.verifier.ws.config;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.RestTemplateHelper;
 import javax.sql.DataSource;
+import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Profile("test")
 @Configuration
-public class TestConfig {
+public class TestConfig extends WsBaseConfig {
     private static final Logger logger = LoggerFactory.getLogger(TestConfig.class);
 
     // TODO: Mock endpoint (otherwise tests will fail once BIT turns off endpoint)
@@ -32,6 +33,24 @@ public class TestConfig {
     String baseurl = "https://covidcertificate-management-d.bag.admin.ch/api";
 
     @Autowired DataSource dataSource;
+
+    @Override
+    public DataSource dataSource() {
+        return dataSource;
+    }
+
+    @Bean
+    @Override
+    public Flyway flyway() {
+        final var flyway =
+                Flyway.configure()
+                        .dataSource(dataSource)
+                        .locations("classpath:/db/migration/pgsql")
+                        .validateOnMigrate(true)
+                        .load();
+        flyway.migrate();
+        return flyway;
+    }
 
     @Bean
     public RevocationListController revocationListController() {
