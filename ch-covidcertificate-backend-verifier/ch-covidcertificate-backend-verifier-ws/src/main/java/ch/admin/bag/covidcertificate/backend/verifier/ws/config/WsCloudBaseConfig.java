@@ -48,9 +48,4 @@ public abstract class WsCloudBaseConfig extends WsBaseConfig {
         flyWay.migrate();
         return flyWay;
     }
-
-    @Override
-    public String getDbType() {
-        return "pgsql";
-    }
 }

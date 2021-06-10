@@ -64,8 +64,6 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
 
     public abstract Flyway flyway();
 
-    public abstract String getDbType();
-
     @Value("${ws.revocationList.max-age:PT1M}")
     public void setRevocationListMaxAge(Duration maxAge) {
         CacheUtil.REVOCATION_LIST_MAX_AGE = maxAge;
