@@ -66,10 +66,10 @@ public interface VerifierDataService {
     /**
      * removes all dscs with key ids not in the given list
      *
-     * @param cscaPKsToRemove
+     * @param cscaKidsToRemove
      * @return number of removed dscs
      */
-    public int removeDscsWithCSCAIn(List<Long> cscaPKsToRemove);
+    public int removeDscsWithCSCAIn(List<String> cscaKidsToRemove);
 
     /**
      * returns the next batch of dscs after since in the requested format
