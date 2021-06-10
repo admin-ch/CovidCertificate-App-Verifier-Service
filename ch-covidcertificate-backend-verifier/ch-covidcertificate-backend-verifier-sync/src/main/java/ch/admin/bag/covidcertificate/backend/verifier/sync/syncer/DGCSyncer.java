@@ -14,6 +14,8 @@ import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,31 +44,65 @@ public class DGCSyncer {
     private void download() {
         logger.info("Downloading certificates from DGC Gateway");
         var start = Instant.now();
+        final ArrayList<DbCsca> cscaList = downloadCSCAs();
+        downloadDSCs(cscaList);
+        var end = Instant.now();
+        logger.info("Finished download in {} ms", end.toEpochMilli() - start.toEpochMilli());
+    }
 
-        // Download and insert CSCA certificates
+    private ArrayList<DbCsca> downloadCSCAs() {
+        // Check which CSCAs are currently stored in the db
+        final var activeCscaKeyIds = verifierDataService.findActiveCscaKeyIds();
+        // Download CSCAs and check validity
         final var cscaTrustLists = dgcClient.download(CertificateType.CSCA);
         final var dbCscaList = new ArrayList<DbCsca>();
+        final var cscaListToInsert = new ArrayList<DbCsca>();
         for (TrustList cscaTrustList : cscaTrustLists) {
             try {
                 final var dbCsca = trustListMapper.mapCsca(cscaTrustList);
                 dbCscaList.add(dbCsca);
+                // Only insert CSCA if it isn't already in the db
+                if (!activeCscaKeyIds.contains(dbCsca.getKeyId())) {
+                    cscaListToInsert.add(dbCsca);
+                }
             } catch (CertificateException e) {
                 logger.error(
                         "Couldn't map CSCA trustlist {} to X509 certificate",
                         cscaTrustList.getKid());
             }
         }
-        verifierDataService.insertCscas(dbCscaList);
+        // Compute intersection of CSCAs in DB and downloaded CSCAs
+        final var cscaIntersection =
+                dbCscaList.stream()
+                        .map(DbCsca::getKeyId)
+                        .distinct()
+                        .filter(activeCscaKeyIds::contains)
+                        .collect(Collectors.toList());
+        // Remove certificates that weren't returned by the download
+        verifierDataService.removeCscasNotIn(cscaIntersection);
+        // TODO: Remove DSCs whose CSCA was just removed
+        // Insert CSCAs
+        verifierDataService.insertCscas(cscaListToInsert);
+        return dbCscaList;
+    }
 
+    private void downloadDSCs(ArrayList<DbCsca> cscaList) {
+        // Check which DSCs are currently stored in the db
+        final var activeDscKeyIds = verifierDataService.findActiveDscKeyIds();
         // Download and insert DSC certificates
         final var dscTrustLists = dgcClient.download(CertificateType.DSC);
         final var dbDscList = new ArrayList<DbDsc>();
+        final var dscListToInsert = new ArrayList<DbDsc>();
         for (TrustList dscTrustList : dscTrustLists) {
             try {
                 final var dbDsc = trustListMapper.mapDsc(dscTrustList);
-                // Verify signature for corresponding csca
-                if (verify(dbDsc)) {
+                // Verify signature
+                if (verify(dbDsc, cscaList)) {
                     dbDscList.add(dbDsc);
+                    // Only insert DSC if it isn't already in the db
+                    if (!activeDscKeyIds.contains(dbDsc.getKeyId())) {
+                        dscListToInsert.add(dbDsc);
+                    }
                 }
             } catch (CertificateException e) {
                 logger.error("Couldn't map DSC trustlist to X509 certificate");
@@ -74,15 +110,27 @@ public class DGCSyncer {
                 logger.error(e.getMessage());
             }
         }
-        verifierDataService.insertDsc(dbDscList);
-        var end = Instant.now();
-        logger.info("Finished download in {} ms", end.toEpochMilli() - start.toEpochMilli());
+        // Compute intersection of DSCs in DB and downloaded DSCs
+        final var intersection =
+                dbDscList.stream()
+                        .map(DbDsc::getKeyId)
+                        .distinct()
+                        .filter(activeDscKeyIds::contains)
+                        .collect(Collectors.toList());
+        // Remove DSCs that weren't returned by the download
+        verifierDataService.removeDscsNotIn(intersection);
+        // Insert DSCs
+        verifierDataService.insertDsc(dscListToInsert);
     }
 
-    private boolean verify(DbDsc dbDsc) {
+    private boolean verify(DbDsc dbDsc, List<DbCsca> dbCscaList) {
         logger.debug("Verifying signature of DSC with kid {}", dbDsc.getKeyId());
-        final var dbCscaList = verifierDataService.findCscas(dbDsc.getOrigin());
-        for (DbCsca dbCsca : dbCscaList) {
+        // Filter list of CSCAs to only consider CSCAs of the same country
+        final var usableCSCAs =
+                dbCscaList.stream()
+                        .filter(dbCsca -> dbCsca.getOrigin().equals(dbDsc.getOrigin()))
+                        .collect(Collectors.toList());
+        for (DbCsca dbCsca : usableCSCAs) {
             try {
                 final var dscX509 = trustListMapper.fromBase64EncodedStr(dbDsc.getCertificateRaw());
                 final var cscaX509 =
