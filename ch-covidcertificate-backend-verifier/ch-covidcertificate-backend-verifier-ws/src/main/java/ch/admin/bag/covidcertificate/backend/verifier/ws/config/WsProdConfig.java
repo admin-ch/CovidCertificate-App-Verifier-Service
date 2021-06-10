@@ -68,9 +68,4 @@ public class WsProdConfig extends WsBaseConfig {
         flyWay.migrate();
         return flyWay;
     }
-
-    @Override
-    public String getDbType() {
-        return "pgsql";
-    }
 }
