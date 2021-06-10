@@ -1,5 +1,7 @@
 package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
+import ch.admin.bag.covidcertificate.backend.verifier.ws.util.TestHelper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.validation.constraints.NotNull;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +17,10 @@ import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.utility.DockerImageName;
 
 @ExtendWith(SpringExtension.class)
-@ActiveProfiles({"test", "postgres"})
+@ActiveProfiles({"test", "local"})
 @AutoConfigureMockMvc
 @TestPropertySource("classpath:application-test.properties")
 @ContextConfiguration(initializers = BaseControllerTest.DockerPostgresDataSourceInitializer.class)
@@ -38,6 +39,7 @@ public abstract class BaseControllerTest {
 
     @Autowired protected MockMvc mockMvc;
     protected ObjectMapper objectMapper = new ObjectMapper();
+    protected TestHelper testHelper = new TestHelper(objectMapper);
 
     public static class DockerPostgresDataSourceInitializer
             implements ApplicationContextInitializer<ConfigurableApplicationContext> {

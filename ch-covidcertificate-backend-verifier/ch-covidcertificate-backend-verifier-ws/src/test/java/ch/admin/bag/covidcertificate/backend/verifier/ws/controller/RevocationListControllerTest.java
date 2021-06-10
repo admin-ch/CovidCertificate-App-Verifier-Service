@@ -1,7 +1,7 @@
 package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
@@ -9,8 +9,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ch.admin.bag.covidcertificate.backend.verifier.model.RevocationResponse;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.util.TestHelper;
 import java.net.URI;
-import java.util.Collections;
+import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,35 +23,45 @@ import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
-class RevocationListControllerTest extends BaseControllerTest {
-    @Autowired RevocationListController revocationListController;
+public abstract class RevocationListControllerTest extends BaseControllerTest {
     @Autowired RestTemplate rt;
 
     @Value("${revocationList.baseurl}")
-    String baseurl = "https://covidcertificate-management-d.bag.admin.ch/api";
+    private String baseurl = "https://covidcertificate-management-d.bag.admin.ch/api";
+
+    protected MediaType acceptMediaType;
 
     @Test
     public void getCertsTest() throws Exception {
         final var mockServer = MockRestServiceServer.createServer(rt);
         var expected = "urn:uvci:01:CH:F0FDABC1708A81BB1A843891";
+
+        // setup mock server
         mockServer
                 .expect(ExpectedCount.once(), requestTo(new URI(baseurl + "v1/revocation-list")))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(
                         withStatus(HttpStatus.OK)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .body(objectMapper.writeValueAsString(new String[]{expected})));
+                                .body(objectMapper.writeValueAsString(new String[] {expected})));
 
+        // get revocation list
         MockHttpServletResponse response =
-                mockMvc.perform(get("/trust/v1/revocationList"))
+                mockMvc.perform(get("/trust/v1/revocationList").accept(acceptMediaType))
                         .andExpect(status().is2xxSuccessful())
                         .andReturn()
                         .getResponse();
 
         mockServer.verify();
+
+        // verify response
         assertNotNull(response);
         RevocationResponse revocationList =
-                objectMapper.readValue(response.getContentAsString(), RevocationResponse.class);
+                testHelper.verifyAndReadValue(
+                        response,
+                        acceptMediaType,
+                        TestHelper.PATH_TO_CA_PEM,
+                        RevocationResponse.class);
         assertNotNull(revocationList.getRevokedCerts());
         assertEquals(1, revocationList.getRevokedCerts().size());
         assertEquals(expected, revocationList.getRevokedCerts().get(0));
