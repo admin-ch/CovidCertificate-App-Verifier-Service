@@ -11,6 +11,7 @@
 package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DGCSyncer;
+import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -26,8 +27,8 @@ public class SyncSchedulingBaseConfig {
         this.dgcSyncer = dgcSyncer;
     }
 
-    @Scheduled(fixedDelayString = "${dgc.sync.delayInMs}")
-    public void dgcSync() {
+    @Scheduled(cron = "${dgc.sync.cron}")
+    public void dgcSyncCron() {
         dgcSyncer.sync();
     }
 }

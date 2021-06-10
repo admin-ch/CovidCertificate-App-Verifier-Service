@@ -15,6 +15,7 @@ import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,7 @@ public class DGCSyncer {
         this.verifierDataService = verifierDataService;
     }
 
+    @PostConstruct
     public void sync() {
         logger.info("Start sync with DGC Gateway");
         var start = Instant.now();
@@ -106,7 +108,10 @@ public class DGCSyncer {
                     }
                 }
             } catch (CertificateException e) {
-                logger.error("Couldn't map DSC trustlist to X509 certificate");
+                logger.error(
+                        "Couldn't map DSC trustlist {} of origin {} to X509 certificate",
+                        dscTrustList.getKid(),
+                        dscTrustList.getCountry());
             } catch (UnexpectedAlgorithmException e) {
                 logger.error(e.getMessage());
             }
