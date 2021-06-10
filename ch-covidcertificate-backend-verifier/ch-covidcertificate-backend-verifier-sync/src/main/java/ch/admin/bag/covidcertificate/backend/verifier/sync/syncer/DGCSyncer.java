@@ -79,7 +79,7 @@ public class DGCSyncer {
                         .collect(Collectors.toList());
         // Remove DSCs whose CSCA is about to be removed
         final var removedCscaList = new ArrayList<String>(activeCscaKeyIds);
-        activeCscaKeyIds.forEach(removedCscaList::remove);
+        cscaIntersection.forEach(removedCscaList::remove);
         verifierDataService.removeDscsWithCSCAIn(removedCscaList);
         // Remove CSCAs that weren't returned by the download
         verifierDataService.removeCscasNotIn(cscaIntersection);
@@ -144,7 +144,10 @@ public class DGCSyncer {
                     | NoSuchProviderException
                     | InvalidKeyException
                     | SignatureException e) {
-                logger.error("Couldn't verify DSC {} signature", dbDsc.getKeyId());
+                logger.error(
+                        "Couldn't verify DSC {} signature with CSCA {}",
+                        dbDsc.getKeyId(),
+                        dbCsca.getKeyId());
             }
         }
         return false;
