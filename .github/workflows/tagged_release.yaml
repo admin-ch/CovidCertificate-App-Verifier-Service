@@ -32,7 +32,7 @@ jobs:
       run: shasum -a 256 ch-covidcertificate-backend-verifier/ch-covidcertificate-backend-verifier-ws/target/ch-covidcertificate-backend-verifier-ws.jar > ch-covidcertificate-backend-verifier/ch-covidcertificate-backend-verifier-ws/target/ch-covidcertificate-backend-verifier-ws.jar.sha256
       shell: bash
     - name: "Create new release"
-      uses: "marvinpinto/action-automatic-releases@latest"
+      uses: marvinpinto/action-automatic-releases@919008cf3f741b179569b7a6fb4d8860689ab7f0
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: false
