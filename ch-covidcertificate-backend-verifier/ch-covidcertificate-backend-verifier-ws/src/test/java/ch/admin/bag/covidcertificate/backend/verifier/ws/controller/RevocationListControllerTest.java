@@ -10,8 +10,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ch.admin.bag.covidcertificate.backend.verifier.model.RevocationResponse;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.util.TestHelper;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.net.URI;
-import org.junit.jupiter.api.BeforeAll;
+import java.net.URISyntaxException;
+import java.util.List;
+import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +28,8 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
 public abstract class RevocationListControllerTest extends BaseControllerTest {
+    private static final String REVOKED_CERT = "urn:uvci:01:CH:F0FDABC1708A81BB1A843891";
+
     @Autowired RestTemplate rt;
 
     protected MediaType acceptMediaType;
@@ -32,25 +38,10 @@ public abstract class RevocationListControllerTest extends BaseControllerTest {
     private String baseurl = "https://covidcertificate-management-d.bag.admin.ch/api";
 
     private String revocationListUrl = "/trust/v1/revocationList";
-    private MockRestServiceServer mockServer;
-
-    @BeforeAll
-    public void setup() {
-        this.mockServer = MockRestServiceServer.createServer(rt);
-    }
 
     @Test
     public void getCertsTest() throws Exception {
-        var expected = "urn:uvci:01:CH:F0FDABC1708A81BB1A843891";
-
-        // setup mock server
-        mockServer
-                .expect(ExpectedCount.once(), requestTo(new URI(baseurl + "v1/revocation-list")))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(
-                        withStatus(HttpStatus.OK)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .body(objectMapper.writeValueAsString(new String[] {expected})));
+        MockRestServiceServer mockServer = setupExternalRevocationListMock(1);
 
         // get revocation list
         MockHttpServletResponse response =
@@ -71,7 +62,55 @@ public abstract class RevocationListControllerTest extends BaseControllerTest {
                         RevocationResponse.class);
         assertNotNull(revocationList.getRevokedCerts());
         assertEquals(1, revocationList.getRevokedCerts().size());
-        assertEquals(expected, revocationList.getRevokedCerts().get(0));
+        assertEquals(REVOKED_CERT, revocationList.getRevokedCerts().get(0));
+    }
+
+    private MockRestServiceServer setupExternalRevocationListMock(int expectedCallCount)
+            throws URISyntaxException, JsonProcessingException {
+        MockRestServiceServer mockServer = MockRestServiceServer.createServer(rt);
+        // setup mock server
+        mockServer
+                .expect(
+                        ExpectedCount.times(expectedCallCount),
+                        requestTo(new URI(baseurl + "v1/revocation-list")))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(
+                        withStatus(HttpStatus.OK)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body(
+                                        objectMapper.writeValueAsString(
+                                                new String[] {REVOKED_CERT})));
+        return mockServer;
+    }
+
+    @Test
+    public void notModifiedTest() throws Exception {
+        String expectedEtag =
+                String.valueOf(EtagUtil.getUnsortedListHashcode(List.of(REVOKED_CERT)));
+
+        // get current etag
+        setupExternalRevocationListMock(2);
+        MockHttpServletResponse response =
+                mockMvc.perform(
+                                get(revocationListUrl)
+                                        .accept(acceptMediaType)
+                                        .header(HttpHeaders.ETAG, "random"))
+                        .andExpect(status().is2xxSuccessful())
+                        .andReturn()
+                        .getResponse();
+
+        // verify etag
+        String etag = response.getHeader(HttpHeaders.ETAG).replace("\"", "");
+        assertEquals(expectedEtag, etag);
+
+        // test not modified
+        mockMvc.perform(
+                        get(revocationListUrl)
+                                .accept(acceptMediaType)
+                                .header(HttpHeaders.ETAG, etag))
+                .andExpect(status().isNotModified())
+                .andReturn()
+                .getResponse();
     }
 
     @Override
@@ -79,17 +118,15 @@ public abstract class RevocationListControllerTest extends BaseControllerTest {
         return revocationListUrl;
     }
 
+    @Test
     @Override
     public void testSecurityHeaders() throws Exception {
-        // setup mock server
-        mockServer
-                .expect(ExpectedCount.once(), requestTo(new URI(baseurl + "v1/revocation-list")))
-                .andExpect(method(HttpMethod.GET))
-                .andRespond(
-                        withStatus(HttpStatus.OK)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .body(objectMapper.writeValueAsString(new String[] {})));
-
+        setupExternalRevocationListMock(1);
         super.testSecurityHeaders();
+    }
+
+    @Override
+    protected MediaType getSecurityHeadersRequestMediaType() {
+        return MediaType.APPLICATION_JSON;
     }
 }

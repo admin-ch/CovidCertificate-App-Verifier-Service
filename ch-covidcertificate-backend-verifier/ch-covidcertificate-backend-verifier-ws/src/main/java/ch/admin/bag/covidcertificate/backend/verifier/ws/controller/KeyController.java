@@ -16,9 +16,12 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertsResponse;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import ch.ubique.openapi.docannotations.Documentation;
 import java.util.List;
 import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,7 +36,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class KeyController {
 
     private static final String NEXT_SINCE_HEADER = "X-Next-Since";
-    private static final String ETAG_HEADER = "ETag";
     private final VerifierDataService verifierDataService;
 
     public KeyController(VerifierDataService verifierDataService) {
@@ -83,11 +85,17 @@ public class KeyController {
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "list")
     public @ResponseBody ResponseEntity<ActiveCertsResponse> getActiveSignerCertKeyIds(
-            @RequestHeader(value = "ETag", required = false) String etag) {
-        // TODO etag
+            @RequestHeader(value = HttpHeaders.ETAG, required = false) String etag) {
         List<String> activeKeyIds = verifierDataService.findActiveDscKeyIds();
+
+        // check etag
+        String currentEtag = String.valueOf(EtagUtil.getUnsortedListHashcode(activeKeyIds));
+        if (currentEtag.equals(etag)) {
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+        }
+
         return ResponseEntity.ok()
-                .header(ETAG_HEADER, "a1b2c3") // TODO etag
+                .header(HttpHeaders.ETAG, currentEtag)
                 .cacheControl(CacheControl.maxAge(CacheUtil.KEYS_LIST_MAX_AGE))
                 .body(new ActiveCertsResponse(activeKeyIds));
     }

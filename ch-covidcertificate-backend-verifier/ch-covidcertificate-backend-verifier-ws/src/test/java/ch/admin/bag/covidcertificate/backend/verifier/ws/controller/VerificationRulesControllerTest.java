@@ -6,7 +6,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ch.admin.bag.covidcertificate.backend.verifier.ws.util.TestHelper;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import java.util.Map;
+import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
@@ -17,6 +19,8 @@ public abstract class VerificationRulesControllerTest extends BaseControllerTest
     protected MediaType acceptMediaType;
 
     private String verificationRulesUrl = "/trust/v1/verificationRules";
+
+    private static final String PATH_TO_VERIFICATION_RULES = "classpath:verificationRules.json";
 
     @Test
     public void verificationRulesTest() throws Exception {
@@ -41,6 +45,34 @@ public abstract class VerificationRulesControllerTest extends BaseControllerTest
         assertEquals(
                 testHelper.getObjectMapper().writeValueAsString(expected),
                 testHelper.getObjectMapper().writeValueAsString(revocationList));
+    }
+
+    @Test
+    public void notModifiedTest() throws Exception {
+        String expectedEtag = EtagUtil.getSha1HashForFile(PATH_TO_VERIFICATION_RULES);
+
+        // get current etag
+        MockHttpServletResponse response =
+                mockMvc.perform(
+                                get(verificationRulesUrl)
+                                        .accept(acceptMediaType)
+                                        .header(HttpHeaders.ETAG, "random"))
+                        .andExpect(status().is2xxSuccessful())
+                        .andReturn()
+                        .getResponse();
+
+        // verify etag
+        String etag = response.getHeader(HttpHeaders.ETAG).replace("\"", "");
+        assertEquals(expectedEtag, etag);
+
+        // test not modified
+        mockMvc.perform(
+                        get(verificationRulesUrl)
+                                .accept(acceptMediaType)
+                                .header(HttpHeaders.ETAG, etag))
+                .andExpect(status().isNotModified())
+                .andReturn()
+                .getResponse();
     }
 
     @Override
