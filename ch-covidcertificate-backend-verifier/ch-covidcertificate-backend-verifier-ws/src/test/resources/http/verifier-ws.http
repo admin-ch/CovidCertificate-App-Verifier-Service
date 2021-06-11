@@ -5,18 +5,22 @@ Accept: application/json
 ### get certs
 GET {{baseUrl}}/v1/keys/updates?since={{since}}&certFormat={{certFormat}}
 Accept: application/json
+Authorization: Bearer 01234
 
 ### get active cert key ids
 GET {{baseUrl}}/v1/keys/list
 Accept: application/json
 ETag: -720957702
+Authorization: Bearer 01234
 
 ### get revocation list
 GET {{baseUrl}}/v1/revocationList
 Accept: application/json
 ETag: a1b2c3
+Authorization: Bearer 01234
 
 ### get verification rules
 GET {{baseUrl}}/v1/verificationRules
 Accept: application/json
 ETag: a1a5f267baae873dfac90a6867e2f1a99fe55639
+Authorization: Bearer 0123
