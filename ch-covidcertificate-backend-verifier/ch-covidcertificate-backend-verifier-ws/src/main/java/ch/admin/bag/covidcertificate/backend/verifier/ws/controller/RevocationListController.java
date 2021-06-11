@@ -12,6 +12,7 @@ package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
 import ch.admin.bag.covidcertificate.backend.verifier.model.RevocationResponse;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import ch.ubique.openapi.docannotations.Documentation;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -53,12 +55,33 @@ public class RevocationListController {
 
     @Documentation(
             description = "get list of revoked certificates",
-            responses = {"200 => full list of revoked certificates"})
+            responses = {
+                "200 => full list of revoked certificates",
+                "304 => no changes since last request"
+            },
+            responseHeaders = {"ETag:etag to set for next request:string"})
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "/revocationList")
-    public @ResponseBody ResponseEntity<RevocationResponse> getCerts()
+    public @ResponseBody ResponseEntity<RevocationResponse> getCerts(
+            @RequestHeader(value = HttpHeaders.ETAG, required = false) String etag)
             throws HttpStatusCodeException {
         final var response = new RevocationResponse();
+        List<String> revokedCerts = getRevokedCerts();
+        response.setRevokedCerts(revokedCerts);
+
+        // check etag
+        String currentEtag = String.valueOf(EtagUtil.getUnsortedListHashcode(revokedCerts));
+        if (currentEtag.equals(etag)) {
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+        }
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.ETAG, currentEtag)
+                .cacheControl(CacheControl.maxAge(CacheUtil.REVOCATION_LIST_MAX_AGE))
+                .body(response);
+    }
+
+    private List<String> getRevokedCerts() {
         final List<String> certs = new ArrayList<>();
         final var requestEndpoint = baseurl + endpoint;
         final var uri = UriComponentsBuilder.fromHttpUrl(requestEndpoint).build().toUri();
@@ -69,11 +92,7 @@ public class RevocationListController {
         if (body != null) {
             certs.addAll(Arrays.asList(body));
         }
-
-        response.setRevokedCerts(certs);
-        return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(CacheUtil.REVOCATION_LIST_MAX_AGE))
-                .body(response);
+        return certs;
     }
 
     @ExceptionHandler({HttpStatusCodeException.class})

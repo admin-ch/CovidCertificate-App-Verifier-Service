@@ -1,0 +1,73 @@
+{
+  "rules": [
+    {
+      "id": "GR-CH-0002",
+      "description": "The \"disease or  agent targeted\" must be COVID-19 of the value set list.",
+      "inputParameter": "Entire HCert JSON (\"v\",\"t\",\"r\",\"..\") + Valuesets + \"tg\"",
+      "logic": {
+        "and": [
+          {
+            "if": [
+              {
+                "var": "payload.r.0"
+              },
+              {
+                "in": [
+                  {
+                    "var": "payload.r.0.tg"
+                  },
+                  {
+                    "var": "external.valueSets.disease-agent-targeted"
+                  }
+                ]
+              },
+              true
+            ]
+          },
+          {
+            "if": [
+              {
+                "var": "payload.t.0"
+              },
+              {
+                "in": [
+                  {
+                    "var": "payload.t.0.tg"
+                  },
+                  {
+                    "var": "external.valueSets.disease-agent-targeted"
+                  }
+                ]
+              },
+              true
+            ]
+          },
+          {
+            "if": [
+              {
+                "var": "payload.v.0"
+              },
+              {
+                "in": [
+                  {
+                    "var": "payload.v.0.tg"
+                  },
+                  {
+                    "var": "external.valueSets.disease-agent-targeted"
+                  }
+                ]
+              },
+              true
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "valueSets": {
+    "disease-agent-targeted": [
+      "840539006"
+    ]
+  },
+  "validDuration": 172800000
+}

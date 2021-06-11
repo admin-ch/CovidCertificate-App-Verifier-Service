@@ -9,12 +9,14 @@ Accept: application/json
 ### get active cert key ids
 GET {{baseUrl}}/v1/keys/list
 Accept: application/json
-ETag: a1b2c3
+ETag: -720957702
 
 ### get revocation list
 GET {{baseUrl}}/v1/revocationList
 Accept: application/json
+ETag: a1b2c3
 
 ### get verification rules
 GET {{baseUrl}}/v1/verificationRules
 Accept: application/json
+ETag: a1a5f267baae873dfac90a6867e2f1a99fe55639

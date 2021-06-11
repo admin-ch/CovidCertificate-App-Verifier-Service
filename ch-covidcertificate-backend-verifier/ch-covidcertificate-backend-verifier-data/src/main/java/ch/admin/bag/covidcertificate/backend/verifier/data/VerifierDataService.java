@@ -70,4 +70,6 @@ public interface VerifierDataService {
      * @return
      */
     public long findMaxDscPkId();
+
+    public int getMaxDscBatchCount();
 }

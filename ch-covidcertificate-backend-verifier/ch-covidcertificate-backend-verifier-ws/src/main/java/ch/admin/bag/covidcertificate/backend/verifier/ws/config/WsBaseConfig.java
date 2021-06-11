@@ -133,7 +133,8 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public VerificationRulesController verificationRulesController() throws IOException {
+    public VerificationRulesController verificationRulesController()
+            throws IOException, NoSuchAlgorithmException {
         return new VerificationRulesController();
     }
 
