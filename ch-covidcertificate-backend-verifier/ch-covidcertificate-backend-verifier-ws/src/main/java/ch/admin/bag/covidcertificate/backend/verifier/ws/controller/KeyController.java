@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class KeyController {
 
     private static final String NEXT_SINCE_HEADER = "X-Next-Since";
+    private static final String UP_TO_DATE_HEADER = "up-to-date";
     private final VerifierDataService verifierDataService;
 
     public KeyController(VerifierDataService verifierDataService) {
@@ -56,23 +57,34 @@ public class KeyController {
             responses = {
                 "200 => next certificate batch after `since`. keep requesting until empty certs list is returned"
             },
-            responseHeaders = {"X-Next-Since:`since` to set for next request:long"})
+            responseHeaders = {
+                "X-Next-Since:`since` to set for next request:string",
+                "up-to-date:set to 'true' when no more certs to fetch:string"
+            })
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "updates")
     public @ResponseBody ResponseEntity<CertsResponse> getSignerCerts(
             @RequestParam(required = false, defaultValue = "0") Long since,
             @RequestParam CertFormat certFormat) {
-        // TODO etag
         List<ClientCert> dscs = verifierDataService.findDscs(since, certFormat);
+        return ResponseEntity.ok()
+                .headers(getKeysUpdatesHeaders(dscs))
+                .cacheControl(CacheControl.maxAge(CacheUtil.KEYS_UPDATE_MAX_AGE))
+                .body(new CertsResponse(dscs));
+    }
+
+    private HttpHeaders getKeysUpdatesHeaders(List<ClientCert> dscs) {
+        HttpHeaders headers = new HttpHeaders();
         Long nextSince =
                 dscs.stream()
                         .mapToLong(dsc -> dsc.getPkId())
                         .max()
                         .orElse(verifierDataService.findMaxDscPkId());
-        return ResponseEntity.ok()
-                .header(NEXT_SINCE_HEADER, nextSince.toString())
-                .cacheControl(CacheControl.maxAge(CacheUtil.KEYS_UPDATE_MAX_AGE))
-                .body(new CertsResponse(dscs));
+        headers.add(NEXT_SINCE_HEADER, nextSince.toString());
+        if (dscs.size() < verifierDataService.getMaxDscBatchCount()) {
+            headers.add(UP_TO_DATE_HEADER, "true");
+        }
+        return headers;
     }
 
     @Documentation(

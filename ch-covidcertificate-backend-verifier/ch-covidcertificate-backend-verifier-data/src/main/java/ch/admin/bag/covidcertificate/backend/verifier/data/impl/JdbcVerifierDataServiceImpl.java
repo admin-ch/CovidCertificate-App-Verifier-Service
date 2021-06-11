@@ -119,4 +119,9 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
             return 0L;
         }
     }
+
+    @Override
+    public int getMaxDscBatchCount() {
+        return MAX_DSC_BATCH_COUNT;
+    }
 }
