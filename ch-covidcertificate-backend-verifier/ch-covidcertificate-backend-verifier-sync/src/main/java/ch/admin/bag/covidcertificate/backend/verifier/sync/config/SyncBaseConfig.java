@@ -16,10 +16,13 @@ import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DGCClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DGCSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
 import javax.sql.DataSource;
+import net.javacrumbs.shedlock.core.LockProvider;
+import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
@@ -34,11 +37,25 @@ public abstract class SyncBaseConfig {
     @Value("${dgc.clientcert.password}")
     String authClientCertPassword;
 
+    @Value("${shedlock.table.name}")
+    String shedLockTableName;
+
     public abstract DataSource dataSource();
 
     public abstract Flyway flyway();
 
     public abstract String getDbType();
+
+    @Bean
+    public LockProvider lockProvider(DataSource dataSource) {
+        return new JdbcTemplateLockProvider(
+            JdbcTemplateLockProvider.Configuration.builder()
+                .withTableName(shedLockTableName)
+                .withJdbcTemplate(new JdbcTemplate(dataSource))
+                .usingDbTime() // Works on Postgres, MySQL, MariaDb, MS SQL, Oracle, DB2, HSQL and H2
+                .build()
+        );
+    }
 
     @Bean
     public RestTemplate restTemplate() {

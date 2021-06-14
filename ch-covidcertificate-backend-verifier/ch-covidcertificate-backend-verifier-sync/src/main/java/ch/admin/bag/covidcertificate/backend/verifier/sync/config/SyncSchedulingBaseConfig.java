@@ -11,12 +11,16 @@
 package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DGCSyncer;
+import net.javacrumbs.shedlock.core.LockAssert;
+import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 @Configuration
 @EnableScheduling
+@EnableSchedulerLock(defaultLockAtMostFor = "PT1M")
 public class SyncSchedulingBaseConfig {
 
     private final DGCSyncer dgcSyncer;
@@ -26,12 +30,15 @@ public class SyncSchedulingBaseConfig {
     }
 
     @Scheduled(cron = "${dgc.sync.cron}")
+    @SchedulerLock(name = "DGC_download", lockAtLeastFor = "PT15S")
     public void dgcSyncCron() {
         dgcSyncer.sync();
     }
 
     @Scheduled(fixedRate = Long.MAX_VALUE, initialDelay = 0)
+    @SchedulerLock(name = "DGC_download", lockAtLeastFor = "PT15S")
     public void dgcSyncOnStartup() {
+        LockAssert.assertLocked();
         dgcSyncer.sync();
     }
 }

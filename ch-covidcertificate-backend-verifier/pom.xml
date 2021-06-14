@@ -29,6 +29,7 @@
         <jackson-version>2.11.1</jackson-version>
         <jsonwebtoken-version>0.11.2</jsonwebtoken-version>
         <testcontainers-version>1.15.2</testcontainers-version>
+        <shedlock.version>4.24.0</shedlock.version>
         <spring-cloud-connectors-version>2.0.7.RELEASE</spring-cloud-connectors-version>
 
         <itCoverageAgent></itCoverageAgent>
@@ -121,6 +122,16 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.7.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.javacrumbs.shedlock</groupId>
+            <artifactId>shedlock-provider-jdbc-template</artifactId>
+            <version>${shedlock.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.javacrumbs.shedlock</groupId>
+            <artifactId>shedlock-spring</artifactId>
+            <version>${shedlock.version}</version>
         </dependency>
     </dependencies>
 
