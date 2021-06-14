@@ -44,7 +44,7 @@ public class VerificationRulesController {
         ObjectMapper mapper = new ObjectMapper();
         File verificationRulesFile = new ClassPathResource("verificationRules.json").getFile();
         this.verificationRules = mapper.readValue(verificationRulesFile, Map.class);
-        this.verificationRulesEtag = EtagUtil.getSha1HashForFile(verificationRulesFile.getPath());
+        this.verificationRulesEtag = EtagUtil.getSha1HashForFiles(verificationRulesFile.getPath());
     }
 
     @Documentation(

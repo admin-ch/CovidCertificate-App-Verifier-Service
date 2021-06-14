@@ -127,6 +127,6 @@ public abstract class RevocationListControllerTest extends BaseControllerTest {
 
     @Override
     protected MediaType getSecurityHeadersRequestMediaType() {
-        return MediaType.APPLICATION_JSON;
+        return this.acceptMediaType;
     }
 }

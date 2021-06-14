@@ -14,6 +14,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.ValueSetsController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerificationRulesController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.interceptor.HeaderInjector;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.security.signature.JwsMessageConverter;
@@ -84,6 +85,11 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
         CacheUtil.VERIFICATION_RULES_MAX_AGE = maxAge;
     }
 
+    @Value("${ws.valueSets.max-age:PT1M}")
+    public void setValueSetsMaxAge(Duration maxAge) {
+        CacheUtil.VALUE_SETS_MAX_AGE = maxAge;
+    }
+
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
         try {
@@ -136,6 +142,11 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     public VerificationRulesController verificationRulesController()
             throws IOException, NoSuchAlgorithmException {
         return new VerificationRulesController();
+    }
+
+    @Bean
+    public ValueSetsController valueSetsController() throws IOException, NoSuchAlgorithmException {
+        return new ValueSetsController();
     }
 
     @Bean

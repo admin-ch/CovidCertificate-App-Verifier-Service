@@ -13,10 +13,12 @@ package ch.admin.bag.covidcertificate.backend.verifier.ws;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.ValueSetsController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 public class EtagUtilTest {
@@ -40,8 +42,21 @@ public class EtagUtilTest {
     @Test
     public void testFileHash() throws Exception {
         String expected = "011ec25ca7a4d0c95fe8fd7c33cdeff3654d7bf9";
-        String sha1 = EtagUtil.getSha1HashForFile(PATH_TO_VERIFICATION_RULES);
+        String sha1 = EtagUtil.getSha1HashForFiles(PATH_TO_VERIFICATION_RULES);
         assertEquals(expected, sha1);
-        assertNotEquals(expected, EtagUtil.getSha1HashForFile(PATH_TO_TEST_VERIFICATION_RULES));
+        assertNotEquals(expected, EtagUtil.getSha1HashForFiles(PATH_TO_TEST_VERIFICATION_RULES));
+    }
+
+    @Test
+    public void testFileHashMultiple() throws Exception {
+        String expected = "e8832aef5f37843e52a5acb78c522fa36576a62e";
+        List<String> pathsToValueSets =
+                ValueSetsController.PATHS_TO_VALUE_SETS.stream()
+                        .map(p -> "classpath:" + p)
+                        .collect(Collectors.toList());
+        String sha1 =
+                EtagUtil.getSha1HashForFiles(
+                        pathsToValueSets.toArray(new String[pathsToValueSets.size()]));
+        assertEquals(expected, sha1);
     }
 }
