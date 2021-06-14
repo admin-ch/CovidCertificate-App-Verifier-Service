@@ -17,6 +17,12 @@ Serves various data used for verifying the validaty of Digital Covid Certificate
 * National rules
 * Value sets with test and vaccine mappings
 
+## DGC Sync
+
+The `ch-covidcertificate-backend-verifier-sync` module implements `DGCSync`, which updates the local database to match the list provided by the [DGC gateway](https://github.com/eu-digital-green-certificates/dgc-gateway). 
+
+Every 30 minutes, an mTLS connection is set up and a GET request is sent to the gateway's `/trustList` endpoint, which responds with a list of CSCA and DSC certificates. Next, the certificates are validated: Expired certificates and DSCs without matching CSCA certificates are filtered out. Finally, the database is  updated to match the filtered list exactly.
+
 ## Usage
 It is recommended to use the SDK (for iOS or Android) to verify the validity of Digital Covid Certificates. The SDK then interacts with this service. This service expects a bearer token to be passed in as `Authorization` header.
 
