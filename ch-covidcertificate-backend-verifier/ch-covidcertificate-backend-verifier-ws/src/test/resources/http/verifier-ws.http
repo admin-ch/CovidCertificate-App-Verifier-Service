@@ -10,23 +10,23 @@ Authorization: Bearer {{apiKey}}
 ### get active cert key ids
 GET {{baseUrl}}/v1/keys/list
 Accept: application/json
-ETag: -720957702
+If-None-Match: "-720957702"
 Authorization: Bearer {{apiKey}}
 
 ### get revocation list
 GET {{baseUrl}}/v1/revocationList
 Accept: application/json
-ETag: -103666649
+If-None-Match: "1089905096"
 Authorization: Bearer {{apiKey}}
 
 ### get verification rules
 GET {{baseUrl}}/v1/verificationRules
 Accept: application/json
-ETag: f4915f1428328eb6c239693fc8e6541f68a3f72e
+If-None-Match: "011ec25ca7a4d0c95fe8fd7c33cdeff3654d7bf9"
 Authorization: Bearer {{apiKey}}
 
 ### get value sets
 GET {{baseUrl}}/v1/metadata
 Accept: application/json
-ETag: f4915f1428328eb6c239693fc8e6541f68a3f72e
+If-None-Match: "e8832aef5f37843e52a5acb78c522fa36576a62e"
 Authorization: Bearer {{apiKey}}

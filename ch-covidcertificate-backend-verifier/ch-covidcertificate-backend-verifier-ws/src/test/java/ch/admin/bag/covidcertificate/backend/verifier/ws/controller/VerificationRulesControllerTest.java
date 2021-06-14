@@ -49,27 +49,28 @@ public abstract class VerificationRulesControllerTest extends BaseControllerTest
 
     @Test
     public void notModifiedTest() throws Exception {
-        String expectedEtag = EtagUtil.getSha1HashForFiles(PATH_TO_VERIFICATION_RULES);
+        String expectedEtag =
+                "\"" + EtagUtil.getSha1HashForFiles(PATH_TO_VERIFICATION_RULES) + "\"";
 
         // get current etag
         MockHttpServletResponse response =
                 mockMvc.perform(
                                 get(verificationRulesUrl)
                                         .accept(acceptMediaType)
-                                        .header(HttpHeaders.ETAG, "random"))
+                                        .header(HttpHeaders.IF_NONE_MATCH, "random"))
                         .andExpect(status().is2xxSuccessful())
                         .andReturn()
                         .getResponse();
 
         // verify etag
-        String etag = response.getHeader(HttpHeaders.ETAG).replace("\"", "");
+        String etag = response.getHeader(HttpHeaders.ETAG);
         assertEquals(expectedEtag, etag);
 
         // test not modified
         mockMvc.perform(
                         get(verificationRulesUrl)
                                 .accept(acceptMediaType)
-                                .header(HttpHeaders.ETAG, etag))
+                                .header(HttpHeaders.IF_NONE_MATCH, etag))
                 .andExpect(status().isNotModified())
                 .andReturn()
                 .getResponse();

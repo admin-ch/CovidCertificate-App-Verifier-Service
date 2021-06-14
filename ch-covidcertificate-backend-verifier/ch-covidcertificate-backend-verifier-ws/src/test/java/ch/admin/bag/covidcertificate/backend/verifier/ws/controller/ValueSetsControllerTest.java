@@ -104,25 +104,30 @@ public abstract class ValueSetsControllerTest extends BaseControllerTest {
                         .map(p -> "classpath:" + p)
                         .collect(Collectors.toList());
         String expectedEtag =
-                EtagUtil.getSha1HashForFiles(
-                        pathsToValueSets.toArray(new String[pathsToValueSets.size()]));
+                "\""
+                        + EtagUtil.getSha1HashForFiles(
+                                pathsToValueSets.toArray(new String[pathsToValueSets.size()]))
+                        + "\"";
 
         // get current etag
         MockHttpServletResponse response =
                 mockMvc.perform(
                                 get(valueSetsUrl)
                                         .accept(acceptMediaType)
-                                        .header(HttpHeaders.ETAG, "random"))
+                                        .header(HttpHeaders.IF_NONE_MATCH, "random"))
                         .andExpect(status().is2xxSuccessful())
                         .andReturn()
                         .getResponse();
 
         // verify etag
-        String etag = response.getHeader(HttpHeaders.ETAG).replace("\"", "");
+        String etag = response.getHeader(HttpHeaders.ETAG);
         assertEquals(expectedEtag, etag);
 
         // test not modified
-        mockMvc.perform(get(valueSetsUrl).accept(acceptMediaType).header(HttpHeaders.ETAG, etag))
+        mockMvc.perform(
+                        get(valueSetsUrl)
+                                .accept(acceptMediaType)
+                                .header(HttpHeaders.IF_NONE_MATCH, etag))
                 .andExpect(status().isNotModified())
                 .andReturn()
                 .getResponse();

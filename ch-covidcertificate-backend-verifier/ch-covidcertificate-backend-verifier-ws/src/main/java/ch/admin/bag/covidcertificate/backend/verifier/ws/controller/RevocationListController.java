@@ -29,12 +29,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
@@ -62,8 +62,7 @@ public class RevocationListController {
             responseHeaders = {"ETag:etag to set for next request:string"})
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "/revocationList")
-    public @ResponseBody ResponseEntity<RevocationResponse> getCerts(
-            @RequestHeader(value = HttpHeaders.ETAG, required = false) String etag)
+    public @ResponseBody ResponseEntity<RevocationResponse> getCerts(WebRequest request)
             throws HttpStatusCodeException {
         final var response = new RevocationResponse();
         List<String> revokedCerts = getRevokedCerts();
@@ -71,12 +70,11 @@ public class RevocationListController {
 
         // check etag
         String currentEtag = String.valueOf(EtagUtil.getUnsortedListHashcode(revokedCerts));
-        if (currentEtag.equals(etag)) {
+        if (request.checkNotModified(currentEtag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.ETAG, currentEtag)
                 .cacheControl(CacheControl.maxAge(CacheUtil.REVOCATION_LIST_MAX_AGE))
                 .body(response);
     }

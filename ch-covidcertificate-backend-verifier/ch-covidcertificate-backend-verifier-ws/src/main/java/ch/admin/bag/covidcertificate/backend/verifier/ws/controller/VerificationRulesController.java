@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
-import org.apache.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -27,9 +26,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.WebRequest;
 
 @Controller
 @RequestMapping("trust/v1")
@@ -55,13 +54,11 @@ public class VerificationRulesController {
             },
             responseHeaders = {"ETag:etag to set for next request:string"})
     @GetMapping(value = "/verificationRules")
-    public @ResponseBody ResponseEntity<Map> getVerificationRules(
-            @RequestHeader(value = HttpHeaders.ETAG, required = false) String etag) {
-        if (verificationRulesEtag.equals(etag)) {
+    public @ResponseBody ResponseEntity<Map> getVerificationRules(WebRequest request) {
+        if (request.checkNotModified(verificationRulesEtag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
         return ResponseEntity.ok()
-                .header(HttpHeaders.ETAG, verificationRulesEtag)
                 .cacheControl(CacheControl.maxAge(CacheUtil.VERIFICATION_RULES_MAX_AGE))
                 .body(verificationRules);
     }
