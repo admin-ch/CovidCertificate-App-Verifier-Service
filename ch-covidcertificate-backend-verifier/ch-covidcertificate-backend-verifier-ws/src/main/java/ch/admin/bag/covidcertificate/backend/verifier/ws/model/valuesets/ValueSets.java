@@ -14,16 +14,26 @@ public class ValueSets {
     private TestValueSets test;
     private VaccineValueSets vaccine;
 
+    public ValueSets() {}
+
     public ValueSets(TestValueSets test, VaccineValueSets vaccine) {
         this.test = test;
         this.vaccine = vaccine;
     }
 
-    public TestValueSets getTestValueSet() {
+    public TestValueSets getTest() {
         return test;
     }
 
-    public VaccineValueSets getVaccineValueSet() {
+    public void setTest(TestValueSets test) {
+        this.test = test;
+    }
+
+    public VaccineValueSets getVaccine() {
         return vaccine;
+    }
+
+    public void setVaccine(VaccineValueSets vaccine) {
+        this.vaccine = vaccine;
     }
 }

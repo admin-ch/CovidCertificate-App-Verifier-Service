@@ -42,7 +42,7 @@ public class ValueSetsController {
 
     private static final Logger logger = LoggerFactory.getLogger(ValueSetsController.class);
 
-    private static final List<String> PATHS_TO_VALUE_SETS =
+    public static final List<String> PATHS_TO_VALUE_SETS =
             List.of(
                     "valuesets/test-manf.json",
                     "valuesets/test-type.json",

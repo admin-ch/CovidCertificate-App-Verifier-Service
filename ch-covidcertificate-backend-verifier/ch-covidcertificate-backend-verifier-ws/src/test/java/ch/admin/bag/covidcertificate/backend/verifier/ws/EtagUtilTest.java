@@ -13,10 +13,12 @@ package ch.admin.bag.covidcertificate.backend.verifier.ws;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.ValueSetsController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 public class EtagUtilTest {
@@ -37,15 +39,6 @@ public class EtagUtilTest {
     private static final String PATH_TO_TEST_VERIFICATION_RULES =
             "classpath:testVerificationRules.json";
 
-    private static final String[] PATHS_TO_VALUE_SETS =
-            new String[] {
-                "classpath:valuesets/test-manf.json",
-                "classpath:valuesets/test-type.json",
-                "classpath:valuesets/vaccine-mah-manf.json",
-                "classpath:valuesets/vaccine-medicinal-product.json",
-                "classpath:valuesets/vaccine-prophylaxis.json"
-            };
-
     @Test
     public void testFileHash() throws Exception {
         String expected = "011ec25ca7a4d0c95fe8fd7c33cdeff3654d7bf9";
@@ -57,7 +50,13 @@ public class EtagUtilTest {
     @Test
     public void testFileHashMultiple() throws Exception {
         String expected = "e8832aef5f37843e52a5acb78c522fa36576a62e";
-        String sha1 = EtagUtil.getSha1HashForFiles(PATHS_TO_VALUE_SETS);
+        List<String> pathsToValueSets =
+                ValueSetsController.PATHS_TO_VALUE_SETS.stream()
+                        .map(p -> "classpath:" + p)
+                        .collect(Collectors.toList());
+        String sha1 =
+                EtagUtil.getSha1HashForFiles(
+                        pathsToValueSets.toArray(new String[pathsToValueSets.size()]));
         assertEquals(expected, sha1);
     }
 }
