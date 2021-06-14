@@ -7,8 +7,20 @@ on behalf of the [Federal Office of Public Health FOPH](https://www.bag.admin.ch
 The app design, UX and implementation was done by [Ubique](https://www.ubique.ch?app=github).
 
 ## Services
+This backend serves various parameters used for covid certificate verification to the app and syncs Digital Signature Certificates (DSC) used to sign covid certificates from and to the european hub.
 
-TODO write a few words, like in https://github.com/admin-ch/CovidCertificate-App-Config-Service/blob/main/README.md
+### Webservice
+Serves various parameters used for verifying the validaty of covid certificates. Currently this includes:
+
+* DSCs
+* revoked covid certificates
+* value sets with test and vaccine parameters
+* additional (national) verification rules
+
+
+### Sync
+
+TODO write a few words
 
 ## Contribution Guide
 
