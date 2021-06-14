@@ -11,19 +11,19 @@
 package ch.admin.bag.covidcertificate.backend.verifier.ws.model.valuesets;
 
 public class ValueSets {
-    private TestValueSets testValueSets;
-    private VaccineValueSets vaccineValueSets;
+    private TestValueSets test;
+    private VaccineValueSets vaccine;
 
-    public ValueSets(TestValueSets testValueSets, VaccineValueSets vaccineValueSets) {
-        this.testValueSets = testValueSets;
-        this.vaccineValueSets = vaccineValueSets;
+    public ValueSets(TestValueSets test, VaccineValueSets vaccine) {
+        this.test = test;
+        this.vaccine = vaccine;
     }
 
     public TestValueSets getTestValueSet() {
-        return testValueSets;
+        return test;
     }
 
     public VaccineValueSets getVaccineValueSet() {
-        return vaccineValueSets;
+        return vaccine;
     }
 }

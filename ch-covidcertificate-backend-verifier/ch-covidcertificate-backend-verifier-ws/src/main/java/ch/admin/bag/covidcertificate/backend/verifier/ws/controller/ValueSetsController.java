@@ -78,7 +78,7 @@ public class ValueSetsController {
             description = "get value sets",
             responses = {"200 => value sets", "304 => no changes since last request"},
             responseHeaders = {"ETag:etag to set for next request:string"})
-    @GetMapping(value = "/valueSets")
+    @GetMapping(value = "/metadata")
     public @ResponseBody ResponseEntity<ValueSets> getVerificationRules(
             @RequestHeader(value = HttpHeaders.ETAG, required = false) String etag) {
         if (valueSetsEtag.equals(etag)) {
