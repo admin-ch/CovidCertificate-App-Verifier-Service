@@ -7,20 +7,22 @@ on behalf of the [Federal Office of Public Health FOPH](https://www.bag.admin.ch
 The app design, UX and implementation was done by [Ubique](https://www.ubique.ch?app=github).
 
 ## Services
-This backend serves various parameters used for covid certificate verification to the app and syncs Digital Signature Certificates (DSC) used to sign covid certificates from and to the european hub.
+This service provides an API, which is consumed by the CovidCertificate-SDKs used by the COVID Certificate Apps of Switzerland. It publishes all the necessary data that is needed to verify a Digital Covid Certificate (DCC) in the client apps (offline). It also regularly syncs the DSCs with the EU-Gateway (`dgc-gateway`). The service itself does neither receive nor verify a DCC. 
 
 ### Webservice
-Serves various parameters used for verifying the validaty of covid certificates. Currently this includes:
+Serves various data used for verifying the validaty of Digital Covid Certificates. Currently this includes:
 
-* DSCs
-* revoked covid certificates
-* value sets with test and vaccine parameters
-* additional (national) verification rules
+* Public keys of Document Signer Certificates (DSCs)
+* List of revoked UVCIs of Digital Covid Certificate (DCCs)
+* National rules
+* Value sets with test and vaccine mappings
 
+## Usage
+It is recommended to use the SDK (for iOS or Android) to verify the validity of Digital Covid Certificates. The SDK then interacts with this service. This service expects a bearer token to be passed in as `Authorization` header.
 
-### Sync
-
-TODO write a few words
+```
+Authorization: Bearer <app-token>
+```
 
 ## Contribution Guide
 
