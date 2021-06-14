@@ -25,7 +25,7 @@ Accept: application/json
 ETag: f4915f1428328eb6c239693fc8e6541f68a3f72e
 Authorization: Bearer {{apiKey}}
 
-### get verification rules
+### get value sets
 GET {{baseUrl}}/v1/metadata
 Accept: application/json
 ETag: f4915f1428328eb6c239693fc8e6541f68a3f72e

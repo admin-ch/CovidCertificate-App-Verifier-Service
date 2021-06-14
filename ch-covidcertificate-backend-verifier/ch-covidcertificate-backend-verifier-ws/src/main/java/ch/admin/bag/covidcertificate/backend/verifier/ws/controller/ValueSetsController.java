@@ -14,11 +14,14 @@ import ch.admin.bag.covidcertificate.backend.verifier.ws.model.valuesets.TestVal
 import ch.admin.bag.covidcertificate.backend.verifier.ws.model.valuesets.VaccineValueSets;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.model.valuesets.ValueSets;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import ch.ubique.openapi.docannotations.Documentation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.apache.http.HttpHeaders;
 import org.slf4j.Logger;
@@ -39,13 +42,28 @@ public class ValueSetsController {
 
     private static final Logger logger = LoggerFactory.getLogger(ValueSetsController.class);
 
+    private static final List<String> PATHS_TO_VALUE_SETS =
+            List.of(
+                    "valuesets/test-manf.json",
+                    "valuesets/test-type.json",
+                    "valuesets/vaccine-mah-manf.json",
+                    "valuesets/vaccine-medicinal-product.json",
+                    "valuesets/vaccine-prophylaxis.json");
+
     private final ValueSets valueSets;
     private final String valueSetsEtag;
     private final ObjectMapper mapper = new ObjectMapper();
 
     public ValueSetsController() throws IOException, NoSuchAlgorithmException {
         this.valueSets = new ValueSets(getTestValueSet(), getVaccineValueSet());
-        this.valueSetsEtag = "TODO"; // TODO
+
+        List<String> pathsToValueSets = new ArrayList<>();
+        for (String path : PATHS_TO_VALUE_SETS) {
+            pathsToValueSets.add(new ClassPathResource(path).getFile().getPath());
+        }
+        this.valueSetsEtag =
+                EtagUtil.getSha1HashForFiles(
+                        pathsToValueSets.toArray(new String[pathsToValueSets.size()]));
     }
 
     private VaccineValueSets getVaccineValueSet() throws IOException {

@@ -37,11 +37,27 @@ public class EtagUtilTest {
     private static final String PATH_TO_TEST_VERIFICATION_RULES =
             "classpath:testVerificationRules.json";
 
+    private static final String[] PATHS_TO_VALUE_SETS =
+            new String[] {
+                "classpath:valuesets/test-manf.json",
+                "classpath:valuesets/test-type.json",
+                "classpath:valuesets/vaccine-mah-manf.json",
+                "classpath:valuesets/vaccine-medicinal-product.json",
+                "classpath:valuesets/vaccine-prophylaxis.json"
+            };
+
     @Test
     public void testFileHash() throws Exception {
         String expected = "011ec25ca7a4d0c95fe8fd7c33cdeff3654d7bf9";
-        String sha1 = EtagUtil.getSha1HashForFile(PATH_TO_VERIFICATION_RULES);
+        String sha1 = EtagUtil.getSha1HashForFiles(PATH_TO_VERIFICATION_RULES);
         assertEquals(expected, sha1);
-        assertNotEquals(expected, EtagUtil.getSha1HashForFile(PATH_TO_TEST_VERIFICATION_RULES));
+        assertNotEquals(expected, EtagUtil.getSha1HashForFiles(PATH_TO_TEST_VERIFICATION_RULES));
+    }
+
+    @Test
+    public void testFileHashMultiple() throws Exception {
+        String expected = "e8832aef5f37843e52a5acb78c522fa36576a62e";
+        String sha1 = EtagUtil.getSha1HashForFiles(PATHS_TO_VALUE_SETS);
+        assertEquals(expected, sha1);
     }
 }

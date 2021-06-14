@@ -34,25 +34,25 @@ public class EtagUtil {
         return list != null ? list.stream().map(Objects::hash).reduce(0, (a, b) -> a ^ b) : 0;
     }
 
-    public static String getSha1HashForFile(String pathToFile)
+    public static String getSha1HashForFiles(String... pathToFiles)
             throws IOException, NoSuchAlgorithmException {
-        String classpathPrefix = "classpath:";
-        try (InputStream is =
-                pathToFile.startsWith(classpathPrefix)
-                        ? new ClassPathResource(pathToFile.replace(classpathPrefix, ""))
-                                .getInputStream()
-                        : new FileInputStream(pathToFile)) {
+        MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+        for (String pathToFile : pathToFiles) {
+            final String classpathPrefix = "classpath:";
+            try (InputStream is =
+                    pathToFile.startsWith(classpathPrefix)
+                            ? new ClassPathResource(pathToFile.replace(classpathPrefix, ""))
+                                    .getInputStream()
+                            : new FileInputStream(pathToFile)) {
 
-            MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
-            byte[] buffer = new byte[8192];
-            int len = is.read(buffer);
-
-            while (len != -1) {
-                sha1.update(buffer, 0, len);
-                len = is.read(buffer);
+                byte[] buffer = new byte[8192];
+                int len = is.read(buffer);
+                while (len != -1) {
+                    sha1.update(buffer, 0, len);
+                    len = is.read(buffer);
+                }
             }
-
-            return Hex.encodeHexString(sha1.digest());
         }
+        return Hex.encodeHexString(sha1.digest());
     }
 }
