@@ -85,8 +85,7 @@ public abstract class RevocationListControllerTest extends BaseControllerTest {
 
     @Test
     public void notModifiedTest() throws Exception {
-        String expectedEtag =
-                String.valueOf(EtagUtil.getUnsortedListHashcode(List.of(REVOKED_CERT)));
+        String expectedEtag = "\"" + EtagUtil.getUnsortedListHashcode(List.of(REVOKED_CERT)) + "\"";
 
         // get current etag
         setupExternalRevocationListMock(2);
@@ -94,20 +93,20 @@ public abstract class RevocationListControllerTest extends BaseControllerTest {
                 mockMvc.perform(
                                 get(revocationListUrl)
                                         .accept(acceptMediaType)
-                                        .header(HttpHeaders.ETAG, "random"))
+                                        .header(HttpHeaders.IF_NONE_MATCH, "random"))
                         .andExpect(status().is2xxSuccessful())
                         .andReturn()
                         .getResponse();
 
         // verify etag
-        String etag = response.getHeader(HttpHeaders.ETAG).replace("\"", "");
+        String etag = response.getHeader(HttpHeaders.ETAG);
         assertEquals(expectedEtag, etag);
 
         // test not modified
         mockMvc.perform(
                         get(revocationListUrl)
                                 .accept(acceptMediaType)
-                                .header(HttpHeaders.ETAG, etag))
+                                .header(HttpHeaders.IF_NONE_MATCH, etag))
                 .andExpect(status().isNotModified())
                 .andReturn()
                 .getResponse();

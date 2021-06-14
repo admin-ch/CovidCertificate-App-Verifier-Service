@@ -23,7 +23,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -32,9 +31,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.WebRequest;
 
 @Controller
 @RequestMapping("trust/v1")
@@ -97,13 +96,11 @@ public class ValueSetsController {
             responses = {"200 => value sets", "304 => no changes since last request"},
             responseHeaders = {"ETag:etag to set for next request:string"})
     @GetMapping(value = "/metadata")
-    public @ResponseBody ResponseEntity<ValueSets> getVerificationRules(
-            @RequestHeader(value = HttpHeaders.ETAG, required = false) String etag) {
-        if (valueSetsEtag.equals(etag)) {
+    public @ResponseBody ResponseEntity<ValueSets> getValueSets(WebRequest request) {
+        if (request.checkNotModified(valueSetsEtag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
         return ResponseEntity.ok()
-                .header(HttpHeaders.ETAG, valueSetsEtag)
                 .cacheControl(CacheControl.maxAge(CacheUtil.VALUE_SETS_MAX_AGE))
                 .body(valueSets);
     }

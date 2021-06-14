@@ -26,10 +26,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.WebRequest;
 
 @Controller
 @RequestMapping("trust/v1/keys")
@@ -97,17 +97,16 @@ public class KeyController {
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "list")
     public @ResponseBody ResponseEntity<ActiveCertsResponse> getActiveSignerCertKeyIds(
-            @RequestHeader(value = HttpHeaders.ETAG, required = false) String etag) {
+            WebRequest request) {
         List<String> activeKeyIds = verifierDataService.findActiveDscKeyIds();
 
         // check etag
         String currentEtag = String.valueOf(EtagUtil.getUnsortedListHashcode(activeKeyIds));
-        if (currentEtag.equals(etag)) {
+        if (request.checkNotModified(currentEtag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.ETAG, currentEtag)
                 .cacheControl(CacheControl.maxAge(CacheUtil.KEYS_LIST_MAX_AGE))
                 .body(new ActiveCertsResponse(activeKeyIds));
     }
