@@ -21,6 +21,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.ValueSetsCon
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerificationRulesController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.interceptor.HeaderInjector;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.security.signature.JwsMessageConverter;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.service.IOSHeartbeatSilentPush;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.RestTemplateHelper;
 import java.io.ByteArrayInputStream;
@@ -63,6 +64,19 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
 
     @Value("${revocationList.baseurl}")
     String revokedCertsBaseUrl;
+
+    // base64 encoded p8 file
+    @Value("${push.ios.signingkey}")
+    private String iosPushSigningKey;
+
+    @Value("${push.ios.teamid}")
+    private String iosPushTeamId;
+
+    @Value("${push.ios.keyid}")
+    private String iosPushKeyId;
+
+    @Value("${push.ios.topic}")
+    private String iosPushTopic;
 
     public abstract DataSource dataSource();
 
@@ -161,6 +175,18 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     @Bean
     public ValueSetsController valueSetsController() throws IOException, NoSuchAlgorithmException {
         return new ValueSetsController();
+    }
+
+    @Bean
+    public IOSHeartbeatSilentPush iosHeartbeatSilentPush(
+            PushRegistrationDataService pushRegistrationDataService) {
+        byte[] pushSigningKey = Base64.getDecoder().decode(iosPushSigningKey);
+        return new IOSHeartbeatSilentPush(
+                pushRegistrationDataService,
+                new ByteArrayInputStream(pushSigningKey),
+                iosPushTeamId,
+                iosPushKeyId,
+                iosPushTopic);
     }
 
     @Bean

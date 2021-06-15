@@ -144,6 +144,13 @@
             <artifactId>bcpkix-jdk15on</artifactId>
             <version>1.68</version>
         </dependency>
+
+        <!--    Silent push    -->
+        <dependency>
+            <groupId>com.eatthepath</groupId>
+            <artifactId>pushy</artifactId>
+            <version>0.14.2</version>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
