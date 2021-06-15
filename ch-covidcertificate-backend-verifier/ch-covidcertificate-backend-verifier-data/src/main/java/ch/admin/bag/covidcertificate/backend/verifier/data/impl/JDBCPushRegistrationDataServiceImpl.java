@@ -31,23 +31,17 @@ public class JDBCPushRegistrationDataServiceImpl implements PushRegistrationData
     @Transactional
     public void upsertPushRegistration(final PushRegistration pushRegistration) {
         if (Strings.isBlank(pushRegistration.getPushToken())) {
-            deletePushRegistration(pushRegistration.getDeviceId());
+            deletePushRegistration(pushRegistration.getPushToken());
         }
 
+        deletePushRegistration(pushRegistration.getPushToken());
         final var pushRegistrationParams = getPushRegistrationParams(pushRegistration);
-        deleteDuplicates(pushRegistrationParams);
         pushRegistrationInsert.execute(pushRegistrationParams);
     }
 
-    private void deletePushRegistration(final String deviceId) {
-        final var sql = "delete from t_push_registration where device_id = :device_id";
-        jt.update(sql, new MapSqlParameterSource("device_id", deviceId));
-    }
-
-    private void deleteDuplicates(final MapSqlParameterSource pushRegistrationParams) {
-        final var sql =
-                "delete from t_push_registration where device_id = :device_id or push_token = :push_token";
-        jt.update(sql, pushRegistrationParams);
+    private void deletePushRegistration(final String pushToken) {
+        final var sql = "delete from t_push_registration where push_token = :push_token";
+        jt.update(sql, new MapSqlParameterSource("push_token", pushToken));
     }
 
     @Override
@@ -62,7 +56,6 @@ public class JDBCPushRegistrationDataServiceImpl implements PushRegistrationData
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("push_type", pushRegistration.getPushType().name());
         params.addValue("push_token", pushRegistration.getPushToken());
-        params.addValue("device_id", pushRegistration.getDeviceId());
         return params;
     }
 

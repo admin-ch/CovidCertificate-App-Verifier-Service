@@ -21,8 +21,6 @@ public class PushRegistrationRowMapper implements RowMapper<PushRegistration> {
     @Override
     public PushRegistration mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new PushRegistration(
-                rs.getString("push_token"),
-                PushType.valueOf(rs.getString("push_type")),
-                rs.getString("device_id"));
+                rs.getString("push_token"), PushType.valueOf(rs.getString("push_type")));
     }
 }

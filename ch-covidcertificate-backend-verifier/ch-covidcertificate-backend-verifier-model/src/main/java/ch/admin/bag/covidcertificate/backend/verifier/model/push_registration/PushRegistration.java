@@ -1,16 +1,13 @@
 package ch.admin.bag.covidcertificate.backend.verifier.model.push_registration;
 
 public class PushRegistration {
-    private String pushToken;
+    private final String pushToken;
 
-    private PushType pushType;
+    private final PushType pushType;
 
-    private String deviceId;
-
-    public PushRegistration(String pushToken, PushType pushType, String deviceId) {
+    public PushRegistration(String pushToken, PushType pushType) {
         this.pushToken = pushToken;
         this.pushType = pushType;
-        this.deviceId = deviceId;
     }
 
     public String getPushToken() {
@@ -19,9 +16,5 @@ public class PushRegistration {
 
     public PushType getPushType() {
         return pushType;
-    }
-
-    public String getDeviceId() {
-        return deviceId;
     }
 }
