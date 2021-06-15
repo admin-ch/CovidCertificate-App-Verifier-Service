@@ -10,9 +10,12 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.ws.config;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.PushRegistrationDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JDBCPushRegistrationDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyController;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.PushRegistrationController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.ValueSetsController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerificationRulesController;
@@ -47,19 +50,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public abstract class WsBaseConfig implements WebMvcConfigurer {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
-
+    @Value("${ws.jws.p12:}")
+    public String p12KeyStore;
+    @Value("${ws.jws.password:}")
+    public String p12KeyStorePassword;
     @Value(
             "#{${ws.security.headers: {'X-Content-Type-Options':'nosniff', 'X-Frame-Options':'DENY','X-Xss-Protection':'1; mode=block'}}}")
     Map<String, String> additionalHeaders;
-
     @Value("${revocationList.baseurl}")
     String revokedCertsBaseUrl;
-
-    @Value("${ws.jws.p12:}")
-    public String p12KeyStore;
-
-    @Value("${ws.jws.password:}")
-    public String p12KeyStorePassword;
 
     public abstract DataSource dataSource();
 
@@ -129,8 +128,19 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     }
 
     @Bean
+    public PushRegistrationDataService pushRegistrationDataService(DataSource dataSource) {
+        return new JDBCPushRegistrationDataServiceImpl(dataSource);
+    }
+
+    @Bean
     public KeyController keyController(VerifierDataService verifierDataService) {
         return new KeyController(verifierDataService);
+    }
+
+    @Bean
+    public PushRegistrationController pushRegistrationController(
+            PushRegistrationDataService pushRegistrationDataService) {
+        return new PushRegistrationController(pushRegistrationDataService);
     }
 
     @Bean
