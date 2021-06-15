@@ -20,7 +20,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 @Configuration
 @EnableScheduling
-@EnableSchedulerLock(defaultLockAtMostFor = "PT1M")
+@EnableSchedulerLock(defaultLockAtMostFor = "PT10M")
 public class SyncSchedulingBaseConfig {
 
     private final DGCSyncer dgcSyncer;
