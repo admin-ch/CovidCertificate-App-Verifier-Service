@@ -37,9 +37,6 @@ public abstract class SyncBaseConfig {
     @Value("${dgc.clientcert.password}")
     String authClientCertPassword;
 
-    @Value("${shedlock.table.name}")
-    String shedLockTableName;
-
     public abstract DataSource dataSource();
 
     public abstract Flyway flyway();
@@ -49,12 +46,12 @@ public abstract class SyncBaseConfig {
     @Bean
     public LockProvider lockProvider(DataSource dataSource) {
         return new JdbcTemplateLockProvider(
-            JdbcTemplateLockProvider.Configuration.builder()
-                .withTableName(shedLockTableName)
-                .withJdbcTemplate(new JdbcTemplate(dataSource))
-                .usingDbTime() // Works on Postgres, MySQL, MariaDb, MS SQL, Oracle, DB2, HSQL and H2
-                .build()
-        );
+                JdbcTemplateLockProvider.Configuration.builder()
+                        .withTableName("t_shedlock")
+                        .withJdbcTemplate(new JdbcTemplate(dataSource))
+                        .usingDbTime() // Works on Postgres, MySQL, MariaDb, MS SQL, Oracle, DB2,
+                                       // HSQL and H2
+                        .build());
     }
 
     @Bean
