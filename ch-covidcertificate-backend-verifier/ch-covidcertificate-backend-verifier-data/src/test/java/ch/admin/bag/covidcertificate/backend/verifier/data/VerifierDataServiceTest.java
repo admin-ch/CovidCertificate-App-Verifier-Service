@@ -36,11 +36,11 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
     @Transactional
     void removeCscasNotInTest() {
         assertTrue(verifierDataService.findCscas("CH").isEmpty());
-        verifierDataService.removeCscasNotIn(Collections.emptyList());
-        verifierDataService.removeCscasNotIn(Collections.singletonList("keyid_0"));
+        verifierDataService.removeCSCAs(Collections.emptyList());
+        verifierDataService.removeCSCAs(Collections.singletonList("keyid_0"));
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCSCA(0, "CH")));
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCSCA(1, "CH")));
-        verifierDataService.removeCscasNotIn(Collections.singletonList("keyid_0"));
+        verifierDataService.removeCSCAs(Collections.singletonList("keyid_0"));
         assertEquals(1, verifierDataService.findCscas("CH").size());
     }
 

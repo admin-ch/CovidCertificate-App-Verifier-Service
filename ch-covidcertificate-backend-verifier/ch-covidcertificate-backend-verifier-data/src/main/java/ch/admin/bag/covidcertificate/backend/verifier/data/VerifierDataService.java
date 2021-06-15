@@ -28,10 +28,10 @@ public interface VerifierDataService {
     /**
      * removes all csas with key ids not in the given list
      *
-     * @param keyIdsToKeep
+     * @param keyIds
      * @return number of removed cscas
      */
-    public int removeCscasNotIn(List<String> keyIdsToKeep);
+    public int removeCSCAs(List<String> keyIds);
 
     /**
      * finds all CSCAs of the given origin country

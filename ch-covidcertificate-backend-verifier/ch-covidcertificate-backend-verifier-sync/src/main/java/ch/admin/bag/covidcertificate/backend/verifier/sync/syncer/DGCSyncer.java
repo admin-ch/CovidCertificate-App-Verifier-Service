@@ -70,19 +70,12 @@ public class DGCSyncer {
                         cscaTrustList.getKid());
             }
         }
-        // Compute intersection of CSCAs in DB and downloaded CSCAs
-        final var cscaIntersection =
-                dbCscaList.stream()
-                        .map(DbCsca::getKeyId)
-                        .distinct()
-                        .filter(activeCscaKeyIds::contains)
-                        .collect(Collectors.toList());
         // Remove DSCs whose CSCA is about to be removed
-        final var removedCscaList = new ArrayList<String>(activeCscaKeyIds);
-        cscaIntersection.forEach(removedCscaList::remove);
+        final var removedCscaList = new ArrayList<>(activeCscaKeyIds);
+        dbCscaList.stream().map(DbCsca::getKeyId).forEach(removedCscaList::remove);
         verifierDataService.removeDscsWithCSCAIn(removedCscaList);
         // Remove CSCAs that weren't returned by the download
-        verifierDataService.removeCscasNotIn(cscaIntersection);
+        verifierDataService.removeCSCAs(removedCscaList);
         // Insert CSCAs
         verifierDataService.insertCscas(cscaListToInsert);
     }
@@ -114,15 +107,9 @@ public class DGCSyncer {
                 logger.error(e.getMessage());
             }
         }
-        // Compute intersection of DSCs in DB and downloaded DSCs
-        final var intersection =
-                dbDscList.stream()
-                        .map(DbDsc::getKeyId)
-                        .distinct()
-                        .filter(activeDscKeyIds::contains)
-                        .collect(Collectors.toList());
         // Remove DSCs that weren't returned by the download
-        verifierDataService.removeDscsNotIn(intersection);
+        verifierDataService.removeDscsNotIn(
+                dbDscList.stream().map(DbDsc::getKeyId).collect(Collectors.toList()));
         // Insert DSCs
         verifierDataService.insertDsc(dscListToInsert);
     }

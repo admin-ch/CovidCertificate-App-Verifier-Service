@@ -69,12 +69,12 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional
-    public int removeCscasNotIn(List<String> keyIdsToKeep) {
+    public int removeCSCAs(List<String> keyIds) {
         var sql = "delete from t_country_specific_certificate_authority";
         final var params = new MapSqlParameterSource();
-        if (!keyIdsToKeep.isEmpty()) {
-            sql += " where key_id not in (:kids)";
-            params.addValue("kids", keyIdsToKeep);
+        if (!keyIds.isEmpty()) {
+            sql += " where key_id in (:kids)";
+            params.addValue("kids", keyIds);
         }
         return jt.update(sql, params);
     }
