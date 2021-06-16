@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.KeyManagementException;
+import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
@@ -94,12 +95,16 @@ public class RestTemplateHelper {
 
         if (clientCert != null && clientCertPassword != null) {
             Path clientCertFile = getFile(clientCert);
+            var cf = KeyStore.getInstance("pkcs12");
+            cf.load(new FileInputStream(clientCertFile.toFile()), clientCertPassword.toCharArray());
+            final var alias = cf.aliases().nextElement();
             var sslContext =
                     SSLContexts.custom()
                             .loadKeyMaterial(
                                     clientCertFile.toFile(),
                                     clientCertPassword.toCharArray(),
-                                    clientCertPassword.toCharArray())
+                                    clientCertPassword.toCharArray(),
+                                    (map, socket) -> alias)
                             .build();
             builder.setSSLContext(sslContext);
 
