@@ -708,7 +708,7 @@
     ],
     "acceptance-criteria": {
       "single-vaccine-validity-offset": 15,
-      "vaccine-immunity": 179,
+      "vaccine-immunity": 359,
       "rat-test-validity": 24,
       "pcr-test-validity": 72,
       "recovery-offset-valid-from": 10,
