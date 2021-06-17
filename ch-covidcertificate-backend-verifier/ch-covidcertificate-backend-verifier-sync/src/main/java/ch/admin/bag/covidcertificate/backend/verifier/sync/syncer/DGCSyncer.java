@@ -65,8 +65,8 @@ public class DGCSyncer {
                     cscaListToInsert.add(dbCsca);
                 }
             } catch (CertificateException e) {
-                logger.debug(
-                        "Couldn't map CSCA trustlist {} of origin {} to X509 certificate",
+                logger.info(
+                        "Dropping CSCA trustlist {} of origin {}: Couldn't map to X509 certificate",
                         cscaTrustList.getKid(),
                         cscaTrustList.getCountry());
             }
@@ -106,14 +106,23 @@ public class DGCSyncer {
                     if (!activeDscKeyIds.contains(dbDsc.getKeyId())) {
                         dscListToInsert.add(dbDsc);
                     }
+                } else {
+                    logger.info(
+                            "Dropping DSC trustlist {} of origin {}: Couldn't verify signature",
+                            dscTrustList.getKid(),
+                            dscTrustList.getCountry());
                 }
             } catch (CertificateException e) {
-                logger.debug(
-                        "Couldn't map DSC trustlist {} of origin {} to X509 certificate",
+                logger.info(
+                        "Dropping DSC trustlist {} of origin {}: Couldn't map to X509 certificate",
                         dscTrustList.getKid(),
                         dscTrustList.getCountry());
             } catch (UnexpectedAlgorithmException e) {
-                logger.error(e.getMessage());
+                logger.info(
+                        "Dropping DSC trustlist {} of origin {}: {}",
+                        dscTrustList.getKid(),
+                        dscTrustList.getCountry(),
+                        e.getMessage());
             }
         }
         // Remove DSCs that weren't returned by the download
