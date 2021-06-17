@@ -70,13 +70,15 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     @Override
     @Transactional
     public int removeCSCAs(List<String> keyIds) {
-        var sql = "delete from t_country_specific_certificate_authority";
-        final var params = new MapSqlParameterSource();
         if (!keyIds.isEmpty()) {
+            var sql = "delete from t_country_specific_certificate_authority";
+            final var params = new MapSqlParameterSource();
             sql += " where key_id in (:kids)";
             params.addValue("kids", keyIds);
+            return jt.update(sql, params);
+        } else {
+            return 0;
         }
-        return jt.update(sql, params);
     }
 
     @Override
@@ -123,15 +125,14 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     @Override
     @Transactional
     public int removeDscsWithCSCAIn(List<String> cscaKidsToRemove) {
-        var sql = "delete from t_document_signer_certificate";
-        final var params = new MapSqlParameterSource();
         if (!cscaKidsToRemove.isEmpty()) {
-            sql += " where fk_csca_id in (:fk_csca_id)";
+            var sql = "delete from t_document_signer_certificate where fk_csca_id in (:fk_csca_id)";
+            final var params = new MapSqlParameterSource();
             params.addValue("fk_csca_id", findCscaPksForKids(cscaKidsToRemove));
+            return jt.update(sql, params);
         } else {
             return 0;
         }
-        return jt.update(sql, params);
     }
 
     private List<Long> findCscaPksForKids(List<String> cscaKids) {
