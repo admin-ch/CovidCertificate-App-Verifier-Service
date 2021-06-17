@@ -65,19 +65,28 @@ public class DGCSyncer {
                     cscaListToInsert.add(dbCsca);
                 }
             } catch (CertificateException e) {
-                logger.error(
-                        "Couldn't map CSCA trustlist {} to X509 certificate",
-                        cscaTrustList.getKid());
+                logger.debug(
+                        "Couldn't map CSCA trustlist {} of origin {} to X509 certificate",
+                        cscaTrustList.getKid(),
+                        cscaTrustList.getCountry());
             }
         }
         // Remove DSCs whose CSCA is about to be removed
         final var removedCscaList = new ArrayList<>(activeCscaKeyIds);
         dbCscaList.stream().map(DbCsca::getKeyId).forEach(removedCscaList::remove);
-        verifierDataService.removeDscsWithCSCAIn(removedCscaList);
+        final var removedDSCs = verifierDataService.removeDscsWithCSCAIn(removedCscaList);
         // Remove CSCAs that weren't returned by the download
-        verifierDataService.removeCSCAs(removedCscaList);
+        final var removedCSCAs = verifierDataService.removeCSCAs(removedCscaList);
         // Insert CSCAs
         verifierDataService.insertCscas(cscaListToInsert);
+        logger.info(
+                "Downloaded {} CSCA certificates: Dropped {}, Inserted {}, Removed {} CSCAs and {} DSCs, Left {} in DB",
+                cscaTrustLists.length,
+                cscaTrustLists.length - dbCscaList.size(),
+                cscaListToInsert.size(),
+                removedCSCAs,
+                removedDSCs,
+                dbCscaList.size() - removedCscaList.size() - cscaListToInsert.size());
     }
 
     private void downloadDSCs() {
@@ -99,7 +108,7 @@ public class DGCSyncer {
                     }
                 }
             } catch (CertificateException e) {
-                logger.error(
+                logger.debug(
                         "Couldn't map DSC trustlist {} of origin {} to X509 certificate",
                         dscTrustList.getKid(),
                         dscTrustList.getCountry());
@@ -108,10 +117,18 @@ public class DGCSyncer {
             }
         }
         // Remove DSCs that weren't returned by the download
-        verifierDataService.removeDscsNotIn(
-                dbDscList.stream().map(DbDsc::getKeyId).collect(Collectors.toList()));
+        final var removedDSCs =
+                verifierDataService.removeDscsNotIn(
+                        dbDscList.stream().map(DbDsc::getKeyId).collect(Collectors.toList()));
         // Insert DSCs
         verifierDataService.insertDsc(dscListToInsert);
+        logger.info(
+                "Downloaded {} DSC certificates: Dropped {}, Inserted {}, Removed {}, Left {} in DB",
+                dscTrustLists.length,
+                dscTrustLists.length - dbDscList.size(),
+                dscListToInsert.size(),
+                removedDSCs,
+                dbDscList.size() - removedDSCs - dscListToInsert.size());
     }
 
     private boolean verify(DbDsc dbDsc) {
@@ -134,7 +151,7 @@ public class DGCSyncer {
                     | NoSuchProviderException
                     | InvalidKeyException
                     | SignatureException e) {
-                logger.error(
+                logger.debug(
                         "Couldn't verify DSC {} signature with CSCA {}",
                         dbDsc.getKeyId(),
                         dbCsca.getKeyId());
