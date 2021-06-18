@@ -173,15 +173,29 @@ class X509Test {
     }
 
     private String getX(X509Certificate x509) {
-        return Base64.getEncoder()
-                .encodeToString(
-                        ((ECPublicKey) x509.getPublicKey()).getW().getAffineX().toByteArray());
+        // convert them to uncompressed point form
+        byte[] xArray = ((ECPublicKey) x509.getPublicKey()).getW().getAffineX().toByteArray();
+        return normalizeEcCurvePoint(xArray);
     }
 
     private String getY(X509Certificate x509) {
-        return Base64.getEncoder()
-                .encodeToString(
-                        ((ECPublicKey) x509.getPublicKey()).getW().getAffineY().toByteArray());
+        // convert them to uncompressed point form
+        byte[] yArray = ((ECPublicKey) x509.getPublicKey()).getW().getAffineY().toByteArray();
+        return normalizeEcCurvePoint(yArray);
+    }
+
+    private String normalizeEcCurvePoint(byte[] array) {
+        // normalize ec curve point to always be 32 bytes (we always have positive sign, so the
+        // leading 00 can be omitted)
+        int byteArrayLength = 32;
+        byte[] unsignedArr = new byte[byteArrayLength];
+        if (array.length == 33) {
+            System.arraycopy(array, 1, unsignedArr, 0, byteArrayLength);
+        } else {
+            System.arraycopy(array, 0, unsignedArr, 0, byteArrayLength);
+        }
+
+        return Base64.getEncoder().encodeToString(unsignedArr);
     }
 
     private String getSubjectPublicKeyInfo(X509Certificate dscX509) {
