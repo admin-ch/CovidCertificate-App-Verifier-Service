@@ -159,8 +159,8 @@ public class TrustListMapper {
     private static String normalizeEcCurvePoint(byte[] array) {
         // normalize ec curve point to always be 32 bytes (we always have positive sign, so the
         // leading 00 can be omitted)
-        int byteArrayLength = 32;
-        byte[] unsignedArr = new byte[byteArrayLength];
+        var byteArrayLength = 32;
+        var unsignedArr = new byte[byteArrayLength];
         if (array.length == 33) {
             System.arraycopy(array, 1, unsignedArr, 0, byteArrayLength);
         } else {
