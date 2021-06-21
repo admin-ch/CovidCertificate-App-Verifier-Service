@@ -34,14 +34,14 @@ public class TrustListMapper {
      * @throws CertificateException if the certificate's encoding was invalid or its validity has
      *     expired
      */
-    public DbCsca mapCsca(TrustList trustList) throws CertificateException {
+    public static DbCsca mapCsca(TrustList trustList) throws CertificateException {
         return mapCsca(
                 fromBase64EncodedStr(trustList.getRawData()),
                 trustList.getCountry(),
                 trustList.getKid());
     }
 
-    private DbCsca mapCsca(X509Certificate cscaX509, String origin, String kid)
+    private static DbCsca mapCsca(X509Certificate cscaX509, String origin, String kid)
             throws CertificateEncodingException, CertificateNotYetValidException,
                     CertificateExpiredException {
         cscaX509.checkValidity();
@@ -61,7 +61,7 @@ public class TrustListMapper {
      *     expired
      * @throws UnexpectedAlgorithmException if the public key's signing algorithm isn't EC or RSA
      */
-    public DbDsc mapDsc(TrustList trustList)
+    public static DbDsc mapDsc(TrustList trustList)
             throws CertificateException, UnexpectedAlgorithmException {
         return mapDsc(
                 fromBase64EncodedStr(trustList.getRawData()),
@@ -69,7 +69,7 @@ public class TrustListMapper {
                 trustList.getKid());
     }
 
-    private DbDsc mapDsc(X509Certificate dscX509, String origin, String kid)
+    private static DbDsc mapDsc(X509Certificate dscX509, String origin, String kid)
             throws CertificateEncodingException, CertificateParsingException,
                     UnexpectedAlgorithmException, CertificateNotYetValidException,
                     CertificateExpiredException {
@@ -107,18 +107,18 @@ public class TrustListMapper {
         return dsc;
     }
 
-    private String getBase64EncodedStr(X509Certificate x509) throws CertificateEncodingException {
+    private static String getBase64EncodedStr(X509Certificate x509) throws CertificateEncodingException {
         return Base64.getEncoder().encodeToString(x509.getEncoded());
     }
 
-    public X509Certificate fromBase64EncodedStr(String base64) throws CertificateException {
+    public static X509Certificate fromBase64EncodedStr(String base64) throws CertificateException {
         var cf = CertificateFactory.getInstance("X.509");
         return (X509Certificate)
                 cf.generateCertificate(
                         new ByteArrayInputStream(Base64.getDecoder().decode(base64)));
     }
 
-    private String getUse(List<String> extendedKeyUsage) {
+    private static String getUse(List<String> extendedKeyUsage) {
         var strBldr = new StringBuilder();
         if (extendedKeyUsage != null) {
             for (String oid : extendedKeyUsage) {
@@ -132,30 +132,30 @@ public class TrustListMapper {
         return !use.isBlank() ? use : USE_SIG;
     }
 
-    private String getN(X509Certificate x509) {
+    private static String getN(X509Certificate x509) {
         return Base64.getEncoder()
                 .encodeToString(((RSAPublicKey) x509.getPublicKey()).getModulus().toByteArray());
     }
 
-    private String getE(X509Certificate x509) {
+    private static String getE(X509Certificate x509) {
         return Base64.getEncoder()
                 .encodeToString(
                         ((RSAPublicKey) x509.getPublicKey()).getPublicExponent().toByteArray());
     }
 
-    private String getX(X509Certificate x509) {
+    private static String getX(X509Certificate x509) {
         // convert them to uncompressed point form
         byte[] xArray = ((ECPublicKey) x509.getPublicKey()).getW().getAffineX().toByteArray();
         return normalizeEcCurvePoint(xArray);
     }
 
-    private String getY(X509Certificate x509) {
+    private static String getY(X509Certificate x509) {
         // convert them to uncompressed point form
         byte[] yArray = ((ECPublicKey) x509.getPublicKey()).getW().getAffineY().toByteArray();
         return normalizeEcCurvePoint(yArray);
     }
 
-    private String normalizeEcCurvePoint(byte[] array) {
+    private static String normalizeEcCurvePoint(byte[] array) {
         // normalize ec curve point to always be 32 bytes (we always have positive sign, so the
         // leading 00 can be omitted)
         int byteArrayLength = 32;
@@ -169,7 +169,7 @@ public class TrustListMapper {
         return Base64.getEncoder().encodeToString(unsignedArr);
     }
 
-    private String getSubjectPublicKeyInfo(X509Certificate dscX509) {
+    private static String getSubjectPublicKeyInfo(X509Certificate dscX509) {
         return Base64.getEncoder().encodeToString(dscX509.getPublicKey().getEncoded());
     }
 }

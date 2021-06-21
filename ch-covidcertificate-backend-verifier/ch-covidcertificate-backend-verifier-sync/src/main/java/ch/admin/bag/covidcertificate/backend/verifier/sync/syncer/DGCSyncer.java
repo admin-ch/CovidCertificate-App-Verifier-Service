@@ -24,7 +24,6 @@ public class DGCSyncer {
 
     private final DGCClient dgcClient;
     private final VerifierDataService verifierDataService;
-    private final TrustListMapper trustListMapper = new TrustListMapper();
 
     public DGCSyncer(DGCClient dgcClient, VerifierDataService verifierDataService) {
         this.dgcClient = dgcClient;
@@ -58,7 +57,7 @@ public class DGCSyncer {
         final var cscaListToInsert = new ArrayList<DbCsca>();
         for (TrustList cscaTrustList : cscaTrustLists) {
             try {
-                final var dbCsca = trustListMapper.mapCsca(cscaTrustList);
+                final var dbCsca = TrustListMapper.mapCsca(cscaTrustList);
                 dbCscaList.add(dbCsca);
                 // Only insert CSCA if it isn't already in the db
                 if (!activeCscaKeyIds.contains(dbCsca.getKeyId())) {
@@ -98,7 +97,7 @@ public class DGCSyncer {
         final var dscListToInsert = new ArrayList<DbDsc>();
         for (TrustList dscTrustList : dscTrustLists) {
             try {
-                final var dbDsc = trustListMapper.mapDsc(dscTrustList);
+                final var dbDsc = TrustListMapper.mapDsc(dscTrustList);
                 // Verify signature
                 if (verify(dbDsc)) {
                     dbDscList.add(dbDsc);
@@ -145,9 +144,9 @@ public class DGCSyncer {
         final var cscas = verifierDataService.findCscas(dbDsc.getOrigin());
         for (DbCsca dbCsca : cscas) {
             try {
-                final var dscX509 = trustListMapper.fromBase64EncodedStr(dbDsc.getCertificateRaw());
+                final var dscX509 = TrustListMapper.fromBase64EncodedStr(dbDsc.getCertificateRaw());
                 final var cscaX509 =
-                        trustListMapper.fromBase64EncodedStr(dbCsca.getCertificateRaw());
+                        TrustListMapper.fromBase64EncodedStr(dbCsca.getCertificateRaw());
                 dscX509.verify(cscaX509.getPublicKey());
                 logger.debug(
                         "Successfully verified DSC {} with CSCA {}",

@@ -5,8 +5,8 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
-import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CertificateType;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
@@ -21,8 +21,13 @@ import org.springframework.test.web.client.MockRestServiceServer;
 class DGCSyncerTest extends BaseDGCTest {
 
     private final String TEST_JSON_CSCA =
-            "src/test/resources/covidcert-verifier_test_vectors_CSCA_stub.json";
+            "src/test/resources/covidcert-verifier_test_vectors_CSCA.json";
     private final String TEST_JSON_DSC =
+            "src/test/resources/covidcert-verifier_test_vectors_DSC.json";
+
+    private final String TEST_JSON_CSCA_STUB =
+            "src/test/resources/covidcert-verifier_test_vectors_CSCA_stub.json";
+    private final String TEST_JSON_DSC_STUB =
             "src/test/resources/covidcert-verifier_test_vectors_DSC_stub.json";
 
     @Value("${dgc.baseurl}")
@@ -34,9 +39,16 @@ class DGCSyncerTest extends BaseDGCTest {
 
     @Test
     void downloadTest() throws Exception {
-        final var certType = CertificateType.CSCA;
         var expectedCSCA = Files.readString(Path.of(TEST_JSON_CSCA));
         var expectedDSC = Files.readString(Path.of(TEST_JSON_DSC));
+        setMockServer(expectedCSCA, expectedDSC);
+        dgcSyncer.sync();
+        expectedCSCA = Files.readString(Path.of(TEST_JSON_CSCA_STUB));
+        expectedDSC = Files.readString(Path.of(TEST_JSON_DSC_STUB));
+        setMockServer(expectedCSCA, expectedDSC);
+    }
+
+    private void setMockServer(String expectedCSCA, String expectedDSC) throws URISyntaxException {
         final var mockServer = MockRestServiceServer.createServer(rt);
         mockServer
                 .expect(ExpectedCount.once(), requestTo(new URI(baseurl + "/trustList/CSCA")))
@@ -52,6 +64,5 @@ class DGCSyncerTest extends BaseDGCTest {
                         withStatus(HttpStatus.OK)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .body(expectedDSC));
-        dgcSyncer.sync();
     }
 }
