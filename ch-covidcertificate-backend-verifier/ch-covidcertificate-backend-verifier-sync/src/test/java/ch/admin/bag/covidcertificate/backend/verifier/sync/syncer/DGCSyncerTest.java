@@ -39,13 +39,10 @@ class DGCSyncerTest extends BaseDGCTest {
 
     @Test
     void downloadTest() throws Exception {
-        var expectedCSCA = Files.readString(Path.of(TEST_JSON_CSCA));
-        var expectedDSC = Files.readString(Path.of(TEST_JSON_DSC));
+        String expectedCSCA = Files.readString(Path.of(TEST_JSON_CSCA_STUB));
+        String expectedDSC = Files.readString(Path.of(TEST_JSON_DSC_STUB));
         setMockServer(expectedCSCA, expectedDSC);
         dgcSyncer.sync();
-        expectedCSCA = Files.readString(Path.of(TEST_JSON_CSCA_STUB));
-        expectedDSC = Files.readString(Path.of(TEST_JSON_DSC_STUB));
-        setMockServer(expectedCSCA, expectedDSC);
     }
 
     private void setMockServer(String expectedCSCA, String expectedDSC) throws URISyntaxException {
