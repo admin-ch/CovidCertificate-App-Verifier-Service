@@ -41,7 +41,7 @@ public class TrustListMapper {
                 trustList.getKid());
     }
 
-    private static DbCsca mapCsca(X509Certificate cscaX509, String origin, String kid)
+    public static DbCsca mapCsca(X509Certificate cscaX509, String origin, String kid)
             throws CertificateEncodingException, CertificateNotYetValidException,
                     CertificateExpiredException {
         cscaX509.checkValidity();
@@ -69,7 +69,7 @@ public class TrustListMapper {
                 trustList.getKid());
     }
 
-    private static DbDsc mapDsc(X509Certificate dscX509, String origin, String kid)
+    public static DbDsc mapDsc(X509Certificate dscX509, String origin, String kid)
             throws CertificateEncodingException, CertificateParsingException,
                     UnexpectedAlgorithmException, CertificateNotYetValidException,
                     CertificateExpiredException {
@@ -107,7 +107,8 @@ public class TrustListMapper {
         return dsc;
     }
 
-    private static String getBase64EncodedStr(X509Certificate x509) throws CertificateEncodingException {
+    public static String getBase64EncodedStr(X509Certificate x509)
+            throws CertificateEncodingException {
         return Base64.getEncoder().encodeToString(x509.getEncoded());
     }
 
@@ -118,7 +119,7 @@ public class TrustListMapper {
                         new ByteArrayInputStream(Base64.getDecoder().decode(base64)));
     }
 
-    private static String getUse(List<String> extendedKeyUsage) {
+    public static String getUse(List<String> extendedKeyUsage) {
         var strBldr = new StringBuilder();
         if (extendedKeyUsage != null) {
             for (String oid : extendedKeyUsage) {
