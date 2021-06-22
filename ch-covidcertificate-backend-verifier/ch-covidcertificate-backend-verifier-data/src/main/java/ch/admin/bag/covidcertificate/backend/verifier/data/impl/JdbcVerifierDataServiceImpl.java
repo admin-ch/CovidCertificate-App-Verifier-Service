@@ -54,7 +54,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     @Override
     @Transactional
     public void insertCscas(List<DbCsca> cscas) {
-        logger.info(
+        logger.debug(
                 "Inserting CSCA certificates with kid's: {}",
                 cscas.stream().map(DbCsca::getKeyId).collect(Collectors.toList()));
         List<SqlParameterSource> batchParams = new ArrayList<>();

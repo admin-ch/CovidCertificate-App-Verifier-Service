@@ -65,6 +65,16 @@ public class DGCSyncer {
                 if (!activeCscaKeyIds.contains(dbCsca.getKeyId())) {
                     cscaListToInsert.add(dbCsca);
                 }
+            } catch (CertificateNotYetValidException e) {
+                logger.info(
+                        "Dropping CSCA trustlist {} of origin {}: Certificate not yet valid",
+                        cscaTrustList.getKid(),
+                        cscaTrustList.getCountry());
+            } catch (CertificateExpiredException e) {
+                logger.info(
+                        "Dropping CSCA trustlist {} of origin {}: Certificate expired",
+                        cscaTrustList.getKid(),
+                        cscaTrustList.getCountry());
             } catch (CertificateException e) {
                 logger.info(
                         "Dropping CSCA trustlist {} of origin {}: Couldn't map to X509 certificate",
@@ -115,14 +125,14 @@ public class DGCSyncer {
                 }
             } catch (CertificateNotYetValidException e) {
                 logger.info(
-                    "Dropping DSC trustlist {} of origin {}: Certificate not yet valid",
-                    dscTrustList.getKid(),
-                    dscTrustList.getCountry());
+                        "Dropping DSC trustlist {} of origin {}: Certificate not yet valid",
+                        dscTrustList.getKid(),
+                        dscTrustList.getCountry());
             } catch (CertificateExpiredException e) {
                 logger.info(
-                    "Dropping DSC trustlist {} of origin {}: Certificate expired",
-                    dscTrustList.getKid(),
-                    dscTrustList.getCountry());
+                        "Dropping DSC trustlist {} of origin {}: Certificate expired",
+                        dscTrustList.getKid(),
+                        dscTrustList.getCountry());
             } catch (CertificateException e) {
                 logger.info(
                         "Dropping DSC trustlist {} of origin {}: Couldn't map to X509 certificate",
