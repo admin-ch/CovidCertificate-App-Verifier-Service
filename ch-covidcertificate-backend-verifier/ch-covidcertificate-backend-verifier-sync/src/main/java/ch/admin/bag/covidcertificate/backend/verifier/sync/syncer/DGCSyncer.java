@@ -12,6 +12,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -111,6 +113,16 @@ public class DGCSyncer {
                             dscTrustList.getKid(),
                             dscTrustList.getCountry());
                 }
+            } catch (CertificateNotYetValidException e) {
+                logger.info(
+                    "Dropping DSC trustlist {} of origin {}: Certificate not yet valid",
+                    dscTrustList.getKid(),
+                    dscTrustList.getCountry());
+            } catch (CertificateExpiredException e) {
+                logger.info(
+                    "Dropping DSC trustlist {} of origin {}: Certificate expired",
+                    dscTrustList.getKid(),
+                    dscTrustList.getCountry());
             } catch (CertificateException e) {
                 logger.info(
                         "Dropping DSC trustlist {} of origin {}: Couldn't map to X509 certificate",
