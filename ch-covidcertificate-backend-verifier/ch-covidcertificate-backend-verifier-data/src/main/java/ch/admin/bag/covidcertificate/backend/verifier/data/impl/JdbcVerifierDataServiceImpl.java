@@ -150,18 +150,6 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     @Override
     @Transactional(readOnly = true)
     public List<ClientCert> findDscs(Long since, CertFormat certFormat) {
-        List<String> formatSpecificSelectFields;
-        switch (certFormat) {
-            case IOS:
-                formatSpecificSelectFields = List.of("subject_public_key_info");
-                break;
-            case ANDROID:
-                formatSpecificSelectFields = List.of("n", "e");
-                break;
-            default:
-                throw new RuntimeException("unexpected cert format received: " + certFormat);
-        }
-
         String sql =
                 "select pk_dsc_id,"
                         + " key_id,"
@@ -170,15 +158,27 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
                         + " alg,"
                         + " crv,"
                         + " x,"
-                        + " y, "
-                        + String.join(", ", formatSpecificSelectFields)
-                        + " from t_document_signer_certificate"
+                        + " y, ";
+        switch (certFormat) {
+            case IOS:
+                sql += "subject_public_key_info";
+                break;
+            case ANDROID:
+                sql += "n, e";
+                break;
+            default:
+                throw new RuntimeException("unexpected cert format received: " + certFormat);
+        }
+
+        sql +=
+                " from t_document_signer_certificate"
                         + " where pk_dsc_id > :pk_dsc_id"
                         + " order by pk_dsc_id asc"
-                        + " limit "
-                        + MAX_DSC_BATCH_COUNT;
-        MapSqlParameterSource params = new MapSqlParameterSource();
+                        + " limit :max_dsc_batch_count";
+
+        var params = new MapSqlParameterSource();
         params.addValue("pk_dsc_id", since);
+        params.addValue("max_dsc_batch_count", MAX_DSC_BATCH_COUNT);
         return jt.query(sql, params, new ClientCertRowMapper(certFormat));
     }
 
