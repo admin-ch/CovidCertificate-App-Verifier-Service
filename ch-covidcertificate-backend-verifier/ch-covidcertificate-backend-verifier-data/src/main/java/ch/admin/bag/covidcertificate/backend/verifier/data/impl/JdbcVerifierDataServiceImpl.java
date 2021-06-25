@@ -53,7 +53,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional
-    public void insertCscas(List<DbCsca> cscas) {
+    public void insertCSCAs(List<DbCsca> cscas) {
         logger.debug(
                 "Inserting CSCA certificates with kid's: {}",
                 cscas.stream().map(DbCsca::getKeyId).collect(Collectors.toList()));
@@ -83,7 +83,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DbCsca> findCscas(String origin) {
+    public List<DbCsca> findCSCAs(String origin) {
         final var sql =
                 "select * from t_country_specific_certificate_authority where origin = :origin";
         final var params = new MapSqlParameterSource();
@@ -93,14 +93,14 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<String> findActiveCscaKeyIds() {
+    public List<String> findActiveCSCAKeyIds() {
         final var sql = "select key_id from t_country_specific_certificate_authority";
         return jt.queryForList(sql, new MapSqlParameterSource(), String.class);
     }
 
     @Override
     @Transactional
-    public void insertDsc(List<DbDsc> dsc) {
+    public void insertDSC(List<DbDsc> dsc) {
         List<SqlParameterSource> batchParams = new ArrayList<>();
         if (!dsc.isEmpty()) {
             for (DbDsc dbDsc : dsc) {
@@ -112,7 +112,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional
-    public int removeDscsNotIn(List<String> keyIdsToKeep) {
+    public int removeDSCsNotIn(List<String> keyIdsToKeep) {
         var sql = "delete from t_document_signer_certificate";
         final var params = new MapSqlParameterSource();
         if (!keyIdsToKeep.isEmpty()) {
@@ -124,7 +124,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional
-    public int removeDscsWithCSCAIn(List<String> cscaKidsToRemove) {
+    public int removeDSCsWithCSCAIn(List<String> cscaKidsToRemove) {
         if (!cscaKidsToRemove.isEmpty()) {
             var sql = "delete from t_document_signer_certificate where fk_csca_id in (:fk_csca_id)";
             final var params = new MapSqlParameterSource();
@@ -149,7 +149,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ClientCert> findDscs(Long since, CertFormat certFormat) {
+    public List<ClientCert> findDSCs(Long since, CertFormat certFormat) {
         String sql =
                 "select pk_dsc_id,"
                         + " key_id,"
@@ -174,14 +174,14 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<String> findActiveDscKeyIds() {
+    public List<String> findActiveDSCKeyIds() {
         String sql = "select key_id from t_document_signer_certificate order by pk_dsc_id";
         return jt.queryForList(sql, new MapSqlParameterSource(), String.class);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public long findMaxDscPkId() {
+    public long findMaxDSCPkId() {
         try {
             String sql =
                     "select pk_dsc_id from t_document_signer_certificate"
@@ -194,7 +194,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     }
 
     @Override
-    public int getMaxDscBatchCount() {
+    public int getMaxDSCBatchCount() {
         return MAX_DSC_BATCH_COUNT;
     }
 

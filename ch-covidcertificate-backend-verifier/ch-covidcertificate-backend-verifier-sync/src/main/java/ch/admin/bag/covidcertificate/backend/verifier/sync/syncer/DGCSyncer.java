@@ -52,7 +52,7 @@ public class DGCSyncer {
 
     private void downloadCSCAs() {
         // Check which CSCAs are currently stored in the db
-        final var activeCscaKeyIds = verifierDataService.findActiveCscaKeyIds();
+        final var activeCscaKeyIds = verifierDataService.findActiveCSCAKeyIds();
         // Download CSCAs and check validity
         final var cscaTrustLists = dgcClient.download(CertificateType.CSCA);
         final var dbCscaList = new ArrayList<DbCsca>();
@@ -85,11 +85,11 @@ public class DGCSyncer {
         // Remove DSCs whose CSCA is about to be removed
         final var removedCscaList = new ArrayList<>(activeCscaKeyIds);
         dbCscaList.stream().map(DbCsca::getKeyId).forEach(removedCscaList::remove);
-        final var removedDSCs = verifierDataService.removeDscsWithCSCAIn(removedCscaList);
+        final var removedDSCs = verifierDataService.removeDSCsWithCSCAIn(removedCscaList);
         // Remove CSCAs that weren't returned by the download
         final var removedCSCAs = verifierDataService.removeCSCAs(removedCscaList);
         // Insert CSCAs
-        verifierDataService.insertCscas(cscaListToInsert);
+        verifierDataService.insertCSCAs(cscaListToInsert);
         logger.info(
                 "Downloaded {} CSCA certificates: Dropped {}, Inserted {}, Removed {} CSCAs and {} DSCs, Left {} in DB",
                 cscaTrustLists.length,
@@ -102,7 +102,7 @@ public class DGCSyncer {
 
     private void downloadDSCs() {
         // Check which DSCs are currently stored in the db
-        final var activeDscKeyIds = verifierDataService.findActiveDscKeyIds();
+        final var activeDscKeyIds = verifierDataService.findActiveDSCKeyIds();
         // Download and insert DSC certificates
         final var dscTrustLists = dgcClient.download(CertificateType.DSC);
         final var dbDscList = new ArrayList<DbDsc>();
@@ -148,10 +148,10 @@ public class DGCSyncer {
         }
         // Remove DSCs that weren't returned by the download
         final var removedDSCs =
-                verifierDataService.removeDscsNotIn(
+                verifierDataService.removeDSCsNotIn(
                         dbDscList.stream().map(DbDsc::getKeyId).collect(Collectors.toList()));
         // Insert DSCs
-        verifierDataService.insertDsc(dscListToInsert);
+        verifierDataService.insertDSC(dscListToInsert);
         logger.info(
                 "Downloaded {} DSC certificates: Dropped {}, Inserted {}, Removed {}, Left {} in DB",
                 dscTrustLists.length,
@@ -163,7 +163,7 @@ public class DGCSyncer {
 
     private boolean verify(DbDsc dbDsc) {
         logger.debug("Verifying signature of DSC with kid {}", dbDsc.getKeyId());
-        final var cscas = verifierDataService.findCscas(dbDsc.getOrigin());
+        final var cscas = verifierDataService.findCSCAs(dbDsc.getOrigin());
         for (DbCsca dbCsca : cscas) {
             try {
                 final var dscX509 = TrustListMapper.fromBase64EncodedStr(dbDsc.getCertificateRaw());

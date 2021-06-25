@@ -22,11 +22,11 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
     @Test
     @Transactional
     void insertCscasTest() {
-        verifierDataService.insertCscas(Collections.emptyList());
-        assertTrue(verifierDataService.findCscas("CH").isEmpty());
+        verifierDataService.insertCSCAs(Collections.emptyList());
+        assertTrue(verifierDataService.findCSCAs("CH").isEmpty());
         var dbCsca = getDefaultCSCA(0, "CH");
-        verifierDataService.insertCscas(Collections.singletonList(dbCsca));
-        final var certList = verifierDataService.findCscas("CH");
+        verifierDataService.insertCSCAs(Collections.singletonList(dbCsca));
+        final var certList = verifierDataService.findCSCAs("CH");
         assertEquals(1, certList.size());
         assertEquals(dbCsca.getKeyId(), certList.get(0).getKeyId());
         assertNotNull(certList.get(0).getImportedAt());
@@ -35,20 +35,20 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
     @Test
     @Transactional
     void removeCscasNotInTest() {
-        assertTrue(verifierDataService.findCscas("CH").isEmpty());
+        assertTrue(verifierDataService.findCSCAs("CH").isEmpty());
         verifierDataService.removeCSCAs(Collections.emptyList());
         verifierDataService.removeCSCAs(Collections.singletonList("keyid_0"));
-        verifierDataService.insertCscas(Collections.singletonList(getDefaultCSCA(0, "CH")));
-        verifierDataService.insertCscas(Collections.singletonList(getDefaultCSCA(1, "CH")));
+        verifierDataService.insertCSCAs(Collections.singletonList(getDefaultCSCA(0, "CH")));
+        verifierDataService.insertCSCAs(Collections.singletonList(getDefaultCSCA(1, "CH")));
         verifierDataService.removeCSCAs(Collections.singletonList("keyid_0"));
-        assertEquals(1, verifierDataService.findCscas("CH").size());
+        assertEquals(1, verifierDataService.findCSCAs("CH").size());
     }
 
     @Test
     @Transactional
     void findCscaTest() {
-        verifierDataService.insertCscas(List.of(getDefaultCSCA(0, "CH"), getDefaultCSCA(1, "DE")));
-        assertEquals(1, verifierDataService.findCscas("CH").size());
+        verifierDataService.insertCSCAs(List.of(getDefaultCSCA(0, "CH"), getDefaultCSCA(1, "DE")));
+        assertEquals(1, verifierDataService.findCSCAs("CH").size());
     }
 
     @Test
@@ -56,9 +56,9 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
     void findActiveCscaKeyIdsTest() {
         final var chCSCA = getDefaultCSCA(0, "CH");
         final var deCSCA = getDefaultCSCA(1, "DE");
-        verifierDataService.insertCscas(List.of(chCSCA, deCSCA));
+        verifierDataService.insertCSCAs(List.of(chCSCA, deCSCA));
         final var actualKeyIds = List.of(chCSCA.getKeyId(), deCSCA.getKeyId());
-        final var activeCscaKeyIds = verifierDataService.findActiveCscaKeyIds();
+        final var activeCscaKeyIds = verifierDataService.findActiveCSCAKeyIds();
         assertTrue(
                 activeCscaKeyIds.size() == actualKeyIds.size()
                         && activeCscaKeyIds.containsAll(actualKeyIds)
@@ -68,74 +68,74 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
     @Test
     @Transactional
     void insertDscTest() {
-        verifierDataService.insertCscas(Collections.singletonList(getDefaultCSCA(0, "CH")));
-        final var cscaId = verifierDataService.findCscas("CH").get(0).getId();
-        verifierDataService.insertDsc(Collections.emptyList());
-        assertTrue(verifierDataService.findActiveDscKeyIds().isEmpty());
+        verifierDataService.insertCSCAs(Collections.singletonList(getDefaultCSCA(0, "CH")));
+        final var cscaId = verifierDataService.findCSCAs("CH").get(0).getId();
+        verifierDataService.insertDSC(Collections.emptyList());
+        assertTrue(verifierDataService.findActiveDSCKeyIds().isEmpty());
         final var rsaDsc = getRSADsc(0, "CH", cscaId);
-        verifierDataService.insertDsc(Collections.singletonList(rsaDsc));
-        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+        verifierDataService.insertDSC(Collections.singletonList(rsaDsc));
+        assertEquals(1, verifierDataService.findActiveDSCKeyIds().size());
         assertEquals(
                 rsaDsc.getKeyId(),
-                verifierDataService.findDscs(0L, CertFormat.ANDROID).get(0).getKeyId());
+                verifierDataService.findDSCs(0L, CertFormat.ANDROID).get(0).getKeyId());
     }
 
     @Test
     @Transactional
     void removeDscsNotInTest() {
-        verifierDataService.insertCscas(Collections.singletonList(getDefaultCSCA(0, "CH")));
-        final var cscas = verifierDataService.findCscas("CH");
+        verifierDataService.insertCSCAs(Collections.singletonList(getDefaultCSCA(0, "CH")));
+        final var cscas = verifierDataService.findCSCAs("CH");
         assertEquals(1, cscas.size());
         final var cscaId = cscas.get(0).getId();
         final var rsaDsc = getRSADsc(0, "CH", cscaId);
-        verifierDataService.insertDsc(Collections.singletonList(rsaDsc));
-        verifierDataService.removeDscsNotIn(Collections.emptyList());
-        assertTrue(verifierDataService.findActiveDscKeyIds().isEmpty());
-        verifierDataService.removeDscsNotIn(Collections.singletonList("keyid_0"));
+        verifierDataService.insertDSC(Collections.singletonList(rsaDsc));
+        verifierDataService.removeDSCsNotIn(Collections.emptyList());
+        assertTrue(verifierDataService.findActiveDSCKeyIds().isEmpty());
+        verifierDataService.removeDSCsNotIn(Collections.singletonList("keyid_0"));
         final var ecDsc = getECDsc(1, "CH", cscaId);
-        verifierDataService.insertDsc(List.of(rsaDsc, ecDsc));
-        verifierDataService.removeDscsNotIn(Collections.singletonList(rsaDsc.getKeyId()));
-        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+        verifierDataService.insertDSC(List.of(rsaDsc, ecDsc));
+        verifierDataService.removeDSCsNotIn(Collections.singletonList(rsaDsc.getKeyId()));
+        assertEquals(1, verifierDataService.findActiveDSCKeyIds().size());
     }
 
     @Test
     @Transactional
     void removeDscsWithCSCAIn() {
-        verifierDataService.insertCscas(Collections.singletonList(getDefaultCSCA(0, "DE")));
-        verifierDataService.insertCscas(Collections.singletonList(getDefaultCSCA(1, "DE")));
-        final var cscas = verifierDataService.findCscas("DE");
+        verifierDataService.insertCSCAs(Collections.singletonList(getDefaultCSCA(0, "DE")));
+        verifierDataService.insertCSCAs(Collections.singletonList(getDefaultCSCA(1, "DE")));
+        final var cscas = verifierDataService.findCSCAs("DE");
         assertEquals(2, cscas.size());
         final var cscaId0 = cscas.get(0).getId();
         final var cscaId1 = cscas.get(1).getId();
         final var rsaDsc = getRSADsc(0, "DE", cscaId0);
         final var ecDsc = getECDsc(1, "DE", cscaId1);
-        verifierDataService.insertDsc(List.of(rsaDsc, ecDsc));
-        verifierDataService.removeDscsWithCSCAIn(Collections.emptyList());
-        assertEquals(2, verifierDataService.findActiveDscKeyIds().size());
-        verifierDataService.removeDscsWithCSCAIn(List.of(cscas.get(0).getKeyId()));
-        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+        verifierDataService.insertDSC(List.of(rsaDsc, ecDsc));
+        verifierDataService.removeDSCsWithCSCAIn(Collections.emptyList());
+        assertEquals(2, verifierDataService.findActiveDSCKeyIds().size());
+        verifierDataService.removeDSCsWithCSCAIn(List.of(cscas.get(0).getKeyId()));
+        assertEquals(1, verifierDataService.findActiveDSCKeyIds().size());
     }
 
     @Test
     @Transactional
     void findDscsTest() {
-        verifierDataService.insertCscas(Collections.singletonList(getDefaultCSCA(0, "CH")));
-        final var cscaId = verifierDataService.findCscas("CH").get(0).getId();
-        verifierDataService.insertDsc(
+        verifierDataService.insertCSCAs(Collections.singletonList(getDefaultCSCA(0, "CH")));
+        final var cscaId = verifierDataService.findCSCAs("CH").get(0).getId();
+        verifierDataService.insertDSC(
                 List.of(getRSADsc(0, "CH", cscaId), getECDsc(1, "DE", cscaId)));
-        assertEquals(2, verifierDataService.findDscs(0L, CertFormat.IOS).size());
+        assertEquals(2, verifierDataService.findDSCs(0L, CertFormat.IOS).size());
     }
 
     @Test
     @Transactional
     void findMaxDscsTest() {
-        verifierDataService.insertCscas(Collections.singletonList(getDefaultCSCA(0, "CH")));
-        final var cscaId = verifierDataService.findCscas("CH").get(0).getId();
-        verifierDataService.insertDsc(
+        verifierDataService.insertCSCAs(Collections.singletonList(getDefaultCSCA(0, "CH")));
+        final var cscaId = verifierDataService.findCSCAs("CH").get(0).getId();
+        verifierDataService.insertDSC(
                 List.of(getRSADsc(0, "CH", cscaId), getECDsc(1, "DE", cscaId)));
-        final var maxDscPkId = verifierDataService.findMaxDscPkId();
-        assertTrue(verifierDataService.findDscs(maxDscPkId, CertFormat.IOS).isEmpty());
-        assertEquals(1, verifierDataService.findDscs(maxDscPkId - 1, CertFormat.IOS).size());
+        final var maxDscPkId = verifierDataService.findMaxDSCPkId();
+        assertTrue(verifierDataService.findDSCs(maxDscPkId, CertFormat.IOS).isEmpty());
+        assertEquals(1, verifierDataService.findDSCs(maxDscPkId - 1, CertFormat.IOS).size());
     }
 
     private DbCsca getDefaultCSCA(int idSuffix, String origin) {
