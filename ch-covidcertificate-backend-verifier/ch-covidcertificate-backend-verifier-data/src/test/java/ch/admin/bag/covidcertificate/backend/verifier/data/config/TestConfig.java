@@ -10,7 +10,9 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.data.config;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.AppTokenDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcAppTokenDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
 import javax.sql.DataSource;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -24,5 +26,10 @@ public class TestConfig {
     @Bean
     public VerifierDataService verifierDataService(DataSource dataSource) {
         return new JdbcVerifierDataServiceImpl(dataSource);
+    }
+
+    @Bean
+    public AppTokenDataService appTokenDataService(DataSource dataSource) {
+        return new JdbcAppTokenDataServiceImpl(dataSource);
     }
 }
