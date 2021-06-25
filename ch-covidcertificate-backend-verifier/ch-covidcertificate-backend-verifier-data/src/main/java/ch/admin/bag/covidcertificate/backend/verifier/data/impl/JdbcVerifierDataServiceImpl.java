@@ -158,20 +158,10 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
                         + " alg,"
                         + " crv,"
                         + " x,"
-                        + " y, ";
-        switch (certFormat) {
-            case IOS:
-                sql += "subject_public_key_info";
-                break;
-            case ANDROID:
-                sql += "n, e";
-                break;
-            default:
-                throw new RuntimeException("unexpected cert format received: " + certFormat);
-        }
-
-        sql +=
-                " from t_document_signer_certificate"
+                        + " y, "
+                        + "subject_public_key_info, "
+                        + "n, e"
+                        + " from t_document_signer_certificate"
                         + " where pk_dsc_id > :pk_dsc_id"
                         + " order by pk_dsc_id asc"
                         + " limit :max_dsc_batch_count";
