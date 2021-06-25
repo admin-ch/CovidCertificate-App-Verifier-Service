@@ -41,7 +41,7 @@ public interface VerifierDataService {
     public List<String> findActiveCSCAKeyIds();
 
     /** inserts the given DSC into the db */
-    public void insertDSC(List<DbDsc> dsc);
+    public void insertDSCs(List<DbDsc> dsc);
 
     /** removes all DSCs with key ids not in the given list */
     public int removeDSCsNotIn(List<String> keyIdsToKeep);
