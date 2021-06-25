@@ -2,7 +2,6 @@ package ch.admin.bag.covidcertificate.backend.verifier.ws.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.AppTokenDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.config.model.ApiKeyConfig;
-import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -15,10 +14,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableScheduling
 public class WSSchedulingConfig {
 
+    private static final Logger logger = LoggerFactory.getLogger(WSSchedulingConfig.class);
     private final ApiKeyConfig apiKeyConfig;
     private final AppTokenDataService appTokenDataService;
-
-    private static final Logger logger = LoggerFactory.getLogger(WSSchedulingConfig.class);
 
     public WSSchedulingConfig(ApiKeyConfig apiKeyConfig, AppTokenDataService appTokenDataService) {
         this.apiKeyConfig = apiKeyConfig;
