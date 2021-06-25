@@ -27,6 +27,10 @@ public class TrustListMapper {
     private static final String P256 = "P-256";
     private static final String USE_SIG = "sig";
 
+    private TrustListMapper() {
+        throw new IllegalStateException("Utility class: Only use static methods");
+    }
+
     /**
      * Map a TrustList as returned by the DGC gateway to a DbCsca object. Note that an exception is
      * thrown if the certificate is no longer valid.
