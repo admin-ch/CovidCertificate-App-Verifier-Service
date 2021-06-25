@@ -151,7 +151,7 @@ public class DGCSyncer {
                 verifierDataService.removeDSCsNotIn(
                         dbDscList.stream().map(DbDsc::getKeyId).collect(Collectors.toList()));
         // Insert DSCs
-        verifierDataService.insertDSC(dscListToInsert);
+        verifierDataService.insertDSCs(dscListToInsert);
         logger.info(
                 "Downloaded {} DSC certificates: Dropped {}, Inserted {}, Removed {}, Left {} in DB",
                 dscTrustLists.length,

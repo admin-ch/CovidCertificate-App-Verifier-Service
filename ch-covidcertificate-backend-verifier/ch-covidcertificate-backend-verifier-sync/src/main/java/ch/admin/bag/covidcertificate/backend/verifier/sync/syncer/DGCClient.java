@@ -55,7 +55,8 @@ public class DGCClient {
                 }
                 return new TrustList[0];
             } else {
-                throw e;
+                logger.error("Download returned error code {}", e.getStatusCode());
+                return new TrustList[0];
             }
         }
         final var body = response.getBody();

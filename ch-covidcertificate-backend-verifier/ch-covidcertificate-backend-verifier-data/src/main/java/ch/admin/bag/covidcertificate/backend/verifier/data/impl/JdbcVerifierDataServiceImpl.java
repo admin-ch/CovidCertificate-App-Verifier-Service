@@ -100,7 +100,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional
-    public void insertDSC(List<DbDsc> dsc) {
+    public void insertDSCs(List<DbDsc> dsc) {
         List<SqlParameterSource> batchParams = new ArrayList<>();
         if (!dsc.isEmpty()) {
             for (DbDsc dbDsc : dsc) {
