@@ -10,7 +10,9 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.ws.config;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.AppTokenDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcAppTokenDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
@@ -126,6 +128,11 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     @Bean
     public VerifierDataService verifierDataService(DataSource dataSource) {
         return new JdbcVerifierDataServiceImpl(dataSource);
+    }
+
+    @Bean
+    public AppTokenDataService appTokenDataService(DataSource dataSource) {
+        return new JdbcAppTokenDataServiceImpl(dataSource);
     }
 
     @Bean
