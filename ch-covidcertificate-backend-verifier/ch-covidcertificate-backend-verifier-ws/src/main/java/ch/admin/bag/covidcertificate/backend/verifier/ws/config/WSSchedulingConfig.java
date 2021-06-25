@@ -27,7 +27,6 @@ public class WSSchedulingConfig {
 
     // Call method every 5 minutes starting at 0am, of every day
     @Scheduled(cron = "${ws.authentication.cron:0 0/5 0 ? * *}")
-    @Scheduled(fixedRate = 30000, initialDelay = 10000)
     public void updateAppTokens() {
         logger.info("Updating app tokens");
         final var appTokens = appTokenDataService.getAppTokens();
