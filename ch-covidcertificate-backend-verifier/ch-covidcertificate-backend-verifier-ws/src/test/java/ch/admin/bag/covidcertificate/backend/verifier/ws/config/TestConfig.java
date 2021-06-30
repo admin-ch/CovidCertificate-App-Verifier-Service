@@ -28,7 +28,6 @@ import org.springframework.web.client.RestTemplate;
 public class TestConfig extends WsBaseConfig {
     private static final Logger logger = LoggerFactory.getLogger(TestConfig.class);
 
-    // TODO: Mock endpoint (otherwise tests will fail once BIT turns off endpoint)
     @Value("${revocationList.baseurl}")
     String baseurl = "https://covidcertificate-management-d.bag.admin.ch/api";
 

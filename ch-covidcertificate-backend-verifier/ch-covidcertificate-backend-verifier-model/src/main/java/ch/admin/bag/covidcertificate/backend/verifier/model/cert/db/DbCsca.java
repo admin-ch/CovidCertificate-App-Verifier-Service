@@ -10,13 +10,13 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.model.cert.db;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 public class DbCsca {
     private Long id;
     private String keyId;
     private String certificateRaw;
-    private LocalDateTime importedAt;
+    private Instant importedAt;
     private String origin;
     private String subjectPrincipalName;
 
@@ -44,11 +44,11 @@ public class DbCsca {
         this.certificateRaw = certificateRaw;
     }
 
-    public LocalDateTime getImportedAt() {
+    public Instant getImportedAt() {
         return importedAt;
     }
 
-    public void setImportedAt(LocalDateTime importedAt) {
+    public void setImportedAt(Instant importedAt) {
         this.importedAt = importedAt;
     }
 

@@ -1,0 +1,6 @@
+{
+  "code": "0x401",
+  "problem": "example: Signer Certificate is unknown.",
+  "sendValue": "1234",
+  "details": "example: Use a known upload certificate to upload signer information."
+}

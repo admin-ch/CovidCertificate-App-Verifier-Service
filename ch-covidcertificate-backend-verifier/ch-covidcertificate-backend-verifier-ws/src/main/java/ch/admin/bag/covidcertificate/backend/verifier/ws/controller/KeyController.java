@@ -66,7 +66,7 @@ public class KeyController {
     public @ResponseBody ResponseEntity<CertsResponse> getSignerCerts(
             @RequestParam(required = false, defaultValue = "0") Long since,
             @RequestParam CertFormat certFormat) {
-        List<ClientCert> dscs = verifierDataService.findDscs(since, certFormat);
+        List<ClientCert> dscs = verifierDataService.findDSCs(since, certFormat);
         return ResponseEntity.ok()
                 .headers(getKeysUpdatesHeaders(dscs))
                 .cacheControl(CacheControl.maxAge(CacheUtil.KEYS_UPDATE_MAX_AGE))
@@ -79,9 +79,9 @@ public class KeyController {
                 dscs.stream()
                         .mapToLong(dsc -> dsc.getPkId())
                         .max()
-                        .orElse(verifierDataService.findMaxDscPkId());
+                        .orElse(verifierDataService.findMaxDSCPkId());
         headers.add(NEXT_SINCE_HEADER, nextSince.toString());
-        if (dscs.size() < verifierDataService.getMaxDscBatchCount()) {
+        if (dscs.size() < verifierDataService.getMaxDSCBatchCount()) {
             headers.add(UP_TO_DATE_HEADER, "true");
         }
         return headers;
@@ -98,7 +98,7 @@ public class KeyController {
     @GetMapping(value = "list")
     public @ResponseBody ResponseEntity<ActiveCertsResponse> getActiveSignerCertKeyIds(
             WebRequest request) {
-        List<String> activeKeyIds = verifierDataService.findActiveDscKeyIds();
+        List<String> activeKeyIds = verifierDataService.findActiveDSCKeyIds();
 
         // check etag
         String currentEtag = String.valueOf(EtagUtil.getUnsortedListHashcode(activeKeyIds));

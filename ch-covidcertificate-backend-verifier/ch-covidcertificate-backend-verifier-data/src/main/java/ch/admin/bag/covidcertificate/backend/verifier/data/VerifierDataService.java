@@ -18,58 +18,45 @@ import java.util.List;
 
 public interface VerifierDataService {
 
-    /**
-     * inserts the given cscas into the db
-     *
-     * @param cscas
-     */
-    public void insertCscas(List<DbCsca> cscas);
+    /** inserts the given CSCAs into the db */
+    public void insertCSCAs(List<DbCsca> cscas);
 
     /**
-     * removes all csas with key ids not in the given list
+     * removes all csas with key ids in the given list
      *
-     * @param keyIdsToKeep
-     * @return number of removed cscas
+     * @param keyIds
+     * @return number of removed CSCAs
      */
-    public int removeCscasNotIn(List<String> keyIdsToKeep);
+    public int removeCSCAs(List<String> keyIds);
 
     /**
-     * inserts the given dsc into the db
+     * finds all CSCAs of the given origin country
      *
-     * @param dsc
+     * @param origin abbreviation for country of origin (e.g. "CH")
+     * @return list of all CSCAs with the corresponding origin
      */
-    public void insertDsc(DbDsc dsc);
+    public List<DbCsca> findCSCAs(String origin);
 
-    /**
-     * removes all dscs with key ids not in the given list
-     *
-     * @param keyIdsToKeep
-     * @return number of removed dscs
-     */
-    public int removeDscsNotIn(List<String> keyIdsToKeep);
+    /** returns a list of key ids of all active CSCAs */
+    public List<String> findActiveCSCAKeyIds();
 
-    /**
-     * returns the next batch of dscs after since in the requested format
-     *
-     * @param since
-     * @param certFormat
-     * @return
-     */
-    public List<ClientCert> findDscs(Long since, CertFormat certFormat);
+    /** inserts the given DSC into the db */
+    public void insertDSCs(List<DbDsc> dsc);
 
-    /**
-     * returns a list of key ids of all active dscs
-     *
-     * @return
-     */
-    public List<String> findActiveDscKeyIds();
+    /** removes all DSCs with key ids not in the given list */
+    public int removeDSCsNotIn(List<String> keyIdsToKeep);
 
-    /**
-     * returns the highest dsc pk id
-     *
-     * @return
-     */
-    public long findMaxDscPkId();
+    /** removes all DSCs signed by a CSCA in the given list */
+    public int removeDSCsWithCSCAIn(List<String> cscaKidsToRemove);
 
-    public int getMaxDscBatchCount();
+    /** returns the next batch of DSCs after since in the requested format */
+    public List<ClientCert> findDSCs(Long since, CertFormat certFormat);
+
+    /** returns a list of key ids of all active DSCs */
+    public List<String> findActiveDSCKeyIds();
+
+    /** returns the highest DSC pk id */
+    public long findMaxDSCPkId();
+
+    public int getMaxDSCBatchCount();
 }
