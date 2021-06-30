@@ -31,8 +31,8 @@
         </triggeringPolicy>
     </appender>
 
-    <logger name="ch.admin.bag.covidcertificate" level="DEBUG"/>
-    <!--    <logger name="org.springframework.web" level="DEBUG"/>-->
+    <logger name="ch.admin.bag.covidcertificate" level="INFO"/>
+    <!--    <logger name="org.springframework.web" level="INFO"/>-->
     <root level="INFO">
         <appender-ref ref="logfile"/>
         <appender-ref ref="stdout"/>
