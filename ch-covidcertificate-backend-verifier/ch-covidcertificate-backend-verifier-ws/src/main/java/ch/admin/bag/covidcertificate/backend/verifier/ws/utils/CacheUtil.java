@@ -1,12 +1,12 @@
 package ch.admin.bag.covidcertificate.backend.verifier.ws.utils;
 
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import java.util.TimeZone;
 import org.springframework.http.HttpHeaders;
 
 public class CacheUtil {
@@ -24,9 +24,11 @@ public class CacheUtil {
      * @return
      */
     private static String formatHeaderDate(OffsetDateTime date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-        return sdf.format(date);
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z")
+                        .withLocale(Locale.US)
+                        .withZone(ZoneId.of("GMT"));
+        return formatter.format(date);
     }
 
     public static HttpHeaders createExpiresHeader(OffsetDateTime expires) {
