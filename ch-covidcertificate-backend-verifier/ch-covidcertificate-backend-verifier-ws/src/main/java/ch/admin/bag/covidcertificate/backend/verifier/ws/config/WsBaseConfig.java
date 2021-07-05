@@ -48,110 +48,111 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public abstract class WsBaseConfig implements WebMvcConfigurer {
 
-  protected final Logger logger = LoggerFactory.getLogger(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-  @Value("${ws.jws.p12:}")
-  public String p12KeyStore;
+    @Value("${ws.jws.p12:}")
+    public String p12KeyStore;
 
-  @Value("${ws.jws.password:}")
-  public String p12KeyStorePassword;
+    @Value("${ws.jws.password:}")
+    public String p12KeyStorePassword;
 
-  @Value(
-      "#{${ws.security.headers: {'X-Content-Type-Options':'nosniff', 'X-Frame-Options':'DENY','X-Xss-Protection':'1; mode=block'}}}")
-  Map<String, String> additionalHeaders;
+    @Value(
+            "#{${ws.security.headers: {'X-Content-Type-Options':'nosniff', 'X-Frame-Options':'DENY','X-Xss-Protection':'1; mode=block'}}}")
+    Map<String, String> additionalHeaders;
 
-  @Value("${revocationList.baseurl}")
-  String revokedCertsBaseUrl;
+    @Value("${revocationList.baseurl}")
+    String revokedCertsBaseUrl;
 
-  public abstract DataSource dataSource();
+    public abstract DataSource dataSource();
 
-  public abstract Flyway flyway();
+    public abstract Flyway flyway();
 
-  @Value("${ws.keys.release-bucket-duration:PT1H}")
-  public void setKeysBucketDuration(Duration bucketDuration) {
-    CacheUtil.KEYS_BUCKET_DURATION = bucketDuration;
-  }
-
-  @Value("${ws.revocationList.max-age:PT1M}")
-  public void setRevocationListMaxAge(Duration maxAge) {
-    CacheUtil.REVOCATION_LIST_MAX_AGE = maxAge;
-  }
-
-  @Value("${ws.verificationRules.max-age:PT1M}")
-  public void setVerificationRulesMaxAge(Duration maxAge) {
-    CacheUtil.VERIFICATION_RULES_MAX_AGE = maxAge;
-  }
-
-  @Value("${ws.valueSets.max-age:PT1M}")
-  public void setValueSetsMaxAge(Duration maxAge) {
-    CacheUtil.VALUE_SETS_MAX_AGE = maxAge;
-  }
-
-  @Override
-  public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-    try {
-      converters.add(new JwsMessageConverter(jwsKeyStore(), p12KeyStorePassword.toCharArray()));
-    } catch (KeyStoreException
-        | NoSuchAlgorithmException
-        | CertificateException
-        | IOException
-        | UnrecoverableKeyException e) {
-      logger.error("Could not load key store", e);
-      throw new RuntimeException("Could not add jws Converter");
+    @Value("${ws.keys.release-bucket-duration:PT1H}")
+    public void setKeysBucketDuration(Duration bucketDuration) {
+        CacheUtil.KEYS_BUCKET_DURATION = bucketDuration;
     }
-  }
 
-  public KeyStore jwsKeyStore()
-      throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
-    var keyStore = KeyStore.getInstance("pkcs12");
-    var bais = new ByteArrayInputStream(Base64.getDecoder().decode(p12KeyStore));
-    keyStore.load(bais, p12KeyStorePassword.toCharArray());
-    return keyStore;
-  }
+    @Value("${ws.revocationList.max-age:PT1M}")
+    public void setRevocationListMaxAge(Duration maxAge) {
+        CacheUtil.REVOCATION_LIST_MAX_AGE = maxAge;
+    }
 
-  @Bean
-  public HeaderInjector securityHeaderInjector() {
-    return new HeaderInjector(additionalHeaders);
-  }
+    @Value("${ws.verificationRules.max-age:PT1M}")
+    public void setVerificationRulesMaxAge(Duration maxAge) {
+        CacheUtil.VERIFICATION_RULES_MAX_AGE = maxAge;
+    }
 
-  @Override
-  public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(securityHeaderInjector());
-  }
+    @Value("${ws.valueSets.max-age:PT1M}")
+    public void setValueSetsMaxAge(Duration maxAge) {
+        CacheUtil.VALUE_SETS_MAX_AGE = maxAge;
+    }
 
-  @Bean
-  public VerifierDataService verifierDataService(DataSource dataSource) {
-    return new JdbcVerifierDataServiceImpl(dataSource);
-  }
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        try {
+            converters.add(
+                    new JwsMessageConverter(jwsKeyStore(), p12KeyStorePassword.toCharArray()));
+        } catch (KeyStoreException
+                | NoSuchAlgorithmException
+                | CertificateException
+                | IOException
+                | UnrecoverableKeyException e) {
+            logger.error("Could not load key store", e);
+            throw new RuntimeException("Could not add jws Converter");
+        }
+    }
 
-  @Bean
-  public AppTokenDataService appTokenDataService(DataSource dataSource) {
-    return new JdbcAppTokenDataServiceImpl(dataSource);
-  }
+    public KeyStore jwsKeyStore()
+            throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
+        var keyStore = KeyStore.getInstance("pkcs12");
+        var bais = new ByteArrayInputStream(Base64.getDecoder().decode(p12KeyStore));
+        keyStore.load(bais, p12KeyStorePassword.toCharArray());
+        return keyStore;
+    }
 
-  @Bean
-  public KeyController keyController(VerifierDataService verifierDataService) {
-    return new KeyController(verifierDataService);
-  }
+    @Bean
+    public HeaderInjector securityHeaderInjector() {
+        return new HeaderInjector(additionalHeaders);
+    }
 
-  @Bean
-  public RevocationListController revocationListController() {
-    return new RevocationListController(revokedCertsBaseUrl);
-  }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(securityHeaderInjector());
+    }
 
-  @Bean
-  public VerificationRulesController verificationRulesController()
-      throws IOException, NoSuchAlgorithmException {
-    return new VerificationRulesController();
-  }
+    @Bean
+    public VerifierDataService verifierDataService(DataSource dataSource) {
+        return new JdbcVerifierDataServiceImpl(dataSource);
+    }
 
-  @Bean
-  public ValueSetsController valueSetsController() throws IOException, NoSuchAlgorithmException {
-    return new ValueSetsController();
-  }
+    @Bean
+    public AppTokenDataService appTokenDataService(DataSource dataSource) {
+        return new JdbcAppTokenDataServiceImpl(dataSource);
+    }
 
-  @Bean
-  public RestTemplate restTemplate() {
-    return RestTemplateHelper.getRestTemplate();
-  }
+    @Bean
+    public KeyController keyController(VerifierDataService verifierDataService) {
+        return new KeyController(verifierDataService);
+    }
+
+    @Bean
+    public RevocationListController revocationListController() {
+        return new RevocationListController(revokedCertsBaseUrl);
+    }
+
+    @Bean
+    public VerificationRulesController verificationRulesController()
+            throws IOException, NoSuchAlgorithmException {
+        return new VerificationRulesController();
+    }
+
+    @Bean
+    public ValueSetsController valueSetsController() throws IOException, NoSuchAlgorithmException {
+        return new ValueSetsController();
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return RestTemplateHelper.getRestTemplate();
+    }
 }

@@ -36,90 +36,92 @@ import org.springframework.web.context.request.WebRequest;
 @RequestMapping("trust/v1/keys")
 public class KeyController {
 
-  private static final String NEXT_SINCE_HEADER = "X-Next-Since";
-  private static final String UP_TO_DATE_HEADER = "up-to-date";
-  private final VerifierDataService verifierDataService;
+    private static final String NEXT_SINCE_HEADER = "X-Next-Since";
+    private static final String UP_TO_DATE_HEADER = "up-to-date";
+    private final VerifierDataService verifierDataService;
 
-  public KeyController(VerifierDataService verifierDataService) {
-    this.verifierDataService = verifierDataService;
-  }
-
-  @Documentation(
-      description = "Echo endpoint",
-      responses = {"200 => Hello from CH Covidcertificate Verifier WS"})
-  @CrossOrigin(origins = {"https://editor.swagger.io"})
-  @GetMapping(value = "")
-  public @ResponseBody String hello() {
-    return "Hello from CH Covidcertificate Verifier WS";
-  }
-
-  @Documentation(
-      description = "get signer certificates",
-      responses = {
-        "200 => next certificate batch after `since`. keep requesting until empty certs list is returned"
-      },
-      responseHeaders = {
-        "X-Next-Since:`since` to set for next request:string",
-        "up-to-date:set to 'true' when no more certs to fetch:string"
-      })
-  @CrossOrigin(origins = {"https://editor.swagger.io"})
-  @GetMapping(value = "updates")
-  public @ResponseBody ResponseEntity<CertsResponse> getSignerCerts(
-      @RequestParam(required = false, defaultValue = "0") Long since,
-      @RequestParam CertFormat certFormat) {
-    OffsetDateTime nextBucketRelease = CacheUtil.roundToNextBucket(OffsetDateTime.now());
-    OffsetDateTime previousBucketRelease =
-        nextBucketRelease.minus(CacheUtil.KEYS_BUCKET_DURATION).minusMinutes(10);
-
-    List<ClientCert> dscs =
-        verifierDataService.findDSCs(
-            since, certFormat, Date.from(previousBucketRelease.toInstant()));
-    return ResponseEntity.ok()
-        .headers(getKeysUpdatesHeaders(dscs))
-        .headers(CacheUtil.createExpiresHeader(nextBucketRelease))
-        .body(new CertsResponse(dscs));
-  }
-
-  private HttpHeaders getKeysUpdatesHeaders(List<ClientCert> dscs) {
-    HttpHeaders headers = new HttpHeaders();
-    Long nextSince =
-        dscs.stream()
-            .mapToLong(dsc -> dsc.getPkId())
-            .max()
-            .orElse(verifierDataService.findMaxDSCPkId());
-    headers.add(NEXT_SINCE_HEADER, nextSince.toString());
-    if (dscs.size() < verifierDataService.getMaxDSCBatchCount()) {
-      headers.add(UP_TO_DATE_HEADER, "true");
-    }
-    return headers;
-  }
-
-  @Documentation(
-      description = "get all key IDs of active signer certs",
-      responses = {
-        "200 => list of Key IDs of all active signer certs",
-        "304 => no changes since last request"
-      },
-      responseHeaders = {"ETag:etag to set for next request:string"})
-  @CrossOrigin(origins = {"https://editor.swagger.io"})
-  @GetMapping(value = "list")
-  public @ResponseBody ResponseEntity<ActiveCertsResponse> getActiveSignerCertKeyIds(
-      WebRequest request) {
-    OffsetDateTime nextBucketRelease =
-        CacheUtil.roundToNextBucket(OffsetDateTime.now().plusMinutes(10)).minusMinutes(10);
-    OffsetDateTime previousBucketRelease = nextBucketRelease.minus(CacheUtil.KEYS_BUCKET_DURATION);
-
-    List<String> activeKeyIds =
-        verifierDataService.findActiveDSCKeyIds(Date.from(previousBucketRelease.toInstant()));
-
-    // check etag
-    String currentEtag = String.valueOf(EtagUtil.getUnsortedListHashcode(activeKeyIds));
-    if (request.checkNotModified(currentEtag)) {
-      return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+    public KeyController(VerifierDataService verifierDataService) {
+        this.verifierDataService = verifierDataService;
     }
 
-    return ResponseEntity.ok()
-        .headers(CacheUtil.createExpiresHeader(nextBucketRelease))
-        .body(new ActiveCertsResponse(activeKeyIds));
-  }
+    @Documentation(
+            description = "Echo endpoint",
+            responses = {"200 => Hello from CH Covidcertificate Verifier WS"})
+    @CrossOrigin(origins = {"https://editor.swagger.io"})
+    @GetMapping(value = "")
+    public @ResponseBody String hello() {
+        return "Hello from CH Covidcertificate Verifier WS";
+    }
+
+    @Documentation(
+            description = "get signer certificates",
+            responses = {
+                "200 => next certificate batch after `since`. keep requesting until empty certs list is returned"
+            },
+            responseHeaders = {
+                "X-Next-Since:`since` to set for next request:string",
+                "up-to-date:set to 'true' when no more certs to fetch:string"
+            })
+    @CrossOrigin(origins = {"https://editor.swagger.io"})
+    @GetMapping(value = "updates")
+    public @ResponseBody ResponseEntity<CertsResponse> getSignerCerts(
+            @RequestParam(required = false, defaultValue = "0") Long since,
+            @RequestParam CertFormat certFormat) {
+        OffsetDateTime nextBucketRelease = CacheUtil.roundToNextBucket(OffsetDateTime.now());
+        OffsetDateTime previousBucketRelease =
+                nextBucketRelease.minus(CacheUtil.KEYS_BUCKET_DURATION).minusMinutes(10);
+
+        List<ClientCert> dscs =
+                verifierDataService.findDSCs(
+                        since, certFormat, Date.from(previousBucketRelease.toInstant()));
+        return ResponseEntity.ok()
+                .headers(getKeysUpdatesHeaders(dscs))
+                .headers(CacheUtil.createExpiresHeader(nextBucketRelease))
+                .body(new CertsResponse(dscs));
+    }
+
+    private HttpHeaders getKeysUpdatesHeaders(List<ClientCert> dscs) {
+        HttpHeaders headers = new HttpHeaders();
+        Long nextSince =
+                dscs.stream()
+                        .mapToLong(dsc -> dsc.getPkId())
+                        .max()
+                        .orElse(verifierDataService.findMaxDSCPkId());
+        headers.add(NEXT_SINCE_HEADER, nextSince.toString());
+        if (dscs.size() < verifierDataService.getMaxDSCBatchCount()) {
+            headers.add(UP_TO_DATE_HEADER, "true");
+        }
+        return headers;
+    }
+
+    @Documentation(
+            description = "get all key IDs of active signer certs",
+            responses = {
+                "200 => list of Key IDs of all active signer certs",
+                "304 => no changes since last request"
+            },
+            responseHeaders = {"ETag:etag to set for next request:string"})
+    @CrossOrigin(origins = {"https://editor.swagger.io"})
+    @GetMapping(value = "list")
+    public @ResponseBody ResponseEntity<ActiveCertsResponse> getActiveSignerCertKeyIds(
+            WebRequest request) {
+        OffsetDateTime nextBucketRelease =
+                CacheUtil.roundToNextBucket(OffsetDateTime.now().plusMinutes(10)).minusMinutes(10);
+        OffsetDateTime previousBucketRelease =
+                nextBucketRelease.minus(CacheUtil.KEYS_BUCKET_DURATION);
+
+        List<String> activeKeyIds =
+                verifierDataService.findActiveDSCKeyIds(
+                        Date.from(previousBucketRelease.toInstant()));
+
+        // check etag
+        String currentEtag = String.valueOf(EtagUtil.getUnsortedListHashcode(activeKeyIds));
+        if (request.checkNotModified(currentEtag)) {
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+        }
+
+        return ResponseEntity.ok()
+                .headers(CacheUtil.createExpiresHeader(nextBucketRelease))
+                .body(new ActiveCertsResponse(activeKeyIds));
+    }
 }
