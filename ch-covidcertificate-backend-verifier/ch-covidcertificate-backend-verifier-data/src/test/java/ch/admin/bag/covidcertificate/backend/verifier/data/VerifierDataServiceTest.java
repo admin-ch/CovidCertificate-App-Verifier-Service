@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import ch.admin.bag.covidcertificate.backend.verifier.model.CertSource;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.Algorithm;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
@@ -14,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.transaction.annotation.Transactional;
 
 class VerifierDataServiceTest extends BaseDataServiceTest {
@@ -43,6 +45,27 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         verifierDataService.insertCSCAs(Collections.singletonList(getDefaultCSCA(1, "CH")));
         verifierDataService.removeCSCAs(Collections.singletonList("keyid_0"));
         assertEquals(1, verifierDataService.findCSCAs("CH").size());
+
+        // verify manual doesnt get removed
+        updateSourceForAllCscas(CertSource.MANUAL);
+        verifierDataService.removeCSCAs(Collections.singletonList("keyid_1"));
+        assertEquals(1, verifierDataService.findCSCAs("CH").size());
+
+        updateSourceForAllCscas(CertSource.SYNC);
+        verifierDataService.removeCSCAs(Collections.singletonList("keyid_1"));
+        assertEquals(0, verifierDataService.findCSCAs("CH").size());
+    }
+
+    private void updateSourceForAllCscas(CertSource source) {
+        jt.update(
+                "update t_country_specific_certificate_authority set source = :source",
+                new MapSqlParameterSource("source", source.name()));
+    }
+
+    private void updateSourceForAllDscs(CertSource source) {
+        jt.update(
+                "update t_document_signer_certificate set source = :source",
+                new MapSqlParameterSource("source", source.name()));
     }
 
     @Test
@@ -100,6 +123,15 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         verifierDataService.insertDSCs(List.of(rsaDsc, ecDsc));
         verifierDataService.removeDSCsNotIn(Collections.singletonList(rsaDsc.getKeyId()));
         assertEquals(1, verifierDataService.findActiveDSCKeyIds(nowPlus1Min()).size());
+
+        // verify manual doesnt get removed
+        updateSourceForAllDscs(CertSource.MANUAL);
+        verifierDataService.removeDSCsNotIn(Collections.singletonList(ecDsc.getKeyId()));
+        assertEquals(1, verifierDataService.findActiveDSCKeyIds(nowPlus1Min()).size());
+
+        updateSourceForAllDscs(CertSource.SYNC);
+        verifierDataService.removeDSCsNotIn(Collections.singletonList(ecDsc.getKeyId()));
+        assertEquals(0, verifierDataService.findActiveDSCKeyIds(nowPlus1Min()).size());
     }
 
     @Test
@@ -118,6 +150,15 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         assertEquals(2, verifierDataService.findActiveDSCKeyIds(nowPlus1Min()).size());
         verifierDataService.removeDSCsWithCSCAIn(List.of(cscas.get(0).getKeyId()));
         assertEquals(1, verifierDataService.findActiveDSCKeyIds(nowPlus1Min()).size());
+
+        // verify manual doesnt get removed
+        updateSourceForAllDscs(CertSource.MANUAL);
+        verifierDataService.removeDSCsWithCSCAIn(List.of(cscas.get(1).getKeyId()));
+        assertEquals(1, verifierDataService.findActiveDSCKeyIds(nowPlus1Min()).size());
+
+        updateSourceForAllDscs(CertSource.SYNC);
+        verifierDataService.removeDSCsWithCSCAIn(List.of(cscas.get(1).getKeyId()));
+        assertEquals(0, verifierDataService.findActiveDSCKeyIds(nowPlus1Min()).size());
     }
 
     @Test

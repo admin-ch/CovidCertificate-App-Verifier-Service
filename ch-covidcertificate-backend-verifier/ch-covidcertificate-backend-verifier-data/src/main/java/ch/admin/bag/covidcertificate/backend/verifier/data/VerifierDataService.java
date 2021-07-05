@@ -23,7 +23,7 @@ public interface VerifierDataService {
     public void insertCSCAs(List<DbCsca> cscas);
 
     /**
-     * removes all csas with key ids in the given list
+     * removes all csas with key ids in the given list that haven't been added manually
      *
      * @param keyIds
      * @return number of removed CSCAs
@@ -44,10 +44,10 @@ public interface VerifierDataService {
     /** inserts the given DSC into the db */
     public void insertDSCs(List<DbDsc> dsc);
 
-    /** removes all DSCs with key ids not in the given list */
+    /** removes all DSCs with key ids not in the given list that haven't been added manually */
     public int removeDSCsNotIn(List<String> keyIdsToKeep);
 
-    /** removes all DSCs signed by a CSCA in the given list */
+    /** removes all DSCs signed by a CSCA in the given list that haven't been added manually */
     public int removeDSCsWithCSCAIn(List<String> cscaKidsToRemove);
 
     /**

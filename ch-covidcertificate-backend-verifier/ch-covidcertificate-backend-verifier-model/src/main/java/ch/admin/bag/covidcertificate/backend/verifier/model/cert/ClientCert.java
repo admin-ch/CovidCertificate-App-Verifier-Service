@@ -12,7 +12,7 @@ public class ClientCert {
 
     @Documentation(
             description =
-                    "either 'sig' (all) or one or more of: 'r' (recovery), 't' (test), 'v' (vaccine)",
+                    "either 'sig' (all) or one or more of: 'r' (recovery), 't' (test), 'v' (vaccine), 'l' (light)",
             example = "sig")
     private String use;
 

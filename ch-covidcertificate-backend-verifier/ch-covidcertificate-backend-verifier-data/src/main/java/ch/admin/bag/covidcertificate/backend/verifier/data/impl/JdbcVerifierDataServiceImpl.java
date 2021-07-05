@@ -13,6 +13,7 @@ package ch.admin.bag.covidcertificate.backend.verifier.data.impl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.mapper.CSCARowMapper;
 import ch.admin.bag.covidcertificate.backend.verifier.data.mapper.ClientCertRowMapper;
+import ch.admin.bag.covidcertificate.backend.verifier.model.CertSource;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
@@ -72,10 +73,13 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     @Transactional
     public int removeCSCAs(List<String> keyIds) {
         if (!keyIds.isEmpty()) {
-            var sql = "delete from t_country_specific_certificate_authority";
+            var sql =
+                    "delete from t_country_specific_certificate_authority"
+                            + " where  key_id in (:kids)"
+                            + " and source != :manual";
             final var params = new MapSqlParameterSource();
-            sql += " where key_id in (:kids)";
             params.addValue("kids", keyIds);
+            params.addValue("manual", CertSource.MANUAL.name());
             return jt.update(sql, params);
         } else {
             return 0;
@@ -117,8 +121,9 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
         var sql = "delete from t_document_signer_certificate";
         final var params = new MapSqlParameterSource();
         if (!keyIdsToKeep.isEmpty()) {
-            sql += " where key_id not in (:kids)";
+            sql += " where key_id not in (:kids) and source != :manual";
             params.addValue("kids", keyIdsToKeep);
+            params.addValue("manual", CertSource.MANUAL.name());
         }
         return jt.update(sql, params);
     }
@@ -127,9 +132,13 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     @Transactional
     public int removeDSCsWithCSCAIn(List<String> cscaKidsToRemove) {
         if (!cscaKidsToRemove.isEmpty()) {
-            var sql = "delete from t_document_signer_certificate where fk_csca_id in (:fk_csca_id)";
+            var sql =
+                    "delete from t_document_signer_certificate"
+                            + " where fk_csca_id in (:fk_csca_id)"
+                            + " and source != :manual";
             final var params = new MapSqlParameterSource();
             params.addValue("fk_csca_id", findCscaPksForKids(cscaKidsToRemove));
+            params.addValue("manual", CertSource.MANUAL.name());
             return jt.update(sql, params);
         } else {
             return 0;
@@ -211,6 +220,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
         params.addValue("certificate_raw", dbCsca.getCertificateRaw());
         params.addValue("origin", dbCsca.getOrigin());
         params.addValue("subject_principal_name", dbCsca.getSubjectPrincipalName());
+        params.addValue("source", CertSource.SYNC.name());
         return params;
     }
 
@@ -228,6 +238,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
         params.addValue("crv", dbDsc.getCrv());
         params.addValue("x", dbDsc.getX());
         params.addValue("y", dbDsc.getY());
+        params.addValue("source", CertSource.SYNC.name());
         return params;
     }
 }
