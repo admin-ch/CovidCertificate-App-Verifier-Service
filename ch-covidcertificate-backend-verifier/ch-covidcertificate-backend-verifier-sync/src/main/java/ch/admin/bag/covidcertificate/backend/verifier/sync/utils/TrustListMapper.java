@@ -168,7 +168,7 @@ public class TrustListMapper {
         if (array.length == 33) {
             System.arraycopy(array, 1, unsignedArr, 0, byteArrayLength);
         } else {
-            System.arraycopy(array, 0, array.length, byteArrayLength - array.length, array.length);
+            System.arraycopy(array, 0, unsignedArr, byteArrayLength - array.length, array.length);
         }
 
         return Base64.getEncoder().encodeToString(unsignedArr);
