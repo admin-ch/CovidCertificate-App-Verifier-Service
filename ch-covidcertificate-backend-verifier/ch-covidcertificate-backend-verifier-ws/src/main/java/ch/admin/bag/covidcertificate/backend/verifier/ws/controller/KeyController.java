@@ -38,6 +38,12 @@ public class KeyController {
 
     private static final String NEXT_SINCE_HEADER = "X-Next-Since";
     private static final String UP_TO_DATE_HEADER = "up-to-date";
+    /**
+     * this offset is used to ensure the cached cdn response for the keys list request is always
+     * "fresher" than the cached keys update response
+     */
+    private static int KEYS_LIST_BUCKET_OFFSET_MIN = 10;
+
     private final VerifierDataService verifierDataService;
 
     public KeyController(VerifierDataService verifierDataService) {
@@ -69,7 +75,10 @@ public class KeyController {
             @RequestParam CertFormat certFormat) {
         OffsetDateTime nextBucketRelease = CacheUtil.roundToNextBucket(OffsetDateTime.now());
         OffsetDateTime previousBucketRelease =
-                nextBucketRelease.minus(CacheUtil.KEYS_BUCKET_DURATION).minusMinutes(10);
+                nextBucketRelease
+                        .minus(CacheUtil.KEYS_BUCKET_DURATION)
+                        // ensure no keys are released that are not being returned by keys/list yet
+                        .minusMinutes(KEYS_LIST_BUCKET_OFFSET_MIN);
 
         List<ClientCert> dscs =
                 verifierDataService.findDSCs(
@@ -105,8 +114,12 @@ public class KeyController {
     @GetMapping(value = "list")
     public @ResponseBody ResponseEntity<ActiveCertsResponse> getActiveSignerCertKeyIds(
             WebRequest request) {
+        // the cached keys list response needs to expire a couple of minutes before the cached keys
+        // update response, to ensure they keys/list response is always "fresher" than keys/updates.
         OffsetDateTime nextBucketRelease =
-                CacheUtil.roundToNextBucket(OffsetDateTime.now().plusMinutes(10)).minusMinutes(10);
+                CacheUtil.roundToNextBucket(
+                                OffsetDateTime.now().plusMinutes(KEYS_LIST_BUCKET_OFFSET_MIN))
+                        .minusMinutes(KEYS_LIST_BUCKET_OFFSET_MIN);
         OffsetDateTime previousBucketRelease =
                 nextBucketRelease.minus(CacheUtil.KEYS_BUCKET_DURATION);
 
