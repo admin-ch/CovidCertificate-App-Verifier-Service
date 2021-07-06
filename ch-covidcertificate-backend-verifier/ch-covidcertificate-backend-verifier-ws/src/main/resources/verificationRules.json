@@ -190,7 +190,7 @@
     },
     {
       "id": "VR-CH-0005",
-      "description": "If the vaccine requires one dose and there was no previous infection, the validation is valid after 15 days ",
+      "description": "If the vaccine requires one dose, and only one dose was administered, it is valid after 21 days ",
       "inputParameter": "Vaccination Part of the HCert (\"v\") + Valuesets",
       "logic": {
         "if": [
@@ -242,7 +242,7 @@
     },
     {
       "id": "VR-CH-0006",
-      "description": "Today must be less than the vaccination date plus 179 days",
+      "description": "Today must be less than the vaccination date plus 364 days",
       "inputParameter": "Vaccination Part of the HCert (\"v\") + Valuesets",
       "logic": {
         "if": [
@@ -387,7 +387,7 @@
     },
     {
       "id": "TR-CH-0006",
-      "description": "If the test type is \"RAT\" then the validation date must be before the date of sample collection plus 24 hours",
+      "description": "If the test type is \"RAT\" then the validation date must be before the date of sample collection plus 48 hours",
       "inputParameter": "Test Part of the HCert (\"t\")+ validation date (timestamp)+ Valuesets +\"sc\"",
       "logic": {
         "if": [
