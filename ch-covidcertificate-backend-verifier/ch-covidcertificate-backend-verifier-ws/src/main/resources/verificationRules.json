@@ -195,10 +195,10 @@
       "logic": {
         "if": [
           {
-            "var": "payload.v.0"
-          },
-          {
-            "if": [
+            "and": [
+              {
+                "var": "payload.v.0"
+              },
               {
                 "in": [
                   {
@@ -210,30 +210,37 @@
                 ]
               },
               {
-                ">=": [
+                "==": [
                   {
-                    "plusTime": [
-                      {
-                        "var": "external.validationClockAtStartOfDay"
-                      },
-                      0,
-                      "day"
-                    ]
+                    "var": "payload.v.0.dn"
                   },
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            ">=": [
+              {
+                "plusTime": [
                   {
-                    "plusTime": [
-                      {
-                        "var": "payload.v.0.dt"
-                      },
-                      {
-                        "var": "external.valueSets.acceptance-criteria.single-vaccine-validity-offset"
-                      },
-                      "day"
-                    ]
-                  }
+                    "var": "external.validationClockAtStartOfDay"
+                  },
+                  0,
+                  "day"
                 ]
               },
-              true
+              {
+                "plusTime": [
+                  {
+                    "var": "payload.v.0.dt"
+                  },
+                  {
+                    "var": "external.valueSets.acceptance-criteria.single-vaccine-validity-offset"
+                  },
+                  "day"
+                ]
+              }
             ]
           },
           true
@@ -268,6 +275,63 @@
                   {
                     "var": "external.valueSets.acceptance-criteria.vaccine-immunity"
                   },
+                  "day"
+                ]
+              }
+            ]
+          },
+          true
+        ]
+      }
+    },
+    {
+      "id": "VR-CH-0007",
+      "description": "If the vaccine requires only one dose but more than one dose was administered, it is valid from today ",
+      "inputParameter": "Vaccination Part of the HCert (\"v\") + Valuesets",
+      "logic": {
+        "if": [
+          {
+            "and": [
+              {
+                "var": "payload.v.0"
+              },
+              {
+                "in": [
+                  {
+                    "var": "payload.v.0.mp"
+                  },
+                  {
+                    "var": "external.valueSets.one-dose-vaccines-with-offset"
+                  }
+                ]
+              },
+              {
+                ">": [
+                  {
+                    "var": "payload.v.0.dn"
+                  },
+                  1
+                ]
+              }
+            ]
+          },
+          {
+            ">=": [
+              {
+                "plusTime": [
+                  {
+                    "var": "external.validationClockAtStartOfDay"
+                  },
+                  0,
+                  "day"
+                ]
+              },
+              {
+                "plusTime": [
+                  {
+                    "var": "payload.v.0.dt"
+                  },
+                  0,
                   "day"
                 ]
               }
