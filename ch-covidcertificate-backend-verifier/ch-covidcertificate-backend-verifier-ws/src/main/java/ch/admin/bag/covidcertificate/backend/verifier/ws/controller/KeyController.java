@@ -18,8 +18,9 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import ch.ubique.openapi.docannotations.Documentation;
+import java.sql.Date;
+import java.time.OffsetDateTime;
 import java.util.List;
-import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,12 @@ public class KeyController {
 
     private static final String NEXT_SINCE_HEADER = "X-Next-Since";
     private static final String UP_TO_DATE_HEADER = "up-to-date";
+    /**
+     * this offset is used to ensure the cached cdn response for the keys list request is always
+     * "fresher" than the cached keys update response
+     */
+    private static int KEYS_LIST_BUCKET_OFFSET_MIN = 10;
+
     private final VerifierDataService verifierDataService;
 
     public KeyController(VerifierDataService verifierDataService) {
@@ -66,10 +73,19 @@ public class KeyController {
     public @ResponseBody ResponseEntity<CertsResponse> getSignerCerts(
             @RequestParam(required = false, defaultValue = "0") Long since,
             @RequestParam CertFormat certFormat) {
-        List<ClientCert> dscs = verifierDataService.findDSCs(since, certFormat);
+        OffsetDateTime nextBucketRelease = CacheUtil.roundToNextBucket(OffsetDateTime.now());
+        OffsetDateTime previousBucketRelease =
+                nextBucketRelease
+                        .minus(CacheUtil.KEYS_BUCKET_DURATION)
+                        // ensure no keys are released that are not being returned by keys/list yet
+                        .minusMinutes(KEYS_LIST_BUCKET_OFFSET_MIN);
+
+        List<ClientCert> dscs =
+                verifierDataService.findDSCs(
+                        since, certFormat, Date.from(previousBucketRelease.toInstant()));
         return ResponseEntity.ok()
                 .headers(getKeysUpdatesHeaders(dscs))
-                .cacheControl(CacheControl.maxAge(CacheUtil.KEYS_UPDATE_MAX_AGE))
+                .headers(CacheUtil.createExpiresHeader(nextBucketRelease))
                 .body(new CertsResponse(dscs));
     }
 
@@ -98,7 +114,18 @@ public class KeyController {
     @GetMapping(value = "list")
     public @ResponseBody ResponseEntity<ActiveCertsResponse> getActiveSignerCertKeyIds(
             WebRequest request) {
-        List<String> activeKeyIds = verifierDataService.findActiveDSCKeyIds();
+        // the cached keys list response needs to expire a couple of minutes before the cached keys
+        // update response, to ensure they keys/list response is always "fresher" than keys/updates.
+        OffsetDateTime nextBucketRelease =
+                CacheUtil.roundToNextBucket(
+                                OffsetDateTime.now().plusMinutes(KEYS_LIST_BUCKET_OFFSET_MIN))
+                        .minusMinutes(KEYS_LIST_BUCKET_OFFSET_MIN);
+        OffsetDateTime previousBucketRelease =
+                nextBucketRelease.minus(CacheUtil.KEYS_BUCKET_DURATION);
+
+        List<String> activeKeyIds =
+                verifierDataService.findActiveDSCKeyIds(
+                        Date.from(previousBucketRelease.toInstant()));
 
         // check etag
         String currentEtag = String.valueOf(EtagUtil.getUnsortedListHashcode(activeKeyIds));
@@ -107,7 +134,7 @@ public class KeyController {
         }
 
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(CacheUtil.KEYS_LIST_MAX_AGE))
+                .headers(CacheUtil.createExpiresHeader(nextBucketRelease))
                 .body(new ActiveCertsResponse(activeKeyIds));
     }
 }

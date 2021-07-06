@@ -50,6 +50,12 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Value("${ws.jws.p12:}")
+    public String p12KeyStore;
+
+    @Value("${ws.jws.password:}")
+    public String p12KeyStorePassword;
+
     @Value(
             "#{${ws.security.headers: {'X-Content-Type-Options':'nosniff', 'X-Frame-Options':'DENY','X-Xss-Protection':'1; mode=block'}}}")
     Map<String, String> additionalHeaders;
@@ -57,24 +63,13 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     @Value("${revocationList.baseurl}")
     String revokedCertsBaseUrl;
 
-    @Value("${ws.jws.p12:}")
-    public String p12KeyStore;
-
-    @Value("${ws.jws.password:}")
-    public String p12KeyStorePassword;
-
     public abstract DataSource dataSource();
 
     public abstract Flyway flyway();
 
-    @Value("${ws.keys.update.max-age:PT1M}")
-    public void setKeysUpdateMaxAge(Duration maxAge) {
-        CacheUtil.KEYS_UPDATE_MAX_AGE = maxAge;
-    }
-
-    @Value("${ws.keys.list.max-age:PT1M}")
-    public void setKeysListMaxAge(Duration maxAge) {
-        CacheUtil.KEYS_LIST_MAX_AGE = maxAge;
+    @Value("${ws.keys.release-bucket-duration:PT1H}")
+    public void setKeysBucketDuration(Duration bucketDuration) {
+        CacheUtil.KEYS_BUCKET_DURATION = bucketDuration;
     }
 
     @Value("${ws.revocationList.max-age:PT1M}")

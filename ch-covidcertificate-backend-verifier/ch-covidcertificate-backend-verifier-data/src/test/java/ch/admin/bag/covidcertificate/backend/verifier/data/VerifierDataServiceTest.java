@@ -1,7 +1,6 @@
 package ch.admin.bag.covidcertificate.backend.verifier.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -9,7 +8,9 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.Algorithm;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
+import java.time.OffsetDateTime;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,13 +72,16 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         verifierDataService.insertCSCAs(Collections.singletonList(getDefaultCSCA(0, "CH")));
         final var cscaId = verifierDataService.findCSCAs("CH").get(0).getId();
         verifierDataService.insertDSCs(Collections.emptyList());
-        assertTrue(verifierDataService.findActiveDSCKeyIds().isEmpty());
+        assertTrue(verifierDataService.findActiveDSCKeyIds(nowPlus1Min()).isEmpty());
         final var rsaDsc = getRSADsc(0, "CH", cscaId);
         verifierDataService.insertDSCs(Collections.singletonList(rsaDsc));
-        assertEquals(1, verifierDataService.findActiveDSCKeyIds().size());
+        assertEquals(1, verifierDataService.findActiveDSCKeyIds(nowPlus1Min()).size());
         assertEquals(
                 rsaDsc.getKeyId(),
-                verifierDataService.findDSCs(0L, CertFormat.ANDROID).get(0).getKeyId());
+                verifierDataService
+                        .findDSCs(0L, CertFormat.ANDROID, nowPlus1Min())
+                        .get(0)
+                        .getKeyId());
     }
 
     @Test
@@ -90,12 +94,12 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         final var rsaDsc = getRSADsc(0, "CH", cscaId);
         verifierDataService.insertDSCs(Collections.singletonList(rsaDsc));
         verifierDataService.removeDSCsNotIn(Collections.emptyList());
-        assertTrue(verifierDataService.findActiveDSCKeyIds().isEmpty());
+        assertTrue(verifierDataService.findActiveDSCKeyIds(nowPlus1Min()).isEmpty());
         verifierDataService.removeDSCsNotIn(Collections.singletonList("keyid_0"));
         final var ecDsc = getECDsc(1, "CH", cscaId);
         verifierDataService.insertDSCs(List.of(rsaDsc, ecDsc));
         verifierDataService.removeDSCsNotIn(Collections.singletonList(rsaDsc.getKeyId()));
-        assertEquals(1, verifierDataService.findActiveDSCKeyIds().size());
+        assertEquals(1, verifierDataService.findActiveDSCKeyIds(nowPlus1Min()).size());
     }
 
     @Test
@@ -111,9 +115,9 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         final var ecDsc = getECDsc(1, "DE", cscaId1);
         verifierDataService.insertDSCs(List.of(rsaDsc, ecDsc));
         verifierDataService.removeDSCsWithCSCAIn(Collections.emptyList());
-        assertEquals(2, verifierDataService.findActiveDSCKeyIds().size());
+        assertEquals(2, verifierDataService.findActiveDSCKeyIds(nowPlus1Min()).size());
         verifierDataService.removeDSCsWithCSCAIn(List.of(cscas.get(0).getKeyId()));
-        assertEquals(1, verifierDataService.findActiveDSCKeyIds().size());
+        assertEquals(1, verifierDataService.findActiveDSCKeyIds(nowPlus1Min()).size());
     }
 
     @Test
@@ -123,7 +127,7 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         final var cscaId = verifierDataService.findCSCAs("CH").get(0).getId();
         verifierDataService.insertDSCs(
                 List.of(getRSADsc(0, "CH", cscaId), getECDsc(1, "DE", cscaId)));
-        assertEquals(2, verifierDataService.findDSCs(0L, CertFormat.IOS).size());
+        assertEquals(2, verifierDataService.findDSCs(0L, CertFormat.IOS, nowPlus1Min()).size());
     }
 
     @Test
@@ -134,8 +138,11 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         verifierDataService.insertDSCs(
                 List.of(getRSADsc(0, "CH", cscaId), getECDsc(1, "DE", cscaId)));
         final var maxDscPkId = verifierDataService.findMaxDSCPkId();
-        assertTrue(verifierDataService.findDSCs(maxDscPkId, CertFormat.IOS).isEmpty());
-        assertEquals(1, verifierDataService.findDSCs(maxDscPkId - 1, CertFormat.IOS).size());
+        assertTrue(
+                verifierDataService.findDSCs(maxDscPkId, CertFormat.IOS, nowPlus1Min()).isEmpty());
+        assertEquals(
+                1,
+                verifierDataService.findDSCs(maxDscPkId - 1, CertFormat.IOS, nowPlus1Min()).size());
     }
 
     private DbCsca getDefaultCSCA(int idSuffix, String origin) {
@@ -173,5 +180,9 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         dbDsc.setX("x");
         dbDsc.setY("y");
         return dbDsc;
+    }
+
+    private Date nowPlus1Min() {
+        return Date.from(OffsetDateTime.now().plusMinutes(1).toInstant());
     }
 }

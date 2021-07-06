@@ -18,6 +18,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
@@ -149,7 +150,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ClientCert> findDSCs(Long since, CertFormat certFormat) {
+    public List<ClientCert> findDSCs(Long since, CertFormat certFormat, Date importedBefore) {
         String sql =
                 "select pk_dsc_id,"
                         + " key_id,"
@@ -163,20 +164,26 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
                         + "n, e"
                         + " from t_document_signer_certificate"
                         + " where pk_dsc_id > :pk_dsc_id"
+                        + " and imported_at < :before"
                         + " order by pk_dsc_id asc"
                         + " limit :max_dsc_batch_count";
 
         var params = new MapSqlParameterSource();
         params.addValue("pk_dsc_id", since);
         params.addValue("max_dsc_batch_count", MAX_DSC_BATCH_COUNT);
+        params.addValue("before", importedBefore);
+
         return jt.query(sql, params, new ClientCertRowMapper(certFormat));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<String> findActiveDSCKeyIds() {
-        String sql = "select key_id from t_document_signer_certificate order by pk_dsc_id";
-        return jt.queryForList(sql, new MapSqlParameterSource(), String.class);
+    public List<String> findActiveDSCKeyIds(Date importedBefore) {
+        String sql =
+                "select key_id from t_document_signer_certificate where imported_at < :before order by pk_dsc_id";
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("before", importedBefore);
+        return jt.queryForList(sql, params, String.class);
     }
 
     @Override

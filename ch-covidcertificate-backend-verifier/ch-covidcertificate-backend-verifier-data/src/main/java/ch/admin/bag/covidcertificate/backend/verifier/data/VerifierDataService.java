@@ -14,6 +14,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
+import java.util.Date;
 import java.util.List;
 
 public interface VerifierDataService {
@@ -49,11 +50,14 @@ public interface VerifierDataService {
     /** removes all DSCs signed by a CSCA in the given list */
     public int removeDSCsWithCSCAIn(List<String> cscaKidsToRemove);
 
-    /** returns the next batch of DSCs after since in the requested format */
-    public List<ClientCert> findDSCs(Long since, CertFormat certFormat);
+    /**
+     * returns the next batch of DSCs after `since` but before `importedBefore` in the requested
+     * format
+     */
+    public List<ClientCert> findDSCs(Long since, CertFormat certFormat, Date importedBefore);
 
-    /** returns a list of key ids of all active DSCs */
-    public List<String> findActiveDSCKeyIds();
+    /** returns a list of key ids of all active DSCs before a certain timestamp */
+    public List<String> findActiveDSCKeyIds(Date importedBefore);
 
     /** returns the highest DSC pk id */
     public long findMaxDSCPkId();
