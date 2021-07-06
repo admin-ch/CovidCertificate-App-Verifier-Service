@@ -2,11 +2,16 @@ package ch.admin.bag.covidcertificate.backend.verifier.data;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.config.FlywayConfig;
 import ch.admin.bag.covidcertificate.backend.verifier.data.config.TestConfig;
+import javax.sql.DataSource;
 import javax.validation.constraints.NotNull;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -20,6 +25,7 @@ import org.testcontainers.utility.DockerImageName;
 @ContextConfiguration(initializers = BaseDataServiceTest.DockerPostgresDataSourceInitializer.class)
 @SpringBootTest(classes = {TestConfig.class, FlywayConfig.class})
 @Testcontainers
+@TestInstance(Lifecycle.PER_CLASS)
 public abstract class BaseDataServiceTest {
 
     public static PostgreSQLContainer<?> postgreSQLContainer =
@@ -43,5 +49,13 @@ public abstract class BaseDataServiceTest {
                     "spring.datasource.username=" + postgreSQLContainer.getUsername(),
                     "spring.datasource.password=" + postgreSQLContainer.getPassword());
         }
+    }
+
+    @Autowired DataSource dataSource;
+    protected NamedParameterJdbcTemplate jt;
+
+    @BeforeAll
+    void setup() {
+        this.jt = new NamedParameterJdbcTemplate(dataSource);
     }
 }
