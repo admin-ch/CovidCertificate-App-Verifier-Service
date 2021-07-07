@@ -4,12 +4,15 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.AppTokenDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.config.model.ApiKeyConfig;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+@Profile("app-token-db")
 @Configuration
 @EnableScheduling
 public class WSSchedulingConfig {
@@ -23,8 +26,9 @@ public class WSSchedulingConfig {
         this.appTokenDataService = appTokenDataService;
     }
 
-    // Call method every 5 minutes starting at 0am, of every day
-    @Scheduled(cron = "${ws.authentication.cron:0 0/5 0 ? * *}")
+    // Refresh app tokens from DB every 5min
+    @PostConstruct
+    @Scheduled(cron = "${ws.authentication.cron:0 0/5 * ? * *}")
     public void updateAppTokens() {
         logger.info("Updating app tokens");
         final var appTokens = appTokenDataService.getAppTokens();
