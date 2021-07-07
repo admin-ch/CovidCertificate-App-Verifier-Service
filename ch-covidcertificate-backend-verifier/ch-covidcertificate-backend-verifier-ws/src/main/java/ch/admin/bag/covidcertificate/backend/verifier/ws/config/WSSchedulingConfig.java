@@ -23,6 +23,9 @@ public class WSSchedulingConfig {
     public WSSchedulingConfig(ApiKeyConfig apiKeyConfig, AppTokenDataService appTokenDataService) {
         this.apiKeyConfig = apiKeyConfig;
         this.appTokenDataService = appTokenDataService;
+
+        // Load tokens at start up
+        updateAppTokens();
     }
 
     // Call method every 5 minutes starting at 0am, of every day
