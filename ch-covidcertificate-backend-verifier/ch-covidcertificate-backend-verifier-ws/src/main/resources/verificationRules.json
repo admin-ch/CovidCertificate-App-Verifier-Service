@@ -194,11 +194,13 @@
       "inputParameter": "Vaccination Part of the HCert (\"v\") + Valuesets",
       "logic": {
         "if": [
-          {
-            "and": [
               {
                 "var": "payload.v.0"
               },
+          {
+            "if": [
+              {
+                "and": [
               {
                 "in": [
                   {
@@ -242,6 +244,9 @@
                 ]
               }
             ]
+          },
+          true
+        ]
           },
           true
         ]
