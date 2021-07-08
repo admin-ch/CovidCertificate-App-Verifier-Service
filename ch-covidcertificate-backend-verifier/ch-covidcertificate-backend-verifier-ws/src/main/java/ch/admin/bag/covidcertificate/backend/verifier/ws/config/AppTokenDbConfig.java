@@ -15,13 +15,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 @Profile("app-token-db")
 @Configuration
 @EnableScheduling
-public class WSSchedulingConfig {
+public class AppTokenDbConfig {
 
-    private static final Logger logger = LoggerFactory.getLogger(WSSchedulingConfig.class);
+    private static final Logger logger = LoggerFactory.getLogger(AppTokenDbConfig.class);
     private final ApiKeyConfig apiKeyConfig;
     private final AppTokenDataService appTokenDataService;
 
-    public WSSchedulingConfig(ApiKeyConfig apiKeyConfig, AppTokenDataService appTokenDataService) {
+    public AppTokenDbConfig(ApiKeyConfig apiKeyConfig, AppTokenDataService appTokenDataService) {
         this.apiKeyConfig = apiKeyConfig;
         this.appTokenDataService = appTokenDataService;
     }
