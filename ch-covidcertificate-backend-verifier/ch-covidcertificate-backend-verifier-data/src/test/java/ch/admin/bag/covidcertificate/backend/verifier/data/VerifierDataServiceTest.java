@@ -175,6 +175,7 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
     @Test
     @Transactional
     void findDscsTest() {
+
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCsca(0, "CH")));
         final var cscaId = verifierDataService.findCscas("CH").get(0).getId();
 
@@ -184,18 +185,18 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         assertEquals(dscs.size(), verifierDataService.findDscs(0L, CertFormat.IOS, null).size());
 
         // test upTo
+        long maxPkBeforeInsert = verifierDataService.findMaxDscPkId();
         verifierDataService.insertDscs(List.of(getEcDsc(2, "DE", cscaId)));
         assertEquals(
                 dscs.size() + 1, verifierDataService.findDscs(0L, CertFormat.IOS, null).size());
         List<ClientCert> upTo1 =
-                verifierDataService.findDscs(0L, CertFormat.IOS, (long) dscs.size());
+                verifierDataService.findDscs(0L, CertFormat.IOS, maxPkBeforeInsert);
         assertEquals(dscs.size(), upTo1.size());
         List<String> expectedKeyIds =
                 dscs.stream().map(DbDsc::getKeyId).collect(Collectors.toList());
-        for (ClientCert clientCert : upTo1) {
-            assertTrue(expectedKeyIds.contains(clientCert.getKeyId()));
-            assertTrue(clientCert.getPkId() <= dscs.size());
-        }
+        List<String> actualKeyIds =
+                upTo1.stream().map(ClientCert::getKeyId).collect(Collectors.toList());
+        assertTrue(expectedKeyIds.containsAll(actualKeyIds));
     }
 
     @Test
