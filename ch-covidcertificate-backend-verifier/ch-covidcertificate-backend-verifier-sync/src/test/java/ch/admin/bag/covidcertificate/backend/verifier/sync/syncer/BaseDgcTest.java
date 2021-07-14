@@ -22,10 +22,10 @@ import org.testcontainers.utility.DockerImageName;
 @ActiveProfiles({"test", "postgres"})
 @AutoConfigureMockMvc
 @TestPropertySource(properties = {"dgc.baseurl=https://testurl.europa.eu"})
-@ContextConfiguration(initializers = BaseDGCTest.DockerPostgresDataSourceInitializer.class)
+@ContextConfiguration(initializers = BaseDgcTest.DockerPostgresDataSourceInitializer.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-public abstract class BaseDGCTest {
+public abstract class BaseDgcTest {
 
     public static PostgreSQLContainer<?> postgreSQLContainer =
             new PostgreSQLContainer<>(

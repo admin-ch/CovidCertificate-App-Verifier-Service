@@ -21,9 +21,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 
-class DGCClientTest extends BaseDGCTest {
+class DgcClientTest extends BaseDgcTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(DGCClientTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(DgcClientTest.class);
     private final String TEST_JSON = "src/test/resources/covidcert-verifier_test_vectors.json";
     private final String TEST_PROBLEM_JSON =
             "src/test/resources/covidcert-verifier_problem-report.json";
@@ -32,7 +32,7 @@ class DGCClientTest extends BaseDGCTest {
     String baseurl = "https://testurl.europa.eu";
 
     @Autowired
-    DGCClient dgcClient;
+    DgcClient dgcClient;
 
     @Test
     void downloadTest() throws Exception {

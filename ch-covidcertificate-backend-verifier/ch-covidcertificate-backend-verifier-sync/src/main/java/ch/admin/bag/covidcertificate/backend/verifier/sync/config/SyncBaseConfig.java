@@ -12,8 +12,8 @@ package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
-import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DGCClient;
-import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DGCSyncer;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcClient;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
 import javax.sql.DataSource;
 import net.javacrumbs.shedlock.core.LockProvider;
@@ -66,12 +66,12 @@ public abstract class SyncBaseConfig {
     }
 
     @Bean
-    public DGCClient dgcClient(RestTemplate restTemplate) {
-        return new DGCClient(baseurl, restTemplate);
+    public DgcClient dgcClient(RestTemplate restTemplate) {
+        return new DgcClient(baseurl, restTemplate);
     }
 
     @Bean
-    public DGCSyncer dgcSyncer(DGCClient dgcClient, VerifierDataService verifierDataService) {
-        return new DGCSyncer(dgcClient, verifierDataService);
+    public DgcSyncer dgcSyncer(DgcClient dgcClient, VerifierDataService verifierDataService) {
+        return new DgcSyncer(dgcClient, verifierDataService);
     }
 }

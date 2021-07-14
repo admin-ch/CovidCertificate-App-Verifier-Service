@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
 
-public class CSCARowMapper implements RowMapper<DbCsca> {
+public class CscaRowMapper implements RowMapper<DbCsca> {
 
     @Override
     public DbCsca mapRow(ResultSet rs, int rowNum) throws SQLException {
