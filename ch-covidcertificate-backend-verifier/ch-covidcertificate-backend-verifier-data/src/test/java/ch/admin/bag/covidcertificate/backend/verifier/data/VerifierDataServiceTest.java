@@ -19,9 +19,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.Algorithm;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
-import java.time.OffsetDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,16 +103,13 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCsca(0, "CH")));
         final var cscaId = verifierDataService.findCscas("CH").get(0).getId();
         verifierDataService.insertDscs(Collections.emptyList());
-        assertTrue(verifierDataService.findActiveDscKeyIds(nowPlus1Min()).isEmpty());
+        assertTrue(verifierDataService.findActiveDscKeyIds().isEmpty());
         final var rsaDsc = getRSADsc(0, "CH", cscaId);
         verifierDataService.insertDscs(Collections.singletonList(rsaDsc));
-        assertEquals(1, verifierDataService.findActiveDscKeyIds(nowPlus1Min()).size());
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
         assertEquals(
                 rsaDsc.getKeyId(),
-                verifierDataService
-                        .findDscs(0L, CertFormat.ANDROID, nowPlus1Min())
-                        .get(0)
-                        .getKeyId());
+                verifierDataService.findDscs(0L, CertFormat.ANDROID, null).get(0).getKeyId());
     }
 
     @Test
@@ -127,21 +122,21 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         final var rsaDsc = getRSADsc(0, "CH", cscaId);
         verifierDataService.insertDscs(Collections.singletonList(rsaDsc));
         verifierDataService.removeDscsNotIn(Collections.emptyList());
-        assertTrue(verifierDataService.findActiveDscKeyIds(nowPlus1Min()).isEmpty());
+        assertTrue(verifierDataService.findActiveDscKeyIds().isEmpty());
         verifierDataService.removeDscsNotIn(Collections.singletonList("keyid_0"));
         final var ecDsc = getECDsc(1, "CH", cscaId);
         verifierDataService.insertDscs(List.of(rsaDsc, ecDsc));
         verifierDataService.removeDscsNotIn(Collections.singletonList(rsaDsc.getKeyId()));
-        assertEquals(1, verifierDataService.findActiveDscKeyIds(nowPlus1Min()).size());
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
 
         // verify manual doesnt get removed
         updateSourceForAllDscs(CertSource.MANUAL);
         verifierDataService.removeDscsNotIn(Collections.singletonList(ecDsc.getKeyId()));
-        assertEquals(1, verifierDataService.findActiveDscKeyIds(nowPlus1Min()).size());
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
 
         updateSourceForAllDscs(CertSource.SYNC);
         verifierDataService.removeDscsNotIn(Collections.singletonList(ecDsc.getKeyId()));
-        assertEquals(0, verifierDataService.findActiveDscKeyIds(nowPlus1Min()).size());
+        assertEquals(0, verifierDataService.findActiveDscKeyIds().size());
     }
 
     @Test
@@ -157,18 +152,18 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         final var ecDsc = getECDsc(1, "DE", cscaId1);
         verifierDataService.insertDscs(List.of(rsaDsc, ecDsc));
         verifierDataService.removeDscsWithCscaIn(Collections.emptyList());
-        assertEquals(2, verifierDataService.findActiveDscKeyIds(nowPlus1Min()).size());
+        assertEquals(2, verifierDataService.findActiveDscKeyIds().size());
         verifierDataService.removeDscsWithCscaIn(List.of(cscas.get(0).getKeyId()));
-        assertEquals(1, verifierDataService.findActiveDscKeyIds(nowPlus1Min()).size());
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
 
         // verify manual doesnt get removed
         updateSourceForAllDscs(CertSource.MANUAL);
         verifierDataService.removeDscsWithCscaIn(List.of(cscas.get(1).getKeyId()));
-        assertEquals(1, verifierDataService.findActiveDscKeyIds(nowPlus1Min()).size());
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
 
         updateSourceForAllDscs(CertSource.SYNC);
         verifierDataService.removeDscsWithCscaIn(List.of(cscas.get(1).getKeyId()));
-        assertEquals(0, verifierDataService.findActiveDscKeyIds(nowPlus1Min()).size());
+        assertEquals(0, verifierDataService.findActiveDscKeyIds().size());
     }
 
     @Test
@@ -178,7 +173,7 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         final var cscaId = verifierDataService.findCscas("CH").get(0).getId();
         verifierDataService.insertDscs(
                 List.of(getRSADsc(0, "CH", cscaId), getECDsc(1, "DE", cscaId)));
-        assertEquals(2, verifierDataService.findDscs(0L, CertFormat.IOS, nowPlus1Min()).size());
+        assertEquals(2, verifierDataService.findDscs(0L, CertFormat.IOS, null).size());
     }
 
     @Test
@@ -189,11 +184,8 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         verifierDataService.insertDscs(
                 List.of(getRSADsc(0, "CH", cscaId), getECDsc(1, "DE", cscaId)));
         final var maxDscPkId = verifierDataService.findMaxDscPkId();
-        assertTrue(
-                verifierDataService.findDscs(maxDscPkId, CertFormat.IOS, nowPlus1Min()).isEmpty());
-        assertEquals(
-                1,
-                verifierDataService.findDscs(maxDscPkId - 1, CertFormat.IOS, nowPlus1Min()).size());
+        assertTrue(verifierDataService.findDscs(maxDscPkId, CertFormat.IOS, null).isEmpty());
+        assertEquals(1, verifierDataService.findDscs(maxDscPkId - 1, CertFormat.IOS, null).size());
     }
 
     private DbCsca getDefaultCsca(int idSuffix, String origin) {
@@ -231,9 +223,5 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         dbDsc.setX("x");
         dbDsc.setY("y");
         return dbDsc;
-    }
-
-    private Date nowPlus1Min() {
-        return Date.from(OffsetDateTime.now().plusMinutes(1).toInstant());
     }
 }

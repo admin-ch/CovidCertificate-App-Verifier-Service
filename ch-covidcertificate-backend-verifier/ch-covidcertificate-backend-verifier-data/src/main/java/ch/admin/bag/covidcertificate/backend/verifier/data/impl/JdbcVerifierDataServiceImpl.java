@@ -158,8 +158,47 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     }
 
     @Override
+    public List<ClientCert> findDscs(Long since, CertFormat certFormat, Long upTo) {
+        List<String> formatSpecificSelectFields;
+        switch (certFormat) {
+            case IOS:
+                formatSpecificSelectFields = List.of("subject_public_key_info");
+                break;
+            case ANDROID:
+                formatSpecificSelectFields = List.of("n", "e");
+                break;
+            default:
+                throw new RuntimeException("unexpected cert format received: " + certFormat);
+        }
+
+        String sql =
+                "select pk_dsc_id,"
+                        + " key_id,"
+                        + " origin,"
+                        + " use,"
+                        + " alg,"
+                        + " crv,"
+                        + " x,"
+                        + " y, "
+                        + String.join(", ", formatSpecificSelectFields)
+                        + " from t_document_signer_certificate"
+                        + " where pk_dsc_id > :since"
+                        + (upTo != null ? " and pk_dsc_id <= :up_to" : "")
+                        + " order by pk_dsc_id asc"
+                        + " limit :max_dsc_batch_count";
+
+        var params = new MapSqlParameterSource();
+        params.addValue("since", since);
+        params.addValue("up_to", upTo);
+        params.addValue("max_dsc_batch_count", MAX_DSC_BATCH_COUNT);
+
+        return jt.query(sql, params, new ClientCertRowMapper(certFormat));
+    }
+
+    @Override
     @Transactional(readOnly = true)
-    public List<ClientCert> findDscs(Long since, CertFormat certFormat, Date importedBefore) {
+    @Deprecated
+    public List<ClientCert> findDscsBefore(Long since, CertFormat certFormat, Date importedBefore) {
         String sql =
                 "select pk_dsc_id,"
                         + " key_id,"
@@ -186,8 +225,17 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     }
 
     @Override
+    public List<String> findActiveDscKeyIds() {
+        return jt.queryForList(
+                "select key_id from t_document_signer_certificate order by pk_dsc_id",
+                new MapSqlParameterSource(),
+                String.class);
+    }
+
+    @Override
     @Transactional(readOnly = true)
-    public List<String> findActiveDscKeyIds(Date importedBefore) {
+    @Deprecated
+    public List<String> findActiveDscKeyIdsBefore(Date importedBefore) {
         String sql =
                 "select key_id from t_document_signer_certificate where imported_at < :before order by pk_dsc_id";
         MapSqlParameterSource params = new MapSqlParameterSource();
