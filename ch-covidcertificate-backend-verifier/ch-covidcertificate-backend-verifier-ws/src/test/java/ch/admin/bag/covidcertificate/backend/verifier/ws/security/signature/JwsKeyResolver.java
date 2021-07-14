@@ -65,7 +65,7 @@ public class JwsKeyResolver extends SigningKeyResolverAdapter {
 
     private void verifyCert(X509Certificate certificateToVerify, X509Certificate x509)
             throws CertificateException, NoSuchAlgorithmException, SignatureException,
-            InvalidKeyException, NoSuchProviderException {
+                    InvalidKeyException, NoSuchProviderException {
         certificateToVerify.verify(x509.getPublicKey());
     }
 
@@ -74,7 +74,7 @@ public class JwsKeyResolver extends SigningKeyResolverAdapter {
         try (InputStream is =
                 pathToFile.startsWith(classpathPrefix)
                         ? new ClassPathResource(pathToFile.replace(classpathPrefix, ""))
-                        .getInputStream()
+                                .getInputStream()
                         : new FileInputStream(pathToFile)) {
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             return (X509Certificate) cf.generateCertificate(is);

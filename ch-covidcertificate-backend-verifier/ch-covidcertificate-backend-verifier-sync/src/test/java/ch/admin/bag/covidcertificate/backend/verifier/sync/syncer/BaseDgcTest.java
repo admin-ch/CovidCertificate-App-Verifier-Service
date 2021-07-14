@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2021 Ubique Innovation AG <https://www.ubique.ch>
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,10 +32,10 @@ import org.testcontainers.utility.DockerImageName;
 @ActiveProfiles({"test", "postgres"})
 @AutoConfigureMockMvc
 @TestPropertySource(properties = {"dgc.baseurl=https://testurl.europa.eu"})
-@ContextConfiguration(initializers = BaseDGCTest.DockerPostgresDataSourceInitializer.class)
+@ContextConfiguration(initializers = BaseDgcTest.DockerPostgresDataSourceInitializer.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-public abstract class BaseDGCTest {
+public abstract class BaseDgcTest {
 
     public static PostgreSQLContainer<?> postgreSQLContainer =
             new PostgreSQLContainer<>(

@@ -81,7 +81,7 @@ public class KeyController {
                         .minusMinutes(KEYS_LIST_BUCKET_OFFSET_MIN);
 
         List<ClientCert> dscs =
-                verifierDataService.findDSCs(
+                verifierDataService.findDscs(
                         since, certFormat, Date.from(previousBucketRelease.toInstant()));
         return ResponseEntity.ok()
                 .headers(getKeysUpdatesHeaders(dscs))
@@ -95,9 +95,9 @@ public class KeyController {
                 dscs.stream()
                         .mapToLong(dsc -> dsc.getPkId())
                         .max()
-                        .orElse(verifierDataService.findMaxDSCPkId());
+                        .orElse(verifierDataService.findMaxDscPkId());
         headers.add(NEXT_SINCE_HEADER, nextSince.toString());
-        if (dscs.size() < verifierDataService.getMaxDSCBatchCount()) {
+        if (dscs.size() < verifierDataService.getMaxDscBatchCount()) {
             headers.add(UP_TO_DATE_HEADER, "true");
         }
         return headers;
@@ -124,7 +124,7 @@ public class KeyController {
                 nextBucketRelease.minus(CacheUtil.KEYS_BUCKET_DURATION);
 
         List<String> activeKeyIds =
-                verifierDataService.findActiveDSCKeyIds(
+                verifierDataService.findActiveDscKeyIds(
                         Date.from(previousBucketRelease.toInstant()));
 
         // check etag

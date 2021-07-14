@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2021 Ubique Innovation AG <https://www.ubique.ch>
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
@@ -18,7 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 
-class DGCSyncerTest extends BaseDGCTest {
+class DgcSyncerTest extends BaseDgcTest {
 
     private final String TEST_JSON_CSCA =
             "src/test/resources/covidcert-verifier_test_vectors_CSCA.json";
@@ -33,19 +43,19 @@ class DGCSyncerTest extends BaseDGCTest {
     @Value("${dgc.baseurl}")
     String baseurl = "https://testurl.europa.eu";
 
-    @Autowired DGCSyncer dgcSyncer;
+    @Autowired DgcSyncer dgcSyncer;
 
     @Autowired VerifierDataService verifierDataService;
 
     @Test
     void downloadTest() throws Exception {
-        String expectedCSCA = Files.readString(Path.of(TEST_JSON_CSCA_STUB));
-        String expectedDSC = Files.readString(Path.of(TEST_JSON_DSC_STUB));
-        setMockServer(expectedCSCA, expectedDSC);
+        String expectedCsca = Files.readString(Path.of(TEST_JSON_CSCA_STUB));
+        String expectedDsc = Files.readString(Path.of(TEST_JSON_DSC_STUB));
+        setMockServer(expectedCsca, expectedDsc);
         dgcSyncer.sync();
     }
 
-    private void setMockServer(String expectedCSCA, String expectedDSC) throws URISyntaxException {
+    private void setMockServer(String expectedCsca, String expectedDsc) throws URISyntaxException {
         final var mockServer = MockRestServiceServer.createServer(rt);
         mockServer
                 .expect(ExpectedCount.once(), requestTo(new URI(baseurl + "/trustList/CSCA")))
@@ -53,13 +63,13 @@ class DGCSyncerTest extends BaseDGCTest {
                 .andRespond(
                         withStatus(HttpStatus.OK)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .body(expectedCSCA));
+                                .body(expectedCsca));
         mockServer
                 .expect(ExpectedCount.once(), requestTo(new URI(baseurl + "/trustList/DSC")))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(
                         withStatus(HttpStatus.OK)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .body(expectedDSC));
+                                .body(expectedDsc));
     }
 }

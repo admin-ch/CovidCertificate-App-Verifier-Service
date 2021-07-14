@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2021 Ubique Innovation AG <https://www.ubique.ch>
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,9 +31,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 
-class DGCClientTest extends BaseDGCTest {
+class DgcClientTest extends BaseDgcTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(DGCClientTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(DgcClientTest.class);
     private final String TEST_JSON = "src/test/resources/covidcert-verifier_test_vectors.json";
     private final String TEST_PROBLEM_JSON =
             "src/test/resources/covidcert-verifier_problem-report.json";
@@ -31,8 +41,7 @@ class DGCClientTest extends BaseDGCTest {
     @Value("${dgc.baseurl}")
     String baseurl = "https://testurl.europa.eu";
 
-    @Autowired
-    DGCClient dgcClient;
+    @Autowired DgcClient dgcClient;
 
     @Test
     void downloadTest() throws Exception {

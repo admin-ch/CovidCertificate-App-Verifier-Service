@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2021 Ubique Innovation AG <https://www.ubique.ch>
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CertificateType;
@@ -15,15 +25,15 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-public class DGCClient {
+public class DgcClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(DGCClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(DgcClient.class);
     private static final String UPLOAD_PATH = "/signerCertificate";
     private static final String DOWNLOAD_PATH = "/trustList/%s";
     private final String baseUrl;
     private final RestTemplate rt;
 
-    public DGCClient(String baseUrl, RestTemplate rt) {
+    public DgcClient(String baseUrl, RestTemplate rt) {
         this.baseUrl = baseUrl;
         this.rt = rt;
     }

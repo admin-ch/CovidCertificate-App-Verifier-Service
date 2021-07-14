@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2021 Ubique Innovation AG <https://www.ubique.ch>
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * SPDX-License-Identifier: MPL-2.0
+ */
+
 package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
@@ -22,14 +32,14 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DGCSyncer {
+public class DgcSyncer {
 
-    private static final Logger logger = LoggerFactory.getLogger(DGCSyncer.class);
+    private static final Logger logger = LoggerFactory.getLogger(DgcSyncer.class);
 
-    private final DGCClient dgcClient;
+    private final DgcClient dgcClient;
     private final VerifierDataService verifierDataService;
 
-    public DGCSyncer(DGCClient dgcClient, VerifierDataService verifierDataService) {
+    public DgcSyncer(DgcClient dgcClient, VerifierDataService verifierDataService) {
         this.dgcClient = dgcClient;
         this.verifierDataService = verifierDataService;
     }
@@ -46,15 +56,15 @@ public class DGCSyncer {
     private void download() {
         logger.info("Downloading certificates from DGC Gateway");
         var start = Instant.now();
-        downloadCSCAs();
-        downloadDSCs();
+        downloadCscas();
+        downloadDscs();
         var end = Instant.now();
         logger.info("Finished download in {} ms", end.toEpochMilli() - start.toEpochMilli());
     }
 
-    private void downloadCSCAs() {
+    private void downloadCscas() {
         // Check which CSCAs are currently stored in the db
-        final var activeCscaKeyIds = verifierDataService.findActiveCSCAKeyIds();
+        final var activeCscaKeyIds = verifierDataService.findActiveCscaKeyIds();
         // Download CSCAs and check validity
         final var cscaTrustLists = dgcClient.download(CertificateType.CSCA);
         final var dbCscaList = new ArrayList<DbCsca>();
@@ -87,24 +97,24 @@ public class DGCSyncer {
         // Remove DSCs whose CSCA is about to be removed
         final var removedCscaList = new ArrayList<>(activeCscaKeyIds);
         dbCscaList.stream().map(DbCsca::getKeyId).forEach(removedCscaList::remove);
-        final var removedDSCs = verifierDataService.removeDSCsWithCSCAIn(removedCscaList);
+        final var removedDscs = verifierDataService.removeDscsWithCscaIn(removedCscaList);
         // Remove CSCAs that weren't returned by the download
-        final var removedCSCAs = verifierDataService.removeCSCAs(removedCscaList);
+        final var removedCscas = verifierDataService.removeCscas(removedCscaList);
         // Insert CSCAs
-        verifierDataService.insertCSCAs(cscaListToInsert);
+        verifierDataService.insertCscas(cscaListToInsert);
         logger.info(
                 "Downloaded {} CSCA certificates: Dropped {}, Inserted {}, Removed {} CSCAs and {} DSCs, Left {} in DB",
                 cscaTrustLists.length,
                 cscaTrustLists.length - dbCscaList.size(),
                 cscaListToInsert.size(),
-                removedCSCAs,
-                removedDSCs,
+                removedCscas,
+                removedDscs,
                 dbCscaList.size() - removedCscaList.size() - cscaListToInsert.size());
     }
 
-    private void downloadDSCs() {
+    private void downloadDscs() {
         // Check which DSCs are currently stored in the db
-        final var activeDscKeyIds = verifierDataService.findActiveDSCKeyIds(nowPlus1Min());
+        final var activeDscKeyIds = verifierDataService.findActiveDscKeyIds(nowPlus1Min());
         // Download and insert DSC certificates
         final var dscTrustLists = dgcClient.download(CertificateType.DSC);
         final var dbDscList = new ArrayList<DbDsc>();
@@ -149,23 +159,23 @@ public class DGCSyncer {
             }
         }
         // Remove DSCs that weren't returned by the download
-        final var removedDSCs =
-                verifierDataService.removeDSCsNotIn(
+        final var removedDscs =
+                verifierDataService.removeDscsNotIn(
                         dbDscList.stream().map(DbDsc::getKeyId).collect(Collectors.toList()));
         // Insert DSCs
-        verifierDataService.insertDSCs(dscListToInsert);
+        verifierDataService.insertDscs(dscListToInsert);
         logger.info(
                 "Downloaded {} DSC certificates: Dropped {}, Inserted {}, Removed {}, Left {} in DB",
                 dscTrustLists.length,
                 dscTrustLists.length - dbDscList.size(),
                 dscListToInsert.size(),
-                removedDSCs,
-                dbDscList.size() - removedDSCs - dscListToInsert.size());
+                removedDscs,
+                dbDscList.size() - removedDscs - dscListToInsert.size());
     }
 
     private boolean verify(DbDsc dbDsc) {
         logger.debug("Verifying signature of DSC with kid {}", dbDsc.getKeyId());
-        final var cscas = verifierDataService.findCSCAs(dbDsc.getOrigin());
+        final var cscas = verifierDataService.findCscas(dbDsc.getOrigin());
         for (DbCsca dbCsca : cscas) {
             try {
                 final var dscX509 = TrustListMapper.fromBase64EncodedStr(dbDsc.getCertificateRaw());

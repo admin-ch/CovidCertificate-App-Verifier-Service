@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Ubique Innovation AG <https://www.ubique.ch>
+ * Copyright (c) 2021 Ubique Innovation AG <https://www.ubique.ch>
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -20,7 +20,7 @@ import java.util.List;
 public interface VerifierDataService {
 
     /** inserts the given CSCAs into the db */
-    public void insertCSCAs(List<DbCsca> cscas);
+    public void insertCscas(List<DbCsca> cscas);
 
     /**
      * removes all csas with key ids in the given list that haven't been added manually
@@ -28,7 +28,7 @@ public interface VerifierDataService {
      * @param keyIds
      * @return number of removed CSCAs
      */
-    public int removeCSCAs(List<String> keyIds);
+    public int removeCscas(List<String> keyIds);
 
     /**
      * finds all CSCAs of the given origin country
@@ -36,31 +36,31 @@ public interface VerifierDataService {
      * @param origin abbreviation for country of origin (e.g. "CH")
      * @return list of all CSCAs with the corresponding origin
      */
-    public List<DbCsca> findCSCAs(String origin);
+    public List<DbCsca> findCscas(String origin);
 
     /** returns a list of key ids of all active CSCAs */
-    public List<String> findActiveCSCAKeyIds();
+    public List<String> findActiveCscaKeyIds();
 
     /** inserts the given DSC into the db */
-    public void insertDSCs(List<DbDsc> dsc);
+    public void insertDscs(List<DbDsc> dsc);
 
     /** removes all DSCs with key ids not in the given list that haven't been added manually */
-    public int removeDSCsNotIn(List<String> keyIdsToKeep);
+    public int removeDscsNotIn(List<String> keyIdsToKeep);
 
     /** removes all DSCs signed by a CSCA in the given list that haven't been added manually */
-    public int removeDSCsWithCSCAIn(List<String> cscaKidsToRemove);
+    public int removeDscsWithCscaIn(List<String> cscaKidsToRemove);
 
     /**
      * returns the next batch of DSCs after `since` but before `importedBefore` in the requested
      * format
      */
-    public List<ClientCert> findDSCs(Long since, CertFormat certFormat, Date importedBefore);
+    public List<ClientCert> findDscs(Long since, CertFormat certFormat, Date importedBefore);
 
     /** returns a list of key ids of all active DSCs before a certain timestamp */
-    public List<String> findActiveDSCKeyIds(Date importedBefore);
+    public List<String> findActiveDscKeyIds(Date importedBefore);
 
     /** returns the highest DSC pk id */
-    public long findMaxDSCPkId();
+    public long findMaxDscPkId();
 
-    public int getMaxDSCBatchCount();
+    public int getMaxDscBatchCount();
 }

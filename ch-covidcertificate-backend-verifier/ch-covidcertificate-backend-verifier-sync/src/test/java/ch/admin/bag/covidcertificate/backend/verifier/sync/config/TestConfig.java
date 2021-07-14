@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Ubique Innovation AG <https://www.ubique.ch>
+ * Copyright (c) 2021 Ubique Innovation AG <https://www.ubique.ch>
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -12,8 +12,8 @@ package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
-import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DGCClient;
-import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DGCSyncer;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcClient;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
@@ -33,15 +33,15 @@ public class TestConfig {
     String baseurl = "https://testurl.europa.eu";
 
     @Bean
-    public DGCSyncer dgcSyncer(DGCClient dgcClient, VerifierDataService verifierDataService) {
+    public DgcSyncer dgcSyncer(DgcClient dgcClient, VerifierDataService verifierDataService) {
         logger.info("Instantiated DGC Syncer with baseurl: {}", baseurl);
-        return new DGCSyncer(dgcClient, verifierDataService);
+        return new DgcSyncer(dgcClient, verifierDataService);
     }
 
     @Bean
-    public DGCClient dgcClient(RestTemplate restTemplate) {
+    public DgcClient dgcClient(RestTemplate restTemplate) {
         logger.info("Instantiated DGC Syncer with baseurl: {}", baseurl);
-        return new DGCClient(baseurl, restTemplate);
+        return new DgcClient(baseurl, restTemplate);
     }
 
     @Bean

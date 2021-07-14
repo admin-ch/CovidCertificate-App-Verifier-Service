@@ -11,8 +11,8 @@
 package ch.admin.bag.covidcertificate.backend.verifier.data.impl;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
-import ch.admin.bag.covidcertificate.backend.verifier.data.mapper.CSCARowMapper;
 import ch.admin.bag.covidcertificate.backend.verifier.data.mapper.ClientCertRowMapper;
+import ch.admin.bag.covidcertificate.backend.verifier.data.mapper.CscaRowMapper;
 import ch.admin.bag.covidcertificate.backend.verifier.model.CertSource;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
@@ -55,14 +55,14 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional
-    public void insertCSCAs(List<DbCsca> cscas) {
+    public void insertCscas(List<DbCsca> cscas) {
         logger.debug(
                 "Inserting CSCA certificates with kid's: {}",
                 cscas.stream().map(DbCsca::getKeyId).collect(Collectors.toList()));
         List<SqlParameterSource> batchParams = new ArrayList<>();
         if (!cscas.isEmpty()) {
             for (DbCsca dbCsca : cscas) {
-                batchParams.add(getCSCAParams(dbCsca));
+                batchParams.add(getCscaParams(dbCsca));
             }
             cscaInsert.executeBatch(
                     batchParams.toArray(new SqlParameterSource[batchParams.size()]));
@@ -71,7 +71,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional
-    public int removeCSCAs(List<String> keyIds) {
+    public int removeCscas(List<String> keyIds) {
         if (!keyIds.isEmpty()) {
             var sql =
                     "delete from t_country_specific_certificate_authority"
@@ -88,28 +88,28 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DbCsca> findCSCAs(String origin) {
+    public List<DbCsca> findCscas(String origin) {
         final var sql =
                 "select * from t_country_specific_certificate_authority where origin = :origin";
         final var params = new MapSqlParameterSource();
         params.addValue("origin", origin);
-        return jt.query(sql, params, new CSCARowMapper());
+        return jt.query(sql, params, new CscaRowMapper());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<String> findActiveCSCAKeyIds() {
+    public List<String> findActiveCscaKeyIds() {
         final var sql = "select key_id from t_country_specific_certificate_authority";
         return jt.queryForList(sql, new MapSqlParameterSource(), String.class);
     }
 
     @Override
     @Transactional
-    public void insertDSCs(List<DbDsc> dsc) {
+    public void insertDscs(List<DbDsc> dsc) {
         List<SqlParameterSource> batchParams = new ArrayList<>();
         if (!dsc.isEmpty()) {
             for (DbDsc dbDsc : dsc) {
-                batchParams.add(getDSCParams(dbDsc));
+                batchParams.add(getDscParams(dbDsc));
             }
             dscInsert.executeBatch(batchParams.toArray(new SqlParameterSource[batchParams.size()]));
         }
@@ -117,7 +117,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional
-    public int removeDSCsNotIn(List<String> keyIdsToKeep) {
+    public int removeDscsNotIn(List<String> keyIdsToKeep) {
         var sql = "delete from t_document_signer_certificate";
         final var params = new MapSqlParameterSource();
         if (!keyIdsToKeep.isEmpty()) {
@@ -130,7 +130,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional
-    public int removeDSCsWithCSCAIn(List<String> cscaKidsToRemove) {
+    public int removeDscsWithCscaIn(List<String> cscaKidsToRemove) {
         if (!cscaKidsToRemove.isEmpty()) {
             var sql =
                     "delete from t_document_signer_certificate"
@@ -159,7 +159,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ClientCert> findDSCs(Long since, CertFormat certFormat, Date importedBefore) {
+    public List<ClientCert> findDscs(Long since, CertFormat certFormat, Date importedBefore) {
         String sql =
                 "select pk_dsc_id,"
                         + " key_id,"
@@ -187,7 +187,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<String> findActiveDSCKeyIds(Date importedBefore) {
+    public List<String> findActiveDscKeyIds(Date importedBefore) {
         String sql =
                 "select key_id from t_document_signer_certificate where imported_at < :before order by pk_dsc_id";
         MapSqlParameterSource params = new MapSqlParameterSource();
@@ -197,7 +197,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional(readOnly = true)
-    public long findMaxDSCPkId() {
+    public long findMaxDscPkId() {
         try {
             String sql =
                     "select pk_dsc_id from t_document_signer_certificate"
@@ -210,11 +210,11 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     }
 
     @Override
-    public int getMaxDSCBatchCount() {
+    public int getMaxDscBatchCount() {
         return MAX_DSC_BATCH_COUNT;
     }
 
-    private MapSqlParameterSource getCSCAParams(DbCsca dbCsca) {
+    private MapSqlParameterSource getCscaParams(DbCsca dbCsca) {
         var params = new MapSqlParameterSource();
         params.addValue("key_id", dbCsca.getKeyId());
         params.addValue("certificate_raw", dbCsca.getCertificateRaw());
@@ -224,7 +224,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
         return params;
     }
 
-    private MapSqlParameterSource getDSCParams(DbDsc dbDsc) {
+    private MapSqlParameterSource getDscParams(DbDsc dbDsc) {
         var params = new MapSqlParameterSource();
         params.addValue("key_id", dbDsc.getKeyId());
         params.addValue("fk_csca_id", dbDsc.getFkCsca());
