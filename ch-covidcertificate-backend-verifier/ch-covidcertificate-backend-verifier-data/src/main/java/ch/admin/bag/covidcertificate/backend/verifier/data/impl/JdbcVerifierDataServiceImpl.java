@@ -11,8 +11,8 @@
 package ch.admin.bag.covidcertificate.backend.verifier.data.impl;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
-import ch.admin.bag.covidcertificate.backend.verifier.data.mapper.CscaRowMapper;
 import ch.admin.bag.covidcertificate.backend.verifier.data.mapper.ClientCertRowMapper;
+import ch.admin.bag.covidcertificate.backend.verifier.data.mapper.CscaRowMapper;
 import ch.admin.bag.covidcertificate.backend.verifier.model.CertSource;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;

@@ -8,8 +8,6 @@ import java.util.List;
  */
 public interface AppTokenDataService {
 
-    /**
-     * Fetches all app tokens contained in the database
-     */
+    /** Fetches all app tokens contained in the database */
     public List<AppToken> getAppTokens();
 }

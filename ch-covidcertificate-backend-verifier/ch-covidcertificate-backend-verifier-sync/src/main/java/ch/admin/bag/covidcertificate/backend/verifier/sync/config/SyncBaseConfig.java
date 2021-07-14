@@ -49,8 +49,8 @@ public abstract class SyncBaseConfig {
                 JdbcTemplateLockProvider.Configuration.builder()
                         .withTableName("t_shedlock")
                         .withJdbcTemplate(new JdbcTemplate(dataSource))
-                        .usingDbTime() // Works on Postgres, MySQL, MariaDb, MS SQL, Oracle, DB2,
-                                       // HSQL and H2
+                        // Works on Postgres, MySQL, MariaDb, MS SQL, Oracle, DB2, HSQL and H2
+                        .usingDbTime()
                         .build());
     }
 

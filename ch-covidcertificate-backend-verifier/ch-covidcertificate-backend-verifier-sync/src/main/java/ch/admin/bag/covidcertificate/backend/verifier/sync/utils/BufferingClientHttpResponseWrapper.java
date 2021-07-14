@@ -20,38 +20,38 @@ import org.springframework.util.StreamUtils;
 
 public final class BufferingClientHttpResponseWrapper implements ClientHttpResponse {
 
-  private final ClientHttpResponse response;
+    private final ClientHttpResponse response;
 
-  private byte[] body;
+    private byte[] body;
 
-  BufferingClientHttpResponseWrapper(ClientHttpResponse response) {
-    this.response = response;
-  }
-
-  public HttpStatus getStatusCode() throws IOException {
-    return this.response.getStatusCode();
-  }
-
-  public int getRawStatusCode() throws IOException {
-    return this.response.getRawStatusCode();
-  }
-
-  public String getStatusText() throws IOException {
-    return this.response.getStatusText();
-  }
-
-  public HttpHeaders getHeaders() {
-    return this.response.getHeaders();
-  }
-
-  public InputStream getBody() throws IOException {
-    if (this.body == null) {
-      this.body = StreamUtils.copyToByteArray(this.response.getBody());
+    BufferingClientHttpResponseWrapper(ClientHttpResponse response) {
+        this.response = response;
     }
-    return new ByteArrayInputStream(this.body);
-  }
 
-  public void close() {
-    this.response.close();
-  }
+    public HttpStatus getStatusCode() throws IOException {
+        return this.response.getStatusCode();
+    }
+
+    public int getRawStatusCode() throws IOException {
+        return this.response.getRawStatusCode();
+    }
+
+    public String getStatusText() throws IOException {
+        return this.response.getStatusText();
+    }
+
+    public HttpHeaders getHeaders() {
+        return this.response.getHeaders();
+    }
+
+    public InputStream getBody() throws IOException {
+        if (this.body == null) {
+            this.body = StreamUtils.copyToByteArray(this.response.getBody());
+        }
+        return new ByteArrayInputStream(this.body);
+    }
+
+    public void close() {
+        this.response.close();
+    }
 }
