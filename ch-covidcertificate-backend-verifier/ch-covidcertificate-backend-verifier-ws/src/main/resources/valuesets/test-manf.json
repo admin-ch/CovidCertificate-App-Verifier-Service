@@ -617,6 +617,20 @@
       "active": true,
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
       "version": "2021-05-10 13:18:20 CET"
+    },
+    "1494": {
+      "display": "BIOSYNEX SWISS SA, BIOSYNEX COVID-19 Ag + BSS",
+      "lang": "en",
+      "active": true,
+      "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
+      "version": "2021-07-07 05:08:11 CET"
+    },
+    "2228": {
+      "display": "SD Biosensor, Inc., SARS-CoV-2 Rapid Antigen Test Nasal",
+      "lang": "en",
+      "active": true,
+      "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
+      "version": "2021-07-07 05:05:08 CET"
     }
   }
 }
