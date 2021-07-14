@@ -17,10 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import ch.admin.bag.covidcertificate.backend.verifier.model.CertSource;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.Algorithm;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
+import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -104,9 +106,12 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         final var cscaId = verifierDataService.findCscas("CH").get(0).getId();
         verifierDataService.insertDscs(Collections.emptyList());
         assertTrue(verifierDataService.findActiveDscKeyIds().isEmpty());
-        final var rsaDsc = getRSADsc(0, "CH", cscaId);
+        final var rsaDsc = getRsaDsc(0, "CH", cscaId);
         verifierDataService.insertDscs(Collections.singletonList(rsaDsc));
-        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+
+        List<String> activeDscKeyIds = verifierDataService.findActiveDscKeyIds();
+        assertEquals(1, activeDscKeyIds.size());
+        assertEquals(rsaDsc.getKeyId(), activeDscKeyIds.get(0));
         assertEquals(
                 rsaDsc.getKeyId(),
                 verifierDataService.findDscs(0L, CertFormat.ANDROID, null).get(0).getKeyId());
@@ -119,12 +124,12 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         final var cscas = verifierDataService.findCscas("CH");
         assertEquals(1, cscas.size());
         final var cscaId = cscas.get(0).getId();
-        final var rsaDsc = getRSADsc(0, "CH", cscaId);
+        final var rsaDsc = getRsaDsc(0, "CH", cscaId);
         verifierDataService.insertDscs(Collections.singletonList(rsaDsc));
         verifierDataService.removeDscsNotIn(Collections.emptyList());
         assertTrue(verifierDataService.findActiveDscKeyIds().isEmpty());
         verifierDataService.removeDscsNotIn(Collections.singletonList("keyid_0"));
-        final var ecDsc = getECDsc(1, "CH", cscaId);
+        final var ecDsc = getEcDsc(1, "CH", cscaId);
         verifierDataService.insertDscs(List.of(rsaDsc, ecDsc));
         verifierDataService.removeDscsNotIn(Collections.singletonList(rsaDsc.getKeyId()));
         assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
@@ -148,8 +153,8 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         assertEquals(2, cscas.size());
         final var cscaId0 = cscas.get(0).getId();
         final var cscaId1 = cscas.get(1).getId();
-        final var rsaDsc = getRSADsc(0, "DE", cscaId0);
-        final var ecDsc = getECDsc(1, "DE", cscaId1);
+        final var rsaDsc = getRsaDsc(0, "DE", cscaId0);
+        final var ecDsc = getEcDsc(1, "DE", cscaId1);
         verifierDataService.insertDscs(List.of(rsaDsc, ecDsc));
         verifierDataService.removeDscsWithCscaIn(Collections.emptyList());
         assertEquals(2, verifierDataService.findActiveDscKeyIds().size());
@@ -171,9 +176,25 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
     void findDscsTest() {
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCsca(0, "CH")));
         final var cscaId = verifierDataService.findCscas("CH").get(0).getId();
-        verifierDataService.insertDscs(
-                List.of(getRSADsc(0, "CH", cscaId), getECDsc(1, "DE", cscaId)));
-        assertEquals(2, verifierDataService.findDscs(0L, CertFormat.IOS, null).size());
+
+        List<DbDsc> dscs = List.of(getRsaDsc(0, "CH", cscaId), getEcDsc(1, "DE", cscaId));
+        verifierDataService.insertDscs(dscs);
+
+        assertEquals(dscs.size(), verifierDataService.findDscs(0L, CertFormat.IOS, null).size());
+
+        // test upTo
+        verifierDataService.insertDscs(List.of(getEcDsc(2, "DE", cscaId)));
+        assertEquals(
+                dscs.size() + 1, verifierDataService.findDscs(0L, CertFormat.IOS, null).size());
+        List<ClientCert> upTo1 =
+                verifierDataService.findDscs(0L, CertFormat.IOS, (long) dscs.size());
+        assertEquals(dscs.size(), upTo1.size());
+        List<String> expectedKeyIds =
+                dscs.stream().map(DbDsc::getKeyId).collect(Collectors.toList());
+        for (ClientCert clientCert : upTo1) {
+            assertTrue(expectedKeyIds.contains(clientCert.getKeyId()));
+            assertTrue(clientCert.getPkId() <= dscs.size());
+        }
     }
 
     @Test
@@ -182,7 +203,7 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCsca(0, "CH")));
         final var cscaId = verifierDataService.findCscas("CH").get(0).getId();
         verifierDataService.insertDscs(
-                List.of(getRSADsc(0, "CH", cscaId), getECDsc(1, "DE", cscaId)));
+                List.of(getRsaDsc(0, "CH", cscaId), getEcDsc(1, "DE", cscaId)));
         final var maxDscPkId = verifierDataService.findMaxDscPkId();
         assertTrue(verifierDataService.findDscs(maxDscPkId, CertFormat.IOS, null).isEmpty());
         assertEquals(1, verifierDataService.findDscs(maxDscPkId - 1, CertFormat.IOS, null).size());
@@ -197,7 +218,7 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         return dbCsca;
     }
 
-    private DbDsc getRSADsc(int idSuffix, String origin, long fkCsca) {
+    private DbDsc getRsaDsc(int idSuffix, String origin, long fkCsca) {
         final var dbDsc = new DbDsc();
         dbDsc.setKeyId("keyid_" + idSuffix);
         dbDsc.setFkCsca(fkCsca);
@@ -211,7 +232,7 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         return dbDsc;
     }
 
-    private DbDsc getECDsc(int idSuffix, String origin, long fkCsca) {
+    private DbDsc getEcDsc(int idSuffix, String origin, long fkCsca) {
         final var dbDsc = new DbDsc();
         dbDsc.setKeyId("keyid_" + idSuffix);
         dbDsc.setFkCsca(fkCsca);

@@ -54,7 +54,7 @@ class X509Test {
     }
 
     @Test
-    void testX509EC() throws Exception {
+    void testX509Ec() throws Exception {
         X509Certificate dscX509 = getX509(EC_DSC_PATH);
         X509Certificate cscaX509 = getX509(EC_CSCA_PATH);
 
