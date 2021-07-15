@@ -10,15 +10,16 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.data;
 
+import static ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil.getDefaultCsca;
+import static ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil.getEcDsc;
+import static ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil.getRsaDsc;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ch.admin.bag.covidcertificate.backend.verifier.model.CertSource;
-import ch.admin.bag.covidcertificate.backend.verifier.model.cert.Algorithm;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
-import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import java.util.Collections;
 import java.util.List;
@@ -207,42 +208,5 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         final var maxDscPkId = verifierDataService.findMaxDscPkId();
         assertTrue(verifierDataService.findDscs(maxDscPkId, CertFormat.IOS, null).isEmpty());
         assertEquals(1, verifierDataService.findDscs(maxDscPkId - 1, CertFormat.IOS, null).size());
-    }
-
-    private DbCsca getDefaultCsca(int idSuffix, String origin) {
-        var dbCsca = new DbCsca();
-        dbCsca.setKeyId("keyid_" + idSuffix);
-        dbCsca.setCertificateRaw("cert");
-        dbCsca.setOrigin(origin);
-        dbCsca.setSubjectPrincipalName("admin_ch");
-        return dbCsca;
-    }
-
-    private DbDsc getRsaDsc(int idSuffix, String origin, long fkCsca) {
-        final var dbDsc = new DbDsc();
-        dbDsc.setKeyId("keyid_" + idSuffix);
-        dbDsc.setFkCsca(fkCsca);
-        dbDsc.setCertificateRaw("cert");
-        dbDsc.setOrigin(origin);
-        dbDsc.setUse("sig");
-        dbDsc.setAlg(Algorithm.RS256);
-        dbDsc.setN("n");
-        dbDsc.setE("e");
-        dbDsc.setSubjectPublicKeyInfo("pk");
-        return dbDsc;
-    }
-
-    private DbDsc getEcDsc(int idSuffix, String origin, long fkCsca) {
-        final var dbDsc = new DbDsc();
-        dbDsc.setKeyId("keyid_" + idSuffix);
-        dbDsc.setFkCsca(fkCsca);
-        dbDsc.setCertificateRaw("cert");
-        dbDsc.setOrigin(origin);
-        dbDsc.setUse("sig");
-        dbDsc.setAlg(Algorithm.ES256);
-        dbDsc.setCrv("crv");
-        dbDsc.setX("x");
-        dbDsc.setY("y");
-        return dbDsc;
     }
 }
