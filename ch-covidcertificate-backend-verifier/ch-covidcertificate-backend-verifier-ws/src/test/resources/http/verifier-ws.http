@@ -14,9 +14,8 @@ If-None-Match: "-720957702"
 Authorization: Bearer {{apiKey}}
 
 ### get revocation list
-GET {{baseUrl}}/v1/revocationList
+GET {{baseUrl}}/v2/revocationList
 Accept: application/json
-If-None-Match: "1089905096"
 Authorization: Bearer {{apiKey}}
 
 ### get verification rules
