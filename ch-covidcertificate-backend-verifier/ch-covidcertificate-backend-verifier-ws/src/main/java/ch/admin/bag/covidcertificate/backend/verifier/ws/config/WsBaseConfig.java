@@ -17,6 +17,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierData
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.ValueSetsController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerificationRulesController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.interceptor.HeaderInjector;
@@ -154,6 +155,11 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     @Bean
     public RevocationListController revocationListController() {
         return new RevocationListController(revokedCertsBaseUrl);
+    }
+
+    @Bean
+    public RevocationListControllerV2 revocationListControllerV2() {
+        return new RevocationListControllerV2(revokedCertsBaseUrl);
     }
 
     @Bean

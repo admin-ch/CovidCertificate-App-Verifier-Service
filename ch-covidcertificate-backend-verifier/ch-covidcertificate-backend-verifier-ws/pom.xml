@@ -237,7 +237,7 @@
                             ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyControllerV2
                         </controller>
                         <controller>
-                            ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController
+                            ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListControllerV2
                         </controller>
                         <controller>
                             ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerificationRulesController
