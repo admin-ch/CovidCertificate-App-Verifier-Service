@@ -228,13 +228,13 @@
                 <groupId>ch.ubique.openapi</groupId>
                 <artifactId>springboot-swagger-3</artifactId>
                 <configuration>
-                    <apiVersion>1.1.0</apiVersion>
+                    <apiVersion>2.2.0</apiVersion>
                     <basePackages>
                         ch.admin.bag.covidcertificate.backend.verifier
                     </basePackages>
                     <controllers>
                         <controller>
-                            ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyController
+                            ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyControllerV2
                         </controller>
                         <controller>
                             ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController
