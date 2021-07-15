@@ -195,9 +195,10 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
         return jt.query(sql, params, new ClientCertRowMapper(certFormat));
     }
 
+    /** @deprecated only used in KeyController V1 */
     @Override
     @Transactional(readOnly = true)
-    @Deprecated
+    @Deprecated(since = "KeyControllerV2", forRemoval = true)
     public List<ClientCert> findDscsBefore(Long since, CertFormat certFormat, Date importedBefore) {
         String sql =
                 "select pk_dsc_id,"
@@ -232,9 +233,10 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
                 String.class);
     }
 
+    /** @deprecated only used in KeyController V1 */
     @Override
     @Transactional(readOnly = true)
-    @Deprecated
+    @Deprecated(since = "KeyControllerV2", forRemoval = true)
     public List<String> findActiveDscKeyIdsBefore(Date importedBefore) {
         String sql =
                 "select key_id from t_document_signer_certificate where imported_at < :before order by pk_dsc_id";

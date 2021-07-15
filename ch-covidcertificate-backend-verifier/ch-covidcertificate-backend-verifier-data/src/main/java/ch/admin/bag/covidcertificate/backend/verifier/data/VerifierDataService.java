@@ -59,7 +59,7 @@ public interface VerifierDataService {
      *
      * @deprecated only used in KeyController V1
      */
-    @Deprecated
+    @Deprecated(since = "KeyControllerV2", forRemoval = true)
     public List<ClientCert> findDscsBefore(Long since, CertFormat certFormat, Date importedBefore);
 
     /** returns a list of key ids of all active DSCs */
@@ -70,7 +70,7 @@ public interface VerifierDataService {
      *
      * @deprecated only used in KeyController V1
      */
-    @Deprecated
+    @Deprecated(since = "KeyControllerV2", forRemoval = true)
     public List<String> findActiveDscKeyIdsBefore(Date importedBefore);
 
     /** returns the highest DSC pk id */
