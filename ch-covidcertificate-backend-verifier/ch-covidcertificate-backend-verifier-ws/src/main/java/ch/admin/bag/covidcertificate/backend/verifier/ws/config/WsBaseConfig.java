@@ -11,12 +11,16 @@
 package ch.admin.bag.covidcertificate.backend.verifier.ws.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.AppTokenDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.RevokedCertDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcAppTokenDataServiceImpl;
+import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcRevokedCertDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.client.RevocationListSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.ValueSetsController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerificationRulesController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.interceptor.HeaderInjector;
@@ -35,6 +39,8 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
+import net.javacrumbs.shedlock.core.LockProvider;
+import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +48,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -157,6 +164,23 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     }
 
     @Bean
+    public RevocationListControllerV2 revocationListControllerV2(
+            RevokedCertDataService revokedCertDataService) {
+        return new RevocationListControllerV2(revokedCertDataService);
+    }
+
+    @Bean
+    public RevocationListSyncer revocationListSyncer(
+            RevokedCertDataService revokedCertDataService) {
+        return new RevocationListSyncer(revokedCertsBaseUrl, revokedCertDataService);
+    }
+
+    @Bean
+    public RevokedCertDataService revokedCertDataService(DataSource dataSource) {
+        return new JdbcRevokedCertDataServiceImpl(dataSource);
+    }
+
+    @Bean
     public VerificationRulesController verificationRulesController()
             throws IOException, NoSuchAlgorithmException {
         return new VerificationRulesController();
@@ -170,5 +194,16 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     @Bean
     public RestTemplate restTemplate() {
         return RestTemplateHelper.getRestTemplate();
+    }
+
+    @Bean
+    public LockProvider lockProvider(DataSource dataSource) {
+        return new JdbcTemplateLockProvider(
+                JdbcTemplateLockProvider.Configuration.builder()
+                        .withTableName("t_shedlock")
+                        .withJdbcTemplate(new JdbcTemplate(dataSource))
+                        // Works on Postgres, MySQL, MariaDb, MS SQL, Oracle, DB2, HSQL and H2
+                        .usingDbTime()
+                        .build());
     }
 }

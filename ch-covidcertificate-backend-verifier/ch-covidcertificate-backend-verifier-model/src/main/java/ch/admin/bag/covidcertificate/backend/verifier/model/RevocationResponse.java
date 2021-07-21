@@ -15,6 +15,12 @@ public class RevocationResponse {
             example = "172800000")
     private Duration validDuration = Duration.ofHours(48);
 
+    public RevocationResponse() {}
+
+    public RevocationResponse(List<String> revokedCerts) {
+        this.revokedCerts = revokedCerts;
+    }
+
     public List<String> getRevokedCerts() {
         return revokedCerts;
     }
