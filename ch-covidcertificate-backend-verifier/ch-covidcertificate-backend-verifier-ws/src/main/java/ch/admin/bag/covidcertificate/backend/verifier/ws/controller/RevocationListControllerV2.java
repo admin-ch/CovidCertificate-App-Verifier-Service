@@ -10,31 +10,25 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.RevokedCertDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.model.DbRevokedCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.RevocationResponse;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
 import ch.ubique.openapi.docannotations.Documentation;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 @RequestMapping("trust/v2")
@@ -46,13 +40,10 @@ public class RevocationListControllerV2 {
     private static final String NEXT_SINCE_HEADER = "X-Next-Since";
     private static final String UP_TO_DATE_HEADER = "up-to-date";
 
-    private final String baseurl;
-    private final String endpoint = "/v1/revocation-list";
-    @Autowired RestTemplate rt;
+    private final RevokedCertDataService revokedCertDataService;
 
-    public RevocationListControllerV2(String revokedCertsBaseUrl) {
-        logger.info("Instantiated controller with baseurl: {}", revokedCertsBaseUrl);
-        this.baseurl = revokedCertsBaseUrl;
+    public RevocationListControllerV2(RevokedCertDataService revokedCertDataService) {
+        this.revokedCertDataService = revokedCertDataService;
     }
 
     @Documentation(
@@ -65,40 +56,26 @@ public class RevocationListControllerV2 {
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "/revocationList")
     public @ResponseBody ResponseEntity<RevocationResponse> getRevokedCerts(
-            @RequestParam(required = false) String since) throws HttpStatusCodeException {
-        // TODO implement with BIT paging and return correct headers
-        List<String> revokedCerts = getRevokedCerts();
+            @RequestParam(required = false, defaultValue = "0") Long since)
+            throws HttpStatusCodeException {
+        List<DbRevokedCert> revokedCerts = revokedCertDataService.findRevokedCerts(since);
+        List<String> revokedUvcis =
+                revokedCerts.stream().map(DbRevokedCert::getUvci).collect(Collectors.toList());
         return ResponseEntity.ok()
-                .header(NEXT_SINCE_HEADER, "1000")
-                .header(UP_TO_DATE_HEADER, "true")
+                .headers(getRevokedCertsHeaders(revokedCerts))
                 .cacheControl(CacheControl.maxAge(CacheUtil.REVOCATION_LIST_MAX_AGE))
-                .body(new RevocationResponse(revokedCerts));
+                .body(new RevocationResponse(revokedUvcis));
     }
 
-    private List<String> getRevokedCerts() {
-        final List<String> certs = new ArrayList<>();
-        final var requestEndpoint = baseurl + endpoint;
-        final var uri = UriComponentsBuilder.fromHttpUrl(requestEndpoint).build().toUri();
-        final RequestEntity<Void> requestEntity =
-                RequestEntity.get(uri).headers(createDownloadHeaders()).build();
-        final var responseEntity = rt.exchange(requestEntity, String[].class);
-        final var body = responseEntity.getBody();
-        if (body != null) {
-            certs.addAll(Arrays.asList(body));
-        }
-        return certs;
-    }
-
-    @ExceptionHandler({HttpStatusCodeException.class})
-    @ResponseStatus(HttpStatus.BAD_GATEWAY)
-    public ResponseEntity<Object> requestFailed(HttpStatusCodeException e) {
-        logger.error("{} returned non-2xx status code: {}", endpoint, e.getStatusCode(), e);
-        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
-    }
-
-    private HttpHeaders createDownloadHeaders() {
+    private HttpHeaders getRevokedCertsHeaders(List<DbRevokedCert> revokedCerts) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.ACCEPT, "application/json");
+        long maxPkId = revokedCertDataService.findMaxRevokedCertPkId();
+        Long nextSince =
+                revokedCerts.stream().mapToLong(DbRevokedCert::getPkId).max().orElse(maxPkId);
+        headers.add(NEXT_SINCE_HEADER, nextSince.toString());
+        if (nextSince >= maxPkId) {
+            headers.add(UP_TO_DATE_HEADER, "true");
+        }
         return headers;
     }
 }
