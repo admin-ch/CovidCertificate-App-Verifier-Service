@@ -81,9 +81,8 @@ public class KeyControllerV2 {
         long maxDscPkId = upTo != null ? upTo : verifierDataService.findMaxDscPkId();
         Long nextSince = dscs.stream().mapToLong(ClientCert::getPkId).max().orElse(maxDscPkId);
         headers.add(NEXT_SINCE_HEADER, nextSince.toString());
-        if (nextSince >= maxDscPkId) {
-            headers.add(UP_TO_DATE_HEADER, "true");
-        }
+        boolean upToDate = nextSince >= maxDscPkId;
+        headers.add(UP_TO_DATE_HEADER, String.valueOf(upToDate));
         return headers;
     }
 

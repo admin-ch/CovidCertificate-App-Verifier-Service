@@ -271,7 +271,7 @@ public abstract class KeyControllerV2Test extends BaseControllerTest {
         }
 
         // assert headers
-        assertEquals(expectedUpToDate ? "true" : null, response.getHeader(UP_TO_DATE_HEADER));
+        assertEquals(expectedUpToDate ? "true" : "false", response.getHeader(UP_TO_DATE_HEADER));
         assertEquals(
                 String.valueOf(
                         Math.max((int) verifierDataService.findMaxDscPkId() - dscs.size(), since)

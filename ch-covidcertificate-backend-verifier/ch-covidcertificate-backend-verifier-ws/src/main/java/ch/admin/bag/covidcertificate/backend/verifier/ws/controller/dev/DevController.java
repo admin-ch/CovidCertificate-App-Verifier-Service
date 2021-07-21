@@ -10,11 +10,9 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.ws.controller.dev;
 
-import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
 import ch.ubique.openapi.docannotations.Documentation;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,10 +35,6 @@ public class DevController {
         for (int i = 0; i < 10; i++) {
             response.add("urn:uvci:01:CH:MOCK" + i);
         }
-        return ResponseEntity.ok()
-                .header(NEXT_SINCE_HEADER, "1000")
-                .header(UP_TO_DATE_HEADER, "true")
-                .cacheControl(CacheControl.maxAge(CacheUtil.REVOCATION_LIST_MAX_AGE))
-                .body(response);
+        return ResponseEntity.ok(response);
     }
 }

@@ -73,9 +73,8 @@ public class RevocationListControllerV2 {
         Long nextSince =
                 revokedCerts.stream().mapToLong(DbRevokedCert::getPkId).max().orElse(maxPkId);
         headers.add(NEXT_SINCE_HEADER, nextSince.toString());
-        if (nextSince >= maxPkId) {
-            headers.add(UP_TO_DATE_HEADER, "true");
-        }
+        boolean upToDate = nextSince >= maxPkId;
+        headers.add(UP_TO_DATE_HEADER, String.valueOf(upToDate));
         return headers;
     }
 }

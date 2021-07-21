@@ -97,9 +97,8 @@ public class KeyController {
                         .max()
                         .orElse(verifierDataService.findMaxDscPkId());
         headers.add(NEXT_SINCE_HEADER, nextSince.toString());
-        if (dscs.size() < verifierDataService.getMaxDscBatchCount()) {
-            headers.add(UP_TO_DATE_HEADER, "true");
-        }
+        boolean upToDate = dscs.size() < verifierDataService.getMaxDscBatchCount();
+        headers.add(UP_TO_DATE_HEADER, String.valueOf(upToDate));
         return headers;
     }
 
