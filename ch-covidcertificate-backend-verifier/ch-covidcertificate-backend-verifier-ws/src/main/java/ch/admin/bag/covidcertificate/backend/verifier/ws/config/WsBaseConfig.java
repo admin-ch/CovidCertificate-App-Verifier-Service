@@ -11,9 +11,12 @@
 package ch.admin.bag.covidcertificate.backend.verifier.ws.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.AppTokenDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.RevokedCertDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcAppTokenDataServiceImpl;
+import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcRevokedCertDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.client.RevocationListSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
@@ -158,8 +161,20 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public RevocationListControllerV2 revocationListControllerV2() {
-        return new RevocationListControllerV2(revokedCertsBaseUrl);
+    public RevocationListControllerV2 revocationListControllerV2(
+            RevokedCertDataService revokedCertDataService) {
+        return new RevocationListControllerV2(revokedCertDataService);
+    }
+
+    @Bean
+    public RevocationListSyncer revocationListSyncer(
+            RevokedCertDataService revokedCertDataService) {
+        return new RevocationListSyncer(revokedCertsBaseUrl, revokedCertDataService);
+    }
+
+    @Bean
+    public RevokedCertDataService revokedCertDataService(DataSource dataSource) {
+        return new JdbcRevokedCertDataServiceImpl(dataSource);
     }
 
     @Bean
