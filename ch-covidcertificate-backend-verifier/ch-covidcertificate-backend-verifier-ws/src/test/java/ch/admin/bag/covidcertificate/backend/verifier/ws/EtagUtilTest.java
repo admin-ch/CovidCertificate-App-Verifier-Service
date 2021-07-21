@@ -49,7 +49,7 @@ public class EtagUtilTest {
 
     @Test
     public void testFileHashMultiple() throws Exception {
-        String expected = "72f93246f4575f93fff1ae9f4c62abfda7fa5bb6";
+        String expected = "19d26e8cfc5a14fbdbaf107c933811e1988f1443";
         List<String> pathsToValueSets =
                 ValueSetsController.PATHS_TO_VALUE_SETS.stream()
                         .map(p -> "classpath:" + p)
