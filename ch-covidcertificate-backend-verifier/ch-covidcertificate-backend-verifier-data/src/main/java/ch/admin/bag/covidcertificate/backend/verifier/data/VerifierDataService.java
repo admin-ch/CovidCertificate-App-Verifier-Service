@@ -50,14 +50,28 @@ public interface VerifierDataService {
     /** removes all DSCs signed by a CSCA in the given list that haven't been added manually */
     public int removeDscsWithCscaIn(List<String> cscaKidsToRemove);
 
+    /** returns the next batch of DSCs after `since` up to `upTo` in the requested format */
+    public List<ClientCert> findDscs(Long since, CertFormat certFormat, Long upTo);
+
     /**
      * returns the next batch of DSCs after `since` but before `importedBefore` in the requested
      * format
+     *
+     * @deprecated only used in KeyController V1
      */
-    public List<ClientCert> findDscs(Long since, CertFormat certFormat, Date importedBefore);
+    @Deprecated(since = "KeyControllerV2", forRemoval = true)
+    public List<ClientCert> findDscsBefore(Long since, CertFormat certFormat, Date importedBefore);
 
-    /** returns a list of key ids of all active DSCs before a certain timestamp */
-    public List<String> findActiveDscKeyIds(Date importedBefore);
+    /** returns a list of key ids of all active DSCs */
+    public List<String> findActiveDscKeyIds();
+
+    /**
+     * returns a list of key ids of all active DSCs before a certain timestamp
+     *
+     * @deprecated only used in KeyController V1
+     */
+    @Deprecated(since = "KeyControllerV2", forRemoval = true)
+    public List<String> findActiveDscKeyIdsBefore(Date importedBefore);
 
     /** returns the highest DSC pk id */
     public long findMaxDscPkId();

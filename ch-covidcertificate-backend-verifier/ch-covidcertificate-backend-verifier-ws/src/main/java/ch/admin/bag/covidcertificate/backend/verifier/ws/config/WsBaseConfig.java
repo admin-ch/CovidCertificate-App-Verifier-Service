@@ -15,6 +15,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcAppTokenDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyController;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.ValueSetsController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerificationRulesController;
@@ -87,6 +88,16 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
         CacheUtil.VALUE_SETS_MAX_AGE = maxAge;
     }
 
+    @Value("${ws.keys.update.max-age:PT1M}")
+    public void setKeysUpdatesMaxAge(Duration maxAge) {
+        CacheUtil.KEYS_UPDATES_MAX_AGE = maxAge;
+    }
+
+    @Value("${ws.keys.list.max-age:PT1M}")
+    public void setKeysListMaxAge(Duration maxAge) {
+        CacheUtil.KEYS_LIST_MAX_AGE = maxAge;
+    }
+
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
         try {
@@ -133,6 +144,11 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     @Bean
     public KeyController keyController(VerifierDataService verifierDataService) {
         return new KeyController(verifierDataService);
+    }
+
+    @Bean
+    public KeyControllerV2 keyControllerV2(VerifierDataService verifierDataService) {
+        return new KeyControllerV2(verifierDataService);
     }
 
     @Bean

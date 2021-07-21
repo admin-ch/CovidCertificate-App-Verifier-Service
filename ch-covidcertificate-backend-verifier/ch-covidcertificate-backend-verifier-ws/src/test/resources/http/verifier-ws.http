@@ -1,14 +1,14 @@
 ### hello
-GET {{baseUrl}}/v1/keys
+GET {{baseUrl}}/v2/keys
 Accept: application/json
 
 ### get certs
-GET {{baseUrl}}/v1/keys/updates?since={{since}}&certFormat={{certFormat}}
+GET {{baseUrl}}/v2/keys/updates?since={{since}}&upTo={{upTo}}&certFormat={{certFormat}}
 Accept: application/json
 Authorization: Bearer {{apiKey}}
 
 ### get active cert key ids
-GET {{baseUrl}}/v1/keys/list
+GET {{baseUrl}}/v2/keys/list
 Accept: application/json
 If-None-Match: "-720957702"
 Authorization: Bearer {{apiKey}}

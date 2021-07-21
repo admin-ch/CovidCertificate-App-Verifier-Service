@@ -25,9 +25,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,7 +112,7 @@ public class DgcSyncer {
 
     private void downloadDscs() {
         // Check which DSCs are currently stored in the db
-        final var activeDscKeyIds = verifierDataService.findActiveDscKeyIds(nowPlus1Min());
+        final var activeDscKeyIds = verifierDataService.findActiveDscKeyIds();
         // Download and insert DSC certificates
         final var dscTrustLists = dgcClient.download(CertificateType.DSC);
         final var dbDscList = new ArrayList<DbDsc>();
@@ -200,10 +198,6 @@ public class DgcSyncer {
             }
         }
         return false;
-    }
-
-    private Date nowPlus1Min() {
-        return Date.from(OffsetDateTime.now().plusMinutes(1).toInstant());
     }
 
     private void upload() {

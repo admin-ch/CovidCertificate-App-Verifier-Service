@@ -24,6 +24,8 @@ public class ActiveCertsResponse {
             example = "172800000")
     private Duration validDuration = Duration.ofHours(48);
 
+    public ActiveCertsResponse() {}
+
     public ActiveCertsResponse(List<String> activeKeyIds) {
         if (activeKeyIds == null) {
             activeKeyIds = new ArrayList<>();
