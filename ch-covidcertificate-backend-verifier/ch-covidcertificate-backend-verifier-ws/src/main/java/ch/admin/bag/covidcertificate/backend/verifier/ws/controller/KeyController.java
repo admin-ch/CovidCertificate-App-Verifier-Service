@@ -127,7 +127,7 @@ public class KeyController {
                         Date.from(previousBucketRelease.toInstant()));
 
         // check etag
-        String currentEtag = String.valueOf(EtagUtil.getUnsortedListHashcode(activeKeyIds));
+        String currentEtag = EtagUtil.getUnsortedListEtag(activeKeyIds);
         if (request.checkNotModified(currentEtag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }

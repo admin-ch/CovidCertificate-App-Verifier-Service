@@ -95,7 +95,7 @@ public abstract class RevocationListControllerTest extends BaseControllerTest {
 
     @Test
     public void notModifiedTest() throws Exception {
-        String expectedEtag = "\"" + EtagUtil.getUnsortedListHashcode(List.of(REVOKED_CERT)) + "\"";
+        String expectedEtag = EtagUtil.getUnsortedListEtag(List.of(REVOKED_CERT));
 
         // get current etag
         setupExternalRevocationListMock(2);

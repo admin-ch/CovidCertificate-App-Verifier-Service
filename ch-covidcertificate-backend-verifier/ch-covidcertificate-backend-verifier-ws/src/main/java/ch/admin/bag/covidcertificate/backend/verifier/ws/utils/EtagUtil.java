@@ -24,14 +24,17 @@ public class EtagUtil {
 
     private EtagUtil() {}
 
+    private static final String WEAK_PREFIX = "W/";
+
     /**
-     * generates a hashcode for a list that does not depend on element order
+     * generates a weak etag for a list that does not depend on element order
      *
      * @param list
      * @return
      */
-    public static int getUnsortedListHashcode(List<String> list) {
-        return list != null ? list.stream().map(Objects::hash).reduce(0, (a, b) -> a ^ b) : 0;
+    public static String getUnsortedListEtag(List<String> list) {
+        int hash = list != null ? list.stream().map(Objects::hash).reduce(0, (a, b) -> a ^ b) : 0;
+        return WEAK_PREFIX + "\"" + hash + "\"";
     }
 
     public static String getSha1HashForFiles(String... pathToFiles)
@@ -53,6 +56,6 @@ public class EtagUtil {
                 }
             }
         }
-        return Hex.encodeHexString(sha1.digest());
+        return WEAK_PREFIX + "\"" + Hex.encodeHexString(sha1.digest()) + "\"";
     }
 }

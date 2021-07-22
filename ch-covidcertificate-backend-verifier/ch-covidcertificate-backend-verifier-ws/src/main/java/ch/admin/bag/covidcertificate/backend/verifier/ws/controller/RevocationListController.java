@@ -69,7 +69,7 @@ public class RevocationListController {
         response.setRevokedCerts(revokedCerts);
 
         // check etag
-        String currentEtag = String.valueOf(EtagUtil.getUnsortedListHashcode(revokedCerts));
+        String currentEtag = EtagUtil.getUnsortedListEtag(revokedCerts);
         if (request.checkNotModified(currentEtag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
