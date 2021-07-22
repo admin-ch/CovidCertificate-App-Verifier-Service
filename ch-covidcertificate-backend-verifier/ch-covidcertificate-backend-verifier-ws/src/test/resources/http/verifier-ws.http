@@ -10,7 +10,6 @@ Authorization: Bearer {{apiKey}}
 ### get active cert key ids
 GET {{baseUrl}}/v2/keys/list
 Accept: application/json
-If-None-Match: "-720957702"
 Authorization: Bearer {{apiKey}}
 
 ### get revocation list

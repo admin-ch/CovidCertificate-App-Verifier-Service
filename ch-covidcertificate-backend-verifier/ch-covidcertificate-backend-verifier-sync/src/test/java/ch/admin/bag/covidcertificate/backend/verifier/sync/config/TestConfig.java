@@ -32,6 +32,9 @@ public class TestConfig {
     @Value("${dgc.baseurl}")
     String baseurl = "https://testurl.europa.eu";
 
+    @Value("${ws.keys.batch-size:1000}")
+    protected Integer dscBatchSize;
+
     @Bean
     public DgcSyncer dgcSyncer(DgcClient dgcClient, VerifierDataService verifierDataService) {
         logger.info("Instantiated DGC Syncer with baseurl: {}", baseurl);
@@ -46,7 +49,7 @@ public class TestConfig {
 
     @Bean
     public VerifierDataService verifierDataService(DataSource dataSource) {
-        return new JdbcVerifierDataServiceImpl(dataSource);
+        return new JdbcVerifierDataServiceImpl(dataSource, dscBatchSize);
     }
 
     @Bean

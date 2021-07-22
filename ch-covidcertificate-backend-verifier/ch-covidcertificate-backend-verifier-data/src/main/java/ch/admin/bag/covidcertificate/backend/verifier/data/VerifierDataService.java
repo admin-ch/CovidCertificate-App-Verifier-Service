@@ -76,5 +76,5 @@ public interface VerifierDataService {
     /** returns the highest DSC pk id */
     public long findMaxDscPkId();
 
-    public int getMaxDscBatchCount();
+    public int getDscBatchSize();
 }

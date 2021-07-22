@@ -29,11 +29,12 @@ public class JdbcRevokedCertDataServiceImpl implements RevokedCertDataService {
     private static final Logger logger =
             LoggerFactory.getLogger(JdbcRevokedCertDataServiceImpl.class);
 
-    private static final int MAX_REVOKED_CERT_BATCH_COUNT = 1000;
+    private final int revokedCertBatchSize;
     private final NamedParameterJdbcTemplate jt;
 
-    public JdbcRevokedCertDataServiceImpl(DataSource dataSource) {
+    public JdbcRevokedCertDataServiceImpl(DataSource dataSource, int revokedCertBatchSize) {
         this.jt = new NamedParameterJdbcTemplate(dataSource);
+        this.revokedCertBatchSize = revokedCertBatchSize;
     }
 
     @Transactional(readOnly = false)
@@ -90,10 +91,10 @@ public class JdbcRevokedCertDataServiceImpl implements RevokedCertDataService {
                 "select pk_revoked_cert_id, uvci from t_revoked_cert"
                         + " where pk_revoked_cert_id > :since"
                         + " order by pk_revoked_cert_id asc"
-                        + " limit :max_batch_count";
+                        + " limit :batch_size";
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("since", since);
-        params.addValue("max_batch_count", MAX_REVOKED_CERT_BATCH_COUNT);
+        params.addValue("batch_size", revokedCertBatchSize);
         return jt.query(sql, params, new RevokedCertRowMapper());
     }
 

@@ -37,6 +37,9 @@ public abstract class SyncBaseConfig {
     @Value("${dgc.clientcert.password}")
     String authClientCertPassword;
 
+    @Value("${ws.keys.batch-size:1000}")
+    protected Integer dscBatchSize;
+
     public abstract DataSource dataSource();
 
     public abstract Flyway flyway();
@@ -62,7 +65,7 @@ public abstract class SyncBaseConfig {
 
     @Bean
     public VerifierDataService verifierDataService(DataSource dataSource) {
-        return new JdbcVerifierDataServiceImpl(dataSource);
+        return new JdbcVerifierDataServiceImpl(dataSource, dscBatchSize);
     }
 
     @Bean
