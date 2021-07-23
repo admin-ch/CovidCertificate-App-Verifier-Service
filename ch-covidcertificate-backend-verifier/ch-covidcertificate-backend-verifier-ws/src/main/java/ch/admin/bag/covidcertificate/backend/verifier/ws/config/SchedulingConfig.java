@@ -33,6 +33,14 @@ public class SchedulingConfig {
         this.revocationListSyncer = revocationListSyncer;
     }
 
+    // Sync revocation list on start up
+    @Scheduled(fixedDelay = Long.MAX_VALUE, initialDelay = 0)
+    @SchedulerLock(name = "revocation_list_sync", lockAtLeastFor = "PT15S")
+    public void syncRevocationListOnStartup() {
+        LockAssert.assertLocked();
+        revocationListSyncer.updateRevokedCerts();
+    }
+
     // Sync revocation list every full hour (default)
     @Scheduled(cron = "${revocationList.sync.cron:0 0 * ? * *}")
     @SchedulerLock(name = "revocation_list_sync", lockAtLeastFor = "PT15S")
