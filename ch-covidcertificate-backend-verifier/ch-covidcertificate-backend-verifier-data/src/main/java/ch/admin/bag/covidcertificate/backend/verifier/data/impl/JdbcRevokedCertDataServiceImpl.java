@@ -14,14 +14,15 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.RevokedCertDataServic
 import ch.admin.bag.covidcertificate.backend.verifier.data.mapper.RevokedCertRowMapper;
 import ch.admin.bag.covidcertificate.backend.verifier.model.DbRevokedCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.RevokedCertsUpdateResponse;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.transaction.annotation.Transactional;
 
 public class JdbcRevokedCertDataServiceImpl implements RevokedCertDataService {
@@ -29,31 +30,40 @@ public class JdbcRevokedCertDataServiceImpl implements RevokedCertDataService {
     private static final Logger logger =
             LoggerFactory.getLogger(JdbcRevokedCertDataServiceImpl.class);
 
-    private static final int MAX_REVOKED_CERT_BATCH_COUNT = 1000;
+    private final int revokedCertBatchSize;
     private final NamedParameterJdbcTemplate jt;
+    private final SimpleJdbcInsert revokedCertInsert;
 
-    public JdbcRevokedCertDataServiceImpl(DataSource dataSource) {
+    public JdbcRevokedCertDataServiceImpl(DataSource dataSource, int revokedCertBatchSize) {
         this.jt = new NamedParameterJdbcTemplate(dataSource);
+        this.revokedCertBatchSize = revokedCertBatchSize;
+        this.revokedCertInsert =
+                new SimpleJdbcInsert(dataSource)
+                        .withTableName("t_revoked_cert")
+                        .usingGeneratedKeyColumns("pk_revoked_cert_id");
     }
 
     @Transactional(readOnly = false)
     @Override
     public RevokedCertsUpdateResponse replaceRevokedCerts(List<String> revokedUvcis) {
-        int insertCount = upsertRevokedCerts(revokedUvcis);
+        int insertCount = insertNewRevokedCerts(revokedUvcis);
         int removeCount = removeRevokedCertsNotIn(revokedUvcis);
         return new RevokedCertsUpdateResponse(insertCount, removeCount);
     }
 
-    private int upsertRevokedCerts(List<String> revokedUvcis) {
+    private int insertNewRevokedCerts(List<String> revokedUvcis) {
         if (revokedUvcis != null && !revokedUvcis.isEmpty()) {
-            String sql =
-                    "insert into t_revoked_cert"
-                            + " (uvci)"
-                            + " values (:uvci)"
-                            + " on conflict (uvci)"
-                            + " do nothing";
-            int[] updateCounts = jt.batchUpdate(sql, createParams(revokedUvcis));
-            return Arrays.stream(updateCounts).sum();
+            List<String> existingUvcis =
+                    jt.queryForList(
+                            "select uvci from t_revoked_cert",
+                            new MapSqlParameterSource(),
+                            String.class);
+            List<String> toInsert =
+                    revokedUvcis.stream()
+                            .filter(uvci -> !existingUvcis.contains(uvci))
+                            .collect(Collectors.toList());
+            revokedCertInsert.executeBatch(createParams(toInsert));
+            return toInsert.size();
         } else {
             return 0;
         }
@@ -90,10 +100,10 @@ public class JdbcRevokedCertDataServiceImpl implements RevokedCertDataService {
                 "select pk_revoked_cert_id, uvci from t_revoked_cert"
                         + " where pk_revoked_cert_id > :since"
                         + " order by pk_revoked_cert_id asc"
-                        + " limit :max_batch_count";
+                        + " limit :batch_size";
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("since", since);
-        params.addValue("max_batch_count", MAX_REVOKED_CERT_BATCH_COUNT);
+        params.addValue("batch_size", revokedCertBatchSize);
         return jt.query(sql, params, new RevokedCertRowMapper());
     }
 

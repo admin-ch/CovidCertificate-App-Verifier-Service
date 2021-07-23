@@ -23,16 +23,16 @@ import org.junit.jupiter.api.Test;
 
 public class EtagUtilTest {
     @Test
-    public void testUnsortedListHashcode() {
-        int expected = 100548;
+    public void testUnsortedListEtag() {
+        String expected = "W/\"100548\"";
         List<String> list = new ArrayList<>(List.of("a", "bc", "def"));
-        int hashcode = EtagUtil.getUnsortedListHashcode(list);
-        assertEquals(expected, hashcode);
+        String actual = EtagUtil.getUnsortedListEtag(list);
+        assertEquals(expected, actual);
         Collections.reverse(list);
-        assertEquals(expected, EtagUtil.getUnsortedListHashcode(list));
+        assertEquals(expected, EtagUtil.getUnsortedListEtag(list));
         list.remove(0);
         list.add("g");
-        assertNotEquals(hashcode, EtagUtil.getUnsortedListHashcode(list));
+        assertNotEquals(actual, EtagUtil.getUnsortedListEtag(list));
     }
 
     private static final String PATH_TO_VERIFICATION_RULES = "classpath:verificationRules.json";
@@ -41,7 +41,7 @@ public class EtagUtilTest {
 
     @Test
     public void testFileHash() throws Exception {
-        String expected = "69207e46102bc25f39024c0645df65593a741c3a";
+        String expected = "W/\"69207e46102bc25f39024c0645df65593a741c3a\"";
         String sha1 = EtagUtil.getSha1HashForFiles(PATH_TO_VERIFICATION_RULES);
         assertEquals(expected, sha1);
         assertNotEquals(expected, EtagUtil.getSha1HashForFiles(PATH_TO_TEST_VERIFICATION_RULES));
@@ -49,7 +49,7 @@ public class EtagUtilTest {
 
     @Test
     public void testFileHashMultiple() throws Exception {
-        String expected = "19d26e8cfc5a14fbdbaf107c933811e1988f1443";
+        String expected = "W/\"19d26e8cfc5a14fbdbaf107c933811e1988f1443\"";
         List<String> pathsToValueSets =
                 ValueSetsController.PATHS_TO_VALUE_SETS.stream()
                         .map(p -> "classpath:" + p)

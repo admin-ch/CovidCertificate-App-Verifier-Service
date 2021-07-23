@@ -32,6 +32,7 @@ public class SyncSchedulingBaseConfig {
     @Scheduled(cron = "${dgc.sync.cron}")
     @SchedulerLock(name = "DGC_download", lockAtLeastFor = "PT15S")
     public void dgcSyncCron() {
+        LockAssert.assertLocked();
         dgcSyncer.sync();
     }
 

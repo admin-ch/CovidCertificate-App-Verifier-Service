@@ -36,12 +36,13 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     private static final Logger logger = LoggerFactory.getLogger(JdbcVerifierDataServiceImpl.class);
 
-    private static final int MAX_DSC_BATCH_COUNT = 1000;
+    private final int dscBatchSize;
     private final NamedParameterJdbcTemplate jt;
     private final SimpleJdbcInsert cscaInsert;
     private final SimpleJdbcInsert dscInsert;
 
-    public JdbcVerifierDataServiceImpl(DataSource dataSource) {
+    public JdbcVerifierDataServiceImpl(DataSource dataSource, int dscBatchSize) {
+        this.dscBatchSize = dscBatchSize;
         this.jt = new NamedParameterJdbcTemplate(dataSource);
         this.cscaInsert =
                 new SimpleJdbcInsert(dataSource)
@@ -185,12 +186,12 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
                         + " where pk_dsc_id > :since"
                         + (upTo != null ? " and pk_dsc_id <= :up_to" : "")
                         + " order by pk_dsc_id asc"
-                        + " limit :max_dsc_batch_count";
+                        + " limit :batch_size";
 
         var params = new MapSqlParameterSource();
         params.addValue("since", since);
         params.addValue("up_to", upTo);
-        params.addValue("max_dsc_batch_count", MAX_DSC_BATCH_COUNT);
+        params.addValue("batch_size", dscBatchSize);
 
         return jt.query(sql, params, new ClientCertRowMapper(certFormat));
     }
@@ -215,11 +216,11 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
                         + " where pk_dsc_id > :pk_dsc_id"
                         + " and imported_at < :before"
                         + " order by pk_dsc_id asc"
-                        + " limit :max_dsc_batch_count";
+                        + " limit :batch_size";
 
         var params = new MapSqlParameterSource();
         params.addValue("pk_dsc_id", since);
-        params.addValue("max_dsc_batch_count", MAX_DSC_BATCH_COUNT);
+        params.addValue("batch_size", dscBatchSize);
         params.addValue("before", importedBefore);
 
         return jt.query(sql, params, new ClientCertRowMapper(certFormat));
@@ -260,8 +261,8 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     }
 
     @Override
-    public int getMaxDscBatchCount() {
-        return MAX_DSC_BATCH_COUNT;
+    public int getDscBatchSize() {
+        return dscBatchSize;
     }
 
     private MapSqlParameterSource getCscaParams(DbCsca dbCsca) {

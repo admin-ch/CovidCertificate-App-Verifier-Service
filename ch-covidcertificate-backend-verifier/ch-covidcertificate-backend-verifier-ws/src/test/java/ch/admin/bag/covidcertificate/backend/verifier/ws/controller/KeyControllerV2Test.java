@@ -68,7 +68,7 @@ public abstract class KeyControllerV2Test extends BaseControllerTest {
 
     @BeforeAll
     public void setup() {
-        for (int i = 0; i < verifierDataService.getMaxDscBatchCount() * 10; i++) {
+        for (int i = 0; i < verifierDataService.getDscBatchSize() * 10; i++) {
             suffixes.add(i);
         }
     }
@@ -197,8 +197,7 @@ public abstract class KeyControllerV2Test extends BaseControllerTest {
 
         // test batching
         int batchCount = 4;
-        dscs.addAll(
-                insertNDscs(cscaId, verifierDataService.getMaxDscBatchCount() * (batchCount - 1)));
+        dscs.addAll(insertNDscs(cscaId, verifierDataService.getDscBatchSize() * (batchCount - 1)));
 
         // upTo set so no batching kicks in
         since = null;
@@ -255,7 +254,7 @@ public abstract class KeyControllerV2Test extends BaseControllerTest {
         int upperCutCount = Math.max(0, (int) verifierDataService.findMaxDscPkId() - upTo);
         int expectedSize =
                 Math.min(
-                        verifierDataService.getMaxDscBatchCount(),
+                        verifierDataService.getDscBatchSize(),
                         Math.max(0, dscs.size() - lowerCutCount - upperCutCount));
         assertEquals(expectedSize, certs.size());
 
@@ -271,7 +270,7 @@ public abstract class KeyControllerV2Test extends BaseControllerTest {
         }
 
         // assert headers
-        assertEquals(expectedUpToDate ? "true" : null, response.getHeader(UP_TO_DATE_HEADER));
+        assertEquals(expectedUpToDate ? "true" : "false", response.getHeader(UP_TO_DATE_HEADER));
         assertEquals(
                 String.valueOf(
                         Math.max((int) verifierDataService.findMaxDscPkId() - dscs.size(), since)

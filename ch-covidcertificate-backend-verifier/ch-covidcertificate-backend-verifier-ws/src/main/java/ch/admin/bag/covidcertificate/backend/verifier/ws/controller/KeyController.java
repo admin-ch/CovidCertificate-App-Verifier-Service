@@ -97,9 +97,8 @@ public class KeyController {
                         .max()
                         .orElse(verifierDataService.findMaxDscPkId());
         headers.add(NEXT_SINCE_HEADER, nextSince.toString());
-        if (dscs.size() < verifierDataService.getMaxDscBatchCount()) {
-            headers.add(UP_TO_DATE_HEADER, "true");
-        }
+        boolean upToDate = dscs.size() < verifierDataService.getDscBatchSize();
+        headers.add(UP_TO_DATE_HEADER, String.valueOf(upToDate));
         return headers;
     }
 
@@ -128,7 +127,7 @@ public class KeyController {
                         Date.from(previousBucketRelease.toInstant()));
 
         // check etag
-        String currentEtag = String.valueOf(EtagUtil.getUnsortedListHashcode(activeKeyIds));
+        String currentEtag = EtagUtil.getUnsortedListEtag(activeKeyIds);
         if (request.checkNotModified(currentEtag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }

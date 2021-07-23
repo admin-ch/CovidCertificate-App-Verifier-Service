@@ -71,6 +71,12 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     @Value("${revocationList.baseurl}")
     String revokedCertsBaseUrl;
 
+    @Value("${revocationList.batch-size:20000}")
+    protected Integer revokedCertBatchSize;
+
+    @Value("${ws.keys.batch-size:1000}")
+    protected Integer dscBatchSize;
+
     public abstract DataSource dataSource();
 
     public abstract Flyway flyway();
@@ -140,7 +146,7 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
 
     @Bean
     public VerifierDataService verifierDataService(DataSource dataSource) {
-        return new JdbcVerifierDataServiceImpl(dataSource);
+        return new JdbcVerifierDataServiceImpl(dataSource, dscBatchSize);
     }
 
     @Bean
@@ -177,7 +183,7 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
 
     @Bean
     public RevokedCertDataService revokedCertDataService(DataSource dataSource) {
-        return new JdbcRevokedCertDataServiceImpl(dataSource);
+        return new JdbcRevokedCertDataServiceImpl(dataSource, revokedCertBatchSize);
     }
 
     @Bean

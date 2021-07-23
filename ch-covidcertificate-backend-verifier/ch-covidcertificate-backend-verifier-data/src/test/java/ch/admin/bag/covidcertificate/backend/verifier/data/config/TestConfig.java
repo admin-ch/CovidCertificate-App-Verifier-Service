@@ -15,6 +15,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcAppTokenDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
 import javax.sql.DataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
@@ -23,9 +24,12 @@ import org.springframework.context.annotation.Profile;
 @TestConfiguration
 public class TestConfig {
 
+    @Value("${ws.keys.batch-size:1000}")
+    protected Integer dscBatchSize;
+
     @Bean
     public VerifierDataService verifierDataService(DataSource dataSource) {
-        return new JdbcVerifierDataServiceImpl(dataSource);
+        return new JdbcVerifierDataServiceImpl(dataSource, dscBatchSize);
     }
 
     @Bean
