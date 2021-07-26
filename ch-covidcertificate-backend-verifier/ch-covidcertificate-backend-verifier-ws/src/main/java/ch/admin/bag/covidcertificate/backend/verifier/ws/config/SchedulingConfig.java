@@ -41,8 +41,8 @@ public class SchedulingConfig {
         revocationListSyncer.updateRevokedCerts();
     }
 
-    // Sync revocation list every full hour (default)
-    @Scheduled(cron = "${revocationList.sync.cron:0 0 * ? * *}")
+    // Sync revocation list every 5 minutes from the full hour (default)
+    @Scheduled(cron = "${revocationList.sync.cron:0 0/5 * ? * *}")
     @SchedulerLock(name = "revocation_list_sync", lockAtLeastFor = "PT15S")
     public void syncRevocationList() {
         LockAssert.assertLocked();

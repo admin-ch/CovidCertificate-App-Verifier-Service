@@ -27,7 +27,7 @@ public class DevController {
     @GetMapping(value = "/v1/revocation-list")
     public @ResponseBody ResponseEntity<List<String>> getMockRevokedCerts() {
         List<String> response = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100010; i++) {
             response.add("urn:uvci:01:CH:MOCK" + i);
         }
         return ResponseEntity.ok(response);
