@@ -14,9 +14,12 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.RevokedCertDataServic
 import ch.admin.bag.covidcertificate.backend.verifier.data.mapper.RevokedCertRowMapper;
 import ch.admin.bag.covidcertificate.backend.verifier.model.DbRevokedCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.RevokedCertsUpdateResponse;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
+import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -45,28 +48,38 @@ public class JdbcRevokedCertDataServiceImpl implements RevokedCertDataService {
 
     @Transactional(readOnly = false)
     @Override
-    public RevokedCertsUpdateResponse replaceRevokedCerts(List<String> revokedUvcis) {
-        int insertCount = insertNewRevokedCerts(revokedUvcis);
-        int removeCount = removeRevokedCertsNotIn(revokedUvcis);
+    public RevokedCertsUpdateResponse replaceRevokedCerts(Set<String> revokedUvcis) {
+        Set<String> existingUvcis = findAllRevokedUvcis();
+        int insertCount = insertNewRevokedCerts(revokedUvcis, existingUvcis);
+        int removeCount = removeRevokedCertsNotIn(revokedUvcis, existingUvcis);
         return new RevokedCertsUpdateResponse(insertCount, removeCount);
     }
 
-    private int insertNewRevokedCerts(List<String> revokedUvcis) {
+    private int insertNewRevokedCerts(Set<String> revokedUvcis, Set<String> existingUvcis) {
         if (revokedUvcis != null && !revokedUvcis.isEmpty()) {
-            List<String> existingUvcis =
-                    jt.queryForList(
-                            "select uvci from t_revoked_cert",
-                            new MapSqlParameterSource(),
-                            String.class);
             List<String> toInsert =
                     revokedUvcis.stream()
                             .filter(uvci -> !existingUvcis.contains(uvci))
                             .collect(Collectors.toList());
-            revokedCertInsert.executeBatch(createParams(toInsert));
+
+            // insert in batches
+            final int maxBatchSize = 10000;
+            for (List<String> batchToInsert : ListUtils.partition(toInsert, maxBatchSize)) {
+                revokedCertInsert.executeBatch(createParams(batchToInsert));
+            }
+
             return toInsert.size();
         } else {
             return 0;
         }
+    }
+
+    private Set<String> findAllRevokedUvcis() {
+        return new HashSet<>(
+                jt.queryForList(
+                        "select distinct uvci from t_revoked_cert",
+                        new MapSqlParameterSource(),
+                        String.class));
     }
 
     private MapSqlParameterSource[] createParams(List<String> revokedUvcis) {
@@ -82,12 +95,27 @@ public class JdbcRevokedCertDataServiceImpl implements RevokedCertDataService {
         return params;
     }
 
-    private int removeRevokedCertsNotIn(List<String> revokedUvcis) {
+    private int removeRevokedCertsNotIn(Set<String> uvcisToKeep, Set<String> existingUvcis) {
         String sql = "delete from t_revoked_cert";
-        if (revokedUvcis != null && !revokedUvcis.isEmpty()) {
-            sql += " where uvci not in (:to_keep)";
+        if (uvcisToKeep != null && !uvcisToKeep.isEmpty()) {
+            sql += " where uvci in (:to_delete)";
+
+            List<String> toDelete =
+                    existingUvcis.stream()
+                            .filter(uvci -> !uvcisToKeep.contains(uvci))
+                            .collect(Collectors.toList());
+
+            // delete in batches
+            int deleteCount = 0;
+            final int maxBatchSize = 10000;
+            for (List<String> batchToDelete : ListUtils.partition(toDelete, maxBatchSize)) {
+                deleteCount +=
+                        jt.update(sql, new MapSqlParameterSource("to_delete", batchToDelete));
+            }
+            return deleteCount;
+        } else {
+            return jt.update(sql, new MapSqlParameterSource());
         }
-        return jt.update(sql, new MapSqlParameterSource("to_keep", revokedUvcis));
     }
 
     @Transactional(readOnly = true)

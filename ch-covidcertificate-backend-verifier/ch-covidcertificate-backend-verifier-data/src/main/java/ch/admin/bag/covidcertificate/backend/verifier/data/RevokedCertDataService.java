@@ -13,11 +13,12 @@ package ch.admin.bag.covidcertificate.backend.verifier.data;
 import ch.admin.bag.covidcertificate.backend.verifier.model.DbRevokedCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.RevokedCertsUpdateResponse;
 import java.util.List;
+import java.util.Set;
 
 public interface RevokedCertDataService {
 
     /** upserts the given revoked uvcis into the db */
-    public RevokedCertsUpdateResponse replaceRevokedCerts(List<String> revokedUvcis);
+    public RevokedCertsUpdateResponse replaceRevokedCerts(Set<String> revokedUvcis);
 
     /** returns the next batch of revoked certs after `since` */
     public List<DbRevokedCert> findRevokedCerts(Long since);

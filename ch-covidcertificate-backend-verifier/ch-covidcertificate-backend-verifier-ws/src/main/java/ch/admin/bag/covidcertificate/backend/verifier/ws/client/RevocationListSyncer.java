@@ -12,9 +12,9 @@ package ch.admin.bag.covidcertificate.backend.verifier.ws.client;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.RevokedCertDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.RevokedCertsUpdateResponse;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,28 +42,30 @@ public class RevocationListSyncer {
         logger.info("updating revoked certs");
 
         try {
-            List<String> revokedCerts = downloadRevokedCerts();
+            long start = System.currentTimeMillis();
+            Set<String> revokedCerts = downloadRevokedCerts();
             logger.info("downloaded {} revoked certs", revokedCerts.size());
 
             RevokedCertsUpdateResponse updateResponse =
                     revokedCertDataService.replaceRevokedCerts(revokedCerts);
 
             logger.info(
-                    "finished updating revoked certs. inserted {}, removed {}",
+                    "finished updating revoked certs. inserted {}, removed {}. took {}ms",
                     updateResponse.getInsertCount(),
-                    updateResponse.getRemoveCount());
+                    updateResponse.getRemoveCount(),
+                    System.currentTimeMillis() - start);
         } catch (Exception e) {
             logger.error("revoked certs update failed", e);
         }
     }
 
-    private List<String> downloadRevokedCerts() {
+    private Set<String> downloadRevokedCerts() {
         final var requestEndpoint = baseurl + endpoint;
         final var uri = UriComponentsBuilder.fromHttpUrl(requestEndpoint).build().toUri();
         final RequestEntity<Void> requestEntity =
                 RequestEntity.get(uri).headers(createDownloadHeaders()).build();
         final var response = rt.exchange(requestEntity, String[].class).getBody();
-        return new ArrayList<>(Arrays.asList(response));
+        return new HashSet<>(Arrays.asList(response));
     }
 
     private HttpHeaders createDownloadHeaders() {
