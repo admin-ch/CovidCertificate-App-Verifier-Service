@@ -43,7 +43,8 @@ class DgcSyncerTest extends BaseDgcTest {
     @Value("${dgc.baseurl}")
     String baseurl = "https://testurl.europa.eu";
 
-    @Autowired DgcSyncer dgcSyncer;
+    @Autowired
+    DgcCertSyncer dgcSyncer;
 
     @Autowired VerifierDataService verifierDataService;
 

@@ -10,7 +10,7 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
-import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcSyncer;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
 import net.javacrumbs.shedlock.core.LockAssert;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
@@ -23,9 +23,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableSchedulerLock(defaultLockAtMostFor = "PT10M")
 public class SyncSchedulingBaseConfig {
 
-    private final DgcSyncer dgcSyncer;
+    private final DgcCertSyncer dgcSyncer;
 
-    public SyncSchedulingBaseConfig(DgcSyncer dgcSyncer) {
+    public SyncSchedulingBaseConfig(DgcCertSyncer dgcSyncer) {
         this.dgcSyncer = dgcSyncer;
     }
 

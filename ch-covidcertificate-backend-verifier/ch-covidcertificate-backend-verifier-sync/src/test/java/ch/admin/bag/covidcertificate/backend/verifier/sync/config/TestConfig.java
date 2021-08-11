@@ -12,8 +12,8 @@ package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
-import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcClient;
-import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcSyncer;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertClient;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
@@ -36,15 +36,15 @@ public class TestConfig {
     protected Integer dscBatchSize;
 
     @Bean
-    public DgcSyncer dgcSyncer(DgcClient dgcClient, VerifierDataService verifierDataService) {
+    public DgcCertSyncer dgcSyncer(DgcCertClient dgcClient, VerifierDataService verifierDataService) {
         logger.info("Instantiated DGC Syncer with baseurl: {}", baseurl);
-        return new DgcSyncer(dgcClient, verifierDataService);
+        return new DgcCertSyncer(dgcClient, verifierDataService);
     }
 
     @Bean
-    public DgcClient dgcClient(RestTemplate restTemplate) {
+    public DgcCertClient dgcClient(RestTemplate restTemplate) {
         logger.info("Instantiated DGC Syncer with baseurl: {}", baseurl);
-        return new DgcClient(baseurl, restTemplate);
+        return new DgcCertClient(baseurl, restTemplate);
     }
 
     @Bean
