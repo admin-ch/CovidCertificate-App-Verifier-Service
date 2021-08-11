@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.sql.DataSource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -70,13 +71,17 @@ public class JdbcValueSetDataServiceImpl implements ValueSetDataService {
     @Override
     @Transactional(readOnly = true)
     public String findLatestValueSet(String valueSetId) {
-        return jt.queryForObject(
-                "select json_blob from t_value_set_data"
-                        + " where value_set_id = :value_set_id"
-                        + " order by created_at desc"
-                        + " limit 1",
-                new MapSqlParameterSource("value_set_id", valueSetId),
-                String.class);
+        try {
+            return jt.queryForObject(
+                    "select json_blob from t_value_set_data"
+                            + " where value_set_id = :value_set_id"
+                            + " order by created_at desc"
+                            + " limit 1",
+                    new MapSqlParameterSource("value_set_id", valueSetId),
+                    String.class);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override

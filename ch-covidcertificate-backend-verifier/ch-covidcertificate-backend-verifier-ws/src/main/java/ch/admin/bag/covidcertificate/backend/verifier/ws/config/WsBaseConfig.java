@@ -12,9 +12,11 @@ package ch.admin.bag.covidcertificate.backend.verifier.ws.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.AppTokenDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.RevokedCertDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcAppTokenDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcRevokedCertDataServiceImpl;
+import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcValueSetDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.client.RevocationListSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyController;
@@ -22,6 +24,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyControlle
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.ValueSetsController;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.ValueSetsControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerificationRulesController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.interceptor.HeaderInjector;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.security.signature.JwsMessageConverter;
@@ -195,6 +198,16 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     @Bean
     public ValueSetsController valueSetsController() throws IOException, NoSuchAlgorithmException {
         return new ValueSetsController();
+    }
+
+    @Bean
+    public ValueSetDataService valueSetDataService(DataSource dataSource) {
+        return new JdbcValueSetDataServiceImpl(dataSource);
+    }
+
+    @Bean
+    public ValueSetsControllerV2 valueSetsControllerV2(ValueSetDataService valueSetDataService) {
+        return new ValueSetsControllerV2(valueSetDataService);
     }
 
     @Bean
