@@ -26,5 +26,11 @@ Authorization: Bearer {{apiKey}}
 ### get value sets
 GET {{baseUrl}}/v1/metadata
 Accept: application/json
-If-None-Match: "e8832aef5f37843e52a5acb78c522fa36576a62e"
+If-None-Match: "19d26e8cfc5a14fbdbaf107c933811e1988f1443"
+Authorization: Bearer {{apiKey}}
+
+### get value sets
+GET {{baseUrl}}/v2/valueSets
+Accept: application/json
+If-None-Match: W/"c484eccfacb37059a5fb8cc83ded961d26707371"
 Authorization: Bearer {{apiKey}}

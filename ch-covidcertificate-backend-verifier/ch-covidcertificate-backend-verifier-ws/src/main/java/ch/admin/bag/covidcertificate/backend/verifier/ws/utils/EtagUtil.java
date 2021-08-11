@@ -13,6 +13,7 @@ package ch.admin.bag.covidcertificate.backend.verifier.ws.utils;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -25,6 +26,7 @@ public class EtagUtil {
     private EtagUtil() {}
 
     private static final String WEAK_PREFIX = "W/";
+    private static final String SHA_1 = "SHA-1";
 
     /**
      * generates a weak etag for a list that does not depend on element order
@@ -39,7 +41,7 @@ public class EtagUtil {
 
     public static String getSha1HashForFiles(String... pathToFiles)
             throws IOException, NoSuchAlgorithmException {
-        MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+        MessageDigest sha1 = MessageDigest.getInstance(SHA_1);
         for (String pathToFile : pathToFiles) {
             final String classpathPrefix = "classpath:";
             try (InputStream is =
@@ -55,6 +57,15 @@ public class EtagUtil {
                     len = is.read(buffer);
                 }
             }
+        }
+        return WEAK_PREFIX + "\"" + Hex.encodeHexString(sha1.digest()) + "\"";
+    }
+
+    public static String getSha1HashForStrings(String... strings) throws NoSuchAlgorithmException {
+        MessageDigest sha1 = MessageDigest.getInstance(SHA_1);
+        for (String string : strings) {
+            byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
+            sha1.update(bytes);
         }
         return WEAK_PREFIX + "\"" + Hex.encodeHexString(sha1.digest()) + "\"";
     }

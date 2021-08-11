@@ -10,10 +10,14 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcValueSetDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
-import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertClient;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetClient;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
 import javax.sql.DataSource;
 import net.javacrumbs.shedlock.core.LockProvider;
@@ -74,7 +78,24 @@ public abstract class SyncBaseConfig {
     }
 
     @Bean
-    public DgcCertSyncer dgcSyncer(DgcCertClient dgcClient, VerifierDataService verifierDataService) {
+    public DgcCertSyncer dgcSyncer(
+            DgcCertClient dgcClient, VerifierDataService verifierDataService) {
         return new DgcCertSyncer(dgcClient, verifierDataService);
+    }
+
+    @Bean
+    public ValueSetDataService valueSetDataService(DataSource dataSource) {
+        return new JdbcValueSetDataServiceImpl(dataSource);
+    }
+
+    @Bean
+    public DgcValueSetClient dgcValueSetClient(RestTemplate restTemplate) {
+        return new DgcValueSetClient(baseurl, restTemplate);
+    }
+
+    @Bean
+    public DgcValueSetSyncer dgcValueSetSyncer(
+            ValueSetDataService valueSetDataService, DgcValueSetClient dgcValueSetClient) {
+        return new DgcValueSetSyncer(valueSetDataService, dgcValueSetClient);
     }
 }
