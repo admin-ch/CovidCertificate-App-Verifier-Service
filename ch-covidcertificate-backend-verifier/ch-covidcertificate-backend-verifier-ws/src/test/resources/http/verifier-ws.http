@@ -1,36 +1,35 @@
 ### hello
-GET {{baseUrl}}/v2/keys
+GET {{baseUrl}}/trust/v2/keys
 Accept: application/json
 
 ### get certs
-GET {{baseUrl}}/v2/keys/updates?since={{since}}&upTo={{upTo}}&certFormat={{certFormat}}
+GET {{baseUrl}}/trust/v2/keys/updates?since={{since}}&upTo={{upTo}}&certFormat={{certFormat}}
 Accept: application/json
 Authorization: Bearer {{apiKey}}
 
 ### get active cert key ids
-GET {{baseUrl}}/v2/keys/list
+GET {{baseUrl}}/trust/v2/keys/list
 Accept: application/json
 Authorization: Bearer {{apiKey}}
 
 ### get revocation list
-GET {{baseUrl}}/v2/revocationList?since={{revokedSince}}
+GET {{baseUrl}}/trust/v2/revocationList?since={{revokedSince}}
 Accept: application/json
 Authorization: Bearer {{apiKey}}
 
 ### get verification rules
-GET {{baseUrl}}/v1/verificationRules
+GET {{baseUrl}}/trust/v1/verificationRules
 Accept: application/json
 If-None-Match: "011ec25ca7a4d0c95fe8fd7c33cdeff3654d7bf9"
 Authorization: Bearer {{apiKey}}
 
 ### get value sets
-GET {{baseUrl}}/v1/metadata
+GET {{baseUrl}}/trust/v1/metadata
 Accept: application/json
 If-None-Match: "19d26e8cfc5a14fbdbaf107c933811e1988f1443"
 Authorization: Bearer {{apiKey}}
 
 ### get value sets
-GET {{baseUrl}}/v2/valueSets?valueSetId={{valueSetId}}
+GET {{baseUrl}}/dcga/v1/valueSets?valueSetId={{valueSetId}}
 Accept: application/json
 If-None-Match: ""
-Authorization: Bearer {{apiKey}}

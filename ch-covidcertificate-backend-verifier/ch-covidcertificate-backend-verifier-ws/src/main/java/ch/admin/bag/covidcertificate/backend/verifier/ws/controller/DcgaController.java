@@ -28,20 +28,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 
 @Controller
-@RequestMapping("trust/v2")
-public class ValueSetsControllerV2 {
+@RequestMapping("/dcga/v1")
+public class DcgaController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ValueSetsControllerV2.class);
+    private static final Logger logger = LoggerFactory.getLogger(DcgaController.class);
 
     private final ValueSetDataService valueSetDataService;
 
-    public ValueSetsControllerV2(ValueSetDataService valueSetDataService) {
+    public DcgaController(ValueSetDataService valueSetDataService) {
         this.valueSetDataService = valueSetDataService;
     }
 
     @Documentation(
             description = "get value sets",
-            responses = {"200 => value sets", "304 => no changes since last request"},
+            responses = {
+                "200 => value sets",
+                "304 => no changes since last request",
+                "404 => no value sets found for given valueSetId"
+            },
             responseHeaders = {"ETag:etag to set for next request:string"})
     @GetMapping(value = "/valueSets")
     public @ResponseBody ResponseEntity<String> getValueSets(

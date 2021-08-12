@@ -24,7 +24,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyControlle
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.ValueSetsController;
-import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.ValueSetsControllerV2;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.DcgaController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerificationRulesController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.interceptor.HeaderInjector;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.security.signature.JwsMessageConverter;
@@ -206,8 +206,8 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public ValueSetsControllerV2 valueSetsControllerV2(ValueSetDataService valueSetDataService) {
-        return new ValueSetsControllerV2(valueSetDataService);
+    public DcgaController dcgaController(ValueSetDataService valueSetDataService) {
+        return new DcgaController(valueSetDataService);
     }
 
     @Bean

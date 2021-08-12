@@ -61,9 +61,11 @@ public class ApiKeySecurity extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(filter)
                 .authorizeRequests()
-                .antMatchers("/trust/v1/keys") // hello endpoint
+                .antMatchers("/trust/v?/keys") // hello endpoint
                 .permitAll()
-                .antMatchers("/trust/v1/**")
+                .antMatchers("/dcga/**") // internal endpoints
+                .permitAll()
+                .antMatchers("/trust/v?/**")
                 .authenticated();
     }
 }
