@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -28,15 +30,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class JdbcValueSetDataServiceImpl implements ValueSetDataService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ValueSetDataService.class);
+
     private final NamedParameterJdbcTemplate jt;
     private final SimpleJdbcInsert valueSetInsert;
+    private final int maxHistory;
 
-    public JdbcValueSetDataServiceImpl(DataSource dataSource) {
+    public JdbcValueSetDataServiceImpl(DataSource dataSource, int maxHistory) {
         this.jt = new NamedParameterJdbcTemplate(dataSource);
         this.valueSetInsert =
                 new SimpleJdbcInsert(dataSource)
                         .withTableName("t_value_set_data")
                         .usingGeneratedKeyColumns("pk_value_set_data_id", "created_at");
+        this.maxHistory = maxHistory;
     }
 
     @Override
@@ -87,6 +93,31 @@ public class JdbcValueSetDataServiceImpl implements ValueSetDataService {
     @Override
     @Transactional(readOnly = false)
     public void deleteOldValueSets() {
-        // TODO
+        List<String> valueSetIds = findAllValueSetIds();
+        for (String valueSetId : valueSetIds) {
+            String pksToKeepSubquery =
+                    "select pk_value_set_data_id from t_value_set_data"
+                            + " where value_set_id = :value_set_id"
+                            + " order by created_at desc"
+                            + " limit :max_history";
+            MapSqlParameterSource params = new MapSqlParameterSource();
+            params.addValue("value_set_id", valueSetId);
+            params.addValue("max_history", maxHistory);
+            int removed =
+                    jt.update(
+                            "delete from t_value_set_data"
+                                    + " where value_set_id = :value_set_id and pk_value_set_data_id not in ("
+                                    + pksToKeepSubquery
+                                    + ")",
+                            params);
+            logger.debug("removed {} old entries for valueSetId {}", removed, valueSetId);
+        }
+    }
+
+    private List<String> findAllValueSetIds() {
+        return jt.queryForList(
+                "select distinct value_set_id from t_value_set_data",
+                new MapSqlParameterSource(),
+                String.class);
     }
 }

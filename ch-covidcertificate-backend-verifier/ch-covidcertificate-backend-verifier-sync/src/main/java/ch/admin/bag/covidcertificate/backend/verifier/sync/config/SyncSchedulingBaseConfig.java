@@ -10,6 +10,7 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetSyncer;
 import net.javacrumbs.shedlock.core.LockAssert;
@@ -26,10 +27,15 @@ public class SyncSchedulingBaseConfig {
 
     private final DgcCertSyncer dgcSyncer;
     private final DgcValueSetSyncer dgcValueSetSyncer;
+    private final ValueSetDataService valueSetDataService;
 
-    public SyncSchedulingBaseConfig(DgcCertSyncer dgcSyncer, DgcValueSetSyncer dgcValueSetSyncer) {
+    public SyncSchedulingBaseConfig(
+            DgcCertSyncer dgcSyncer,
+            DgcValueSetSyncer dgcValueSetSyncer,
+            ValueSetDataService valueSetDataService) {
         this.dgcSyncer = dgcSyncer;
         this.dgcValueSetSyncer = dgcValueSetSyncer;
+        this.valueSetDataService = valueSetDataService;
     }
 
     @Scheduled(cron = "${dgc.sync.cron}")
@@ -44,6 +50,13 @@ public class SyncSchedulingBaseConfig {
     public void dgcSyncOnStartup() {
         LockAssert.assertLocked();
         dgcSyncer.sync();
+    }
+
+    @Scheduled(cron = "${value-set.clean.cron:0 0 1 ? * *}")
+    @SchedulerLock(name = "value_set_clean", lockAtLeastFor = "PT15S")
+    public void valueSetCleanCron() {
+        LockAssert.assertLocked();
+        valueSetDataService.deleteOldValueSets();
     }
 
     @Scheduled(cron = "${value-set.sync.cron:0 0 0 ? * *}")

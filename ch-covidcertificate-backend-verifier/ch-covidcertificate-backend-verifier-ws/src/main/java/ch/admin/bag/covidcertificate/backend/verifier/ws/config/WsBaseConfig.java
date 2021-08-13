@@ -19,12 +19,12 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcRevokedCertD
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcValueSetDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.client.RevocationListSyncer;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.DcgaController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.ValueSetsController;
-import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.DcgaController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerificationRulesController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.interceptor.HeaderInjector;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.security.signature.JwsMessageConverter;
@@ -201,8 +201,9 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public ValueSetDataService valueSetDataService(DataSource dataSource) {
-        return new JdbcValueSetDataServiceImpl(dataSource);
+    public ValueSetDataService valueSetDataService(
+            DataSource dataSource, @Value("${value-set.max-history:10}") int maxHistory) {
+        return new JdbcValueSetDataServiceImpl(dataSource, maxHistory);
     }
 
     @Bean

@@ -84,8 +84,9 @@ public abstract class SyncBaseConfig {
     }
 
     @Bean
-    public ValueSetDataService valueSetDataService(DataSource dataSource) {
-        return new JdbcValueSetDataServiceImpl(dataSource);
+    public ValueSetDataService valueSetDataService(
+            DataSource dataSource, @Value("${value-set.max-history:10}") int maxHistory) {
+        return new JdbcValueSetDataServiceImpl(dataSource, maxHistory);
     }
 
     @Bean
