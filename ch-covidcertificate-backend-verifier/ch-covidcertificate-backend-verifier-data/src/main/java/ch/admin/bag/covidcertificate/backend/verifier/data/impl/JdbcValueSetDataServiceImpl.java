@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class JdbcValueSetDataServiceImpl implements ValueSetDataService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ValueSetDataService.class);
+    private static final Logger logger = LoggerFactory.getLogger(JdbcValueSetDataServiceImpl.class);
 
     private final NamedParameterJdbcTemplate jt;
     private final SimpleJdbcInsert valueSetInsert;

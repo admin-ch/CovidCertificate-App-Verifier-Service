@@ -31,8 +31,6 @@ import org.springframework.web.context.request.WebRequest;
 @RequestMapping("/dcga/v1")
 public class DcgaController {
 
-    private static final Logger logger = LoggerFactory.getLogger(DcgaController.class);
-
     private final ValueSetDataService valueSetDataService;
 
     public DcgaController(ValueSetDataService valueSetDataService) {
