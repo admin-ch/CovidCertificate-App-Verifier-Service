@@ -116,6 +116,11 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ch.admin.bag.covidcertificate</groupId>
+            <artifactId>cc-backend-logging</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
         <dependency>
             <groupId>ch.ubique.openapi</groupId>
