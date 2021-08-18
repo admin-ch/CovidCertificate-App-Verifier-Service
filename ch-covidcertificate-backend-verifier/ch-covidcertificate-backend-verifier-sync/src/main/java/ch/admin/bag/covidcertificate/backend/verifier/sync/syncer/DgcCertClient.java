@@ -25,15 +25,15 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-public class DgcClient {
+public class DgcCertClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(DgcClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(DgcCertClient.class);
     private static final String UPLOAD_PATH = "/signerCertificate";
     private static final String DOWNLOAD_PATH = "/trustList/%s";
     private final String baseUrl;
     private final RestTemplate rt;
 
-    public DgcClient(String baseUrl, RestTemplate rt) {
+    public DgcCertClient(String baseUrl, RestTemplate rt) {
         this.baseUrl = baseUrl;
         this.rt = rt;
     }

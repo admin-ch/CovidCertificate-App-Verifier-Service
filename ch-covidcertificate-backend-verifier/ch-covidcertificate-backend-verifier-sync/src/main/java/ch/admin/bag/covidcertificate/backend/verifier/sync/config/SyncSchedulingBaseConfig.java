@@ -10,7 +10,9 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
-import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcSyncer;
+import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetSyncer;
 import net.javacrumbs.shedlock.core.LockAssert;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
@@ -23,10 +25,17 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableSchedulerLock(defaultLockAtMostFor = "PT10M")
 public class SyncSchedulingBaseConfig {
 
-    private final DgcSyncer dgcSyncer;
+    private final DgcCertSyncer dgcSyncer;
+    private final DgcValueSetSyncer dgcValueSetSyncer;
+    private final ValueSetDataService valueSetDataService;
 
-    public SyncSchedulingBaseConfig(DgcSyncer dgcSyncer) {
+    public SyncSchedulingBaseConfig(
+            DgcCertSyncer dgcSyncer,
+            DgcValueSetSyncer dgcValueSetSyncer,
+            ValueSetDataService valueSetDataService) {
         this.dgcSyncer = dgcSyncer;
+        this.dgcValueSetSyncer = dgcValueSetSyncer;
+        this.valueSetDataService = valueSetDataService;
     }
 
     @Scheduled(cron = "${dgc.sync.cron}")
@@ -41,5 +50,26 @@ public class SyncSchedulingBaseConfig {
     public void dgcSyncOnStartup() {
         LockAssert.assertLocked();
         dgcSyncer.sync();
+    }
+
+    @Scheduled(cron = "${value-set.clean.cron:0 0 1 ? * *}")
+    @SchedulerLock(name = "value_set_clean", lockAtLeastFor = "PT15S")
+    public void valueSetCleanCron() {
+        LockAssert.assertLocked();
+        valueSetDataService.deleteOldValueSets();
+    }
+
+    @Scheduled(cron = "${value-set.sync.cron:0 0 0 ? * *}")
+    @SchedulerLock(name = "value_set_sync", lockAtLeastFor = "PT15S")
+    public void valueSetSyncCron() {
+        LockAssert.assertLocked();
+        dgcValueSetSyncer.sync();
+    }
+
+    @Scheduled(fixedRate = Long.MAX_VALUE, initialDelay = 0)
+    @SchedulerLock(name = "value_set_sync", lockAtLeastFor = "PT15S")
+    public void valueSetSyncOnStartup() {
+        LockAssert.assertLocked();
+        dgcValueSetSyncer.sync();
     }
 }

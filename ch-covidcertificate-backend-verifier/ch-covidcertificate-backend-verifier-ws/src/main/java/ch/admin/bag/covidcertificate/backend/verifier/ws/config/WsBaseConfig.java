@@ -12,11 +12,14 @@ package ch.admin.bag.covidcertificate.backend.verifier.ws.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.AppTokenDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.RevokedCertDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcAppTokenDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcRevokedCertDataServiceImpl;
+import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcValueSetDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.client.RevocationListSyncer;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.DcgaController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
@@ -195,6 +198,17 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     @Bean
     public ValueSetsController valueSetsController() throws IOException, NoSuchAlgorithmException {
         return new ValueSetsController();
+    }
+
+    @Bean
+    public ValueSetDataService valueSetDataService(
+            DataSource dataSource, @Value("${value-set.max-history:10}") int maxHistory) {
+        return new JdbcValueSetDataServiceImpl(dataSource, maxHistory);
+    }
+
+    @Bean
+    public DcgaController dcgaController(ValueSetDataService valueSetDataService) {
+        return new DcgaController(valueSetDataService);
     }
 
     @Bean

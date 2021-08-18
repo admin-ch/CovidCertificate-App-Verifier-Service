@@ -30,14 +30,14 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DgcSyncer {
+public class DgcCertSyncer {
 
-    private static final Logger logger = LoggerFactory.getLogger(DgcSyncer.class);
+    private static final Logger logger = LoggerFactory.getLogger(DgcCertSyncer.class);
 
-    private final DgcClient dgcClient;
+    private final DgcCertClient dgcClient;
     private final VerifierDataService verifierDataService;
 
-    public DgcSyncer(DgcClient dgcClient, VerifierDataService verifierDataService) {
+    public DgcCertSyncer(DgcCertClient dgcClient, VerifierDataService verifierDataService) {
         this.dgcClient = dgcClient;
         this.verifierDataService = verifierDataService;
     }
