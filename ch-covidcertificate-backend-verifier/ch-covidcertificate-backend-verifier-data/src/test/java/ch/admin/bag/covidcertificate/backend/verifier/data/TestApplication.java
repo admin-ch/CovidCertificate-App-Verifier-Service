@@ -14,6 +14,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
 @SpringBootApplication(
-        scanBasePackages = {"ch.admin.bag.covidcertificate.backend.verifier.data"},
+        scanBasePackages = {
+            "ch.admin.bag.covidcertificate.backend.verifier.data",
+            "ch.admin.bag.covidcertificate.log",
+            "ch.admin.bag.covidcertificate.rest"
+        },
         exclude = {SecurityAutoConfiguration.class})
 public class TestApplication {}
