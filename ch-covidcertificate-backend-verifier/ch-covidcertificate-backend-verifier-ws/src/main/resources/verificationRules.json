@@ -68,10 +68,42 @@
       "description": "At most one v-event.",
       "inputParameter": "Entire HCert JSON (\"v\")",
       "logic": {
-        "!": [
+        "if": [
           {
-            "var": "payload.v.1"
-          }
+            "var": "payload.v.0"
+          },
+          {
+            "if": [
+              {
+                "and": [
+                  {
+                    "!": [
+                      {
+                        "var": "payload.v.1"
+                      }
+                    ]
+                  },
+                  {
+                    "!": [
+                      {
+                        "var": "payload.r.0"
+                      }
+                    ]
+                  },
+                  {
+                    "!": [
+                      {
+                        "var": "payload.t.0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              true,
+              false
+            ]
+          },
+          true
         ]
       }
     },
@@ -356,10 +388,42 @@
       "description": "At most one t-event.",
       "inputParameter": "Entire HCert JSON (\"t\")",
       "logic": {
-        "!": [
+        "if": [
           {
-            "var": "payload.t.1"
-          }
+            "var": "payload.t.0"
+          },
+          {
+            "if": [
+              {
+                "and": [
+                  {
+                    "!": [
+                      {
+                        "var": "payload.t.1"
+                      }
+                    ]
+                  },
+                  {
+                    "!": [
+                      {
+                        "var": "payload.r.0"
+                      }
+                    ]
+                  },
+                  {
+                    "!": [
+                      {
+                        "var": "payload.v.0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              true,
+              false
+            ]
+          },
+          true
         ]
       }
     },
@@ -548,10 +612,42 @@
       "description": "At most one r-event.",
       "inputParameter": "Entire HCert JSON (\"r\")",
       "logic": {
-        "!": [
+        "if": [
           {
-            "var": "payload.r.1"
-          }
+            "var": "payload.r.0"
+          },
+          {
+            "if": [
+              {
+                "and": [
+                  {
+                    "!": [
+                      {
+                        "var": "payload.r.1"
+                      }
+                    ]
+                  },
+                  {
+                    "!": [
+                      {
+                        "var": "payload.v.0"
+                      }
+                    ]
+                  },
+                  {
+                    "!": [
+                      {
+                        "var": "payload.t.0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              true,
+              false
+            ]
+          },
+          true
         ]
       }
     },
