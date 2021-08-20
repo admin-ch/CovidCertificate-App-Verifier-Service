@@ -70,9 +70,7 @@
       "logic": {
         "if": [
           {
-            "var": [
-              "payload.v.0"
-            ]
+            "var": "payload.v.0"
           },
           {
             "if": [
@@ -81,9 +79,7 @@
                   {
                     "!": [
                       {
-                        "var": [
-                          "payload.v.1"
-                        ]
+                        "var": "payload.v.1"
                       }
                     ]
                   },
@@ -97,9 +93,7 @@
                   {
                     "!": [
                       {
-                        "var": [
-                          "payload.t.0"
-                        ]
+                        "var": "payload.t.0"
                       }
                     ]
                   }
@@ -396,9 +390,7 @@
       "logic": {
         "if": [
           {
-            "var": [
-              "payload.t.0"
-            ]
+            "var": "payload.t.0"
           },
           {
             "if": [
@@ -407,9 +399,7 @@
                   {
                     "!": [
                       {
-                        "var": [
-                          "payload.t.1"
-                        ]
+                        "var": "payload.t.1"
                       }
                     ]
                   },
@@ -423,9 +413,7 @@
                   {
                     "!": [
                       {
-                        "var": [
-                          "payload.v.0"
-                        ]
+                        "var": "payload.v.0"
                       }
                     ]
                   }
@@ -635,27 +623,21 @@
                   {
                     "!": [
                       {
-                        "var": [
-                          "payload.r.1"
-                        ]
+                        "var": "payload.r.1"
                       }
                     ]
                   },
                   {
                     "!": [
                       {
-                        "var": [
-                          "payload.v.0"
-                        ]
+                        "var": "payload.v.0"
                       }
                     ]
                   },
                   {
                     "!": [
                       {
-                        "var": [
-                          "payload.t.0"
-                        ]
+                        "var": "payload.t.0"
                       }
                     ]
                   }
