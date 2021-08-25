@@ -1,7 +1,6 @@
 {
   "displayRules": [],
   "rules": [{
-      "Identifier": "GR-CH-0001",
       "affectedFields": [
         "r.0",
         "r.0.tg",
@@ -18,7 +17,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "GR-CH-0001",
       "logic": {
         "and": [{
             "if": [{
@@ -77,7 +76,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "VR-CH-0000",
       "affectedFields": [
         "v.0",
         "v.1",
@@ -92,7 +90,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "VR-CH-0000",
       "logic": {
         "if": [{
             "var": "payload.v.0"
@@ -130,7 +128,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "VR-CH-0001",
       "affectedFields": [
         "v.0",
         "v.0.dn",
@@ -144,7 +141,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "VR-CH-0001",
       "logic": {
         "if": [{
             "var": "payload.v.0"
@@ -168,7 +165,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "VR-CH-0002",
       "affectedFields": [
         "v.0",
         "v.0.mp"
@@ -181,7 +177,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "VR-CH-0002",
       "logic": {
         "if": [{
             "var": "payload.v.0"
@@ -208,7 +204,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "VR-CH-0003",
       "affectedFields": [
         "v.0",
         "v.0.dt"
@@ -221,7 +216,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "VR-CH-0003",
       "logic": {
         "if": [{
             "var": "payload.v.0"
@@ -239,7 +234,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "VR-CH-0004",
       "affectedFields": [
         "v.0",
         "v.0.mp",
@@ -253,7 +247,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "VR-CH-0004",
       "logic": {
         "if": [{
             "and": [{
@@ -301,7 +295,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "VR-CH-0005",
       "affectedFields": [
         "v.0",
         "v.0.mp",
@@ -316,7 +309,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "VR-CH-0005",
       "logic": {
         "if": [{
             "var": "payload.v.0"
@@ -373,7 +366,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "VR-CH-0006",
       "affectedFields": [
         "v.0",
         "v.0.dt"
@@ -386,7 +378,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "VR-CH-0006",
       "logic": {
         "if": [{
             "var": "payload.v.0"
@@ -420,7 +412,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "VR-CH-0007",
       "affectedFields": [
         "v.0",
         "v.0.mp",
@@ -435,7 +426,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "VR-CH-0007",
       "logic": {
         "if": [{
             "var": "payload.v.0"
@@ -492,7 +483,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "TR-CH-0000",
       "affectedFields": [
         "t.0",
         "t.1",
@@ -507,7 +497,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "TR-CH-0000",
       "logic": {
         "if": [{
             "var": "payload.t.0"
@@ -545,7 +535,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "TR-CH-0001",
       "affectedFields": [
         "t.0",
         "t.0.tr"
@@ -558,7 +547,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "TR-CH-0001",
       "logic": {
         "if": [{
             "var": "payload.t.0"
@@ -580,7 +569,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "TR-CH-0002",
       "affectedFields": [
         "t.0",
         "t.0.tt"
@@ -593,7 +581,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "TR-CH-0002",
       "logic": {
         "if": [{
             "var": "payload.t.0"
@@ -618,7 +606,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "TR-CH-0004",
       "affectedFields": [
         "t.0",
         "t.0.sc"
@@ -631,7 +618,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "TR-CH-0004",
       "logic": {
         "if": [{
             "var": "payload.t.0"
@@ -649,7 +636,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "TR-CH-0005",
       "affectedFields": [
         "t.0",
         "t.0.sc"
@@ -662,7 +648,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "TR-CH-0005",
       "logic": {
         "if": [{
             "var": "payload.t.0"
@@ -696,7 +682,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "TR-CH-0006",
       "affectedFields": [
         "t.0.tt",
         "t.0.sc"
@@ -709,7 +694,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "TR-CH-0006",
       "logic": {
         "if": [{
             "===": [{
@@ -747,7 +732,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "TR-CH-0007",
       "affectedFields": [
         "t.0.tt",
         "t.0.sc"
@@ -760,7 +744,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "TR-CH-0007",
       "logic": {
         "if": [{
             "===": [{
@@ -798,7 +782,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "RR-CH-0000",
       "affectedFields": [
         "r.0",
         "r.1",
@@ -813,7 +796,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "RR-CH-0000",
       "logic": {
         "if": [{
             "var": "payload.r.0"
@@ -851,7 +834,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "RR-CH-0001",
       "affectedFields": [
         "r.0",
         "r.0.fr"
@@ -864,7 +846,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "RR-CH-0001",
       "logic": {
         "if": [{
             "var": "payload.r.0"
@@ -882,7 +864,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "RR-CH-0002",
       "affectedFields": [
         "r.0",
         "r.0.fr"
@@ -895,7 +876,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "RR-CH-0002",
       "logic": {
         "if": [{
             "var": "payload.r.0"
@@ -929,7 +910,6 @@
       "version": "1.0.0"
     },
     {
-      "Identifier": "RR-CH-0003",
       "affectedFields": [
         "r.0",
         "r.0.fr"
@@ -942,7 +922,7 @@
       }],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "",
+      "identifier": "RR-CH-0003",
       "logic": {
         "if": [{
             "var": "payload.r.0"

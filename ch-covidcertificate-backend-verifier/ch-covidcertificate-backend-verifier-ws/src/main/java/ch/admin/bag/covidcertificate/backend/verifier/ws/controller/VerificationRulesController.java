@@ -10,14 +10,15 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
-import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
-import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
-import ch.ubique.openapi.docannotations.Documentation;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -30,6 +31,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 
+import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
+import ch.ubique.openapi.docannotations.Documentation;
+
 @Controller
 @RequestMapping("trust/v1")
 public class VerificationRulesController {
@@ -41,8 +46,20 @@ public class VerificationRulesController {
 
     public VerificationRulesController() throws IOException, NoSuchAlgorithmException {
         ObjectMapper mapper = new ObjectMapper();
+        File verificationRulesV2File = new ClassPathResource("verificationRulesV2.json").getFile();
         File verificationRulesFile = new ClassPathResource("verificationRules.json").getFile();
         this.verificationRules = mapper.readValue(verificationRulesFile, Map.class);
+        var newFormat = mapper.readTree(verificationRulesV2File);
+        ArrayList<Map> rules = new ArrayList<>();
+        for(var rule : newFormat.get("rules")) {
+            HashMap<String, Object> newRule = new HashMap<>();
+            newRule.put("id", rule.get("identifier"));
+            newRule.put("logic", rule.get("logic"));
+            newRule.put("description", rule.get("description").get(0).get("desc"));
+            newRule.put("inputParameter", rule.get("affectedFields").toString());
+            rules.add(newRule);
+        }
+        this.verificationRules.put("rules", rules);
         this.verificationRulesEtag = EtagUtil.getSha1HashForFiles(verificationRulesFile.getPath());
     }
 
