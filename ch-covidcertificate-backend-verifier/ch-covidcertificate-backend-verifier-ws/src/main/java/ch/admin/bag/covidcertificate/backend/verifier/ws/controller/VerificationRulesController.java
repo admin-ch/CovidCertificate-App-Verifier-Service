@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.slf4j.Logger;
@@ -46,12 +47,18 @@ public class VerificationRulesController {
 
     public VerificationRulesController() throws IOException, NoSuchAlgorithmException {
         ObjectMapper mapper = new ObjectMapper();
-        File verificationRulesV2File = new ClassPathResource("verificationRulesV2.json").getFile();
+       
         File verificationRulesFile = new ClassPathResource("verificationRules.json").getFile();
         this.verificationRules = mapper.readValue(verificationRulesFile, Map.class);
+        this.verificationRulesEtag = EtagUtil.getSha1HashForFiles(verificationRulesFile.getPath());
+    }
+
+    private ArraList<Map> mapV2RulesToV1(JsonNode template) {
+        ObjectMapper mapper = new ObjectMapper();
+        File verificationRulesV2File = new ClassPathResource("verificationRulesV2.json").getFile();
         var newFormat = mapper.readTree(verificationRulesV2File);
         ArrayList<Map> rules = new ArrayList<>();
-        for(var rule : newFormat.get("rules")) {
+        for (var rule : newFormat.get("rules")) {
             HashMap<String, Object> newRule = new HashMap<>();
             newRule.put("id", rule.get("identifier"));
             newRule.put("logic", rule.get("logic"));
@@ -59,8 +66,7 @@ public class VerificationRulesController {
             newRule.put("inputParameter", rule.get("affectedFields").toString());
             rules.add(newRule);
         }
-        this.verificationRules.put("rules", rules);
-        this.verificationRulesEtag = EtagUtil.getSha1HashForFiles(verificationRulesFile.getPath());
+        return rules;
     }
 
     @Documentation(
