@@ -53,7 +53,7 @@ public class VerificationRulesController {
         this.verificationRulesEtag = EtagUtil.getSha1HashForFiles(verificationRulesFile.getPath());
     }
 
-    private ArraList<Map> mapV2RulesToV1(JsonNode template) {
+    private ArrayList<Map> mapV2RulesToV1(JsonNode template) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         File verificationRulesV2File = new ClassPathResource("verificationRulesV2.json").getFile();
         var newFormat = mapper.readTree(verificationRulesV2File);
