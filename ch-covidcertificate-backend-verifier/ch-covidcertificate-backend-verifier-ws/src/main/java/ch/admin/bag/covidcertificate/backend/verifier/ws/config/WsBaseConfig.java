@@ -26,6 +26,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationLi
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.ValueSetsController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerificationRulesController;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerificationRulesControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.interceptor.HeaderInjector;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.security.signature.JwsMessageConverter;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
@@ -193,6 +194,11 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     public VerificationRulesController verificationRulesController()
             throws IOException, NoSuchAlgorithmException {
         return new VerificationRulesController();
+    }
+    
+    @Bean
+    public VerificationRulesControllerV2 verificationRulesControllerV2() throws IOException, NoSuchAlgorithmException {
+        return new VerificationRulesControllerV2();
     }
 
     @Bean
