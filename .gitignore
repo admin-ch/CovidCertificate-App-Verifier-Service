@@ -4,3 +4,5 @@
 **/.classpath
 **/classpath-data.json
 **/.settings
+**/target
+**/.factorypath
