@@ -197,8 +197,8 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     }
     
     @Bean
-    public VerificationRulesControllerV2 verificationRulesControllerV2() throws IOException, NoSuchAlgorithmException {
-        return new VerificationRulesControllerV2();
+    public VerificationRulesControllerV2 verificationRulesControllerV2(ValueSetDataService valueSetDataService) throws IOException, NoSuchAlgorithmException {
+        return new VerificationRulesControllerV2(valueSetDataService);
     }
 
     @Bean
