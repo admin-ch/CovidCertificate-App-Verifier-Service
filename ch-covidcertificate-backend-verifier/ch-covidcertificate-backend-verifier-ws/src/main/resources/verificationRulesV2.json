@@ -126,6 +126,9 @@
                           48,
                           "hour"
                         ]
+                      },
+                      {
+                        "var": "undefined"
                       }
                     ]
                   }
