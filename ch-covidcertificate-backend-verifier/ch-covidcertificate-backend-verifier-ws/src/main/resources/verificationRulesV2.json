@@ -34,7 +34,12 @@
                 ]
               },
               {
-                "var": "payload.v.0.dt"
+                "plusTime": [{
+                    "var": "payload.v.0.dt"
+                  },
+                  0,
+                  "day"
+                ]
               }
             ]
           },
@@ -43,7 +48,12 @@
                 "var": "payload.t.0"
               },
               {
-                "var": "payload.t.0.sc"
+                "plusTime": [{
+                    "var": "payload.t.0.sc"
+                  },
+                  0,
+                  "day"
+                ]
               },
               {
                 "if": [{
