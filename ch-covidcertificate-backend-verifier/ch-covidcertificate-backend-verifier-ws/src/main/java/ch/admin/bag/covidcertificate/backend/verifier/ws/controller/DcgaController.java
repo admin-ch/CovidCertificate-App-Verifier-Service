@@ -17,6 +17,7 @@ import ch.ubique.openapi.docannotations.Documentation;
 import java.security.NoSuchAlgorithmException;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,7 +44,7 @@ public class DcgaController {
                 "404 => no value sets found for given valueSetId"
             },
             responseHeaders = {"ETag:etag to set for next request:string"})
-    @GetMapping(value = "/valueSets")
+    @GetMapping(value = "/valueSets", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<String> getValueSets(
             WebRequest request,
             @RequestParam(
