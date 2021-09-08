@@ -32,13 +32,12 @@ public class DgcRulesClient {
     private final RestTemplate dgcRT;
     private final RestTemplate bitRT;
 
-    public DgcRulesClient(String dgcBaseUrl,String bitBaseUrl, RestTemplate bitRT, RestTemplate dgcRT) {
+    public DgcRulesClient(String dgcBaseUrl, String bitBaseUrl, RestTemplate bitRT, RestTemplate dgcRT) {
         this.bitBaseUrl = bitBaseUrl;
         this.dgcBaseUrl = dgcBaseUrl;
         this.dgcRT = dgcRT;
         this.bitRT = bitRT;
     }
-
 
     /**
      * downloads rules for all countries
@@ -47,7 +46,7 @@ public class DgcRulesClient {
      */
     public Map<String, String> download() {
         logger.info("Downloading rules");
-        
+
         logger.info("downloaded rules for: ");
         return null;
     }
@@ -55,8 +54,12 @@ public class DgcRulesClient {
     private RequestEntity<SigningPayload> postSignedContent(SigningPayload data) {
         return RequestEntity.post(bitBaseUrl + SIGNING_PATH).body(data);
     }
+
     private RequestEntity<String> postCmsWithRule(ResponseEntity<CmsResponse> response) {
-        return RequestEntity.post(dgcBaseUrl + RULE_UPLOAD_PATH).body(response.getBody().getCms());
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            return RequestEntity.post(dgcBaseUrl + RULE_UPLOAD_PATH).body(response.getBody().getCms());
+        }
+        return null;
     }
 
     /**
@@ -68,7 +71,7 @@ public class DgcRulesClient {
         logger.info("Uploading Swiss rules");
         var mapper = new ObjectMapper();
         // load payload
-        for(var ruleArray : rules.keySet()) {
+        for (var ruleArray : rules.keySet()) {
             for (var rule : rules.get(ruleArray)) {
                 // make request to bit for signing
                 try {
@@ -77,27 +80,32 @@ public class DgcRulesClient {
                     var payloadObject = new SigningPayload();
                     payloadObject.setData(base64encoded);
 
-                    ResponseEntity<CmsResponse> response = this.bitRT.exchange(postSignedContent(payloadObject), CmsResponse.class);
+                    ResponseEntity<CmsResponse> response = this.bitRT.exchange(postSignedContent(payloadObject),
+                            CmsResponse.class);
                     if (response.getStatusCode().isError()) {
                         logger.error("Signing failed {}", response.getStatusCode());
                         continue;
                     }
                     // upload to gateway
-                    ResponseEntity<String> result = this.dgcRT.exchange(postCmsWithRule(response), String.class);
-
+                    var uploadRequest = postCmsWithRule(response);
+                    if (uploadRequest == null) {
+                        continue;
+                    }
+                    
+                    ResponseEntity<String> result = this.dgcRT.exchange(uploadRequest, String.class);
                     // observe Response
                     if (result.getStatusCode().isError()) {
                         try {
-                         var problemReport = mapper.readValue(result.getBody(), ProblemReport.class);
-                         logger.error("rule version {} had error {}", ruleArray, problemReport.getDetails());
-                        } catch(JsonProcessingException processingException) {
+                            var problemReport = mapper.readValue(result.getBody(), ProblemReport.class);
+                            logger.error("rule version {} had error {}", ruleArray, problemReport.getDetails());
+                        } catch (JsonProcessingException processingException) {
                             logger.error("rule version {} was not successfully uploaded", ruleArray);
                         }
 
                     } else {
                         logger.info("rule version for {} uploaded", ruleArray);
                     }
-                } catch(JsonProcessingException ex) {
+                } catch (JsonProcessingException ex) {
                     logger.error("Serializing rule failed: {}", ex);
                 }
             }
