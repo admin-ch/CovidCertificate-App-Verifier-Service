@@ -53,11 +53,13 @@ public class DgcRulesClient {
     }
 
     private RequestEntity<SigningPayload> postSignedContent(SigningPayload data) {
+        logger.info("Try siging {}", signBaseUrl + SIGNING_PATH);
         return RequestEntity.post(signBaseUrl + SIGNING_PATH).body(data);
     }
 
     private RequestEntity<String> postCmsWithRule(ResponseEntity<CmsResponse> response) {
         var body = response.getBody();
+        logger.info("Try upload {}", dgcBaseUrl + RULE_UPLOAD_PATH);
         if (response.getStatusCode().is2xxSuccessful() && body != null) {
             return RequestEntity.post(dgcBaseUrl + RULE_UPLOAD_PATH).body(body.getCms());
         }
