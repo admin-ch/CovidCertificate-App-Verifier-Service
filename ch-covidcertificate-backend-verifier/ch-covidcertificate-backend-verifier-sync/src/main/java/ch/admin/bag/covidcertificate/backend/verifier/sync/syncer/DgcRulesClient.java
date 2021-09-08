@@ -26,7 +26,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.sync.SigningPayload;
 public class DgcRulesClient {
     private static final Logger logger = LoggerFactory.getLogger(DgcRulesClient.class);
     private static final String RULE_UPLOAD_PATH = "/rules";
-    private static final String SIGNING_PATH = "/v1/cms";
+    private static final String SIGNING_PATH = "/v1/cms/";
     private static final String DOWNLOAD_PATH = "/rules/%s";
     private final String signBaseUrl;
     private final String dgcBaseUrl;
