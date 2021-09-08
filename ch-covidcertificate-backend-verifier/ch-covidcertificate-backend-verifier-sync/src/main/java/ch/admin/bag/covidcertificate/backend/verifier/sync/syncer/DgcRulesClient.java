@@ -57,8 +57,9 @@ public class DgcRulesClient {
     }
 
     private RequestEntity<String> postCmsWithRule(ResponseEntity<CmsResponse> response) {
-        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-            return RequestEntity.post(dgcBaseUrl + RULE_UPLOAD_PATH).body(response.getBody().getCms());
+        var body = response.getBody();
+        if (response.getStatusCode().is2xxSuccessful() && body != null) {
+            return RequestEntity.post(dgcBaseUrl + RULE_UPLOAD_PATH).body(body.getCms());
         }
         return null;
     }
