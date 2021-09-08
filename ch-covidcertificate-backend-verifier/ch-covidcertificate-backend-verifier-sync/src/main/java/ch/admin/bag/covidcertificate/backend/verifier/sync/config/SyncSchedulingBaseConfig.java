@@ -12,6 +12,7 @@ package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcRulesSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetSyncer;
 import net.javacrumbs.shedlock.core.LockAssert;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
@@ -28,14 +29,17 @@ public class SyncSchedulingBaseConfig {
     private final DgcCertSyncer dgcSyncer;
     private final DgcValueSetSyncer dgcValueSetSyncer;
     private final ValueSetDataService valueSetDataService;
+    private final DgcRulesSyncer dgcRulesSyncer;
 
     public SyncSchedulingBaseConfig(
             DgcCertSyncer dgcSyncer,
             DgcValueSetSyncer dgcValueSetSyncer,
-            ValueSetDataService valueSetDataService) {
+            ValueSetDataService valueSetDataService,
+            DgcRulesSyncer dgcRulesSyncer) {
         this.dgcSyncer = dgcSyncer;
         this.dgcValueSetSyncer = dgcValueSetSyncer;
         this.valueSetDataService = valueSetDataService;
+        this.dgcRulesSyncer  = dgcRulesSyncer;
     }
 
     @Scheduled(cron = "${dgc.sync.cron}")
@@ -71,5 +75,12 @@ public class SyncSchedulingBaseConfig {
     public void valueSetSyncOnStartup() {
         LockAssert.assertLocked();
         dgcValueSetSyncer.sync();
+    }
+
+    @Scheduled(fixedRate = Long.MAX_VALUE, initialDelay = 0)
+    @SchedulerLock(name = "rules_sync", lockAtLeastFor = "PT15S")
+    public void rulesSyncOnStartup() {
+        LockAssert.assertLocked();
+        dgcRulesSyncer.sync();
     }
 }
