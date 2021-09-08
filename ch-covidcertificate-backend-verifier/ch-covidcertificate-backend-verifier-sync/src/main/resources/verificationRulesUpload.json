@@ -1,6 +1,6 @@
 {
   "GR-CH-0001": [{
-    "affectedFields": [
+    "AffectedFields": [
       "r.0",
       "r.0.tg",
       "t.0",
@@ -8,16 +8,16 @@
       "v.0",
       "v.0.tg"
     ],
-    "certificateType": "General",
-    "country": "CH",
-    "description": [{
+    "CertificateType": "General",
+    "Country": "CH",
+    "Description": [{
       "desc": "The targeted disease agent must be COVID-19 of the value set list.",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "GR-CH-0001",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "GR-CH-0001",
+    "Logic": {
       "and": [{
           "if": [{
               "var": "payload.r.0"
@@ -68,29 +68,28 @@
         }
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "RR-CH-0000": [{
-    "affectedFields": [
+    "AffectedFields": [
       "r.0",
       "r.1",
       "v.0",
       "t.0"
     ],
-    "certificateType": "Recovery",
-    "country": "CH",
-    "description": [{
+    "CertificateType": "Recovery",
+    "Country": "CH",
+    "Description": [{
       "desc": "At most one r-event.",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "RR-CH-0000",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "RR-CH-0000",
+    "Logic": {
       "if": [{
           "var": "payload.r.0"
         },
@@ -120,27 +119,27 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "RR-CH-0001": [{
-    "affectedFields": [
+    "AffectedFields": [
       "r.0",
       "r.0.fr"
     ],
-    "certificateType": "Recovery",
-    "country": "CH",
-    "description": [{
+    "CertificateType": "Recovery",
+    "Country": "CH",
+    "Description": [{
       "desc": "Date of first positive test must exist",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "RR-CH-0001",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "RR-CH-0001",
+    "Logic": {
       "if": [{
           "var": "payload.r.0"
         },
@@ -150,27 +149,27 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "RR-CH-0002": [{
-    "affectedFields": [
+    "AffectedFields": [
       "r.0",
       "r.0.fr"
     ],
-    "certificateType": "Recovery",
-    "country": "CH",
-    "description": [{
+    "CertificateType": "Recovery",
+    "Country": "CH",
+    "Description": [{
       "desc": "The validation date must be after the date of first positive test plus 10 days",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "RR-CH-0002",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "RR-CH-0002",
+    "Logic": {
       "if": [{
           "var": "payload.r.0"
         },
@@ -196,27 +195,27 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "RR-CH-0003": [{
-    "affectedFields": [
+    "AffectedFields": [
       "r.0",
       "r.0.fr"
     ],
-    "certificateType": "Recovery",
-    "country": "CH",
-    "description": [{
+    "CertificateType": "Recovery",
+    "Country": "CH",
+    "Description": [{
       "desc": "The validation date must be less than the date of first positive test plus 179 days",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "RR-CH-0003",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "RR-CH-0003",
+    "Logic": {
       "if": [{
           "var": "payload.r.0"
         },
@@ -242,29 +241,29 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "TR-CH-0000": [{
-    "affectedFields": [
+    "AffectedFields": [
       "t.0",
       "t.1",
       "r.0",
       "v.0"
     ],
-    "certificateType": "Test",
-    "country": "CH",
-    "description": [{
+    "CertificateType": "Test",
+    "Country": "CH",
+    "Description": [{
       "desc": "At most one t-event.",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "TR-CH-0000",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "TR-CH-0000",
+    "Logic": {
       "if": [{
           "var": "payload.t.0"
         },
@@ -294,27 +293,27 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "TR-CH-0001": [{
-    "affectedFields": [
+    "AffectedFields": [
       "t.0",
       "t.0.tr"
     ],
-    "certificateType": "Test",
-    "country": "CH",
-    "description": [{
+    "CertificateType": "Test",
+    "Country": "CH",
+    "Description": [{
       "desc": "Test result must be negative (\"not detected\").",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "TR-CH-0001",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "TR-CH-0001",
+    "Logic": {
       "if": [{
           "var": "payload.t.0"
         },
@@ -328,27 +327,27 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "TR-CH-0002": [{
-    "affectedFields": [
+    "AffectedFields": [
       "t.0",
       "t.0.tt"
     ],
-    "certificateType": "Test",
-    "country": "CH",
-    "description": [{
-      "desc": "The test type must be one of the value set list (RAT OR NAA).",
+    "CertificateType": "Test",
+    "Country": "CH",
+    "Description": [{
+      "desc": "The test Type must be one of the value set list (RAT OR NAA).",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "TR-CH-0002",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "TR-CH-0002",
+    "Logic": {
       "if": [{
           "var": "payload.t.0"
         },
@@ -365,27 +364,27 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "TR-CH-0004": [{
-    "affectedFields": [
+    "AffectedFields": [
       "t.0",
       "t.0.sc"
     ],
-    "certificateType": "Test",
-    "country": "CH",
-    "description": [{
+    "CertificateType": "Test",
+    "Country": "CH",
+    "Description": [{
       "desc": "Date of sample collection must exist",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "TR-CH-0004",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "TR-CH-0004",
+    "Logic": {
       "if": [{
           "var": "payload.t.0"
         },
@@ -395,27 +394,27 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "TR-CH-0005": [{
-    "affectedFields": [
+    "AffectedFields": [
       "t.0",
       "t.0.sc"
     ],
-    "certificateType": "Test",
-    "country": "CH",
-    "description": [{
+    "CertificateType": "Test",
+    "Country": "CH",
+    "Description": [{
       "desc": "The date of sample collection must be before the validation date",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "TR-CH-0005",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "TR-CH-0005",
+    "Logic": {
       "if": [{
           "var": "payload.t.0"
         },
@@ -441,27 +440,27 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "TR-CH-0006": [{
-    "affectedFields": [
+    "AffectedFields": [
       "t.0.tt",
       "t.0.sc"
     ],
-    "certificateType": "Test",
-    "country": "CH",
-    "description": [{
-      "desc": "If the test type is \"RAT\" then the validation date must be before the date of sample collection plus 48 hours",
+    "CertificateType": "Test",
+    "Country": "CH",
+    "Description": [{
+      "desc": "If the test Type is \"RAT\" then the validation date must be before the date of sample collection plus 48 hours",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "TR-CH-0006",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "TR-CH-0006",
+    "Logic": {
       "if": [{
           "===": [{
               "var": "payload.t.0.tt"
@@ -491,27 +490,27 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "TR-CH-0007": [{
-    "affectedFields": [
+    "AffectedFields": [
       "t.0.tt",
       "t.0.sc"
     ],
-    "certificateType": "Test",
-    "country": "CH",
-    "description": [{
-      "desc": "If the test type is \"PCR\" then the validation date must be before the date of sample collection plus 72 hours",
+    "CertificateType": "Test",
+    "Country": "CH",
+    "Description": [{
+      "desc": "If the test Type is \"PCR\" then the validation date must be before the date of sample collection plus 72 hours",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "TR-CH-0007",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "TR-CH-0007",
+    "Logic": {
       "if": [{
           "===": [{
               "var": "payload.t.0.tt"
@@ -541,29 +540,29 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "VR-CH-0000": [{
-    "affectedFields": [
+    "AffectedFields": [
       "v.0",
       "v.1",
       "r.0",
       "t.0"
     ],
-    "certificateType": "Vaccination",
-    "country": "CH",
-    "description": [{
+    "CertificateType": "Vaccination",
+    "Country": "CH",
+    "Description": [{
       "desc": "At most one v-event.",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "VR-CH-0000",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "VR-CH-0000",
+    "Logic": {
       "if": [{
           "var": "payload.v.0"
         },
@@ -593,28 +592,28 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "VR-CH-0001": [{
-    "affectedFields": [
+    "AffectedFields": [
       "v.0",
       "v.0.dn",
       "v.0.sd"
     ],
-    "certificateType": "Vaccination",
-    "country": "CH",
-    "description": [{
+    "CertificateType": "Vaccination",
+    "Country": "CH",
+    "Description": [{
       "desc": "Vaccination doses must be equal or greater than expected doses.",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "VR-CH-0001",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "VR-CH-0001",
+    "Logic": {
       "if": [{
           "var": "payload.v.0"
         },
@@ -630,27 +629,27 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "VR-CH-0002": [{
-    "affectedFields": [
+    "AffectedFields": [
       "v.0",
       "v.0.mp"
     ],
-    "certificateType": "Vaccination",
-    "country": "CH",
-    "description": [{
+    "CertificateType": "Vaccination",
+    "Country": "CH",
+    "Description": [{
       "desc": "Only vaccines in the allowed valueset that have been approved by the EMA are allowed.",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "VR-CH-0002",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "VR-CH-0002",
+    "Logic": {
       "if": [{
           "var": "payload.v.0"
         },
@@ -669,27 +668,27 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "VR-CH-0003": [{
-    "affectedFields": [
+    "AffectedFields": [
       "v.0",
       "v.0.dt"
     ],
-    "certificateType": "Vaccination",
-    "country": "CH",
-    "description": [{
+    "CertificateType": "Vaccination",
+    "Country": "CH",
+    "Description": [{
       "desc": "Date of vaccination must exist",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "VR-CH-0003",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "VR-CH-0003",
+    "Logic": {
       "if": [{
           "var": "payload.v.0"
         },
@@ -699,28 +698,28 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "VR-CH-0004": [{
-    "affectedFields": [
+    "AffectedFields": [
       "v.0",
       "v.0.mp",
       "v.0.dt"
     ],
-    "certificateType": "Vaccination",
-    "country": "CH",
-    "description": [{
+    "CertificateType": "Vaccination",
+    "Country": "CH",
+    "Description": [{
       "desc": "If the vaccine requires two doses, the vaccination date must be before today",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "VR-CH-0004",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "VR-CH-0004",
+    "Logic": {
       "if": [{
           "and": [{
               "var": "payload.v.0"
@@ -760,29 +759,29 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "VR-CH-0005": [{
-    "affectedFields": [
+    "AffectedFields": [
       "v.0",
       "v.0.mp",
       "v.0.dn",
       "v.0.dt"
     ],
-    "certificateType": "Vaccination",
-    "country": "CH",
-    "description": [{
+    "CertificateType": "Vaccination",
+    "Country": "CH",
+    "Description": [{
       "desc": "If the vaccine requires one dose, and only one dose was administered, it is valid after 21 days ",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "VR-CH-0005",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "VR-CH-0005",
+    "Logic": {
       "if": [{
           "var": "payload.v.0"
         },
@@ -831,27 +830,27 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "VR-CH-0006": [{
-    "affectedFields": [
+    "AffectedFields": [
       "v.0",
       "v.0.dt"
     ],
-    "certificateType": "Vaccination",
-    "country": "CH",
-    "description": [{
+    "CertificateType": "Vaccination",
+    "Country": "CH",
+    "Description": [{
       "desc": "Today must be less than the vaccination date plus 364 days",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "VR-CH-0006",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "VR-CH-0006",
+    "Logic": {
       "if": [{
           "var": "payload.v.0"
         },
@@ -877,29 +876,29 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }],
   "VR-CH-0007": [{
-    "affectedFields": [
+    "AffectedFields": [
       "v.0",
       "v.0.mp",
       "v.0.dn",
       "v.0.dt"
     ],
-    "certificateType": "Vaccination",
-    "country": "CH",
-    "description": [{
+    "CertificateType": "Vaccination",
+    "Country": "CH",
+    "Description": [{
       "desc": "If the vaccine requires only one dose but more than one dose was administered, it is valid from today ",
       "lang": "en"
     }],
-    "engine": "CertLogic",
-    "engineVersion": "0.7.5",
-    "identifier": "VR-CH-0007",
-    "logic": {
+    "Engine": "CertLogic",
+    "EngineVersion": "0.7.5",
+    "Identifier": "VR-CH-0007",
+    "Logic": {
       "if": [{
           "var": "payload.v.0"
         },
@@ -948,10 +947,10 @@
         true
       ]
     },
-    "schemaVersion": "1.3.0",
-    "type": "Acceptance",
-    "validFrom": "2020-01-01T00:00:00Z",
-    "validTo": "2031-01-01T00:00:00Z",
-    "version": "1.0.0"
+    "SchemaVersion": "1.3.0",
+    "Type": "Acceptance",
+    "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
+    "Version": "1.0.0"
   }]
 }
