@@ -11,6 +11,7 @@
 package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -23,6 +24,7 @@ import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
 
@@ -33,6 +35,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierData
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcRulesClient;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcRulesSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
@@ -95,7 +98,8 @@ public abstract class SyncBaseConfig {
     }
 
     @Bean
-    public RestTemplate signRestTemplate() throws UnrecoverableKeyException, KeyManagementException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+    public RestTemplate signRestTemplate() throws UnrecoverableKeyException, KeyManagementException,
+            CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
         return RestTemplateHelper.signingServiceRestTemplate(trustStore, keyStore, trustStorePassword, keyStorePassword,
                 keyPassword, keyAlias);
     }
@@ -135,5 +139,13 @@ public abstract class SyncBaseConfig {
     @Bean
     public DgcRulesClient dgcRulesClient(RestTemplate restTemplate, RestTemplate signRestTemplate) {
         return new DgcRulesClient(baseurl, restTemplate, signBaseUrl, signRestTemplate);
+    }
+
+    @Bean
+    public DgcRulesSyncer dgcRulesSyncer(DgcRulesClient dgcRulesClient) throws IOException {
+        var verificationRulesUploadString = new String(
+                new ClassPathResource("verificationRulesUpload.json").getInputStream().readAllBytes(),
+                StandardCharsets.UTF_8);
+        return new DgcRulesSyncer(verificationRulesUploadString, dgcRulesClient);
     }
 }
