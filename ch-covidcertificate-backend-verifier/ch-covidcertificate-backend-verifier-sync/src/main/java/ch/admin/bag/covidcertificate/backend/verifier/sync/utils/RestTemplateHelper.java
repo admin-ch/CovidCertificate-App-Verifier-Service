@@ -10,6 +10,7 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.utils;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +27,9 @@ import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+
+import javax.net.ssl.SSLContext;
+
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -36,6 +40,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.ssl.SSLContexts;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -56,28 +61,65 @@ public class RestTemplateHelper {
         return buildRestTemplate(null, null);
     }
 
-    public static RestTemplate getRestTemplateWithClientCerts(
-            String authClientCert, String authClientCertPassword) {
+    public static RestTemplate getRestTemplateWithClientCerts(String authClientCert, String authClientCertPassword) {
         return buildRestTemplate(authClientCert, authClientCertPassword);
     }
 
-    private static RestTemplate buildRestTemplate(
-            String authClientCert, String authClientCertPassword) {
+    public static RestTemplate signingServiceRestTemplate(String trustStore, String keyStore, String trustStorePassword,
+            String keyStorePassword, String keyPassword, String keyAlias) throws IOException, UnrecoverableKeyException,
+            CertificateException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        KeyStore truststore = loadKeyStore(trustStore, trustStorePassword.toCharArray());
+        KeyStore store = loadKeyStore(keyStore, keyStorePassword.toCharArray());
+        SSLContext sslContext = SSLContexts.custom()
+                .loadTrustMaterial(truststore, null)
+                .loadKeyMaterial(store, 
+                    keyPassword.toCharArray(), 
+                    (map, socket) -> keyAlias).build();
+
+
+        HttpClientBuilder builder = HttpClients.custom();
+        builder.useSystemProperties().setUserAgent(COVIDCERT_VERIFIER);
+
+        var sslsf = new SSLConnectionSocketFactory(sslContext);
+        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("https", sslsf).register("http", PlainConnectionSocketFactory.INSTANCE).build();
+        var manager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+
+        manager.setDefaultMaxPerRoute(20);
+        manager.setMaxTotal(30);
+
+        builder.setConnectionManager(manager).disableCookieManagement().setDefaultRequestConfig(
+                RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).setSocketTimeout(SOCKET_TIMEOUT).build());
+        var client = builder.build();
+
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+
+        requestFactory.setHttpClient(client);
+
+        return new RestTemplate(requestFactory);
+    }
+
+    private static KeyStore loadKeyStore(String base64Keystore, final char[] storePassword)
+            throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
+        KeyStore keyStoreInstance = KeyStore.getInstance(KeyStore.getDefaultType());
+
+        try (ByteArrayInputStream inStream = new ByteArrayInputStream(base64Keystore.getBytes())) {
+            var decodedKeystoreInputStream = Base64.getMimeDecoder().wrap(inStream);
+            keyStoreInstance.load(decodedKeystoreInputStream, storePassword);
+        }
+
+        return keyStoreInstance;
+    }
+
+    private static RestTemplate buildRestTemplate(String authClientCert, String authClientCertPassword) {
         RestTemplate rt = null;
         try {
-            rt =
-                    new RestTemplate(
-                            new HttpComponentsClientHttpRequestFactory(
-                                    httpClient(authClientCert, authClientCertPassword)));
-        } catch (IOException
-                | KeyManagementException
-                | UnrecoverableKeyException
-                | NoSuchAlgorithmException
-                | KeyStoreException
-                | CertificateException e) {
+            rt = new RestTemplate(
+                    new HttpComponentsClientHttpRequestFactory(httpClient(authClientCert, authClientCertPassword)));
+        } catch (IOException | KeyManagementException | UnrecoverableKeyException | NoSuchAlgorithmException
+                | KeyStoreException | CertificateException e) {
             throw new SecureConnectionException(
-                    "Encountered exception while trying to setup mTLS connection: "
-                            + e.getMessage());
+                    "Encountered exception while trying to setup mTLS connection: " + e.getMessage());
         }
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
         interceptors.add(new LoggingRequestInterceptor());
@@ -86,8 +128,8 @@ public class RestTemplateHelper {
     }
 
     private static CloseableHttpClient httpClient(String clientCert, String clientCertPassword)
-            throws IOException, KeyManagementException, UnrecoverableKeyException,
-                    NoSuchAlgorithmException, KeyStoreException, CertificateException {
+            throws IOException, KeyManagementException, UnrecoverableKeyException, NoSuchAlgorithmException,
+            KeyStoreException, CertificateException {
         var manager = new PoolingHttpClientConnectionManager();
 
         HttpClientBuilder builder = HttpClients.custom();
@@ -98,34 +140,23 @@ public class RestTemplateHelper {
             var cf = KeyStore.getInstance("pkcs12");
             cf.load(new FileInputStream(clientCertFile.toFile()), clientCertPassword.toCharArray());
             final var alias = cf.aliases().nextElement();
-            var sslContext =
-                    SSLContexts.custom()
-                            .loadKeyMaterial(
-                                    clientCertFile.toFile(),
-                                    clientCertPassword.toCharArray(),
-                                    clientCertPassword.toCharArray(),
-                                    (map, socket) -> alias)
-                            .build();
+            var sslContext = SSLContexts.custom()
+            .loadKeyMaterial(clientCertFile.toFile(),
+                    clientCertPassword.toCharArray(), 
+                    clientCertPassword.toCharArray(), 
+                    (map, socket) -> alias).build();
             builder.setSSLContext(sslContext);
 
             var sslsf = new SSLConnectionSocketFactory(sslContext);
-            Registry<ConnectionSocketFactory> socketFactoryRegistry =
-                    RegistryBuilder.<ConnectionSocketFactory>create()
-                            .register("https", sslsf)
-                            .register("http", PlainConnectionSocketFactory.INSTANCE)
-                            .build();
+            Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
+                    .register("https", sslsf).register("http", PlainConnectionSocketFactory.INSTANCE).build();
             manager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
         }
         manager.setDefaultMaxPerRoute(20);
         manager.setMaxTotal(30);
 
-        builder.setConnectionManager(manager)
-                .disableCookieManagement()
-                .setDefaultRequestConfig(
-                        RequestConfig.custom()
-                                .setConnectTimeout(CONNECT_TIMEOUT)
-                                .setSocketTimeout(SOCKET_TIMEOUT)
-                                .build());
+        builder.setConnectionManager(manager).disableCookieManagement().setDefaultRequestConfig(
+                RequestConfig.custom().setConnectTimeout(CONNECT_TIMEOUT).setSocketTimeout(SOCKET_TIMEOUT).build());
         return builder.build();
     }
 

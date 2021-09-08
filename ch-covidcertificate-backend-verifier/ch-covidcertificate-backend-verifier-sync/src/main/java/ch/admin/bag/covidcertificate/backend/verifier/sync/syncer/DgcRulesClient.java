@@ -6,10 +6,11 @@
 package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
 import java.util.Base64;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.slf4j.Logger;
@@ -27,16 +28,16 @@ public class DgcRulesClient {
     private static final String RULE_UPLOAD_PATH = "/rules";
     private static final String SIGNING_PATH = "/v1/cms";
     private static final String DOWNLOAD_PATH = "/rules/%s";
-    private final String bitBaseUrl;
+    private final String signBaseUrl;
     private final String dgcBaseUrl;
     private final RestTemplate dgcRT;
-    private final RestTemplate bitRT;
+    private final RestTemplate signRT;
 
-    public DgcRulesClient(String dgcBaseUrl, String bitBaseUrl, RestTemplate bitRT, RestTemplate dgcRT) {
-        this.bitBaseUrl = bitBaseUrl;
+    public DgcRulesClient(String dgcBaseUrl, RestTemplate dgcRT, String signBaseUrl, RestTemplate signRT) {
+        this.signBaseUrl = signBaseUrl;
         this.dgcBaseUrl = dgcBaseUrl;
         this.dgcRT = dgcRT;
-        this.bitRT = bitRT;
+        this.signRT = signRT;
     }
 
     /**
@@ -52,7 +53,7 @@ public class DgcRulesClient {
     }
 
     private RequestEntity<SigningPayload> postSignedContent(SigningPayload data) {
-        return RequestEntity.post(bitBaseUrl + SIGNING_PATH).body(data);
+        return RequestEntity.post(signBaseUrl + SIGNING_PATH).body(data);
     }
 
     private RequestEntity<String> postCmsWithRule(ResponseEntity<CmsResponse> response) {
@@ -67,12 +68,14 @@ public class DgcRulesClient {
      *
      * @return rules per country
      */
-    public void upload(Map<String, List<Object>> rules) {
+    public void upload(JsonNode rules) {
         logger.info("Uploading Swiss rules");
         var mapper = new ObjectMapper();
         // load payload
-        for (var ruleArray : rules.keySet()) {
-            for (var rule : rules.get(ruleArray)) {
+        var fieldIterator = rules.fields();
+        while ( fieldIterator.hasNext()) {
+            Entry<String, JsonNode> ruleArray = fieldIterator.next();
+            for (var rule : ruleArray.getValue()) {
                 // make request to bit for signing
                 try {
                     var serializeObject = mapper.writeValueAsBytes(rule);
@@ -80,7 +83,7 @@ public class DgcRulesClient {
                     var payloadObject = new SigningPayload();
                     payloadObject.setData(base64encoded);
 
-                    ResponseEntity<CmsResponse> response = this.bitRT.exchange(postSignedContent(payloadObject),
+                    ResponseEntity<CmsResponse> response = this.signRT.exchange(postSignedContent(payloadObject),
                             CmsResponse.class);
                     if (response.getStatusCode().isError()) {
                         logger.error("Signing failed {}", response.getStatusCode());
@@ -91,19 +94,19 @@ public class DgcRulesClient {
                     if (uploadRequest == null) {
                         continue;
                     }
-                    
+
                     ResponseEntity<String> result = this.dgcRT.exchange(uploadRequest, String.class);
                     // observe Response
                     if (result.getStatusCode().isError()) {
                         try {
                             var problemReport = mapper.readValue(result.getBody(), ProblemReport.class);
-                            logger.error("rule version {} had error {}", ruleArray, problemReport.getDetails());
+                            logger.error("rule version {} had error {}", ruleArray.getKey(), problemReport.getDetails());
                         } catch (JsonProcessingException processingException) {
-                            logger.error("rule version {} was not successfully uploaded", ruleArray);
+                            logger.error("rule version {} was not successfully uploaded", ruleArray.getKey());
                         }
 
                     } else {
-                        logger.info("rule version for {} uploaded", ruleArray);
+                        logger.info("rule version for {} uploaded", ruleArray.getKey());
                     }
                 } catch (JsonProcessingException ex) {
                     logger.error("Serializing rule failed: {}", ex);
