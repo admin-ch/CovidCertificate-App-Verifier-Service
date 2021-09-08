@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -61,7 +62,7 @@ public class DgcRulesClient {
         var body = response.getBody();
         logger.info("Try upload {}", dgcBaseUrl + RULE_UPLOAD_PATH);
         if (response.getStatusCode().is2xxSuccessful() && body != null) {
-            return RequestEntity.post(dgcBaseUrl + RULE_UPLOAD_PATH).body(body.getCms());
+            return RequestEntity.post(dgcBaseUrl + RULE_UPLOAD_PATH).headers(createDownloadHeaders()).body(body.getCms());
         }
         return null;
     }
@@ -117,5 +118,12 @@ public class DgcRulesClient {
             }
         }
         logger.info("Uploaded Swiss rules ");
+    }
+
+    private HttpHeaders createDownloadHeaders() {
+        var headers = new HttpHeaders();
+        headers.add(HttpHeaders.ACCEPT, "application/json");
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/cms-text");
+        return headers;
     }
 }
