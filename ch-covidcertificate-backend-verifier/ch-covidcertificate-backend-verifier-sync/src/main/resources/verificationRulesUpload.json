@@ -71,6 +71,7 @@
     "SchemaVersion": "1.3.0",
     "Type": "Acceptance",
     "ValidFrom": "2020-01-01T00:00:00Z",
+    "ValidTo": "2031-01-01T00:00:00Z",
     "Version": "1.0.0"
   }],
   "RR-CH-0000": [{

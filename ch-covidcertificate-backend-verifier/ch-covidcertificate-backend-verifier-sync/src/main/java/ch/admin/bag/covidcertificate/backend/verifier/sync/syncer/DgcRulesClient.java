@@ -112,8 +112,8 @@ public class DgcRulesClient {
                     } else {
                         logger.info("rule version for {} uploaded", ruleArray.getKey());
                     }
-                } catch (JsonProcessingException ex) {
-                    logger.error("Serializing rule failed: {}", ex);
+                } catch (Exception ex) {
+                    logger.error("Upload rule failed: {}", ex);
                 }
             }
         }
