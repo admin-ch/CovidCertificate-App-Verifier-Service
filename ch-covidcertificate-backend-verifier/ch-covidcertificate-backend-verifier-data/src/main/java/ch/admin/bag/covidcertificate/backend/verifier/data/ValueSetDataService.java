@@ -11,7 +11,6 @@
 package ch.admin.bag.covidcertificate.backend.verifier.data;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +32,7 @@ public interface ValueSetDataService {
 
     /**
      * returns all known value-set ids
-     * 
+     *
      * @return valueSetIds
      */
     List<String> findAllValueSetIds();

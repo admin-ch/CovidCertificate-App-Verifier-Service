@@ -10,24 +10,6 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-
-import javax.sql.DataSource;
-
-import org.flywaydb.core.Flyway;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.client.RestTemplate;
-
 import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcValueSetDataServiceImpl;
@@ -39,8 +21,23 @@ import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcRulesSyncer
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import javax.sql.DataSource;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
+import org.flywaydb.core.Flyway;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public abstract class SyncBaseConfig {
@@ -86,22 +83,27 @@ public abstract class SyncBaseConfig {
 
     @Bean
     public LockProvider lockProvider(DataSource dataSource) {
-        return new JdbcTemplateLockProvider(JdbcTemplateLockProvider.Configuration.builder().withTableName("t_shedlock")
-                .withJdbcTemplate(new JdbcTemplate(dataSource))
-                // Works on Postgres, MySQL, MariaDb, MS SQL, Oracle, DB2, HSQL and H2
-                .usingDbTime().build());
+        return new JdbcTemplateLockProvider(
+                JdbcTemplateLockProvider.Configuration.builder()
+                        .withTableName("t_shedlock")
+                        .withJdbcTemplate(new JdbcTemplate(dataSource))
+                        // Works on Postgres, MySQL, MariaDb, MS SQL, Oracle, DB2, HSQL and H2
+                        .usingDbTime()
+                        .build());
     }
 
     @Bean
     public RestTemplate restTemplate() {
-        return RestTemplateHelper.getRestTemplateWithClientCerts(authClientCert, authClientCertPassword);
+        return RestTemplateHelper.getRestTemplateWithClientCerts(
+                authClientCert, authClientCertPassword);
     }
 
     @Bean
-    public RestTemplate signRestTemplate() throws UnrecoverableKeyException, KeyManagementException,
-            CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
-        return RestTemplateHelper.signingServiceRestTemplate(trustStore, keyStore, trustStorePassword, keyStorePassword,
-                keyPassword, keyAlias);
+    public RestTemplate signRestTemplate()
+            throws UnrecoverableKeyException, KeyManagementException, CertificateException,
+                    NoSuchAlgorithmException, KeyStoreException, IOException {
+        return RestTemplateHelper.signingServiceRestTemplate(
+                trustStore, keyStore, trustStorePassword, keyStorePassword, keyPassword, keyAlias);
     }
 
     @Bean
@@ -115,13 +117,14 @@ public abstract class SyncBaseConfig {
     }
 
     @Bean
-    public DgcCertSyncer dgcSyncer(DgcCertClient dgcClient, VerifierDataService verifierDataService) {
+    public DgcCertSyncer dgcSyncer(
+            DgcCertClient dgcClient, VerifierDataService verifierDataService) {
         return new DgcCertSyncer(dgcClient, verifierDataService);
     }
 
     @Bean
-    public ValueSetDataService valueSetDataService(DataSource dataSource,
-            @Value("${value-set.max-history:10}") int maxHistory) {
+    public ValueSetDataService valueSetDataService(
+            DataSource dataSource, @Value("${value-set.max-history:10}") int maxHistory) {
         return new JdbcValueSetDataServiceImpl(dataSource, maxHistory);
     }
 
@@ -131,8 +134,8 @@ public abstract class SyncBaseConfig {
     }
 
     @Bean
-    public DgcValueSetSyncer dgcValueSetSyncer(ValueSetDataService valueSetDataService,
-            DgcValueSetClient dgcValueSetClient) {
+    public DgcValueSetSyncer dgcValueSetSyncer(
+            ValueSetDataService valueSetDataService, DgcValueSetClient dgcValueSetClient) {
         return new DgcValueSetSyncer(valueSetDataService, dgcValueSetClient);
     }
 
@@ -143,9 +146,12 @@ public abstract class SyncBaseConfig {
 
     @Bean
     public DgcRulesSyncer dgcRulesSyncer(DgcRulesClient dgcRulesClient) throws IOException {
-        var verificationRulesUploadString = new String(
-                new ClassPathResource("verificationRulesUpload.json").getInputStream().readAllBytes(),
-                StandardCharsets.UTF_8);
+        var verificationRulesUploadString =
+                new String(
+                        new ClassPathResource("verificationRulesUpload.json")
+                                .getInputStream()
+                                .readAllBytes(),
+                        StandardCharsets.UTF_8);
         return new DgcRulesSyncer(verificationRulesUploadString, dgcRulesClient);
     }
 }

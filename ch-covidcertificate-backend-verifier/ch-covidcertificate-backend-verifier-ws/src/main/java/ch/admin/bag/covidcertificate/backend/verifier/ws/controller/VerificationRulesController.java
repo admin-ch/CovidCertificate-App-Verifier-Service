@@ -10,17 +10,17 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
-import java.io.File;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
+import ch.ubique.openapi.docannotations.Documentation;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -33,10 +33,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 
-import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
-import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
-import ch.ubique.openapi.docannotations.Documentation;
-
 @Controller
 @RequestMapping("trust/v1")
 public class VerificationRulesController {
@@ -48,15 +44,18 @@ public class VerificationRulesController {
 
     public VerificationRulesController() throws IOException, NoSuchAlgorithmException {
         ObjectMapper mapper = new ObjectMapper();
-       
-        InputStream verificationRulesFile = new ClassPathResource("verificationRules.json").getInputStream();
+
+        InputStream verificationRulesFile =
+                new ClassPathResource("verificationRules.json").getInputStream();
         this.verificationRules = mapper.readValue(verificationRulesFile, Map.class);
-        this.verificationRulesEtag = EtagUtil.getSha1HashForFiles("classpath:verificationRules.json");
+        this.verificationRulesEtag =
+                EtagUtil.getSha1HashForFiles("classpath:verificationRules.json");
     }
 
     private ArrayList<Map> mapV2RulesToV1(JsonNode template) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        InputStream verificationRulesV2File = new ClassPathResource("verificationRulesV2.json").getInputStream();
+        InputStream verificationRulesV2File =
+                new ClassPathResource("verificationRulesV2.json").getInputStream();
         var newFormat = mapper.readTree(verificationRulesV2File);
         ArrayList<Map> rules = new ArrayList<>();
         for (var rule : newFormat.get("rules")) {

@@ -39,7 +39,7 @@ public class SyncSchedulingBaseConfig {
         this.dgcSyncer = dgcSyncer;
         this.dgcValueSetSyncer = dgcValueSetSyncer;
         this.valueSetDataService = valueSetDataService;
-        this.dgcRulesSyncer  = dgcRulesSyncer;
+        this.dgcRulesSyncer = dgcRulesSyncer;
     }
 
     @Scheduled(cron = "${dgc.sync.cron}")

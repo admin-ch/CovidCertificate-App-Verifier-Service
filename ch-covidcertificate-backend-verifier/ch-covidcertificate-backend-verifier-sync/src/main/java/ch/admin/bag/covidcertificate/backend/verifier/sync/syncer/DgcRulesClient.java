@@ -1,28 +1,25 @@
 // Copyright (c) 2021 Patrick Amrein <amrein@ubique.ch>
-// 
+//
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
-import java.util.Base64;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CmsResponse;
+import ch.admin.bag.covidcertificate.backend.verifier.model.sync.ProblemReport;
+import ch.admin.bag.covidcertificate.backend.verifier.model.sync.SigningPayload;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import java.util.Base64;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-
-import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CmsResponse;
-import ch.admin.bag.covidcertificate.backend.verifier.model.sync.ProblemReport;
-import ch.admin.bag.covidcertificate.backend.verifier.model.sync.SigningPayload;
 
 public class DgcRulesClient {
     private static final Logger logger = LoggerFactory.getLogger(DgcRulesClient.class);
@@ -34,7 +31,8 @@ public class DgcRulesClient {
     private final RestTemplate dgcRT;
     private final RestTemplate signRT;
 
-    public DgcRulesClient(String dgcBaseUrl, RestTemplate dgcRT, String signBaseUrl, RestTemplate signRT) {
+    public DgcRulesClient(
+            String dgcBaseUrl, RestTemplate dgcRT, String signBaseUrl, RestTemplate signRT) {
         this.signBaseUrl = signBaseUrl;
         this.dgcBaseUrl = dgcBaseUrl;
         this.dgcRT = dgcRT;
@@ -62,7 +60,9 @@ public class DgcRulesClient {
         var body = response.getBody();
         logger.info("Try upload {}", dgcBaseUrl + RULE_UPLOAD_PATH);
         if (response.getStatusCode().is2xxSuccessful() && body != null) {
-            return RequestEntity.post(dgcBaseUrl + RULE_UPLOAD_PATH).headers(createDownloadHeaders()).body(body.getCms());
+            return RequestEntity.post(dgcBaseUrl + RULE_UPLOAD_PATH)
+                    .headers(createDownloadHeaders())
+                    .body(body.getCms());
         }
         return null;
     }
@@ -77,7 +77,7 @@ public class DgcRulesClient {
         var mapper = new ObjectMapper();
         // load payload
         var fieldIterator = rules.fields();
-        while ( fieldIterator.hasNext()) {
+        while (fieldIterator.hasNext()) {
             Entry<String, JsonNode> ruleArray = fieldIterator.next();
             for (var rule : ruleArray.getValue()) {
                 // make request to bit for signing
@@ -87,8 +87,9 @@ public class DgcRulesClient {
                     var payloadObject = new SigningPayload();
                     payloadObject.setData(base64encoded);
 
-                    ResponseEntity<CmsResponse> response = this.signRT.exchange(postSignedContent(payloadObject),
-                            CmsResponse.class);
+                    ResponseEntity<CmsResponse> response =
+                            this.signRT.exchange(
+                                    postSignedContent(payloadObject), CmsResponse.class);
                     if (response.getStatusCode().isError()) {
                         logger.error("Signing failed {}", response.getStatusCode());
                         continue;
@@ -99,14 +100,21 @@ public class DgcRulesClient {
                         continue;
                     }
 
-                    ResponseEntity<String> result = this.dgcRT.exchange(uploadRequest, String.class);
+                    ResponseEntity<String> result =
+                            this.dgcRT.exchange(uploadRequest, String.class);
                     // observe Response
                     if (result.getStatusCode().isError()) {
                         try {
-                            var problemReport = mapper.readValue(result.getBody(), ProblemReport.class);
-                            logger.error("rule version {} had error {}", ruleArray.getKey(), problemReport.getDetails());
+                            var problemReport =
+                                    mapper.readValue(result.getBody(), ProblemReport.class);
+                            logger.error(
+                                    "rule version {} had error {}",
+                                    ruleArray.getKey(),
+                                    problemReport.getDetails());
                         } catch (JsonProcessingException processingException) {
-                            logger.error("rule version {} was not successfully uploaded", ruleArray.getKey());
+                            logger.error(
+                                    "rule version {} was not successfully uploaded",
+                                    ruleArray.getKey());
                         }
 
                     } else {
