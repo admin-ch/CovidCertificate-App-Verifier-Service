@@ -50,7 +50,7 @@ public abstract class VerificationRulesControllerTest extends BaseControllerTest
                 testHelper
                         .getObjectMapper()
                         .readValue(
-                                new ClassPathResource("verificationRules.json").getFile(),
+                                new ClassPathResource("verificationRules.json").getInputStream(),
                                 Map.class);
         assertEquals(
                 testHelper.getObjectMapper().writeValueAsString(expected),

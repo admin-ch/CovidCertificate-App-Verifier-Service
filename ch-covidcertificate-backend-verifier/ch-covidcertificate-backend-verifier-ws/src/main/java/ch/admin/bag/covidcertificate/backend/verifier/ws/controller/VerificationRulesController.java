@@ -12,6 +12,7 @@ package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,14 +49,14 @@ public class VerificationRulesController {
     public VerificationRulesController() throws IOException, NoSuchAlgorithmException {
         ObjectMapper mapper = new ObjectMapper();
        
-        File verificationRulesFile = new ClassPathResource("verificationRules.json").getFile();
+        InputStream verificationRulesFile = new ClassPathResource("verificationRules.json").getInputStream();
         this.verificationRules = mapper.readValue(verificationRulesFile, Map.class);
-        this.verificationRulesEtag = EtagUtil.getSha1HashForFiles(verificationRulesFile.getPath());
+        this.verificationRulesEtag = EtagUtil.getSha1HashForFiles("classpath:verificationRules.json");
     }
 
     private ArrayList<Map> mapV2RulesToV1(JsonNode template) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        File verificationRulesV2File = new ClassPathResource("verificationRulesV2.json").getFile();
+        InputStream verificationRulesV2File = new ClassPathResource("verificationRulesV2.json").getInputStream();
         var newFormat = mapper.readTree(verificationRulesV2File);
         ArrayList<Map> rules = new ArrayList<>();
         for (var rule : newFormat.get("rules")) {

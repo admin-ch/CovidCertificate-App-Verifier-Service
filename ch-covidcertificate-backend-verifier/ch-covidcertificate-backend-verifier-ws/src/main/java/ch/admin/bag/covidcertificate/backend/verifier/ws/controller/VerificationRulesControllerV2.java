@@ -10,14 +10,13 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.slf4j.Logger;
@@ -50,9 +49,9 @@ public class VerificationRulesControllerV2 {
     public VerificationRulesControllerV2(
             ValueSetDataService valueSetDataService) throws IOException, NoSuchAlgorithmException {
         ObjectMapper mapper = new ObjectMapper();
-        File verificationRulesFile = new ClassPathResource("verificationRulesV2.json").getFile();
+        InputStream verificationRulesFile = new ClassPathResource("verificationRulesV2.json").getInputStream();
         this.verificationRules = mapper.readValue(verificationRulesFile, Map.class);
-        this.verificationRulesEtag = EtagUtil.getSha1HashForFiles(verificationRulesFile.getPath());
+        this.verificationRulesEtag = EtagUtil.getSha1HashForFiles("classpath:verificationRulesV2.json");
         this.valueSetDataService = valueSetDataService;
     }
 

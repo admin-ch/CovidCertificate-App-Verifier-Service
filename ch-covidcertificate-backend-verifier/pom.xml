@@ -53,6 +53,7 @@
         <module>ch-covidcertificate-backend-verifier-sync</module>
         <module>ch-covidcertificate-backend-verifier-ws</module>
         <module>ch-covidcertificate-backend-verifier-report</module>
+        <module>ch-covidcertificate-backend-verifier-valuesets</module>
     </modules>
 
     <dependencies>
