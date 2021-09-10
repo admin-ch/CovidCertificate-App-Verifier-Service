@@ -114,7 +114,7 @@ public class JdbcValueSetDataServiceImpl implements ValueSetDataService {
         }
     }
 
-    private List<String> findAllValueSetIds() {
+    public List<String> findAllValueSetIds() {
         return jt.queryForList(
                 "select distinct value_set_id from t_value_set_data",
                 new MapSqlParameterSource(),

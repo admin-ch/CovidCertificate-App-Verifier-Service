@@ -62,7 +62,7 @@ public class ValueSetsController {
         }
         this.valueSetsEtag =
                 EtagUtil.getSha1HashForFiles(
-                        pathsToValueSets.toArray(new String[pathsToValueSets.size()]));
+                        true, pathsToValueSets.toArray(new String[pathsToValueSets.size()]));
     }
 
     private VaccineValueSets getVaccineValueSet() throws IOException {

@@ -55,7 +55,7 @@ public class DcgaController {
         if (valueSet == null) {
             return ResponseEntity.notFound().build();
         }
-        String etag = EtagUtil.getSha1HashForStrings(valueSet);
+        String etag = EtagUtil.getSha1HashForStrings(true, valueSet);
         if (request.checkNotModified(etag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
