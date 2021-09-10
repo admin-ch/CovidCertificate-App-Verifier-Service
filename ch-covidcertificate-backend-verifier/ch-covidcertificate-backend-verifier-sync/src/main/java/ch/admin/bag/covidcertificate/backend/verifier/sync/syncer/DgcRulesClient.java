@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 public class DgcRulesClient {
@@ -45,23 +46,23 @@ public class DgcRulesClient {
      * @return rules per country
      */
     public Map<String, String> download() {
-        logger.info("Downloading rules");
+        logger.info("[DgcRulesClient] Downloading rules");
 
-        logger.info("downloaded rules for: ");
+        logger.info("[DgcRulesClient] downloaded rules for: ");
         return null;
     }
 
     private RequestEntity<SigningPayload> postSignedContent(SigningPayload data) {
-        logger.info("Try siging {}", signBaseUrl + SIGNING_PATH);
+        logger.info("[DgcRulesClient] Try siging {}", signBaseUrl + SIGNING_PATH);
         return RequestEntity.post(signBaseUrl + SIGNING_PATH).body(data);
     }
 
     private RequestEntity<String> postCmsWithRule(ResponseEntity<CmsResponse> response) {
         var body = response.getBody();
-        logger.info("Try upload {}", dgcBaseUrl + RULE_UPLOAD_PATH);
+        logger.info("[DgcRulesClient] Try upload {}", dgcBaseUrl + RULE_UPLOAD_PATH);
         if (response.getStatusCode().is2xxSuccessful() && body != null) {
             return RequestEntity.post(dgcBaseUrl + RULE_UPLOAD_PATH)
-                    .headers(createDownloadHeaders())
+                    .headers(createCmsUploaddHeaders())
                     .body(body.getCms());
         }
         return null;
@@ -73,7 +74,7 @@ public class DgcRulesClient {
      * @return rules per country
      */
     public void upload(JsonNode rules) {
-        logger.info("Uploading Swiss rules");
+        logger.info("[DgcRulesClient] Uploading Swiss rules");
         var mapper = new ObjectMapper();
         // load payload
         var fieldIterator = rules.fields();
@@ -86,49 +87,40 @@ public class DgcRulesClient {
                     var base64encoded = Base64.getEncoder().encodeToString(serializeObject);
                     var payloadObject = new SigningPayload();
                     payloadObject.setData(base64encoded);
-
-                    ResponseEntity<CmsResponse> response =
+                    ResponseEntity<CmsResponse> response = null;
+                    try {
+                        response = 
                             this.signRT.exchange(
                                     postSignedContent(payloadObject), CmsResponse.class);
-                    if (response.getStatusCode().isError()) {
-                        logger.error("Signing failed {}", response.getStatusCode());
+                    } catch(HttpStatusCodeException httpFailed) {
+                        logger.error("[DgcRulesClient] Signing failed with error: {}", httpFailed);
                         continue;
+                    } finally {
+                        if (response == null) {
+                            continue;
+                        }
                     }
                     // upload to gateway
                     var uploadRequest = postCmsWithRule(response);
                     if (uploadRequest == null) {
                         continue;
                     }
-
-                    ResponseEntity<String> result =
-                            this.dgcRT.exchange(uploadRequest, String.class);
-                    // observe Response
-                    if (result.getStatusCode().isError()) {
-                        try {
-                            var problemReport =
-                                    mapper.readValue(result.getBody(), ProblemReport.class);
-                            logger.error(
-                                    "rule version {} had error {}",
-                                    ruleArray.getKey(),
-                                    problemReport.getDetails());
-                        } catch (JsonProcessingException processingException) {
-                            logger.error(
-                                    "rule version {} was not successfully uploaded",
-                                    ruleArray.getKey());
-                        }
-
-                    } else {
-                        logger.info("rule version for {} uploaded", ruleArray.getKey());
+                    try {
+                        this.dgcRT.exchange(uploadRequest, String.class);
+                        logger.info("[DgcRulesClient] rule version for {} uploaded", ruleArray.getKey());
+                    } catch (HttpStatusCodeException httpFailed) {
+                        logger.error("[DgcRulesClient] rule version {} had error {}", ruleArray.getKey(), httpFailed);
+                        continue;
                     }
-                } catch (Exception ex) {
-                    logger.error("Upload rule failed: {}", ex);
+                } catch (JsonProcessingException ex) {
+                   logger.error("[DgcRulesClient] Upload rule failed with error: {}", ex);
                 }
             }
         }
-        logger.info("Uploaded Swiss rules ");
+        logger.info("[DgcRulesClient] Uploaded Swiss rules ");
     }
 
-    private HttpHeaders createDownloadHeaders() {
+    private HttpHeaders createCmsUploaddHeaders() {
         var headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, "application/json");
         headers.add(HttpHeaders.CONTENT_TYPE, "application/cms-text");

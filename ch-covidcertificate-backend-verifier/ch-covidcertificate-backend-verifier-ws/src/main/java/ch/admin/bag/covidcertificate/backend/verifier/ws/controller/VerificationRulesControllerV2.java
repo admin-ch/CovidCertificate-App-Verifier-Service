@@ -80,7 +80,8 @@ public class VerificationRulesControllerV2 {
                         valueSetValues.add(fieldNameIterator.next());
                     }
                     valueSets.put(id, valueSetValues);
-                } catch (Exception ex) {
+                } catch(Exception ex) {
+                    logger.error("Serving Rules failed: {}", ex);
                     continue;
                 }
             }
