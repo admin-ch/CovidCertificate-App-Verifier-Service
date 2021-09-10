@@ -95,11 +95,8 @@ public class DgcRulesClient {
                     } catch(HttpStatusCodeException httpFailed) {
                         logger.error("[DgcRulesClient] Signing failed with error: {}", httpFailed);
                         continue;
-                    } finally {
-                        if (response == null) {
-                            continue;
-                        }
                     }
+                    
                     // upload to gateway
                     var uploadRequest = postCmsWithRule(response);
                     if (uploadRequest == null) {
