@@ -1,6 +1,6 @@
 {
   "valueSetId": "covid-19-lab-test-manufacturer-and-name",
-  "valueSetDate": "2021-07-21",
+  "valueSetDate": "2021-09-09",
   "valueSetValues": {
     "1833": {
       "display": "AAZ-LMB, COVID-VIRO",
@@ -10,18 +10,18 @@
       "version": "2021-05-17 11:02:12 CET"
     },
     "1232": {
-      "display": "Abbott Rapid Diagnostics, Panbio COVID-19 Ag Rapid Test",
+      "display": "Abbott Rapid Diagnostics, Panbio Covid-19 Ag Rapid Test",
       "lang": "en",
       "active": true,
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
-      "version": "2021-05-17 11:01:42 CET"
+      "version": "2021-07-23 09:42:00 CET"
     },
     "1457": {
       "display": "Acon Biotech (Hangzhou) Co., Ltd, SARS-CoV-2 Antigen Rapid Test",
       "lang": "en",
       "active": true,
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
-      "version": "2021-07-13 17:52:09 CET"
+      "version": "2021-08-12 11:49:06 CET"
     },
     "1468": {
       "display": "ACON Laboratories, Inc, Flowflex SARS-CoV-2 Antigen rapid test",
@@ -114,6 +114,13 @@
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
       "version": "2021-07-13 17:38:51 CET"
     },
+    "2350": {
+      "display": "Assure Tech. (Hangzhou) Co., Ltd., ECOTEST COVID-19 Antigen Rapid Test Device",
+      "lang": "en",
+      "active": true,
+      "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
+      "version": "2021-07-22 13:10:53 CET"
+    },
     "2010": {
       "display": "Atlas Link Technology Co., Ltd., NOVA Test® SARS-CoV-2 Antigen Rapid Test Kit (Colloidal Gold Immunochromatography)",
       "lang": "en",
@@ -168,14 +175,14 @@
       "lang": "en",
       "active": true,
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
-      "version": "2021-05-10 13:04:00 CET"
+      "version": "2021-07-27 11:43:24 CET"
     },
     "1485": {
-      "display": "Beijing Wantai Biological Pharmacy Enterprise Co., Ltd, Wantai SARS-CoV-2 Ag Rapid Test (colloidal gold)",
+      "display": "Beijing Wantai Biological Pharmacy Enterprise Co., Ltd, WANTAI SARS-CoV-2 Ag Rapid Test (Colloidal Gold)",
       "lang": "en",
       "active": true,
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
-      "version": "2021-07-14 14:19:53 CET"
+      "version": "2021-07-23 09:30:21 CET"
     },
     "1484": {
       "display": "Beijing Wantai Biological Pharmacy Enterprise Co., Ltd, Wantai SARS-CoV-2 Ag Rapid Test (FIA)",
@@ -190,6 +197,27 @@
       "active": true,
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
       "version": "2021-07-07 17:08:22 CET"
+    },
+    "2247": {
+      "display": "BioGnost Ltd, CoviGnost AG Test Device 1x20",
+      "lang": "en",
+      "active": true,
+      "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
+      "version": "2021-07-22 13:11:38 CET"
+    },
+    "1286": {
+      "display": "BIOHIT HealthCare (Hefei) Co., Ltd, SARS-CoV-2 Antigen Rapid Test Kit (Fluorescence Immunochromatography)",
+      "lang": "en",
+      "active": true,
+      "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
+      "version": "2021-07-22 13:12:43 CET"
+    },
+    "2035": {
+      "display": "BioMaxima SA, SARS-CoV-2 Ag Rapid Test",
+      "lang": "en",
+      "active": true,
+      "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
+      "version": "2021-07-22 13:13:31 CET"
     },
     "1599": {
       "display": "Biomerica, Inc., Biomerica COVID-19 Antigen Rapid Test (nasopharyngeal swab)",
@@ -225,6 +253,20 @@
       "active": true,
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
       "version": "2021-07-13 17:51:35 CET"
+    },
+    "2013": {
+      "display": "Biotical Health S.L.U., biotical SARS-CoV-2 Ag Card",
+      "lang": "en",
+      "active": true,
+      "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
+      "version": "2021-07-22 13:14:13 CET"
+    },
+    "1989": {
+      "display": "Boditech Med Inc, AFIAS COVID-19 Ag",
+      "lang": "en",
+      "active": true,
+      "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
+      "version": "2021-07-22 13:15:14 CET"
     },
     "1236": {
       "display": "BTNX Inc, Rapid Response COVID-19 Antigen Rapid Test",
@@ -268,12 +310,19 @@
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
       "version": "2021-05-10 20:07:30 CET"
     },
+    "2242": {
+      "display": "DNA Diagnostic, COVID-19 Antigen Detection Kit",
+      "lang": "en",
+      "active": true,
+      "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
+      "version": "2021-07-22 13:16:00 CET"
+    },
     "1243": {
       "display": "Edinburgh Genetics Limited, ActivXpress+ COVID-19 Antigen Complete Testing Kit",
       "lang": "en",
       "active": true,
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
-      "version": "2021-07-13 17:50:37 CET"
+      "version": "2021-08-26 18:44:52 CET"
     },
     "1739": {
       "display": "Eurobio Scientific, EBS SARS-CoV-2 Ag Rapid Test",
@@ -289,6 +338,13 @@
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
       "version": "2021-07-07 17:12:38 CET"
     },
+    "1855": {
+      "display": "GA Generic Assays GmbH, GA CoV-2 Antigen Rapid Test",
+      "lang": "en",
+      "active": true,
+      "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
+      "version": "2021-07-22 13:16:51 CET"
+    },
     "1244": {
       "display": "GenBody, Inc, Genbody COVID-19 Ag Test",
       "lang": "en",
@@ -301,7 +357,7 @@
       "lang": "en",
       "active": true,
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
-      "version": "2021-07-07 17:08:01 CET"
+      "version": "2021-07-20 14:00:56 CET"
     },
     "1253": {
       "display": "GenSure Biotech Inc, GenSure COVID-19 Antigen Rapid Kit",
@@ -378,7 +434,7 @@
       "lang": "en",
       "active": true,
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
-      "version": "2021-06-18 12:47:01 CET"
+      "version": "2021-08-10 09:23:51 CET"
     },
     "1610": {
       "display": "Hangzhou Clongene Biotech Co., Ltd, COVID-19 Antigen Rapid Test Cassette",
@@ -408,6 +464,13 @@
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
       "version": "2021-07-07 17:21:47 CET"
     },
+    "2317": {
+      "display": "Hangzhou Immuno Biotech Co.,Ltd, SARS-CoV-2 Antigen Rapid Test",
+      "lang": "en",
+      "active": true,
+      "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
+      "version": "2021-07-23 12:29:27 CET"
+    },
     "1215": {
       "display": "Hangzhou Laihe Biotech Co., Ltd, LYHER Novel Coronavirus (COVID-19) Antigen Test Kit(Colloidal Gold)",
       "lang": "en",
@@ -435,6 +498,13 @@
       "active": true,
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
       "version": "2021-05-10 13:18:20 CET"
+    },
+    "1759": {
+      "display": "Hubei Jinjian Biology Co., Ltd, SARS-CoV-2 Antigen Test Kit",
+      "lang": "en",
+      "active": true,
+      "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
+      "version": "2021-08-25 09:42:56 CET"
     },
     "1263": {
       "display": "Humasis, Humasis COVID-19 Ag Test",
@@ -469,7 +539,7 @@
       "lang": "en",
       "active": true,
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
-      "version": "2021-05-10 20:07:30 CET"
+      "version": "2021-09-03 14:21:03 CET"
     },
     "1764": {
       "display": "JOYSBIO (Tianjin) Biotechnology Co., Ltd, SARS-CoV-2 Antigen Rapid Test Kit (Colloidal Gold)",
@@ -569,12 +639,26 @@
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
       "version": "2021-07-13 17:55:54 CET"
     },
+    "2241": {
+      "display": "NESAPOR EUROPA SL, MARESKIT",
+      "lang": "en",
+      "active": true,
+      "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
+      "version": "2021-07-22 13:17:55 CET"
+    },
     "1501": {
       "display": "New Gene (Hangzhou) Bioengineering Co., Ltd, COVID-19 Antigen Detection Kit",
       "lang": "en",
       "active": true,
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
-      "version": "2021-07-07 17:23:34 CET"
+      "version": "2021-08-03 09:15:24 CET"
+    },
+    "1762": {
+      "display": "Novatech, SARS CoV-2 Antigen Rapid Test",
+      "lang": "en",
+      "active": true,
+      "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
+      "version": "2021-07-23 09:12:05 CET"
     },
     "1199": {
       "display": "Oncosem Onkolojik Sistemler San. ve Tic. A.S., CAT",
@@ -631,6 +715,13 @@
       "active": true,
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
       "version": "2021-05-10 13:04:00 CET"
+    },
+    "2290": {
+      "display": "Rapid Pathogen Screening, Inc., LIAISON® Quick Detect Covid Ag Assay",
+      "lang": "en",
+      "active": true,
+      "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
+      "version": "2021-07-22 13:18:29 CET"
     },
     "1606": {
       "display": "RapiGEN Inc, BIOCREDIT COVID-19 Ag - SARS-CoV 2 Antigen test",
@@ -714,7 +805,7 @@
       "lang": "en",
       "active": true,
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
-      "version": "2021-07-07 17:24:52 CET"
+      "version": "2021-08-06 08:51:49 CET"
     },
     "1967": {
       "display": "Shenzhen Microprofit Biotech Co., Ltd, SARS-CoV-2 Antigen Test Kit (Colloidal Gold Chromatographic Immunoassay)",
@@ -722,6 +813,13 @@
       "active": true,
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
       "version": "2021-07-07 17:07:15 CET"
+    },
+    "1178": {
+      "display": "Shenzhen Microprofit Biotech Co., Ltd, SARS-CoV-2 Spike Protein Test Kit (Colloidal Gold Chromatographic Immunoassay)",
+      "lang": "en",
+      "active": true,
+      "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
+      "version": "2021-09-03 13:08:25 CET"
     },
     "2017": {
       "display": "Shenzhen Ultra-Diagnostics Biotec.Co.,Ltd, SARS-CoV-2 Antigen Test Kit",
@@ -871,11 +969,11 @@
       "version": "2021-07-07 17:26:30 CET"
     },
     "1343": {
-      "display": "Zhezhiang Orient Gene Biotech Co., Ltd, Coronavirus Ag Rapid Test Cassette (Swab)",
+      "display": "Zhejiang Orient Gene Biotech Co.,Ltd., Coronavirus Ag Rapid Test Cassette (Swab)",
       "lang": "en",
       "active": true,
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
-      "version": "2021-05-10 13:18:20 CET"
+      "version": "2021-09-02 10:16:37 CET"
     },
     "1957": {
       "display": "Zhuhai Lituo Biotechnology Co., Ltd, COVID-19 Antigen Detection Kit (Colloidal Gold)",
