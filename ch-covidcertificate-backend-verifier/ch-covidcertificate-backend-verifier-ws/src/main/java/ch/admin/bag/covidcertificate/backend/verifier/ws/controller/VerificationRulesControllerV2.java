@@ -50,7 +50,7 @@ public class VerificationRulesControllerV2 {
                 new ClassPathResource("verificationRulesV2.json").getInputStream();
         this.verificationRules = mapper.readValue(verificationRulesFile, Map.class);
         this.verificationRulesEtag =
-                EtagUtil.getSha1HashForFiles("classpath:verificationRulesV2.json");
+                EtagUtil.getSha1HashForFiles(false, "classpath:verificationRulesV2.json");
         this.valueSetDataService = valueSetDataService;
     }
 
@@ -80,14 +80,15 @@ public class VerificationRulesControllerV2 {
                         valueSetValues.add(fieldNameIterator.next());
                     }
                     valueSets.put(id, valueSetValues);
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     logger.error("Serving Rules failed: {}", ex);
                     continue;
                 }
             }
         }
-        var etag = EtagUtil.getSha1HashForStrings(strings.toArray(new String[0]));
-        if (request.checkNotModified(verificationRulesEtag + etag)) {
+        var rulesEtag = EtagUtil.getSha1HashForStrings(false, strings.toArray(new String[0]));
+        String etag = EtagUtil.toWeakEtag(verificationRulesEtag + rulesEtag);
+        if (request.checkNotModified(etag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
         verificationRules.put(VALUE_SETS_KEY, valueSets);

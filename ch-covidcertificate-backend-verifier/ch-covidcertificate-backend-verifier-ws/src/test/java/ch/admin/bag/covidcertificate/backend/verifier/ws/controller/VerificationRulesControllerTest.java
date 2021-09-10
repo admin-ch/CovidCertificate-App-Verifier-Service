@@ -59,7 +59,7 @@ public abstract class VerificationRulesControllerTest extends BaseControllerTest
 
     @Test
     public void notModifiedTest() throws Exception {
-        String expectedEtag = EtagUtil.getSha1HashForFiles(PATH_TO_VERIFICATION_RULES);
+        String expectedEtag = EtagUtil.getSha1HashForFiles(true, PATH_TO_VERIFICATION_RULES);
 
         // get current etag
         MockHttpServletResponse response =

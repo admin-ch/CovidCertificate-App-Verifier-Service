@@ -115,7 +115,7 @@ public abstract class ValueSetsControllerTest extends BaseControllerTest {
                         .collect(Collectors.toList());
         String expectedEtag =
                 EtagUtil.getSha1HashForFiles(
-                        pathsToValueSets.toArray(new String[pathsToValueSets.size()]));
+                        true, pathsToValueSets.toArray(new String[pathsToValueSets.size()]));
 
         // get current etag
         MockHttpServletResponse response =

@@ -49,7 +49,7 @@ public class VerificationRulesController {
                 new ClassPathResource("verificationRules.json").getInputStream();
         this.verificationRules = mapper.readValue(verificationRulesFile, Map.class);
         this.verificationRulesEtag =
-                EtagUtil.getSha1HashForFiles("classpath:verificationRules.json");
+                EtagUtil.getSha1HashForFiles(true, "classpath:verificationRules.json");
     }
 
     private ArrayList<Map> mapV2RulesToV1(JsonNode template) throws IOException {

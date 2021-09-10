@@ -26,13 +26,13 @@ public class EtagUtilTest {
     public void testUnsortedListEtag() {
         String expected = "W/\"100548\"";
         List<String> list = new ArrayList<>(List.of("a", "bc", "def"));
-        String actual = EtagUtil.getUnsortedListEtag(list);
+        String actual = EtagUtil.getUnsortedListEtag(true, list);
         assertEquals(expected, actual);
         Collections.reverse(list);
-        assertEquals(expected, EtagUtil.getUnsortedListEtag(list));
+        assertEquals(expected, EtagUtil.getUnsortedListEtag(true, list));
         list.remove(0);
         list.add("g");
-        assertNotEquals(actual, EtagUtil.getUnsortedListEtag(list));
+        assertNotEquals(actual, EtagUtil.getUnsortedListEtag(true, list));
     }
 
     private static final String PATH_TO_VERIFICATION_RULES = "classpath:verificationRules.json";
@@ -42,9 +42,10 @@ public class EtagUtilTest {
     @Test
     public void testFileHash() throws Exception {
         String expected = "W/\"64d4cb21ac56c8bf67ed06f0722f5f6f6e523976\"";
-        String sha1 = EtagUtil.getSha1HashForFiles(PATH_TO_VERIFICATION_RULES);
+        String sha1 = EtagUtil.getSha1HashForFiles(true, PATH_TO_VERIFICATION_RULES);
         assertEquals(expected, sha1);
-        assertNotEquals(expected, EtagUtil.getSha1HashForFiles(PATH_TO_TEST_VERIFICATION_RULES));
+        assertNotEquals(
+                expected, EtagUtil.getSha1HashForFiles(true, PATH_TO_TEST_VERIFICATION_RULES));
     }
 
     @Test
@@ -56,7 +57,7 @@ public class EtagUtilTest {
                         .collect(Collectors.toList());
         String sha1 =
                 EtagUtil.getSha1HashForFiles(
-                        pathsToValueSets.toArray(new String[pathsToValueSets.size()]));
+                        true, pathsToValueSets.toArray(new String[pathsToValueSets.size()]));
         assertEquals(expected, sha1);
     }
 }

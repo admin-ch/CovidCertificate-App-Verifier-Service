@@ -34,12 +34,13 @@ public class EtagUtil {
      * @param list
      * @return
      */
-    public static String getUnsortedListEtag(List<String> list) {
+    public static String getUnsortedListEtag(boolean asWeakEtag, List<String> list) {
         int hash = list != null ? list.stream().map(Objects::hash).reduce(0, (a, b) -> a ^ b) : 0;
-        return WEAK_PREFIX + "\"" + hash + "\"";
+        String hashString = String.valueOf(hash);
+        return asWeakEtag ? toWeakEtag(hashString) : hashString;
     }
 
-    public static String getSha1HashForFiles(String... pathToFiles)
+    public static String getSha1HashForFiles(boolean asWeakEtag, String... pathToFiles)
             throws IOException, NoSuchAlgorithmException {
         MessageDigest sha1 = MessageDigest.getInstance(SHA_1);
         for (String pathToFile : pathToFiles) {
@@ -58,15 +59,22 @@ public class EtagUtil {
                 }
             }
         }
-        return WEAK_PREFIX + "\"" + Hex.encodeHexString(sha1.digest()) + "\"";
+        String hash = Hex.encodeHexString(sha1.digest());
+        return asWeakEtag ? toWeakEtag(hash) : hash;
     }
 
-    public static String getSha1HashForStrings(String... strings) throws NoSuchAlgorithmException {
+    public static String getSha1HashForStrings(boolean asWeakEtag, String... strings)
+            throws NoSuchAlgorithmException {
         MessageDigest sha1 = MessageDigest.getInstance(SHA_1);
         for (String string : strings) {
             byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
             sha1.update(bytes);
         }
-        return WEAK_PREFIX + "\"" + Hex.encodeHexString(sha1.digest()) + "\"";
+        String hash = Hex.encodeHexString(sha1.digest());
+        return asWeakEtag ? toWeakEtag(hash) : hash;
+    }
+
+    public static String toWeakEtag(String hash) {
+        return WEAK_PREFIX + "\"" + hash + "\"";
     }
 }
