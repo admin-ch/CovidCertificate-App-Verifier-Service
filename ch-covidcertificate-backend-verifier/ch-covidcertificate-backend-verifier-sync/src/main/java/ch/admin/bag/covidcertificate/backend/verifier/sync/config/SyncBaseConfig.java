@@ -21,6 +21,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcRulesSyncer
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.DgcHubProxy;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
@@ -153,5 +154,10 @@ public abstract class SyncBaseConfig {
                                 .readAllBytes(),
                         StandardCharsets.UTF_8);
         return new DgcRulesSyncer(verificationRulesUploadString, dgcRulesClient);
+    }
+
+    @Bean
+    public DgcHubProxy dgcHubProxy(RestTemplate restTemplate) {
+        return new DgcHubProxy(baseurl, restTemplate);
     }
 }
