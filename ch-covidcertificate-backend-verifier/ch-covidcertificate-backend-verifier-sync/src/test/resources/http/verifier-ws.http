@@ -1,0 +1,7 @@
+### hello
+GET {{syncBaseUrl}}/dgcHub
+Accept: application/json
+
+### hello
+GET {{syncBaseUrl}}/dgcHub/proxy?endpoint=valuesets/covid-19-lab-result
+Accept: application/json
