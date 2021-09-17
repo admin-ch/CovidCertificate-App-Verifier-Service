@@ -72,7 +72,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "RR-CH-0000": [{
     "AffectedFields": [
@@ -124,7 +124,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "RR-CH-0001": [{
     "AffectedFields": [
@@ -154,7 +154,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "RR-CH-0002": [{
     "AffectedFields": [
@@ -200,7 +200,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "RR-CH-0003": [{
     "AffectedFields": [
@@ -246,7 +246,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "TR-CH-0000": [{
     "AffectedFields": [
@@ -298,7 +298,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "TR-CH-0001": [{
     "AffectedFields": [
@@ -332,7 +332,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "TR-CH-0002": [{
     "AffectedFields": [
@@ -369,7 +369,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "TR-CH-0004": [{
     "AffectedFields": [
@@ -399,7 +399,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "TR-CH-0005": [{
     "AffectedFields": [
@@ -445,7 +445,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "TR-CH-0006": [{
     "AffectedFields": [
@@ -495,7 +495,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "TR-CH-0007": [{
     "AffectedFields": [
@@ -545,7 +545,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "VR-CH-0000": [{
     "AffectedFields": [
@@ -597,7 +597,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "VR-CH-0001": [{
     "AffectedFields": [
@@ -634,7 +634,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "VR-CH-0002": [{
     "AffectedFields": [
@@ -676,7 +676,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "VR-CH-0003": [{
     "AffectedFields": [
@@ -706,7 +706,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "VR-CH-0004": [{
     "AffectedFields": [
@@ -767,7 +767,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "VR-CH-0005": [{
     "AffectedFields": [
@@ -838,7 +838,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "VR-CH-0006": [{
     "AffectedFields": [
@@ -884,7 +884,7 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }],
   "VR-CH-0007": [{
     "AffectedFields": [
@@ -955,6 +955,6 @@
     "Type": "Acceptance",
     "ValidFrom": "2021-09-22T12:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
-    "Version": "1.0.0"
+    "Version": "1.0.1"
   }]
 }
