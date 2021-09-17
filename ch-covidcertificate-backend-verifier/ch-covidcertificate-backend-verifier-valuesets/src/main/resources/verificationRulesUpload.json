@@ -68,7 +68,7 @@
         }
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -120,7 +120,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -150,7 +150,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -196,7 +196,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -242,7 +242,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -294,7 +294,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -328,7 +328,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -365,7 +365,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -395,7 +395,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -441,7 +441,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -491,7 +491,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -541,7 +541,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -593,7 +593,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -630,7 +630,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -669,7 +669,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -699,7 +699,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -760,7 +760,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -831,7 +831,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -877,7 +877,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
@@ -948,7 +948,7 @@
         true
       ]
     },
-    "SchemaVersion": "1.3.0",
+    "SchemaVersion": "1.0.0",
     "Type": "Acceptance",
     "ValidFrom": "2021-09-16T00:00:00Z",
     "ValidTo": "2031-01-01T00:00:00Z",
