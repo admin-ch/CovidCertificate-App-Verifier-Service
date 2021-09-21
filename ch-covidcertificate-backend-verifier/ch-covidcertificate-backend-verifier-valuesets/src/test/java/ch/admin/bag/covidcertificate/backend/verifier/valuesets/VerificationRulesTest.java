@@ -17,11 +17,13 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -65,9 +67,43 @@ public class VerificationRulesTest {
     private JsonNode mapMasterToV2() throws Exception {
         JsonNode master =
                 mapper.readTree(new ClassPathResource(RULES_MASTER_CLASSPATH).getInputStream());
-        // TODO map to V2 and return V2 JsonNode
-        mapper.writerWithDefaultPrettyPrinter().writeValue(new File(RULES_V2_PATH), master);
-        return master;
+        ObjectNode v2 = master.deepCopy();
+        resolvedInlineVars(v2, master);
+        mapper.writerWithDefaultPrettyPrinter().writeValue(new File(RULES_V2_PATH), v2);
+        return v2;
+    }
+
+    private void resolvedInlineVars(JsonNode resolved, JsonNode master) {
+        if (resolved.isArray()) {
+            for (JsonNode element : resolved) {
+                resolvedInlineVars(element, master);
+            }
+        } else if (resolved.isObject()) {
+            Map<String, JsonNode> resolvedObjects = new LinkedHashMap<>();
+            Iterator<Entry<String, JsonNode>> fieldIterator = resolved.fields();
+            while (fieldIterator.hasNext()) {
+                Entry<String, JsonNode> entry = fieldIterator.next();
+                String key = entry.getKey();
+                JsonNode value = entry.getValue();
+                if (key.equals("var")) {
+                    if (value.isTextual()) {
+                        if (value.textValue().startsWith("external.valueSets")) {
+                            resolvedObjects.put(
+                                    key,
+                                    master.at(
+                                            value.textValue()
+                                                    .substring("external".length())
+                                                    .replace(".", "/")));
+                        }
+                    }
+                } else {
+                    resolvedInlineVars(value, master);
+                }
+            }
+            for (Entry<String, JsonNode> resolvedEntry : resolvedObjects.entrySet()) {
+                ((ObjectNode) resolved).set(resolvedEntry.getKey(), resolvedEntry.getValue());
+            }
+        }
     }
 
     private void mapV2RulesToUpload(JsonNode v2) throws Exception {
