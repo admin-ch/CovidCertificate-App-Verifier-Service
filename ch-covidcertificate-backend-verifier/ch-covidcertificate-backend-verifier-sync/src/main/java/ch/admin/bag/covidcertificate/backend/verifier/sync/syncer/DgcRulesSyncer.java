@@ -6,10 +6,10 @@
 package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +19,7 @@ public class DgcRulesSyncer {
     private final DgcRulesClient dgcRulesClient;
 
     public DgcRulesSyncer(String payload, DgcRulesClient dgcRulesClient)
-            throws JsonMappingException, JsonProcessingException {
+            throws JsonProcessingException {
         var mapper = new ObjectMapper();
         var payloadObject = mapper.readTree(payload);
         this.payload = payloadObject;
@@ -30,10 +30,11 @@ public class DgcRulesSyncer {
         logger.info("Start rules sync with DGC Gateway");
         var start = Instant.now();
         try {
-            this.dgcRulesClient.upload(this.payload);
+            List<String> uploadedRuleIds = dgcRulesClient.upload(payload);
             var end = Instant.now();
             logger.info(
-                    "Uploaded all rules successfully in {} ms",
+                    "Successfully Uploaded rules {} in {} ms",
+                    uploadedRuleIds,
                     end.toEpochMilli() - start.toEpochMilli());
         } catch (Exception e) {
             logger.error("rules sync failed.", e);

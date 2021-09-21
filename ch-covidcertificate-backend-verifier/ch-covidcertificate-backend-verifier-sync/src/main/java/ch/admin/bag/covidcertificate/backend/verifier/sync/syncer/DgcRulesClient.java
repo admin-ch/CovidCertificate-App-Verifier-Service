@@ -10,7 +10,9 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.sync.SigningPayload;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.slf4j.Logger;
@@ -52,7 +54,7 @@ public class DgcRulesClient {
     }
 
     private RequestEntity<SigningPayload> postSignedContent(SigningPayload data) {
-        logger.info("[DgcRulesClient] Try siging {}", signBaseUrl + SIGNING_PATH);
+        logger.info("[DgcRulesClient] Try signing {}", signBaseUrl + SIGNING_PATH);
         return RequestEntity.post(signBaseUrl + SIGNING_PATH).body(data);
     }
 
@@ -70,10 +72,11 @@ public class DgcRulesClient {
     /**
      * downloads rules for all countries
      *
-     * @return rules per country
+     * @return successfully uploaded rule ids
      */
-    public void upload(JsonNode rules) {
+    public List<String> upload(JsonNode rules) {
         logger.info("[DgcRulesClient] Uploading Swiss rules");
+        List<String> uploadedRuleIds = new ArrayList<>();
         var mapper = new ObjectMapper();
         // load payload
         var fieldIterator = rules.fields();
@@ -101,15 +104,15 @@ public class DgcRulesClient {
                     if (uploadRequest == null) {
                         continue;
                     }
+                    String ruleId = ruleArray.getKey();
                     try {
                         this.dgcRT.exchange(uploadRequest, String.class);
-                        logger.info(
-                                "[DgcRulesClient] rule version for {} uploaded",
-                                ruleArray.getKey());
+                        logger.info("[DgcRulesClient] rule version for {} uploaded", ruleId);
+                        uploadedRuleIds.add(ruleId);
                     } catch (HttpStatusCodeException httpFailed) {
                         logger.error(
                                 "[DgcRulesClient] rule version {} had error {}",
-                                ruleArray.getKey(),
+                                ruleId,
                                 httpFailed);
                         continue;
                     }
@@ -118,7 +121,8 @@ public class DgcRulesClient {
                 }
             }
         }
-        logger.info("[DgcRulesClient] Uploaded Swiss rules ");
+        logger.info("[DgcRulesClient] Uploaded Swiss rules");
+        return uploadedRuleIds;
     }
 
     private HttpHeaders createCmsUploadHeaders() {
