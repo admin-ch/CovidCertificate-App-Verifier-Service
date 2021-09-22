@@ -10,8 +10,8 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.model.RevocationResponse;
-import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import ch.ubique.openapi.docannotations.Documentation;
 import java.util.ArrayList;
@@ -75,7 +75,7 @@ public class RevocationListController {
         }
 
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(CacheUtil.REVOCATION_LIST_MAX_AGE))
+                .cacheControl(CacheControl.maxAge(CacheUtil.REVOCATION_LIST_V1_MAX_AGE))
                 .body(response);
     }
 

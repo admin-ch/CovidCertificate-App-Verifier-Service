@@ -8,25 +8,24 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-package ch.admin.bag.covidcertificate.backend.verifier.ws.utils;
+package ch.admin.bag.covidcertificate.backend.verifier.data.util;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import org.springframework.http.HttpHeaders;
 
 public class CacheUtil {
-    public static Duration REVOCATION_LIST_MAX_AGE;
+    public static Duration REVOCATION_LIST_V1_MAX_AGE;
     public static Duration VERIFICATION_RULES_MAX_AGE;
     public static Duration VALUE_SETS_MAX_AGE;
     public static Duration KEYS_UPDATES_MAX_AGE;
     public static Duration KEYS_LIST_MAX_AGE;
 
     public static Duration KEYS_BUCKET_DURATION;
+    public static Duration REVOCATION_RETENTION_BUCKET_DURATION;
 
     private CacheUtil() {}
 
@@ -36,7 +35,7 @@ public class CacheUtil {
      * @param date
      * @return
      */
-    private static String formatHeaderDate(OffsetDateTime date) {
+    private static String formatHeaderDate(Instant date) {
         DateTimeFormatter formatter =
                 DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z")
                         .withLocale(Locale.US)
@@ -44,7 +43,7 @@ public class CacheUtil {
         return formatter.format(date);
     }
 
-    public static HttpHeaders createExpiresHeader(OffsetDateTime expires) {
+    public static HttpHeaders createExpiresHeader(Instant expires) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Expires", formatHeaderDate(expires));
         return headers;
@@ -56,14 +55,25 @@ public class CacheUtil {
      * @return the start of the next bucket. If the `now` is at the beginning of a bucket, the next
      *     bucket will be returned.
      */
-    public static OffsetDateTime roundToNextBucket(
-            OffsetDateTime now, Duration releaseBucketDuration) {
+    private static Instant roundToNextBucketStart(Instant now, Duration releaseBucketDuration) {
         long rounding = releaseBucketDuration.toMillis();
-        long timestamp = ((now.toInstant().toEpochMilli() / rounding) + 1) * rounding;
-        return OffsetDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneOffset.UTC);
+        long timestamp = ((now.toEpochMilli() / rounding) + 1) * rounding;
+        return Instant.ofEpochMilli(timestamp);
     }
 
-    public static OffsetDateTime roundToNextBucket(OffsetDateTime now) {
-        return roundToNextBucket(now, CacheUtil.KEYS_BUCKET_DURATION);
+    private static Instant roundToPreviousBucketStart(Instant now, Duration releaseBucketDuration) {
+        return roundToNextBucketStart(now, releaseBucketDuration).minus(releaseBucketDuration);
+    }
+
+    public static Instant roundToNextKeysBucketStart(Instant now) {
+        return roundToNextBucketStart(now, CacheUtil.KEYS_BUCKET_DURATION);
+    }
+
+    public static Instant roundToNextRevocationRetentionBucketStart(Instant now) {
+        return roundToNextBucketStart(now, CacheUtil.REVOCATION_RETENTION_BUCKET_DURATION);
+    }
+
+    public static Instant roundToPreviousRevocationRetentionBucketStart(Instant now) {
+        return roundToPreviousBucketStart(now, CacheUtil.REVOCATION_RETENTION_BUCKET_DURATION);
     }
 }
