@@ -29,7 +29,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.Verification
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerificationRulesControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.interceptor.HeaderInjector;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.security.signature.JwsMessageConverter;
-import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
+import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.RestTemplateHelper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -90,9 +90,14 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
         CacheUtil.KEYS_BUCKET_DURATION = bucketDuration;
     }
 
-    @Value("${ws.revocationList.max-age:PT1M}")
-    public void setRevocationListMaxAge(Duration maxAge) {
-        CacheUtil.REVOCATION_LIST_MAX_AGE = maxAge;
+    @Value("${ws.revocation-list.retention-bucket-duration:PT6H}")
+    public void setRevocationRetentionBucketDuration(Duration bucketDuration) {
+        CacheUtil.REVOCATION_RETENTION_BUCKET_DURATION = bucketDuration;
+    }
+
+    @Value("${ws.revocation-list.v1.max-age:PT1M}")
+    public void setRevocationListV1MaxAge(Duration maxAge) {
+        CacheUtil.REVOCATION_LIST_V1_MAX_AGE = maxAge;
     }
 
     @Value("${ws.verificationRules.max-age:PT1M}")

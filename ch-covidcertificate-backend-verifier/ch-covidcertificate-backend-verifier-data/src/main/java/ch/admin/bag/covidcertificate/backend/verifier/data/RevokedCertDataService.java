@@ -12,6 +12,7 @@ package ch.admin.bag.covidcertificate.backend.verifier.data;
 
 import ch.admin.bag.covidcertificate.backend.verifier.model.DbRevokedCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.RevokedCertsUpdateResponse;
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
@@ -20,9 +21,18 @@ public interface RevokedCertDataService {
     /** upserts the given revoked uvcis into the db */
     public RevokedCertsUpdateResponse replaceRevokedCerts(Set<String> revokedUvcis);
 
-    /** returns the next batch of revoked certs after `since` */
-    public List<DbRevokedCert> findRevokedCerts(Long since);
+    /**
+     * returns the next batch of released revoked certs after `since`
+     *
+     * @param since
+     * @param now
+     */
+    public List<DbRevokedCert> findReleasedRevokedCerts(Long since, Instant now);
 
-    /** returns the highest revoked cert pk id */
-    public long findMaxRevokedCertPkId();
+    /**
+     * returns the highest released revoked cert pk id
+     *
+     * @param now
+     */
+    public long findMaxReleasedRevokedCertPkId(Instant now);
 }

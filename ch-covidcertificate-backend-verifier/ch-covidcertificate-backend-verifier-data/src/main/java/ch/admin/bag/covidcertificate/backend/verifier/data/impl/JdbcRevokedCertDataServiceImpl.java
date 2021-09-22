@@ -12,8 +12,11 @@ package ch.admin.bag.covidcertificate.backend.verifier.data.impl;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.RevokedCertDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.mapper.RevokedCertRowMapper;
+import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.model.DbRevokedCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.RevokedCertsUpdateResponse;
+import java.time.Instant;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -120,30 +123,40 @@ public class JdbcRevokedCertDataServiceImpl implements RevokedCertDataService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<DbRevokedCert> findRevokedCerts(Long since) {
+    public List<DbRevokedCert> findReleasedRevokedCerts(Long since, Instant now) {
         if (since == null) {
             since = 0L;
         }
         String sql =
                 "select pk_revoked_cert_id, uvci from t_revoked_cert"
                         + " where pk_revoked_cert_id > :since"
+                        + " and imported_at <= :release_up_to"
                         + " order by pk_revoked_cert_id asc"
                         + " limit :batch_size";
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("since", since);
         params.addValue("batch_size", revokedCertBatchSize);
+        params.addValue(
+                "release_up_to",
+                Date.from(CacheUtil.roundToPreviousRevocationRetentionBucketStart(now)));
         return jt.query(sql, params, new RevokedCertRowMapper());
     }
 
     @Transactional(readOnly = true)
     @Override
-    public long findMaxRevokedCertPkId() {
+    public long findMaxReleasedRevokedCertPkId(Instant now) {
         try {
             String sql =
                     "select pk_revoked_cert_id from t_revoked_cert"
+                            + " where imported_at <= :release_up_to"
                             + " order by pk_revoked_cert_id desc"
                             + " limit 1";
-            return jt.queryForObject(sql, new MapSqlParameterSource(), Long.class);
+            MapSqlParameterSource params =
+                    new MapSqlParameterSource(
+                            "release_up_to",
+                            Date.from(
+                                    CacheUtil.roundToPreviousRevocationRetentionBucketStart(now)));
+            return jt.queryForObject(sql, params, Long.class);
         } catch (EmptyResultDataAccessException e) {
             return 0L;
         }
