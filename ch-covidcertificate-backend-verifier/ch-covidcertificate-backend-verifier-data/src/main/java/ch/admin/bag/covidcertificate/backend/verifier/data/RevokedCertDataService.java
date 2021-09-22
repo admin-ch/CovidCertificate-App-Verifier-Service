@@ -35,4 +35,6 @@ public interface RevokedCertDataService {
      * @param now
      */
     public long findMaxReleasedRevokedCertPkId(Instant now);
+
+    public int getRevokedCertBatchSize();
 }
