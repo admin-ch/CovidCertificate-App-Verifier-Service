@@ -10,8 +10,13 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.ws.config;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.RevokedCertDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcRevokedCertDataServiceImpl;
+import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.RestTemplateHelper;
+import java.time.Duration;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
@@ -60,5 +65,23 @@ public class TestConfig extends WsBaseConfig {
     public RestTemplate restTemplate() {
         logger.info("Instantiated RevocationListController with baseurl: {}", baseurl);
         return RestTemplateHelper.getRestTemplate();
+    }
+
+    @Bean
+    public RevokedCertDataService revokedCertDataService(
+            DataSource dataSource,
+            @Value("${revocationList.batch-size:50}") Integer revokedCertBatchSize) {
+        return new JdbcRevokedCertDataServiceImpl(dataSource, revokedCertBatchSize);
+    }
+
+    @Value("${ws.revocation-list.retention-bucket-duration:PT6H}")
+    public void setRevocationRetentionBucketDuration(Duration bucketDuration) {
+        CacheUtil.REVOCATION_RETENTION_BUCKET_DURATION = bucketDuration;
+    }
+
+    @Bean
+    public RevocationListControllerV2 revocationListControllerV2(
+            RevokedCertDataService revokedCertDataService) {
+        return new RevocationListControllerV2(revokedCertDataService);
     }
 }

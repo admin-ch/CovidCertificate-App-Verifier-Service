@@ -32,15 +32,15 @@ public class CacheUtil {
     /**
      * Formats the date to a http timestamp.
      *
-     * @param date
+     * @param instant
      * @return
      */
-    private static String formatHeaderDate(Instant date) {
+    public static String formatHeaderDate(Instant instant) {
         DateTimeFormatter formatter =
                 DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z")
                         .withLocale(Locale.US)
                         .withZone(ZoneId.of("GMT"));
-        return formatter.format(date);
+        return formatter.format(instant);
     }
 
     public static HttpHeaders createExpiresHeader(Instant expires) {

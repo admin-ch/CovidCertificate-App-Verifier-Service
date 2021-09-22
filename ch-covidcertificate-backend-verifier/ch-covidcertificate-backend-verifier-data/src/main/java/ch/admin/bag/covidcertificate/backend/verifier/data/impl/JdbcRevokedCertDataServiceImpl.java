@@ -161,4 +161,8 @@ public class JdbcRevokedCertDataServiceImpl implements RevokedCertDataService {
             return 0L;
         }
     }
+
+    public int getRevokedCertBatchSize() {
+        return revokedCertBatchSize;
+    }
 }
