@@ -20,6 +20,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcRulesClient
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcRulesSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetSyncer;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.SigningClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.DgcHubProxy;
 import java.io.IOException;
@@ -141,8 +142,13 @@ public abstract class SyncBaseConfig {
     }
 
     @Bean
-    public DgcRulesClient dgcRulesClient(RestTemplate restTemplate, RestTemplate signRestTemplate) {
-        return new DgcRulesClient(baseurl, restTemplate, signBaseUrl, signRestTemplate);
+    public SigningClient signingClient(RestTemplate signRestTemplate) {
+        return new SigningClient(signRestTemplate, signBaseUrl);
+    }
+
+    @Bean
+    public DgcRulesClient dgcRulesClient(RestTemplate restTemplate, SigningClient signingClient) {
+        return new DgcRulesClient(baseurl, restTemplate, signingClient);
     }
 
     @Bean

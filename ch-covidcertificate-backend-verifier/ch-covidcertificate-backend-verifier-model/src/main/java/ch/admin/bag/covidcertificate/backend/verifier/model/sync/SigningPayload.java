@@ -8,12 +8,10 @@ package ch.admin.bag.covidcertificate.backend.verifier.model.sync;
 public class SigningPayload {
     private String data;
 
-    /** @return the data */
     public String getData() {
         return data;
     }
 
-    /** @param data the data to set */
     public void setData(String data) {
         this.data = data;
     }
