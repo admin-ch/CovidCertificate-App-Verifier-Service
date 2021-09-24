@@ -1,0 +1,1 @@
+alter table t_revoked_cert add column imported_at timestamp with time zone not null default now();
