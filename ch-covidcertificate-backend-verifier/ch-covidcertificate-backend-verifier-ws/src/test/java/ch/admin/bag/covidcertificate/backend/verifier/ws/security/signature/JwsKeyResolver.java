@@ -10,6 +10,7 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.ws.security.signature;
 
+import ch.admin.bag.covidcertificate.backend.verifier.model.exception.InvalidSignatureException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.SigningKeyResolverAdapter;

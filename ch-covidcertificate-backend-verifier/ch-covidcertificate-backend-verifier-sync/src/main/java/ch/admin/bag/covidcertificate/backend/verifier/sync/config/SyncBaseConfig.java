@@ -10,8 +10,10 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.CertUploadDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcCertUploadDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcValueSetDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertClient;
@@ -20,8 +22,11 @@ import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcRulesClient
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcRulesSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetSyncer;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DscUploadClient;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.SigningClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.DgcHubProxy;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.DscUploadWs;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
@@ -141,8 +146,13 @@ public abstract class SyncBaseConfig {
     }
 
     @Bean
-    public DgcRulesClient dgcRulesClient(RestTemplate restTemplate, RestTemplate signRestTemplate) {
-        return new DgcRulesClient(baseurl, restTemplate, signBaseUrl, signRestTemplate);
+    public SigningClient signingClient(RestTemplate signRestTemplate) {
+        return new SigningClient(signRestTemplate, signBaseUrl);
+    }
+
+    @Bean
+    public DgcRulesClient dgcRulesClient(RestTemplate restTemplate, SigningClient signingClient) {
+        return new DgcRulesClient(baseurl, restTemplate, signingClient);
     }
 
     @Bean
@@ -159,5 +169,25 @@ public abstract class SyncBaseConfig {
     @Bean
     public DgcHubProxy dgcHubProxy(RestTemplate restTemplate) {
         return new DgcHubProxy(baseurl, restTemplate);
+    }
+
+    @Bean
+    public CertUploadDataService certUploadDataService(DataSource dataSource) {
+        return new JdbcCertUploadDataServiceImpl(dataSource);
+    }
+
+    @Bean
+    public DscUploadClient dscUploadClient(
+            SigningClient signingClient,
+            DgcCertClient dgcCertClient,
+            CertUploadDataService certUploadDataService,
+            VerifierDataService verifierDataService) {
+        return new DscUploadClient(
+                signingClient, dgcCertClient, certUploadDataService, verifierDataService);
+    }
+
+    @Bean
+    public DscUploadWs dscUploadWs(DscUploadClient dscUploadClient) {
+        return new DscUploadWs(dscUploadClient);
     }
 }
