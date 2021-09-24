@@ -46,7 +46,6 @@ public class DgcCertSyncer {
         logger.info("Start sync with DGC Gateway");
         var start = Instant.now();
         download();
-        upload();
         var end = Instant.now();
         logger.info("Finished sync in {} ms", end.toEpochMilli() - start.toEpochMilli());
     }
@@ -198,9 +197,5 @@ public class DgcCertSyncer {
             }
         }
         return false;
-    }
-
-    private void upload() {
-        // TODO: Implement
     }
 }

@@ -6,13 +6,13 @@
 package ch.admin.bag.covidcertificate.backend.verifier.model.sync;
 
 public class SigningPayload {
-    private String data;
+    private final String data;
+
+    public SigningPayload(String data) {
+        this.data = data;
+    }
 
     public String getData() {
         return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
     }
 }

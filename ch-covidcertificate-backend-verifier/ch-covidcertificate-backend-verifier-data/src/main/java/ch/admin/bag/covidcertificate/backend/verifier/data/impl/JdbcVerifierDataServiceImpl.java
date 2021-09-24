@@ -110,10 +110,16 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
         List<SqlParameterSource> batchParams = new ArrayList<>();
         if (!dsc.isEmpty()) {
             for (DbDsc dbDsc : dsc) {
-                batchParams.add(getDscParams(dbDsc));
+                batchParams.add(getDscParams(dbDsc, CertSource.SYNC));
             }
             dscInsert.executeBatch(batchParams.toArray(new SqlParameterSource[batchParams.size()]));
         }
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public void insertManualDsc(DbDsc dsc) {
+        dscInsert.execute(getDscParams(dsc, CertSource.MANUAL));
     }
 
     @Override
@@ -275,7 +281,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
         return params;
     }
 
-    private MapSqlParameterSource getDscParams(DbDsc dbDsc) {
+    private MapSqlParameterSource getDscParams(DbDsc dbDsc, CertSource source) {
         var params = new MapSqlParameterSource();
         params.addValue("key_id", dbDsc.getKeyId());
         params.addValue("fk_csca_id", dbDsc.getFkCsca());
@@ -289,7 +295,20 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
         params.addValue("crv", dbDsc.getCrv());
         params.addValue("x", dbDsc.getX());
         params.addValue("y", dbDsc.getY());
-        params.addValue("source", CertSource.SYNC.name());
+        params.addValue("source", source.name());
         return params;
+    }
+
+    @Override
+    public long findChCscaPkId() {
+        String sql =
+                "select pk_csca_id from t_country_specific_certificate_authority"
+                        + " where source = :source"
+                        + " and origin = :origin"
+                        + " limit 1";
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("source", CertSource.MANUAL.name());
+        params.addValue("origin", "CH");
+        return jt.queryForObject(sql, params, Long.class);
     }
 }

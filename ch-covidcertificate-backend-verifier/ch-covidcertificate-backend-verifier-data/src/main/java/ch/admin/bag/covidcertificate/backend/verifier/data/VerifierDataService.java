@@ -41,8 +41,11 @@ public interface VerifierDataService {
     /** returns a list of key ids of all active CSCAs */
     public List<String> findActiveCscaKeyIds();
 
-    /** inserts the given DSC into the db */
+    /** inserts the given DSCs into the db */
     public void insertDscs(List<DbDsc> dsc);
+
+    /** inserts the given manual DSC into the db */
+    void insertManualDsc(DbDsc dsc);
 
     /** removes all DSCs with key ids not in the given list that haven't been added manually */
     public int removeDscsNotIn(List<String> keyIdsToKeep);
@@ -77,4 +80,6 @@ public interface VerifierDataService {
     public long findMaxDscPkId();
 
     public int getDscBatchSize();
+
+    public long findChCscaPkId();
 }

@@ -5,10 +5,8 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
-import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CmsResponse;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.SigningPayload;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.CmsUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -63,24 +61,27 @@ public class DgcRulesClient {
         while (fieldIterator.hasNext()) {
             Entry<String, JsonNode> ruleArray = fieldIterator.next();
             for (var rule : ruleArray.getValue()) {
-                // make request to bit for signing
+                String ruleId = ruleArray.getKey();
                 try {
-                    var serializeObject = mapper.writeValueAsBytes(rule);
-                    var base64encoded = Base64.getEncoder().encodeToString(serializeObject);
-                    var payloadObject = new SigningPayload();
-                    payloadObject.setData(base64encoded);
-                    CmsResponse cms = signingClient.getCms(payloadObject);
-                    if (cms == null) {
+                    // sign payload
+                    String cms = null;
+                    try {
+                        logger.info("signing rule {}", ruleId);
+                        var serializeObject = mapper.writeValueAsBytes(rule);
+                        var base64encoded = Base64.getEncoder().encodeToString(serializeObject);
+                        var payloadObject = new SigningPayload(base64encoded);
+                        cms = signingClient.sign(payloadObject);
+                    } catch (Exception e) {
+                        logger.error("Signing rule {} failed", ruleId, e);
                         continue;
                     }
 
                     // upload to gateway
-                    String ruleId = ruleArray.getKey();
                     logger.info("Uploading rule {} to {}", ruleId, dgcBaseUrl + RULE_UPLOAD_PATH);
                     try {
                         this.dgcRT.exchange(
                                 RequestEntity.post(dgcBaseUrl + RULE_UPLOAD_PATH)
-                                        .headers(CmsUtil.createCmsUploadHeaders())
+                                        .headers(CmsUtil.createCmsTextUploadHeaders())
                                         .body(cms),
                                 String.class);
                         logger.info("New version of rule {} uploaded", ruleId);
@@ -94,8 +95,8 @@ public class DgcRulesClient {
                         }
                         continue;
                     }
-                } catch (JsonProcessingException ex) {
-                    logger.error("Upload rule failed with error: {}", ex);
+                } catch (Exception ex) {
+                    logger.error("Failed to upload rule {}", ruleId, ex);
                 }
             }
         }

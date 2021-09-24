@@ -8,11 +8,6 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-package ch.admin.bag.covidcertificate.backend.verifier.ws.security.signature;
+package ch.admin.bag.covidcertificate.backend.verifier.model.exception;
 
-public class InvalidSignatureException extends RuntimeException {
-
-    public InvalidSignatureException(Throwable cause) {
-        super(cause);
-    }
-}
+public class AlreadyUploadedException extends Exception {}

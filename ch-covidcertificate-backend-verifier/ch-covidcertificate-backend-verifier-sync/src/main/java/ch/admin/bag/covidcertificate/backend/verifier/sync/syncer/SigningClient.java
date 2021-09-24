@@ -14,8 +14,9 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CmsResponse;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.SigningPayload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 public class SigningClient {
@@ -24,21 +25,34 @@ public class SigningClient {
     private final RestTemplate rt;
     private final String signBaseUrl;
     private static final String SIGNING_PATH = "/v1/cms/";
+    private static final String ALIAS_PATH = "/v1/cms/%s";
 
     public SigningClient(RestTemplate rt, String signBaseUrl) {
         this.rt = rt;
         this.signBaseUrl = signBaseUrl;
     }
 
-    public CmsResponse getCms(SigningPayload toSign) {
-        try {
-            String url = signBaseUrl + SIGNING_PATH;
-            logger.info("Requesting signed cms at {}", url);
-            return rt.exchange(RequestEntity.post(url).body(toSign), CmsResponse.class)
-                    .getBody();
-        } catch (HttpStatusCodeException e) {
-            logger.error("Signing request failed", e);
-            return null;
-        }
+    public String sign(SigningPayload toSign) {
+        String url = signBaseUrl + SIGNING_PATH;
+        logger.info("Requesting signed cms at {}", url);
+        return rt.exchange(RequestEntity.post(url).body(toSign), CmsResponse.class)
+                .getBody()
+                .getCms();
+    }
+
+    public String getCmsForAlias(String alias) {
+        String url = signBaseUrl + String.format(ALIAS_PATH, alias);
+        logger.info("Requesting cms alias {} at {}", alias, url);
+        return rt.exchange(
+                        RequestEntity.get(url).headers(acceptJsonHeaders()).build(),
+                        CmsResponse.class)
+                .getBody()
+                .getCms();
+    }
+
+    public static HttpHeaders acceptJsonHeaders() {
+        var headers = new HttpHeaders();
+        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+        return headers;
     }
 }

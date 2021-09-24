@@ -10,9 +10,12 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
+import ch.admin.bag.covidcertificate.backend.verifier.model.exception.AlreadyUploadedException;
+import ch.admin.bag.covidcertificate.backend.verifier.model.exception.UploadFailedException;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CertificateType;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.ProblemReport;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.TrustList;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.CmsUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import org.slf4j.Logger;
@@ -85,8 +88,25 @@ public class DgcCertClient {
         }
     }
 
-    public void upload(Object cms) {
-        // TODO: Implement
+    public void upload(String toUpload, String kid)
+            throws AlreadyUploadedException, UploadFailedException {
+        try {
+            logger.info("uploading dsc with kid {}", kid);
+            rt.exchange(
+                    RequestEntity.post(baseUrl + UPLOAD_PATH)
+                            .headers(CmsUtil.createCmsUploadHeaders())
+                            .body(toUpload),
+                    String.class);
+            logger.info("done uploading dsc with kid {}", kid);
+        } catch (HttpStatusCodeException e) {
+            if (e.getStatusCode().equals(HttpStatus.CONFLICT)) {
+                logger.info("dsc with kid {} has already been uploaded", kid, e);
+                throw new AlreadyUploadedException();
+            } else {
+                logger.error("failed to upload dsc with kid {}", kid, e);
+                throw new UploadFailedException(e);
+            }
+        }
     }
 
     private HttpHeaders createDownloadHeaders() {
