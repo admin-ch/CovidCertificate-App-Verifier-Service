@@ -110,7 +110,9 @@ public class VerificationRulesTest {
         Map uploadRules = new LinkedHashMap<String, Object>();
         for (var rule : v2.get("rules")) {
             ArrayNode rulesNode = mapper.createArrayNode();
-            rulesNode.add(getJsonNodeWithCapitalizedTopLevelKeys(rule));
+            JsonNode pascaleCase = getJsonNodeWithCapitalizedTopLevelKeys(rule);
+            JsonNode v2Rule = getJsonNodeWithFixedCertLogic(pascaleCase);
+            rulesNode.add(v2Rule);
             uploadRules.put(rule.get("identifier").asText(), rulesNode);
         }
         mapper.writerWithDefaultPrettyPrinter()
@@ -124,6 +126,22 @@ public class VerificationRulesTest {
             capitalized.put(StringUtils.capitalize(entry.getKey()), entry.getValue());
         }
         return mapper.convertValue(capitalized, JsonNode.class);
+    }
+
+    private JsonNode getJsonNodeWithFixedCertLogic(JsonNode jsonNode) {
+        Map<String, Object> map = mapper.convertValue(jsonNode, Map.class);
+        Map<String, Object> fixed = new LinkedHashMap<>();
+        for (Entry<String, Object> entry : map.entrySet()) {
+            String key = entry.getKey();
+            if (key.equalsIgnoreCase("engine")
+                    && entry.getValue() instanceof String
+                    && "CertLogic".equalsIgnoreCase((String) entry.getValue())) {
+                fixed.put(key, ((String) entry.getValue()).toUpperCase());
+            } else {
+                fixed.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return mapper.convertValue(fixed, JsonNode.class);
     }
 
     private void mapV2RulesToV1(JsonNode v2) throws Exception {
