@@ -43,7 +43,7 @@ public class JdbcRevokedCertDataServiceImpl implements RevokedCertDataService {
         this.revokedCertInsert =
                 new SimpleJdbcInsert(dataSource)
                         .withTableName("t_revoked_cert")
-                        .usingGeneratedKeyColumns("pk_revoked_cert_id");
+                        .usingGeneratedKeyColumns("pk_revoked_cert_id", "imported_at");
     }
 
     @Transactional(readOnly = false)
