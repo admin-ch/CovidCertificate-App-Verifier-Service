@@ -11,7 +11,7 @@
 package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
-import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
+import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import ch.ubique.openapi.docannotations.Documentation;
 import com.fasterxml.jackson.databind.ObjectMapper;

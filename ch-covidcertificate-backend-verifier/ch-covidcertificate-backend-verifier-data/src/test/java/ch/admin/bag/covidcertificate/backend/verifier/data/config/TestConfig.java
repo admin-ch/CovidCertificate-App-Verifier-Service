@@ -11,9 +11,13 @@
 package ch.admin.bag.covidcertificate.backend.verifier.data.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.AppTokenDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.RevokedCertDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcAppTokenDataServiceImpl;
+import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcRevokedCertDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
+import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
+import java.time.Duration;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -35,5 +39,17 @@ public class TestConfig {
     @Bean
     public AppTokenDataService appTokenDataService(DataSource dataSource) {
         return new JdbcAppTokenDataServiceImpl(dataSource);
+    }
+
+    @Bean
+    public RevokedCertDataService revokedCertDataService(
+            DataSource dataSource,
+            @Value("${revocationList.batch-size:20000}") Integer revokedCertBatchSize) {
+        return new JdbcRevokedCertDataServiceImpl(dataSource, revokedCertBatchSize);
+    }
+
+    @Value("${ws.revocation-list.retention-bucket-duration:PT6H}")
+    public void setRevocationRetentionBucketDuration(Duration bucketDuration) {
+        CacheUtil.REVOCATION_RETENTION_BUCKET_DURATION = bucketDuration;
     }
 }

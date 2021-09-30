@@ -26,7 +26,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertsResponse;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.util.TestHelper;
-import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
+import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;

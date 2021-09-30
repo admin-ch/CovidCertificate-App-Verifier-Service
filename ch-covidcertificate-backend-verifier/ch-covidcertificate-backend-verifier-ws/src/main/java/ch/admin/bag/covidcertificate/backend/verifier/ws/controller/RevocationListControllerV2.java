@@ -11,15 +11,15 @@
 package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.RevokedCertDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.model.DbRevokedCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.RevocationResponse;
-import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.CacheUtil;
 import ch.ubique.openapi.docannotations.Documentation;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -58,18 +58,21 @@ public class RevocationListControllerV2 {
     public @ResponseBody ResponseEntity<RevocationResponse> getRevokedCerts(
             @RequestParam(required = false, defaultValue = "0") Long since)
             throws HttpStatusCodeException {
-        List<DbRevokedCert> revokedCerts = revokedCertDataService.findRevokedCerts(since);
+        Instant now = Instant.now();
+        List<DbRevokedCert> revokedCerts =
+                revokedCertDataService.findReleasedRevokedCerts(since, now);
         List<String> revokedUvcis =
                 revokedCerts.stream().map(DbRevokedCert::getUvci).collect(Collectors.toList());
         return ResponseEntity.ok()
-                .headers(getRevokedCertsHeaders(revokedCerts))
-                .cacheControl(CacheControl.maxAge(CacheUtil.REVOCATION_LIST_MAX_AGE))
+                .headers(getRevokedCertsHeaders(revokedCerts, now))
                 .body(new RevocationResponse(revokedUvcis));
     }
 
-    private HttpHeaders getRevokedCertsHeaders(List<DbRevokedCert> revokedCerts) {
-        HttpHeaders headers = new HttpHeaders();
-        long maxPkId = revokedCertDataService.findMaxRevokedCertPkId();
+    private HttpHeaders getRevokedCertsHeaders(List<DbRevokedCert> revokedCerts, Instant now) {
+        HttpHeaders headers =
+                CacheUtil.createExpiresHeader(
+                        CacheUtil.roundToNextRevocationRetentionBucketStart(now));
+        long maxPkId = revokedCertDataService.findMaxReleasedRevokedCertPkId(now);
         Long nextSince =
                 revokedCerts.stream().mapToLong(DbRevokedCert::getPkId).max().orElse(maxPkId);
         headers.add(NEXT_SINCE_HEADER, nextSince.toString());

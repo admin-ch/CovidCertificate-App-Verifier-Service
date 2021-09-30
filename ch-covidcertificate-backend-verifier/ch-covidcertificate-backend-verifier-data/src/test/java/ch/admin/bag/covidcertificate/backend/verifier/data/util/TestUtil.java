@@ -13,6 +13,12 @@ package ch.admin.bag.covidcertificate.backend.verifier.data.util;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.Algorithm;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
+import java.time.Instant;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 public class TestUtil {
 
@@ -53,5 +59,25 @@ public class TestUtil {
         dbDsc.setX("x");
         dbDsc.setY("y");
         return dbDsc;
+    }
+
+    public static Set<String> getRevokedCertUvcis(int count) {
+        Set<String> uvcis = new HashSet<>();
+        for (int i = 0; i < count; i++) {
+            uvcis.add("revoked_cert_uvci_" + i);
+        }
+        return uvcis;
+    }
+
+    public static void releaseRevokedCerts(NamedParameterJdbcTemplate jt, Instant now) {
+        MapSqlParameterSource params =
+                new MapSqlParameterSource(
+                        "imported_at",
+                        Date.from(now.minus(CacheUtil.REVOCATION_RETENTION_BUCKET_DURATION)));
+        jt.update("update t_revoked_cert set imported_at = :imported_at", params);
+    }
+
+    public static void clearRevokedCerts(NamedParameterJdbcTemplate jt) {
+        jt.update("delete from t_revoked_cert", new MapSqlParameterSource());
     }
 }
