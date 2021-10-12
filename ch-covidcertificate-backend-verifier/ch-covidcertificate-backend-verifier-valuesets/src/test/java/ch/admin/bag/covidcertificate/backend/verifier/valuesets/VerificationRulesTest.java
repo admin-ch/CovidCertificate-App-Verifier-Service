@@ -57,7 +57,6 @@ public class VerificationRulesTest {
     }
 
     @Test
-    @Disabled("enable and run manually to generate new rules jsons")
     public void generateRulesJsons() throws Exception {
         JsonNode v2 = mapMasterToV2();
         mapV2RulesToUpload(v2);
@@ -113,7 +112,7 @@ public class VerificationRulesTest {
             JsonNode pascaleCase = getJsonNodeWithCapitalizedTopLevelKeys(rule);
             JsonNode v2Rule = getJsonNodeWithFixedCertLogic(pascaleCase);
             rulesNode.add(v2Rule);
-            uploadRules.put(rule.get("identifier").asText(), rulesNode);
+            uploadRules.put(rule.get("Identifier").asText(), rulesNode);
         }
         mapper.writerWithDefaultPrettyPrinter()
                 .writeValue(new File(RULES_UPLOAD_PATH), uploadRules);
@@ -133,7 +132,7 @@ public class VerificationRulesTest {
         Map<String, Object> fixed = new LinkedHashMap<>();
         for (Entry<String, Object> entry : map.entrySet()) {
             String key = entry.getKey();
-            if (key.equalsIgnoreCase("engine")
+            if (key.equalsIgnoreCase("Engine")
                     && entry.getValue() instanceof String
                     && "CertLogic".equalsIgnoreCase((String) entry.getValue())) {
                 fixed.put(key, ((String) entry.getValue()).toUpperCase());
@@ -148,10 +147,10 @@ public class VerificationRulesTest {
         ArrayList<Map> rules = new ArrayList<>();
         for (var rule : v2.get("rules")) {
             HashMap<String, Object> v1Rule = new HashMap<>();
-            v1Rule.put("id", rule.get("identifier"));
-            v1Rule.put("logic", dateComparisonV2ToV1(rule.get("logic")));
-            v1Rule.put("description", rule.get("description").get(0).get("desc"));
-            v1Rule.put("inputParameter", rule.get("affectedFields").toString());
+            v1Rule.put("id", rule.get("Identifier"));
+            v1Rule.put("logic", dateComparisonV2ToV1(rule.get("Logic")));
+            v1Rule.put("description", rule.get("Description").get(0).get("desc"));
+            v1Rule.put("inputParameter", rule.get("AffectedFields").toString());
             rules.add(v1Rule);
         }
         mapper.writerWithDefaultPrettyPrinter()

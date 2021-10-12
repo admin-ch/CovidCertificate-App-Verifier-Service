@@ -80,9 +80,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "VR-CH-0000": [
@@ -145,9 +145,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "VR-CH-0001": [
@@ -188,9 +188,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "VR-CH-0002": [
@@ -236,9 +236,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "VR-CH-0003": [
@@ -264,16 +264,24 @@
             "var": "payload.v.0"
           },
           {
-            "var": "payload.v.0.dt"
+            "!": [
+              {
+                "!": [
+                  {
+                    "var": "payload.v.0.dt"
+                  }
+                ]
+              }
+            ]
           },
           true
         ]
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "VR-CH-0004": [
@@ -316,11 +324,11 @@
             ]
           },
           {
-            "not-before": [
+            "not-after": [
               {
                 "plusTime": [
                   {
-                    "var": "external.validationClockAtStartOfDay"
+                    "var": "payload.v.0.dt"
                   },
                   0,
                   "day"
@@ -329,7 +337,7 @@
               {
                 "plusTime": [
                   {
-                    "var": "payload.v.0.dt"
+                    "var": "external.validationClock"
                   },
                   0,
                   "day"
@@ -342,9 +350,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "VR-CH-0005": [
@@ -400,7 +408,7 @@
                   {
                     "plusTime": [
                       {
-                        "var": "external.validationClockAtStartOfDay"
+                        "var": "external.validationClock"
                       },
                       0,
                       "day"
@@ -425,9 +433,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "VR-CH-0006": [
@@ -453,11 +461,11 @@
             "var": "payload.v.0"
           },
           {
-            "not-after": [
+            "before": [
               {
                 "plusTime": [
                   {
-                    "var": "external.validationClockAtStartOfDay"
+                    "var": "external.validationClock"
                   },
                   0,
                   "day"
@@ -468,7 +476,7 @@
                   {
                     "var": "payload.v.0.dt"
                   },
-                  364,
+                  365,
                   "day"
                 ]
               }
@@ -479,9 +487,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "VR-CH-0007": [
@@ -537,7 +545,7 @@
                   {
                     "plusTime": [
                       {
-                        "var": "external.validationClockAtStartOfDay"
+                        "var": "external.validationClock"
                       },
                       0,
                       "day"
@@ -562,9 +570,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "TR-CH-0000": [
@@ -627,9 +635,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "TR-CH-0001": [
@@ -667,9 +675,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "TR-CH-0002": [
@@ -710,9 +718,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "TR-CH-0004": [
@@ -738,16 +746,24 @@
             "var": "payload.t.0"
           },
           {
-            "var": "payload.t.0.sc"
+            "!": [
+              {
+                "!": [
+                  {
+                    "var": "payload.t.0.sc"
+                  }
+                ]
+              }
+            ]
           },
           true
         ]
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "TR-CH-0005": [
@@ -799,9 +815,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "TR-CH-0006": [
@@ -858,9 +874,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "TR-CH-0007": [
@@ -917,9 +933,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "RR-CH-0000": [
@@ -982,9 +998,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "RR-CH-0001": [
@@ -1010,16 +1026,24 @@
             "var": "payload.r.0"
           },
           {
-            "var": "payload.r.0.fr"
+            "!": [
+              {
+                "!": [
+                  {
+                    "var": "payload.r.0.fr"
+                  }
+                ]
+              }
+            ]
           },
           true
         ]
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "RR-CH-0002": [
@@ -1045,11 +1069,11 @@
             "var": "payload.r.0"
           },
           {
-            "not-before": [
+            "after": [
               {
                 "plusTime": [
                   {
-                    "var": "external.validationClockAtStartOfDay"
+                    "var": "external.validationClock"
                   },
                   0,
                   "day"
@@ -1071,9 +1095,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ],
   "RR-CH-0003": [
@@ -1099,11 +1123,11 @@
             "var": "payload.r.0"
           },
           {
-            "not-after": [
+            "before": [
               {
                 "plusTime": [
                   {
-                    "var": "external.validationClockAtStartOfDay"
+                    "var": "external.validationClock"
                   },
                   0,
                   "day"
@@ -1114,7 +1138,7 @@
                   {
                     "var": "payload.r.0.fr"
                   },
-                  179,
+                  180,
                   "day"
                 ]
               }
@@ -1125,9 +1149,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-09-30T12:00:00Z",
+      "ValidFrom": "2021-10-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.2"
+      "Version": "1.0.3"
     }
   ]
 }
