@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ public class VerificationRulesTest {
     private static final String RULES_UPLOAD_PATH =
             "src/main/resources/verificationRulesUpload.json";
     private static final String RULES_MASTER_CLASSPATH = "verificationRulesMaster.json";
-
+    private static final String EU_TEST_RULES_OUTPUT_PATH = "src/main/resources/CH/";
     @BeforeAll
     public void setup() throws Exception {
         DefaultPrettyPrinter pp =
@@ -57,10 +58,24 @@ public class VerificationRulesTest {
     }
 
     @Test
+    @Disabled("enable and run manually to generate new rules jsons")
     public void generateRulesJsons() throws Exception {
         JsonNode v2 = mapMasterToV2();
         mapV2RulesToUpload(v2);
         mapV2RulesToV1(v2);
+    }
+
+    @Test
+    @Disabled("enable and run manually to generate folder structure for EU test repo")
+    public void mapMasterToEuTestRules() throws IOException {
+        JsonNode master =
+            mapper.readTree(new ClassPathResource(RULES_MASTER_CLASSPATH).getInputStream());
+        for (var rule : master.get("rules")) {
+            new File(EU_TEST_RULES_OUTPUT_PATH + rule.get("Identifier").asText() + "/tests").mkdirs();
+            var writer = new FileWriter(EU_TEST_RULES_OUTPUT_PATH + rule.get("Identifier").asText() + "/rule.json");
+            writer.write(rule.toPrettyString());
+            writer.close();
+        }
     }
 
     private JsonNode mapMasterToV2() throws Exception {
