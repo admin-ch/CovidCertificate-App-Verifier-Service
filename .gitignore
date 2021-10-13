@@ -1,8 +1,21 @@
+# macos
+*.DS_Store
+
+# intellij project files
+*.idea
+*.iml
+
+# logfiles
 **/*.log
 **/*.log.*
+**/import
+
+# generated
+**/target
+
+# eclipse/vscode
 **/.project
 **/.classpath
 **/classpath-data.json
 **/.settings
-**/target
 **/.factorypath
