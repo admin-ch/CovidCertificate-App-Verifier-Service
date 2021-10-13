@@ -54,9 +54,8 @@ public class ApiKeySecurity extends WebSecurityConfigurerAdapter {
                     }
                 });
 
-        http
-        .antMatcher("/trust/**")
-        .csrf()
+        http.antMatcher("/trust/**")
+                .csrf()
                 .disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
