@@ -45,6 +45,7 @@ public class VerificationRulesTest {
     private static final String RULES_UPLOAD_PATH =
             "src/main/resources/verificationRulesUpload.json";
     private static final String RULES_MASTER_CLASSPATH = "verificationRulesMaster.json";
+    private static final String EU_TEST_RULES_OUTPUT_PATH = "src/main/resources/CH/";
 
     @BeforeAll
     public void setup() throws Exception {
@@ -107,7 +108,7 @@ public class VerificationRulesTest {
     }
 
     private void mapV2RulesToUpload(JsonNode v2) throws Exception {
-        Map uploadRules = new LinkedHashMap<String, Object>();
+        Map<String, ArrayNode> uploadRules = new LinkedHashMap<>();
         for (var rule : v2.get("rules")) {
             ArrayNode rulesNode = mapper.createArrayNode();
             JsonNode pascaleCase = getJsonNodeWithCapitalizedTopLevelKeys(rule);
@@ -117,6 +118,19 @@ public class VerificationRulesTest {
         }
         mapper.writerWithDefaultPrettyPrinter()
                 .writeValue(new File(RULES_UPLOAD_PATH), uploadRules);
+
+        mapTestRules(uploadRules);
+    }
+
+    private void mapTestRules(Map<String, ArrayNode> uploadRules) throws IOException {
+        for (Entry<String, ArrayNode> idToRule : uploadRules.entrySet()) {
+            String ruleId = idToRule.getKey();
+            new File(EU_TEST_RULES_OUTPUT_PATH + ruleId + "/tests").mkdirs();
+            mapper.writerWithDefaultPrettyPrinter()
+                    .writeValue(
+                            new File(EU_TEST_RULES_OUTPUT_PATH + ruleId + "/rule.json"),
+                            idToRule.getValue().get(0));
+        }
     }
 
     private JsonNode getJsonNodeWithCapitalizedTopLevelKeys(JsonNode jsonNode) {

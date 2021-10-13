@@ -1,0 +1,63 @@
+{
+  "AffectedFields": [
+    "r.0",
+    "r.1",
+    "v.0",
+    "t.0"
+  ],
+  "CertificateType": "Recovery",
+  "Country": "CH",
+  "Description": [
+    {
+      "desc": "At most one r-event.",
+      "lang": "en"
+    }
+  ],
+  "Engine": "CERTLOGIC",
+  "EngineVersion": "0.7.5",
+  "Identifier": "RR-CH-0000",
+  "Logic": {
+    "if": [
+      {
+        "var": "payload.r.0"
+      },
+      {
+        "if": [
+          {
+            "and": [
+              {
+                "!": [
+                  {
+                    "var": "payload.r.1"
+                  }
+                ]
+              },
+              {
+                "!": [
+                  {
+                    "var": "payload.v.0"
+                  }
+                ]
+              },
+              {
+                "!": [
+                  {
+                    "var": "payload.t.0"
+                  }
+                ]
+              }
+            ]
+          },
+          true,
+          false
+        ]
+      },
+      true
+    ]
+  },
+  "SchemaVersion": "1.0.0",
+  "Type": "Acceptance",
+  "ValidFrom": "2021-10-18T12:00:00Z",
+  "ValidTo": "2031-01-01T00:00:00Z",
+  "Version": "1.0.3"
+}

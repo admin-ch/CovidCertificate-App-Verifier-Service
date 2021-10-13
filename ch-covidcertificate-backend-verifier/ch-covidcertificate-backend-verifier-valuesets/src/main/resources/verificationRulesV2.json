@@ -261,9 +261,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -324,9 +324,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -365,9 +365,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -411,9 +411,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -437,16 +437,24 @@
             "var": "payload.v.0"
           },
           {
-            "var": "payload.v.0.dt"
+            "!": [
+              {
+                "!": [
+                  {
+                    "var": "payload.v.0.dt"
+                  }
+                ]
+              }
+            ]
           },
           true
         ]
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -487,11 +495,11 @@
             ]
           },
           {
-            "not-before": [
+            "not-after": [
               {
                 "plusTime": [
                   {
-                    "var": "external.validationClockAtStartOfDay"
+                    "var": "payload.v.0.dt"
                   },
                   0,
                   "day"
@@ -500,7 +508,7 @@
               {
                 "plusTime": [
                   {
-                    "var": "payload.v.0.dt"
+                    "var": "external.validationClock"
                   },
                   0,
                   "day"
@@ -513,9 +521,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -569,7 +577,7 @@
                   {
                     "plusTime": [
                       {
-                        "var": "external.validationClockAtStartOfDay"
+                        "var": "external.validationClock"
                       },
                       0,
                       "day"
@@ -594,9 +602,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -620,11 +628,11 @@
             "var": "payload.v.0"
           },
           {
-            "not-after": [
+            "before": [
               {
                 "plusTime": [
                   {
-                    "var": "external.validationClockAtStartOfDay"
+                    "var": "external.validationClock"
                   },
                   0,
                   "day"
@@ -635,7 +643,7 @@
                   {
                     "var": "payload.v.0.dt"
                   },
-                  364,
+                  365,
                   "day"
                 ]
               }
@@ -646,9 +654,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -702,7 +710,7 @@
                   {
                     "plusTime": [
                       {
-                        "var": "external.validationClockAtStartOfDay"
+                        "var": "external.validationClock"
                       },
                       0,
                       "day"
@@ -727,9 +735,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -790,9 +798,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -828,9 +836,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -869,9 +877,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -895,16 +903,24 @@
             "var": "payload.t.0"
           },
           {
-            "var": "payload.t.0.sc"
+            "!": [
+              {
+                "!": [
+                  {
+                    "var": "payload.t.0.sc"
+                  }
+                ]
+              }
+            ]
           },
           true
         ]
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -954,9 +970,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -1011,9 +1027,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -1068,9 +1084,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -1131,9 +1147,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -1157,16 +1173,24 @@
             "var": "payload.r.0"
           },
           {
-            "var": "payload.r.0.fr"
+            "!": [
+              {
+                "!": [
+                  {
+                    "var": "payload.r.0.fr"
+                  }
+                ]
+              }
+            ]
           },
           true
         ]
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -1190,11 +1214,11 @@
             "var": "payload.r.0"
           },
           {
-            "not-before": [
+            "after": [
               {
                 "plusTime": [
                   {
-                    "var": "external.validationClockAtStartOfDay"
+                    "var": "external.validationClock"
                   },
                   0,
                   "day"
@@ -1216,9 +1240,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     },
     {
       "affectedFields": [
@@ -1242,11 +1266,11 @@
             "var": "payload.r.0"
           },
           {
-            "not-after": [
+            "before": [
               {
                 "plusTime": [
                   {
-                    "var": "external.validationClockAtStartOfDay"
+                    "var": "external.validationClock"
                   },
                   0,
                   "day"
@@ -1257,7 +1281,7 @@
                   {
                     "var": "payload.r.0.fr"
                   },
-                  179,
+                  180,
                   "day"
                 ]
               }
@@ -1268,9 +1292,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2020-01-01T00:00:00Z",
+      "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.0"
+      "version": "1.0.3"
     }
   ],
   "validDuration": 172800000,

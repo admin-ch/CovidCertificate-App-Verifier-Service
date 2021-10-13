@@ -169,7 +169,15 @@
             "var": "payload.v.0"
           },
           {
-            "var": "payload.v.0.dt"
+            "!": [
+              {
+                "!": [
+                  {
+                    "var": "payload.v.0.dt"
+                  }
+                ]
+              }
+            ]
           },
           true
         ]
@@ -201,11 +209,11 @@
             ]
           },
           {
-            ">=": [
+            "<=": [
               {
                 "plusTime": [
                   {
-                    "var": "external.validationClockAtStartOfDay"
+                    "var": "payload.v.0.dt"
                   },
                   0,
                   "day"
@@ -214,7 +222,7 @@
               {
                 "plusTime": [
                   {
-                    "var": "payload.v.0.dt"
+                    "var": "external.validationClock"
                   },
                   0,
                   "day"
@@ -264,7 +272,7 @@
                   {
                     "plusTime": [
                       {
-                        "var": "external.validationClockAtStartOfDay"
+                        "var": "external.validationClock"
                       },
                       0,
                       "day"
@@ -298,11 +306,11 @@
             "var": "payload.v.0"
           },
           {
-            "<=": [
+            "<": [
               {
                 "plusTime": [
                   {
-                    "var": "external.validationClockAtStartOfDay"
+                    "var": "external.validationClock"
                   },
                   0,
                   "day"
@@ -313,7 +321,7 @@
                   {
                     "var": "payload.v.0.dt"
                   },
-                  364,
+                  365,
                   "day"
                 ]
               }
@@ -361,7 +369,7 @@
                   {
                     "plusTime": [
                       {
-                        "var": "external.validationClockAtStartOfDay"
+                        "var": "external.validationClock"
                       },
                       0,
                       "day"
@@ -484,7 +492,15 @@
             "var": "payload.t.0"
           },
           {
-            "var": "payload.t.0.sc"
+            "!": [
+              {
+                "!": [
+                  {
+                    "var": "payload.t.0.sc"
+                  }
+                ]
+              }
+            ]
           },
           true
         ]
@@ -659,7 +675,15 @@
             "var": "payload.r.0"
           },
           {
-            "var": "payload.r.0.fr"
+            "!": [
+              {
+                "!": [
+                  {
+                    "var": "payload.r.0.fr"
+                  }
+                ]
+              }
+            ]
           },
           true
         ]
@@ -675,11 +699,11 @@
             "var": "payload.r.0"
           },
           {
-            ">=": [
+            ">": [
               {
                 "plusTime": [
                   {
-                    "var": "external.validationClockAtStartOfDay"
+                    "var": "external.validationClock"
                   },
                   0,
                   "day"
@@ -710,11 +734,11 @@
             "var": "payload.r.0"
           },
           {
-            "<=": [
+            "<": [
               {
                 "plusTime": [
                   {
-                    "var": "external.validationClockAtStartOfDay"
+                    "var": "external.validationClock"
                   },
                   0,
                   "day"
@@ -725,7 +749,7 @@
                   {
                     "var": "payload.r.0.fr"
                   },
-                  179,
+                  180,
                   "day"
                 ]
               }
