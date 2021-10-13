@@ -54,7 +54,9 @@ public class ApiKeySecurity extends WebSecurityConfigurerAdapter {
                     }
                 });
 
-        http.csrf()
+        http
+        .antMatcher("/trust/**")
+        .csrf()
                 .disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -62,8 +64,6 @@ public class ApiKeySecurity extends WebSecurityConfigurerAdapter {
                 .addFilter(filter)
                 .authorizeRequests()
                 .antMatchers("/trust/v?/keys") // hello endpoint
-                .permitAll()
-                .antMatchers("/dcga/**") // internal endpoints
                 .permitAll()
                 .antMatchers("/trust/v?/**")
                 .authenticated();
