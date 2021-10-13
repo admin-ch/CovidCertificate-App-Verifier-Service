@@ -1,0 +1,41 @@
+{
+  "AffectedFields": [
+    "t.0",
+    "t.0.sc"
+  ],
+  "CertificateType": "Test",
+  "Country": "CH",
+  "Description": [
+    {
+      "desc": "Date of sample collection must exist",
+      "lang": "en"
+    }
+  ],
+  "Engine": "CERTLOGIC",
+  "EngineVersion": "0.7.5",
+  "Identifier": "TR-CH-0004",
+  "Logic": {
+    "if": [
+      {
+        "var": "payload.t.0"
+      },
+      {
+        "!": [
+          {
+            "!": [
+              {
+                "var": "payload.t.0.sc"
+              }
+            ]
+          }
+        ]
+      },
+      true
+    ]
+  },
+  "SchemaVersion": "1.0.0",
+  "Type": "Acceptance",
+  "ValidFrom": "2021-10-18T12:00:00Z",
+  "ValidTo": "2031-01-01T00:00:00Z",
+  "Version": "1.0.3"
+}

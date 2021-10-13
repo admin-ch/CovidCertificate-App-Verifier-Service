@@ -1,0 +1,69 @@
+{
+  "AffectedFields": [
+    "v.0",
+    "v.0.mp",
+    "v.0.dt"
+  ],
+  "CertificateType": "Vaccination",
+  "Country": "CH",
+  "Description": [
+    {
+      "desc": "If the vaccine requires two doses, the vaccination date must be before today",
+      "lang": "en"
+    }
+  ],
+  "Engine": "CERTLOGIC",
+  "EngineVersion": "0.7.5",
+  "Identifier": "VR-CH-0004",
+  "Logic": {
+    "if": [
+      {
+        "and": [
+          {
+            "var": "payload.v.0"
+          },
+          {
+            "in": [
+              {
+                "var": "payload.v.0.mp"
+              },
+              [
+                "EU/1/20/1528",
+                "EU/1/20/1507",
+                "EU/1/21/1529"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "not-after": [
+          {
+            "plusTime": [
+              {
+                "var": "payload.v.0.dt"
+              },
+              0,
+              "day"
+            ]
+          },
+          {
+            "plusTime": [
+              {
+                "var": "external.validationClock"
+              },
+              0,
+              "day"
+            ]
+          }
+        ]
+      },
+      true
+    ]
+  },
+  "SchemaVersion": "1.0.0",
+  "Type": "Acceptance",
+  "ValidFrom": "2021-10-18T12:00:00Z",
+  "ValidTo": "2031-01-01T00:00:00Z",
+  "Version": "1.0.3"
+}

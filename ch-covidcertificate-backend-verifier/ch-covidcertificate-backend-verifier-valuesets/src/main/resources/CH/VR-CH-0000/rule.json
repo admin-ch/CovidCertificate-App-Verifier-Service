@@ -1,0 +1,63 @@
+{
+  "AffectedFields": [
+    "v.0",
+    "v.1",
+    "r.0",
+    "t.0"
+  ],
+  "CertificateType": "Vaccination",
+  "Country": "CH",
+  "Description": [
+    {
+      "desc": "At most one v-event.",
+      "lang": "en"
+    }
+  ],
+  "Engine": "CERTLOGIC",
+  "EngineVersion": "0.7.5",
+  "Identifier": "VR-CH-0000",
+  "Logic": {
+    "if": [
+      {
+        "var": "payload.v.0"
+      },
+      {
+        "if": [
+          {
+            "and": [
+              {
+                "!": [
+                  {
+                    "var": "payload.v.1"
+                  }
+                ]
+              },
+              {
+                "!": [
+                  {
+                    "var": "payload.r.0"
+                  }
+                ]
+              },
+              {
+                "!": [
+                  {
+                    "var": "payload.t.0"
+                  }
+                ]
+              }
+            ]
+          },
+          true,
+          false
+        ]
+      },
+      true
+    ]
+  },
+  "SchemaVersion": "1.0.0",
+  "Type": "Acceptance",
+  "ValidFrom": "2021-10-18T12:00:00Z",
+  "ValidTo": "2031-01-01T00:00:00Z",
+  "Version": "1.0.3"
+}
