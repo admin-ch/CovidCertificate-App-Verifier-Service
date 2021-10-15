@@ -14,6 +14,7 @@ import static ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil.
 import static ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil.getEcDsc;
 import static ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil.getRsaDsc;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -128,10 +129,11 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         final var rsaDsc = getRsaDsc(0, "CH", cscaId);
         verifierDataService.insertDscs(Collections.singletonList(rsaDsc));
         verifierDataService.removeDscsNotIn(Collections.emptyList());
-        assertTrue(verifierDataService.findActiveDscKeyIds().isEmpty());
+        assertFalse(verifierDataService.findActiveDscKeyIds().isEmpty());
         verifierDataService.removeDscsNotIn(Collections.singletonList("keyid_0"));
         final var ecDsc = getEcDsc(1, "CH", cscaId);
-        verifierDataService.insertDscs(List.of(rsaDsc, ecDsc));
+        verifierDataService.insertDscs(List.of(ecDsc));
+        assertEquals(2, verifierDataService.findActiveDscKeyIds().size());
         verifierDataService.removeDscsNotIn(Collections.singletonList(rsaDsc.getKeyId()));
         assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
 

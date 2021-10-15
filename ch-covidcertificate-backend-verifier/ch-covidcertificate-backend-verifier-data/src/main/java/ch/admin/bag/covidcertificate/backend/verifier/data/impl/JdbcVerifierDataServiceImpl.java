@@ -125,14 +125,16 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     @Override
     @Transactional
     public int removeDscsNotIn(List<String> keyIdsToKeep) {
-        var sql = "delete from t_document_signer_certificate";
-        final var params = new MapSqlParameterSource();
         if (!keyIdsToKeep.isEmpty()) {
+            var sql = "delete from t_document_signer_certificate";
+            final var params = new MapSqlParameterSource();
             sql += " where key_id not in (:kids) and source != :manual";
             params.addValue("kids", keyIdsToKeep);
             params.addValue("manual", CertSource.MANUAL.name());
+            return jt.update(sql, params);
+        } else {
+            return 0;
         }
-        return jt.update(sql, params);
     }
 
     @Override
