@@ -1,13 +1,14 @@
 {
   "AffectedFields": [
     "v.0",
-    "v.0.dt"
+    "v.0.dt",
+    "v.0.mp"
   ],
   "CertificateType": "Vaccination",
   "Country": "CH",
   "Description": [
     {
-      "desc": "Today must be less than the vaccination date plus 364 days",
+      "desc": "Today must be less than the vaccination date plus 364 days for 2-dose vaccines",
       "lang": "en"
     }
   ],
@@ -17,7 +18,25 @@
   "Logic": {
     "if": [
       {
-        "var": "payload.v.0"
+        "and": [
+          {
+            "var": "payload.v.0"
+          },
+          {
+            "!": [
+              {
+                "in": [
+                  {
+                    "var": "payload.v.0.mp"
+                  },
+                  [
+                    "EU/1/20/1525"
+                  ]
+                ]
+              }
+            ]
+          }
+        ]
       },
       {
         "before": [

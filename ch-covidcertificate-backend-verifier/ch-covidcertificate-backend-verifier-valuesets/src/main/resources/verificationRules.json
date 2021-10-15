@@ -236,7 +236,7 @@
     },
     {
       "inputParameter": "[\"v.0\",\"v.0.mp\",\"v.0.dn\",\"v.0.dt\"]",
-      "description": "If the vaccine requires one dose, and only one dose was administered, it is valid after 21 days ",
+      "description": "If the vaccine requires one dose, and only one dose was administered, it is valid after 21 days and until 387 days later",
       "id": "VR-CH-0005",
       "logic": {
         "if": [
@@ -268,23 +268,49 @@
                 ]
               },
               {
-                ">=": [
+                "and": [
                   {
-                    "plusTime": [
+                    ">=": [
                       {
-                        "var": "external.validationClock"
+                        "plusTime": [
+                          {
+                            "var": "external.validationClock"
+                          },
+                          0,
+                          "day"
+                        ]
                       },
-                      0,
-                      "day"
+                      {
+                        "plusTime": [
+                          {
+                            "var": "payload.v.0.dt"
+                          },
+                          21,
+                          "day"
+                        ]
+                      }
                     ]
                   },
                   {
-                    "plusTime": [
+                    "<": [
                       {
-                        "var": "payload.v.0.dt"
+                        "plusTime": [
+                          {
+                            "var": "external.validationClock"
+                          },
+                          0,
+                          "day"
+                        ]
                       },
-                      21,
-                      "day"
+                      {
+                        "plusTime": [
+                          {
+                            "var": "payload.v.0.dt"
+                          },
+                          387,
+                          "day"
+                        ]
+                      }
                     ]
                   }
                 ]
@@ -297,13 +323,31 @@
       }
     },
     {
-      "inputParameter": "[\"v.0\",\"v.0.dt\"]",
-      "description": "Today must be less than the vaccination date plus 364 days",
+      "inputParameter": "[\"v.0\",\"v.0.dt\",\"v.0.mp\"]",
+      "description": "Today must be less than the vaccination date plus 364 days for 2-dose vaccines",
       "id": "VR-CH-0006",
       "logic": {
         "if": [
           {
-            "var": "payload.v.0"
+            "and": [
+              {
+                "var": "payload.v.0"
+              },
+              {
+                "!": [
+                  {
+                    "in": [
+                      {
+                        "var": "payload.v.0.mp"
+                      },
+                      [
+                        "EU/1/20/1525"
+                      ]
+                    ]
+                  }
+                ]
+              }
+            ]
           },
           {
             "<": [
@@ -333,7 +377,7 @@
     },
     {
       "inputParameter": "[\"v.0\",\"v.0.mp\",\"v.0.dn\",\"v.0.dt\"]",
-      "description": "If the vaccine requires only one dose but more than one dose was administered, it is valid from today ",
+      "description": "If the vaccine requires only one dose but more than one dose was administered, it is valid from today for 365 days",
       "id": "VR-CH-0007",
       "logic": {
         "if": [
@@ -365,23 +409,49 @@
                 ]
               },
               {
-                ">=": [
+                "and": [
                   {
-                    "plusTime": [
+                    ">=": [
                       {
-                        "var": "external.validationClock"
+                        "plusTime": [
+                          {
+                            "var": "external.validationClock"
+                          },
+                          0,
+                          "day"
+                        ]
                       },
-                      0,
-                      "day"
+                      {
+                        "plusTime": [
+                          {
+                            "var": "payload.v.0.dt"
+                          },
+                          0,
+                          "day"
+                        ]
+                      }
                     ]
                   },
                   {
-                    "plusTime": [
+                    "<": [
                       {
-                        "var": "payload.v.0.dt"
+                        "plusTime": [
+                          {
+                            "var": "external.validationClock"
+                          },
+                          0,
+                          "day"
+                        ]
                       },
-                      0,
-                      "day"
+                      {
+                        "plusTime": [
+                          {
+                            "var": "payload.v.0.dt"
+                          },
+                          365,
+                          "day"
+                        ]
+                      }
                     ]
                   }
                 ]

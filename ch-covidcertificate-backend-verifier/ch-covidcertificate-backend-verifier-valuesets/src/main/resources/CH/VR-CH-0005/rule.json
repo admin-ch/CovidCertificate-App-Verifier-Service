@@ -9,7 +9,7 @@
   "Country": "CH",
   "Description": [
     {
-      "desc": "If the vaccine requires one dose, and only one dose was administered, it is valid after 21 days ",
+      "desc": "If the vaccine requires one dose, and only one dose was administered, it is valid after 21 days and until 387 days later",
       "lang": "en"
     }
   ],
@@ -46,23 +46,49 @@
             ]
           },
           {
-            "not-before": [
+            "and": [
               {
-                "plusTime": [
+                "not-before": [
                   {
-                    "var": "external.validationClock"
+                    "plusTime": [
+                      {
+                        "var": "external.validationClock"
+                      },
+                      0,
+                      "day"
+                    ]
                   },
-                  0,
-                  "day"
+                  {
+                    "plusTime": [
+                      {
+                        "var": "payload.v.0.dt"
+                      },
+                      21,
+                      "day"
+                    ]
+                  }
                 ]
               },
               {
-                "plusTime": [
+                "before": [
                   {
-                    "var": "payload.v.0.dt"
+                    "plusTime": [
+                      {
+                        "var": "external.validationClock"
+                      },
+                      0,
+                      "day"
+                    ]
                   },
-                  21,
-                  "day"
+                  {
+                    "plusTime": [
+                      {
+                        "var": "payload.v.0.dt"
+                      },
+                      387,
+                      "day"
+                    ]
+                  }
                 ]
               }
             ]
