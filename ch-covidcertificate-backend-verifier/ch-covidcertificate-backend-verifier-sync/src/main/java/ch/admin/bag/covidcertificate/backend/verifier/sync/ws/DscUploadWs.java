@@ -10,6 +10,7 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.ws;
 
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DscUploadClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.UnexpectedAlgorithmException;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.model.DscUploadResponse;
@@ -33,9 +34,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class DscUploadWs {
     private static final Logger logger = LoggerFactory.getLogger(DscUploadWs.class);
     private final DscUploadClient dscUploadClient;
+    private final DgcCertSyncer dgcSyncer;
 
-    public DscUploadWs(DscUploadClient dscUploadClient) {
+    public DscUploadWs(DscUploadClient dscUploadClient, DgcCertSyncer dgcSyncer) {
         this.dscUploadClient = dscUploadClient;
+        this.dgcSyncer = dgcSyncer;
     }
 
     @Documentation(
@@ -53,5 +56,12 @@ public class DscUploadWs {
                     NoSuchAlgorithmException, OperatorCreationException, CMSException {
         logger.info("uploading dscs");
         return ResponseEntity.ok(dscUploadClient.uploadDscs());
+    }
+
+    @Documentation(description = "internal endpoint for triggering dsc download")
+    @GetMapping(value = "trigger/download", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody ResponseEntity<String> triggerDscDownload() {
+        logger.info("syncing dscs");
+        return ResponseEntity.ok(dgcSyncer.sync());
     }
 }

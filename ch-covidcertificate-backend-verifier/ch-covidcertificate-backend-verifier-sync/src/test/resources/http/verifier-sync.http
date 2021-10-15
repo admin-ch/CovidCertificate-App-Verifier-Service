@@ -9,3 +9,7 @@ Accept: application/json
 ### upload dsc aliases
 GET {{syncBaseUrl}}/dsc/upload/trigger
 Accept: application/json
+
+### upload dsc aliases
+GET {{syncBaseUrl}}/dsc/upload/trigger/download
+Accept: application/json

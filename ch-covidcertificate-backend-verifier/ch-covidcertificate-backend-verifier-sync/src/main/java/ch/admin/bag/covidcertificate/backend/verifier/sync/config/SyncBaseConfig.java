@@ -187,7 +187,7 @@ public abstract class SyncBaseConfig {
     }
 
     @Bean
-    public DscUploadWs dscUploadWs(DscUploadClient dscUploadClient) {
-        return new DscUploadWs(dscUploadClient);
+    public DscUploadWs dscUploadWs(DscUploadClient dscUploadClient, DgcCertSyncer dgcCertSyncer) {
+        return new DscUploadWs(dscUploadClient, dgcCertSyncer);
     }
 }

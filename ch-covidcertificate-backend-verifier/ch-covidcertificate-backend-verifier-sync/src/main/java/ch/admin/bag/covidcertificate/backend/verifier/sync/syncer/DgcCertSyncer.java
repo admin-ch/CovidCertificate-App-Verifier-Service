@@ -42,12 +42,16 @@ public class DgcCertSyncer {
         this.verifierDataService = verifierDataService;
     }
 
-    public void sync() {
+    public String sync() {
         logger.info("Start sync with DGC Gateway");
         var start = Instant.now();
         download();
         var end = Instant.now();
-        logger.info("Finished sync in {} ms", end.toEpochMilli() - start.toEpochMilli());
+        String msg =
+                String.format(
+                        "Finished sync in %s ms", (end.toEpochMilli() - start.toEpochMilli()));
+        logger.info(msg);
+        return msg;
     }
 
     private void download() {

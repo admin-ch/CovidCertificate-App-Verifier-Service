@@ -42,19 +42,19 @@ public class SyncSchedulingBaseConfig {
         this.dgcRulesSyncer = dgcRulesSyncer;
     }
 
-    @Scheduled(cron = "${dgc.sync.cron}")
-    @SchedulerLock(name = "DGC_download", lockAtLeastFor = "PT15S")
-    public void dgcSyncCron() {
-        LockAssert.assertLocked();
-        dgcSyncer.sync();
-    }
-
-    @Scheduled(fixedRate = Long.MAX_VALUE, initialDelay = 0)
-    @SchedulerLock(name = "DGC_download", lockAtLeastFor = "PT15S")
-    public void dgcSyncOnStartup() {
-        LockAssert.assertLocked();
-        dgcSyncer.sync();
-    }
+//    @Scheduled(cron = "${dgc.sync.cron}")
+//    @SchedulerLock(name = "DGC_download", lockAtLeastFor = "PT15S")
+//    public void dgcSyncCron() {
+//        LockAssert.assertLocked();
+//        dgcSyncer.sync();
+//    }
+//
+//    @Scheduled(fixedRate = Long.MAX_VALUE, initialDelay = 0)
+//    @SchedulerLock(name = "DGC_download", lockAtLeastFor = "PT15S")
+//    public void dgcSyncOnStartup() {
+//        LockAssert.assertLocked();
+//        dgcSyncer.sync();
+//    }
 
     @Scheduled(cron = "${value-set.clean.cron:0 0 1 ? * *}")
     @SchedulerLock(name = "value_set_clean", lockAtLeastFor = "PT15S")
