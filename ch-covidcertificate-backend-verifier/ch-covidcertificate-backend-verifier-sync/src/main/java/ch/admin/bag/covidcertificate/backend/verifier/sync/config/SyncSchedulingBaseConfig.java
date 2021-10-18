@@ -17,6 +17,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetSyn
 import net.javacrumbs.shedlock.core.LockAssert;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,30 +31,28 @@ public class SyncSchedulingBaseConfig {
     private final DgcValueSetSyncer dgcValueSetSyncer;
     private final ValueSetDataService valueSetDataService;
     private final DgcRulesSyncer dgcRulesSyncer;
+    private final boolean syncCronEnabled;
 
     public SyncSchedulingBaseConfig(
             DgcCertSyncer dgcSyncer,
             DgcValueSetSyncer dgcValueSetSyncer,
             ValueSetDataService valueSetDataService,
-            DgcRulesSyncer dgcRulesSyncer) {
+            DgcRulesSyncer dgcRulesSyncer,
+            @Value("${dgc.sync.cron.enable:true}") boolean syncCronEnabled) {
         this.dgcSyncer = dgcSyncer;
         this.dgcValueSetSyncer = dgcValueSetSyncer;
         this.valueSetDataService = valueSetDataService;
         this.dgcRulesSyncer = dgcRulesSyncer;
+        this.syncCronEnabled = syncCronEnabled;
     }
 
     @Scheduled(cron = "${dgc.sync.cron}")
     @SchedulerLock(name = "DGC_download", lockAtLeastFor = "PT15S")
     public void dgcSyncCron() {
-        LockAssert.assertLocked();
-        dgcSyncer.sync();
-    }
-
-    @Scheduled(fixedRate = Long.MAX_VALUE, initialDelay = 0)
-    @SchedulerLock(name = "DGC_download", lockAtLeastFor = "PT15S")
-    public void dgcSyncOnStartup() {
-        LockAssert.assertLocked();
-        dgcSyncer.sync();
+        if (syncCronEnabled) {
+            LockAssert.assertLocked();
+            dgcSyncer.sync();
+        }
     }
 
     @Scheduled(cron = "${value-set.clean.cron:0 0 1 ? * *}")

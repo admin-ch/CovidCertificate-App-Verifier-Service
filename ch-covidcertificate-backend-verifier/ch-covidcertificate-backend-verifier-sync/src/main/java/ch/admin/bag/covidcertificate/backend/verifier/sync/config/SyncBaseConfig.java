@@ -26,6 +26,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DscUploadClien
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.SigningClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.DgcHubProxy;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.DscSyncWs;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.DscUploadWs;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -189,5 +190,10 @@ public abstract class SyncBaseConfig {
     @Bean
     public DscUploadWs dscUploadWs(DscUploadClient dscUploadClient) {
         return new DscUploadWs(dscUploadClient);
+    }
+
+    @Bean
+    public DscSyncWs dgcSyncWs(DgcCertSyncer dgcCertSyncer, LockProvider lockProvider) {
+        return new DscSyncWs(dgcCertSyncer, lockProvider);
     }
 }
