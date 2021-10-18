@@ -58,8 +58,8 @@ public class DgcCertSyncer {
         logger.info("Finished sync in {} ms", end.toEpochMilli() - start.toEpochMilli());
     }
 
-    @Transactional(rollbackFor = { DgcSyncException.class })
-    private void download() throws DgcSyncException {
+    @Transactional(rollbackFor = { DgcSyncException.class, Throwable.class })
+    public void download() throws DgcSyncException {
         logger.info("Downloading certificates from DGC Gateway");
         var start = Instant.now();
         downloadCscas();
