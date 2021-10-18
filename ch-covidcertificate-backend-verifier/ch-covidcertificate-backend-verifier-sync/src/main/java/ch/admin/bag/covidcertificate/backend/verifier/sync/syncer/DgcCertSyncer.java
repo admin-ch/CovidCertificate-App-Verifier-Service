@@ -10,13 +10,6 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
-import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
-import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
-import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
-import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CertificateType;
-import ch.admin.bag.covidcertificate.backend.verifier.model.sync.TrustList;
-import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.TrustListMapper;
-import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.UnexpectedAlgorithmException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -27,8 +20,19 @@ import java.security.cert.CertificateNotYetValidException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
+
+import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
+import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
+import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CertificateType;
+import ch.admin.bag.covidcertificate.backend.verifier.model.sync.TrustList;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.TrustListMapper;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.UnexpectedAlgorithmException;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.exception.DgcSyncException;
 
 public class DgcCertSyncer {
 
@@ -45,12 +49,17 @@ public class DgcCertSyncer {
     public void sync() {
         logger.info("Start sync with DGC Gateway");
         var start = Instant.now();
-        download();
+        try {
+            download();
+        } catch (DgcSyncException syncException) {
+            logger.error("[DgcCertSyncer] Fatal Error: {}", syncException.getInnerException());
+        }
         var end = Instant.now();
         logger.info("Finished sync in {} ms", end.toEpochMilli() - start.toEpochMilli());
     }
 
-    private void download() {
+    @Transactional(rollbackFor = { DgcSyncException.class })
+    private void download() throws DgcSyncException {
         logger.info("Downloading certificates from DGC Gateway");
         var start = Instant.now();
         downloadCscas();
@@ -59,7 +68,7 @@ public class DgcCertSyncer {
         logger.info("Finished download in {} ms", end.toEpochMilli() - start.toEpochMilli());
     }
 
-    private void downloadCscas() {
+    private void downloadCscas() throws DgcSyncException {
         // Check which CSCAs are currently stored in the db
         final var activeCscaKeyIds = verifierDataService.findActiveCscaKeyIds();
         // Download CSCAs and check validity
@@ -89,6 +98,8 @@ public class DgcCertSyncer {
                         "Dropping CSCA trustlist {} of origin {}: Couldn't map to X509 certificate",
                         cscaTrustList.getKid(),
                         cscaTrustList.getCountry());
+                // we abort here, since something is off. The Certificate could not be matched
+                throw new DgcSyncException(e);
             }
         }
         // Remove DSCs whose CSCA is about to be removed
@@ -109,7 +120,7 @@ public class DgcCertSyncer {
                 dbCscaList.size() - removedCscaList.size() - cscaListToInsert.size());
     }
 
-    private void downloadDscs() {
+    private void downloadDscs() throws DgcSyncException {
         // Check which DSCs are currently stored in the db
         final var activeDscKeyIds = verifierDataService.findActiveDscKeyIds();
         // Download and insert DSC certificates
@@ -147,12 +158,16 @@ public class DgcCertSyncer {
                         "Dropping DSC trustlist {} of origin {}: Couldn't map to X509 certificate",
                         dscTrustList.getKid(),
                         dscTrustList.getCountry());
+                // The certificate could not be mapped, let's bail
+                throw new DgcSyncException(e);
             } catch (UnexpectedAlgorithmException e) {
                 logger.info(
                         "Dropping DSC trustlist {} of origin {}: {}",
                         dscTrustList.getKid(),
                         dscTrustList.getCountry(),
                         e.getMessage());
+                // If the algorithm is not known, we should bail!
+                throw new DgcSyncException(e);
             }
         }
         // Remove DSCs that weren't returned by the download

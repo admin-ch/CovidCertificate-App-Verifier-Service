@@ -15,6 +15,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.exception.UploadFail
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CertificateType;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.ProblemReport;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.TrustList;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.exception.DgcSyncException;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.CmsUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -41,7 +42,7 @@ public class DgcCertClient {
         this.rt = rt;
     }
 
-    public TrustList[] download(CertificateType certType) {
+    public TrustList[] download(CertificateType certType) throws DgcSyncException {
         final var uri =
                 UriComponentsBuilder.fromHttpUrl(
                                 baseUrl + String.format(DOWNLOAD_PATH, certType.name()))
@@ -64,13 +65,12 @@ public class DgcCertClient {
                     logger.error("Details: {}", problemReport.getDetails());
                 } catch (IOException ioe) {
                     logger.error("Error parsing trustList error response: {}", responseBody);
-                    return new TrustList[0];
                 }
-                return new TrustList[0];
             } else {
                 logger.error("Download returned error code {}", e.getStatusCode());
-                return new TrustList[0];
             }
+            // The status code does not indicate a success we bail!
+            throw new DgcSyncException(e);
         }
         final var body = response.getBody();
         if (body != null) {
@@ -79,12 +79,14 @@ public class DgcCertClient {
                 trustList = new ObjectMapper().readValue(body, TrustList[].class);
             } catch (IOException e) {
                 logger.error("Error parsing trustList response: {}...", body.substring(0, 100));
-                return new TrustList[0];
+                // Mapping the JSON failed, let's bail!
+                throw new DgcSyncException(e);
             }
             return trustList;
         } else {
             logger.error("Response body was null");
-            return new TrustList[0];
+            // The response body should not be null, probably the stream aborted, let's bail!
+            throw new DgcSyncException(new Exception("Response body was null"));
         }
     }
 
