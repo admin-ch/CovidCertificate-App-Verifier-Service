@@ -121,27 +121,43 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
     @Test
     @Transactional
     void removeDscsNotInTest() {
+        // insert and test csca
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCsca(0, "CH")));
         final var cscas = verifierDataService.findCscas("CH");
         assertEquals(1, cscas.size());
+
+        // insert and test dsc
         final var cscaId = cscas.get(0).getId();
         final var rsaDsc = getRsaDsc(0, "CH", cscaId);
         verifierDataService.insertDscs(Collections.singletonList(rsaDsc));
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+
+        // remove all dscs
         verifierDataService.removeDscsNotIn(Collections.emptyList());
         assertTrue(verifierDataService.findActiveDscKeyIds().isEmpty());
-        verifierDataService.removeDscsNotIn(Collections.singletonList("keyid_0"));
+
+        // insert 2 dscs
         final var ecDsc = getEcDsc(1, "CH", cscaId);
         verifierDataService.insertDscs(List.of(rsaDsc, ecDsc));
-        verifierDataService.removeDscsNotIn(Collections.singletonList(rsaDsc.getKeyId()));
-        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
 
-        // verify manual doesnt get removed
+        // remove 1 dsc
+        verifierDataService.removeDscsNotIn(Collections.singletonList(ecDsc.getKeyId()));
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+        assertEquals(ecDsc.getKeyId(), verifierDataService.findActiveDscKeyIds().get(0));
+
+        // set source to 'MANUAL' for current dsc in db
         updateSourceForAllDscs(CertSource.MANUAL);
-        verifierDataService.removeDscsNotIn(Collections.singletonList(ecDsc.getKeyId()));
+        // insert another dsc with source = 'SYNC'
+        verifierDataService.insertDscs(List.of(rsaDsc));
+        assertEquals(2, verifierDataService.findActiveDscKeyIds().size());
+        // verify manual doesnt get removed
+        verifierDataService.removeDscsNotIn(Collections.emptyList());
         assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
-
+        assertEquals(ecDsc.getKeyId(), verifierDataService.findActiveDscKeyIds().get(0));
+        
+        // reset sources to 'SYNC'. everything should now be removed
         updateSourceForAllDscs(CertSource.SYNC);
-        verifierDataService.removeDscsNotIn(Collections.singletonList(ecDsc.getKeyId()));
+        verifierDataService.removeDscsNotIn(Collections.emptyList());
         assertEquals(0, verifierDataService.findActiveDscKeyIds().size());
     }
 
