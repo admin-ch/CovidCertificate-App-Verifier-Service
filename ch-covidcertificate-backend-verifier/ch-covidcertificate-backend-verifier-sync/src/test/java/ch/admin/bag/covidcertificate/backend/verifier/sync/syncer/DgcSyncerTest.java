@@ -11,8 +11,10 @@
 package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
@@ -40,6 +42,8 @@ class DgcSyncerTest extends BaseDgcTest {
             "src/test/resources/csca.json";
     private final String TEST_JSON_DSC =
             "src/test/resources/dsc.json";
+    private final String TEST_JSON_TRUNCATED_CSCA = "src/test/resources/csca_truncated.json";
+    private final String TEST_JSON_TRUNCATED_DSC = "src/test/resources/dsc_truncated.json";
     
     private final String TEST_JSON_HUGE_CSCA = "src/test/resources/csca_huge.json";
     private final String TEST_JSON_HUGE_DSC = "src/test/resources/dsc_huge.json";
@@ -60,8 +64,10 @@ class DgcSyncerTest extends BaseDgcTest {
     void downloadTest() throws Exception {
         String expectedCsca = Files.readString(Path.of(TEST_JSON_CSCA_STUB));
         String expectedDsc = Files.readString(Path.of(TEST_JSON_DSC_STUB));
+        
         setMockServer(expectedCsca, expectedDsc);
         dgcSyncer.sync();
+        
     }
 
     @Disabled
@@ -94,6 +100,63 @@ class DgcSyncerTest extends BaseDgcTest {
         // Now the database should _not_ be empty
         assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
         assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
+    }
+
+    @Test
+    void deletionAndRecoveryTest() throws Exception {
+        // Start with our set of 7 CSCAs where each CSCA has 20 DSCs
+        String expectedCsca = Files.readString(Path.of(TEST_JSON_CSCA));
+        String expectedDsc = Files.readString(Path.of(TEST_JSON_DSC));
+        setMockServer(expectedCsca, expectedDsc);
+        dgcSyncer.sync();
+        // save max PK id, since after reinsertion the pk should increase 
+        var maxPkId = verifierDataService.findMaxDscPkId();
+        // Everything worked so we should have the full list
+        assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
+
+        // we delete the DE CSCA and two XX DSCs -> we should end up with... 
+        String expectedTruncatedCsca = Files.readString(Path.of(TEST_JSON_TRUNCATED_CSCA));
+        String expectedTruncatedDsc = Files.readString(Path.of(TEST_JSON_TRUNCATED_DSC));
+        setMockServer(expectedTruncatedCsca, expectedTruncatedDsc);
+        dgcSyncer.sync();
+        // ... 6 CSCAS ...
+        assertEquals(7-1, verifierDataService.findActiveCscaKeyIds().size());
+        // ... whereas the DE one is not there ...
+        assertFalse(verifierDataService.findActiveCscaKeyIds().stream().anyMatch(a -> a.equals("mvIaDalHQRo=")));
+        // ... and 2 XX and all of the 20 DEs are deleted 
+        assertEquals(140-22, verifierDataService.findActiveDscKeyIds().size());
+
+        // Now the DGC hub all of a sudden returns the same set again
+        setMockServer(expectedCsca, expectedDsc);
+        dgcSyncer.sync();
+        var newMaxPkId = verifierDataService.findMaxDscPkId();
+        // since we deleted 22 and now inserted 22 new, the max pk should be maxPkId + 22
+        assertEquals(maxPkId + 22, newMaxPkId);
+        // We also should be back to our intial state
+        assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
+
+        // we delete the DE CSCA and two XX DSCs again to test the manual undelete -> we should end up with...
+        setMockServer(expectedTruncatedCsca, expectedTruncatedDsc);
+        dgcSyncer.sync();
+        // ... 6 CSCAS ...
+        assertEquals(7 - 1, verifierDataService.findActiveCscaKeyIds().size());
+        // ... whereas the DE one is not there ...
+        assertFalse(verifierDataService.findActiveCscaKeyIds().stream().anyMatch(a -> a.equals("mvIaDalHQRo=")));
+        // ... and 2 XX and all of the 20 DEs are deleted
+        assertEquals(140 - 22, verifierDataService.findActiveDscKeyIds().size());
+
+        // Let's recover the deleted dscs
+        var markedForDeletion = verifierDataService.findDscsMarkedForDeletion();
+        verifierDataService.insertDscs(markedForDeletion);
+        // We should now end up with 2 more
+        // TODO: also add resurection for CSCAs
+        assertEquals(7 - 1, verifierDataService.findActiveCscaKeyIds().size());
+        // ... whereas the DE one is still not there ...
+        assertFalse(verifierDataService.findActiveCscaKeyIds().stream().anyMatch(a -> a.equals("mvIaDalHQRo=")));
+        // ...  all of the 20 DEs are still deleted
+        assertEquals(140 - 20, verifierDataService.findActiveDscKeyIds().size());
     }
 
     /**
