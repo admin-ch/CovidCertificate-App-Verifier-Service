@@ -132,18 +132,29 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         verifierDataService.insertDscs(Collections.singletonList(rsaDsc));
         assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
 
-        // remove all dscs
+        // remove all dscs (mark for deletion)
         verifierDataService.removeDscsNotIn(Collections.emptyList());
         assertTrue(verifierDataService.findActiveDscKeyIds().isEmpty());
+        assertEquals(
+                rsaDsc.getKeyId(),
+                verifierDataService.findDscsMarkedForDeletion().get(0).getKeyId());
+        // delete
+        verifierDataService.deleteDscsMarkedForDeletion();
 
         // insert 2 dscs
         final var ecDsc = getEcDsc(1, "CH", cscaId);
         verifierDataService.insertDscs(List.of(rsaDsc, ecDsc));
 
-        // remove 1 dsc
+        // remove 1 dsc (mark for deletion)
         verifierDataService.removeDscsNotIn(Collections.singletonList(ecDsc.getKeyId()));
         assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
         assertEquals(ecDsc.getKeyId(), verifierDataService.findActiveDscKeyIds().get(0));
+        assertEquals(
+                rsaDsc.getKeyId(),
+                verifierDataService.findDscsMarkedForDeletion().get(0).getKeyId());
+        // delete (with specific key id)
+        verifierDataService.deleteDscs(List.of(rsaDsc.getKeyId()));
+        assertEquals(0, verifierDataService.findDscsMarkedForDeletion().size());
 
         // set source to 'MANUAL' for current dsc in db
         updateSourceForAllDscs(CertSource.MANUAL);
@@ -159,6 +170,7 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         updateSourceForAllDscs(CertSource.SYNC);
         verifierDataService.removeDscsNotIn(Collections.emptyList());
         assertEquals(0, verifierDataService.findActiveDscKeyIds().size());
+        assertEquals(2, verifierDataService.findDscsMarkedForDeletion().size());
     }
 
     @Test

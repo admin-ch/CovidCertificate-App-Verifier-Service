@@ -53,6 +53,8 @@ public interface VerifierDataService {
     /** removes all DSCs signed by a CSCA in the given list that haven't been added manually */
     public int removeDscsWithCscaIn(List<String> cscaKidsToRemove);
 
+    public List<DbDsc> findDscsMarkedForDeletion();
+
     /** returns the next batch of DSCs after `since` up to `upTo` in the requested format */
     public List<ClientCert> findDscs(Long since, CertFormat certFormat, Long upTo);
 
@@ -82,4 +84,8 @@ public interface VerifierDataService {
     public int getDscBatchSize();
 
     public long findChCscaPkId();
+
+    public void deleteDscs(List<String> keyIdsToDelete);
+
+    public void deleteDscsMarkedForDeletion();
 }
