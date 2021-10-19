@@ -11,12 +11,16 @@
 package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.exception.DgcSyncException;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcRulesSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetSyncer;
 import net.javacrumbs.shedlock.core.LockAssert;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
+
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -27,6 +31,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableSchedulerLock(defaultLockAtMostFor = "PT10M")
 public class SyncSchedulingBaseConfig {
 
+    private static final Logger logger = LoggerFactory.getLogger(SyncSchedulingBaseConfig.class);
     private final DgcCertSyncer dgcSyncer;
     private final DgcValueSetSyncer dgcValueSetSyncer;
     private final ValueSetDataService valueSetDataService;
@@ -51,7 +56,14 @@ public class SyncSchedulingBaseConfig {
     public void dgcSyncCron() {
         if (syncCronEnabled) {
             LockAssert.assertLocked();
-            dgcSyncer.sync();
+                try {
+                    dgcSyncer.sync();
+                } catch (DgcSyncException e) {
+                  logger.error("[FATAL ERROR] {}", e.getInnerException());
+                } catch (Exception e) {
+                    logger.error("[FATAL ERROR] {}", e);
+                }
+            
         }
     }
 

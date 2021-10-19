@@ -10,6 +10,7 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.ws;
 
+import ch.admin.bag.covidcertificate.backend.verifier.sync.exception.DgcSyncException;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
 import ch.ubique.openapi.docannotations.Documentation;
 import java.time.Duration;
@@ -64,7 +65,14 @@ public class DscSyncWs {
                     @Override
                     public void run() {
                         LockAssert.assertLocked();
-                        dgcSyncer.sync();
+                        try {
+                            dgcSyncer.sync();
+                        } catch (DgcSyncException e) {
+                            logger.error("[FATAL ERROR] {}", e.getInnerException());
+                        }
+                        catch (Exception e) {
+                           logger.error("[FATAL ERROR] {}", e);
+                        }
                     }
                 },
                 new LockConfiguration(Instant.now(), name, lockAtMostFor, lockAtLeastFor));

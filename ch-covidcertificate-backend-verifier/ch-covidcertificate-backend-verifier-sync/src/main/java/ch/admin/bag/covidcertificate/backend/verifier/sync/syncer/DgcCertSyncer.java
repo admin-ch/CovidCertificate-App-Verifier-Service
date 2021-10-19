@@ -46,20 +46,16 @@ public class DgcCertSyncer {
         this.verifierDataService = verifierDataService;
     }
 
-    public void sync() {
+    @Transactional(rollbackFor = { DgcSyncException.class, Throwable.class })
+    public void sync() throws DgcSyncException {
         logger.info("Start sync with DGC Gateway");
         var start = Instant.now();
-        try {
-            download();
-        } catch (DgcSyncException syncException) {
-            logger.error("[DgcCertSyncer] Fatal Error: {}", syncException.getInnerException());
-        }
+        download();
         var end = Instant.now();
         logger.info("Finished sync in {} ms", end.toEpochMilli() - start.toEpochMilli());
     }
 
-    @Transactional(rollbackFor = { DgcSyncException.class, Throwable.class })
-    public void download() throws DgcSyncException {
+    private void download() throws DgcSyncException {
         logger.info("Downloading certificates from DGC Gateway");
         var start = Instant.now();
         downloadCscas();
