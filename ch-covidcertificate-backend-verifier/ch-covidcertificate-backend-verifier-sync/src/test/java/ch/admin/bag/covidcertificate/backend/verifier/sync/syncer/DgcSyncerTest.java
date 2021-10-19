@@ -92,8 +92,8 @@ class DgcSyncerTest extends BaseDgcTest {
         dgcSyncer.sync();
 
         // Now the database should _not_ be empty
-        assertNotEquals(0, verifierDataService.findActiveCscaKeyIds().size());
-        assertNotEquals(0, verifierDataService.findActiveDscKeyIds().size());
+        assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
     }
 
     /**
