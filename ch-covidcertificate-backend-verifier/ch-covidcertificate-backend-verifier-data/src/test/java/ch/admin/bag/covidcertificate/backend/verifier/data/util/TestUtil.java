@@ -84,4 +84,12 @@ public class TestUtil {
     public static void clearRevokedCerts(NamedParameterJdbcTemplate jt) {
         jt.update("delete from t_revoked_cert", new MapSqlParameterSource());
     }
+
+    public static void shiftDscDeletedAtBack(NamedParameterJdbcTemplate jt, int numOfDaysToShift) {
+        String sql =
+                String.format(
+                        "update t_document_signer_certificate set deleted_at = deleted_at - INTERVAL '%d DAY'",
+                        numOfDaysToShift);
+        jt.update(sql, new MapSqlParameterSource());
+    }
 }

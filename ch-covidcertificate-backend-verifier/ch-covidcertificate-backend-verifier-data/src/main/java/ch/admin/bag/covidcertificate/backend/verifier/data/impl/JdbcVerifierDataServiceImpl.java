@@ -354,12 +354,17 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional(readOnly = false)
-    public void cleanUpDscsMarkedForDeletion() {
+    public int cleanUpDscsMarkedForDeletion() {
         String sql = "delete from t_document_signer_certificate where deleted_at < :before";
-        jt.update(
+        return jt.update(
                 sql,
                 new MapSqlParameterSource(
                         "before",
                         Date.from(Instant.now().minus(keepDscsMarkedForDeletionDuration))));
+    }
+
+    @Override
+    public Duration getKeepDscsMarkedForDeletionDuration() {
+        return keepDscsMarkedForDeletionDuration;
     }
 }

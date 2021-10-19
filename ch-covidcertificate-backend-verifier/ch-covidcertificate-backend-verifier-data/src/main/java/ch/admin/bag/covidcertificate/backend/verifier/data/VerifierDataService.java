@@ -14,6 +14,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 
@@ -85,5 +86,7 @@ public interface VerifierDataService {
 
     public long findChCscaPkId();
 
-    public void cleanUpDscsMarkedForDeletion();
+    public int cleanUpDscsMarkedForDeletion();
+
+    public Duration getKeepDscsMarkedForDeletionDuration();
 }

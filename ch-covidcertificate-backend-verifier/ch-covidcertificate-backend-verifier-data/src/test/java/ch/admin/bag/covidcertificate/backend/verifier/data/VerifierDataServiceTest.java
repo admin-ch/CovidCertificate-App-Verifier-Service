@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.model.CertSource;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
@@ -232,5 +233,42 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         final var maxDscPkId = verifierDataService.findMaxDscPkId();
         assertTrue(verifierDataService.findDscs(maxDscPkId, CertFormat.IOS, null).isEmpty());
         assertEquals(1, verifierDataService.findDscs(maxDscPkId - 1, CertFormat.IOS, null).size());
+    }
+
+    @Test
+    @Transactional
+    void cleanUpDscsMarkedForDeletionTest() {
+        // insert csca and 2 dscs
+        verifierDataService.insertCscas(Collections.singletonList(getDefaultCsca(0, "CH")));
+        final var cscaId = verifierDataService.findCscas("CH").get(0).getId();
+        DbDsc toRemove = getRsaDsc(0, "CH", cscaId);
+        DbDsc toKeep = getEcDsc(1, "DE", cscaId);
+        verifierDataService.insertDscs(List.of(toRemove, toKeep));
+
+        // mark 1 dsc for deletion (assert pre and post)
+        assertEquals(0, verifierDataService.findDscsMarkedForDeletion().size());
+        assertEquals(2, verifierDataService.findActiveDscKeyIds().size());
+        verifierDataService.removeDscsNotIn(List.of(toKeep.getKeyId()));
+        assertEquals(1, verifierDataService.findDscsMarkedForDeletion().size());
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+
+        // run clean up. dsc should not be removed since it is too young
+        verifierDataService.cleanUpDscsMarkedForDeletion();
+        assertEquals(1, verifierDataService.findDscsMarkedForDeletion().size());
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+
+        // move deleted_at timestamp back 2 days and test again.
+        // dsc should not be removed since it is too young
+        TestUtil.shiftDscDeletedAtBack(jt, 2);
+        verifierDataService.cleanUpDscsMarkedForDeletion();
+        assertEquals(1, verifierDataService.findDscsMarkedForDeletion().size());
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+
+        // move deleted_at timestamp back 6 days and test again.
+        // dsc should now be removed
+        TestUtil.shiftDscDeletedAtBack(jt, 6);
+        verifierDataService.cleanUpDscsMarkedForDeletion();
+        assertEquals(0, verifierDataService.findDscsMarkedForDeletion().size());
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
     }
 }
