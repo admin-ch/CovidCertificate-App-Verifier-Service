@@ -12,11 +12,13 @@ package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThrows;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.exception.DgcSyncException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -29,15 +31,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@EnableTransactionManagement
 class DgcSyncerTest extends BaseDgcTest {
 
     private final String TEST_JSON_CSCA =
-            "src/test/resources/covidcert-verifier_test_vectors_CSCA.json";
+            "src/test/resources/csca.json";
     private final String TEST_JSON_DSC =
-            "src/test/resources/covidcert-verifier_test_vectors_DSC.json";
+            "src/test/resources/dsc.json";
 
     private final String TEST_JSON_CSCA_STUB =
             "src/test/resources/covidcert-verifier_test_vectors_CSCA_stub.json";
@@ -63,13 +63,12 @@ class DgcSyncerTest extends BaseDgcTest {
     void rollbackOnErrorTest() throws Exception {
         String expectedCsca = Files.readString(Path.of(TEST_JSON_CSCA));
         String expectedDsc = Files.readString(Path.of(TEST_JSON_DSC));
-        // we set the mock server which returns 500 for any dsc request
+        // we set the mock server which returns 500 for any dsc request...
         setErrorMockServer(expectedCsca);
-        try {
-            dgcSyncer.sync();
-        } catch (Exception ex) {
-        }
-        // We did not insert anythin and the request failed, so the database should be
+        //...hence the function throws a DgcSyncException!
+        assertThrows(DgcSyncException.class, () -> dgcSyncer.sync());
+
+        // We did not insert anything and the request failed, so the database should be
         // empty
         assertEquals(0, verifierDataService.findActiveCscaKeyIds().size());
         assertEquals(0, verifierDataService.findActiveDscKeyIds().size());
