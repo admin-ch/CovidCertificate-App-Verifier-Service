@@ -68,10 +68,9 @@ public class DscSyncWs {
                         try {
                             dgcSyncer.sync();
                         } catch (DgcSyncException e) {
-                            logger.error("[FATAL ERROR] {}", e.getInnerException());
-                        }
-                        catch (Exception e) {
-                           logger.error("[FATAL ERROR] {}", e);
+                            logger.error("{}", DgcSyncException.EXCEPTION_TAG, e.getInnerException());
+                        } catch (Exception e) {
+                            logger.error("{}", DgcSyncException.EXCEPTION_TAG, e);
                         }
                     }
                 },
