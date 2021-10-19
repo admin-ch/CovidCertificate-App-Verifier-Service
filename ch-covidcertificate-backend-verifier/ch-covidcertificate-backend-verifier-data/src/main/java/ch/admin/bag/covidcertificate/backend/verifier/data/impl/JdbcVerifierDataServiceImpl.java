@@ -19,6 +19,8 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,8 +43,10 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     private final NamedParameterJdbcTemplate jt;
     private final SimpleJdbcInsert cscaInsert;
     private final SimpleJdbcInsert dscInsert;
+    private final Duration keepDscsMarkedForDeletionDuration;
 
-    public JdbcVerifierDataServiceImpl(DataSource dataSource, int dscBatchSize) {
+    public JdbcVerifierDataServiceImpl(
+            DataSource dataSource, int dscBatchSize, Duration keepDscsMarkedForDeletionDuration) {
         this.dscBatchSize = dscBatchSize;
         this.jt = new NamedParameterJdbcTemplate(dataSource);
         this.cscaInsert =
@@ -53,6 +57,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
                 new SimpleJdbcInsert(dataSource)
                         .withTableName("t_document_signer_certificate")
                         .usingGeneratedKeyColumns("pk_dsc_id", "imported_at");
+        this.keepDscsMarkedForDeletionDuration = keepDscsMarkedForDeletionDuration;
     }
 
     @Override
@@ -77,11 +82,12 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
         if (!keyIds.isEmpty()) {
             var sql =
                     "update t_country_specific_certificate_authority"
-                            + " set deleted_at = now()"
-                            + " where key_id in (:kids) and source != :manual";
+                            + " set deleted_at = :now"
+                            + " where key_id in (:kids) and source != :manual and deleted_at is null";
             final var params = new MapSqlParameterSource();
             params.addValue("kids", keyIds);
             params.addValue("manual", CertSource.MANUAL.name());
+            params.addValue("now", Date.from(Instant.now()));
             return jt.update(sql, params);
         } else {
             return 0;
@@ -129,14 +135,19 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     @Override
     @Transactional
     public int removeDscsNotIn(List<String> keyIdsToKeep) {
-        var sql =
-                "update t_document_signer_certificate set deleted_at = now() where source != :manual";
-        final var params = new MapSqlParameterSource("manual", CertSource.MANUAL.name());
         if (!keyIdsToKeep.isEmpty()) {
+            var sql =
+                    "update t_document_signer_certificate set deleted_at = :now"
+                            + " where source != :manual and deleted_at is null";
+            final var params = new MapSqlParameterSource();
+            params.addValue("manual", CertSource.MANUAL.name());
+            params.addValue("now", Date.from(Instant.now()));
             sql += " and key_id not in (:kids)";
             params.addValue("kids", keyIdsToKeep);
+            return jt.update(sql, params);
+        } else {
+            return 0;
         }
-        return jt.update(sql, params);
     }
 
     @Override
@@ -145,12 +156,14 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
         if (!cscaKidsToRemove.isEmpty()) {
             var sql =
                     "update t_document_signer_certificate"
-                            + " set deleted_at = now()"
+                            + " set deleted_at = :now"
                             + " where fk_csca_id in (:fk_csca_id)"
-                            + " and source != :manual";
+                            + " and source != :manual"
+                            + " and deleted_at is null";
             final var params = new MapSqlParameterSource();
             params.addValue("fk_csca_id", findCscaPksForKids(cscaKidsToRemove));
             params.addValue("manual", CertSource.MANUAL.name());
+            params.addValue("now", Date.from(Instant.now()));
             return jt.update(sql, params);
         } else {
             return 0;
@@ -174,9 +187,8 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     @Transactional(readOnly = true)
     public List<DbDsc> findDscsMarkedForDeletion() {
         String sql =
-                "select * from t_document_signer_certificate"
-                        + " where deleted_at is not null"
-                        + " order by pk_dsc_id asc";
+                "select distinct on (key_id) * from t_document_signer_certificate"
+                        + " where deleted_at is not null";
         return jt.query(sql, new MapSqlParameterSource(), new DscRowMapper());
     }
 
@@ -342,18 +354,12 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional(readOnly = false)
-    public void deleteDscs(List<String> keyIdsToDelete) {
-        String sql =
-                "delete from t_document_signer_certificate"
-                        + " where key_id in (:key_ids) and deleted_at is not null";
-        MapSqlParameterSource params = new MapSqlParameterSource("key_ids", keyIdsToDelete);
-        jt.update(sql, params);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public void deleteDscsMarkedForDeletion() {
-        String sql = "delete from t_document_signer_certificate where deleted_at is not null";
-        jt.update(sql, new MapSqlParameterSource());
+    public void cleanUpDscsMarkedForDeletion() {
+        String sql = "delete from t_document_signer_certificate where deleted_at < :before";
+        jt.update(
+                sql,
+                new MapSqlParameterSource(
+                        "before",
+                        Date.from(Instant.now().minus(keepDscsMarkedForDeletionDuration))));
     }
 }

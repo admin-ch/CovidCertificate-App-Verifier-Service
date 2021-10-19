@@ -35,6 +35,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.time.Duration;
 import javax.sql.DataSource;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
@@ -114,8 +115,11 @@ public abstract class SyncBaseConfig {
     }
 
     @Bean
-    public VerifierDataService verifierDataService(DataSource dataSource) {
-        return new JdbcVerifierDataServiceImpl(dataSource, dscBatchSize);
+    public VerifierDataService verifierDataService(
+            DataSource dataSource,
+            @Value("${dsc.deleted.keep.duration:P7D}") Duration keepDscsMarkedForDeletionDuration) {
+        return new JdbcVerifierDataServiceImpl(
+                dataSource, dscBatchSize, keepDscsMarkedForDeletionDuration);
     }
 
     @Bean

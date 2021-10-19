@@ -85,7 +85,5 @@ public interface VerifierDataService {
 
     public long findChCscaPkId();
 
-    public void deleteDscs(List<String> keyIdsToDelete);
-
-    public void deleteDscsMarkedForDeletion();
+    public void cleanUpDscsMarkedForDeletion();
 }

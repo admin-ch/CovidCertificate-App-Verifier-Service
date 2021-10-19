@@ -154,8 +154,10 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public VerifierDataService verifierDataService(DataSource dataSource) {
-        return new JdbcVerifierDataServiceImpl(dataSource, dscBatchSize);
+    public VerifierDataService verifierDataService(
+            DataSource dataSource,
+            @Value("${dsc.deleted.keep.duration:P7D}") Duration keepDscsMarkedForDeletionDuration) {
+        return new JdbcVerifierDataServiceImpl(dataSource, dscBatchSize, keepDscsMarkedForDeletionDuration);
     }
 
     @Bean

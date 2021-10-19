@@ -15,6 +15,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierData
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
+import java.time.Duration;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +50,11 @@ public class TestConfig {
     }
 
     @Bean
-    public VerifierDataService verifierDataService(DataSource dataSource) {
-        return new JdbcVerifierDataServiceImpl(dataSource, dscBatchSize);
+    public VerifierDataService verifierDataService(
+            DataSource dataSource,
+            @Value("${dsc.deleted.keep.duration:P7D}") Duration keepDscsMarkedForDeletionDuration) {
+        return new JdbcVerifierDataServiceImpl(
+                dataSource, dscBatchSize, keepDscsMarkedForDeletionDuration);
     }
 
     @Bean
