@@ -82,6 +82,11 @@ class DgcSyncerTest extends BaseDgcTest {
         assertNotEquals(0, verifierDataService.findActiveDscKeyIds().size());
     }
 
+    /**
+     * Set a mock server which returns a 500 Internal Server Error if the /trustlist/DSC endpoint is called
+     * @param expectedCsca JSON response of the CSCA request
+     * @throws Exception
+     */
     private void setErrorMockServer(String expectedCsca) throws Exception {
         final var mockServer = MockRestServiceServer.createServer(rt);
         mockServer
@@ -97,6 +102,12 @@ class DgcSyncerTest extends BaseDgcTest {
                 .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR).body("ERROR"));
     }
 
+    /**
+     * Set a mock server which succeeds for dsc and cscas both with a 200 and the corresponding JSON 
+     * @param expectedCsca JSON Response of the CSCA request
+     * @param expectedDsc JSON response of the dsc request
+     * @throws URISyntaxException
+     */
     private void setMockServer(String expectedCsca, String expectedDsc) throws URISyntaxException {
         final var mockServer = MockRestServiceServer.createServer(rt);
         mockServer
