@@ -36,7 +36,8 @@ public class TestConfig {
     protected Integer dscBatchSize;
 
     @Bean
-    public DgcCertSyncer dgcSyncer(DgcCertClient dgcClient, VerifierDataService verifierDataService) {
+    public DgcCertSyncer dgcSyncer(
+            DgcCertClient dgcClient, VerifierDataService verifierDataService) {
         logger.info("Instantiated DGC Syncer with baseurl: {}", baseurl);
         return new DgcCertSyncer(dgcClient, verifierDataService);
     }

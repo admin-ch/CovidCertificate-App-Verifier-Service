@@ -10,6 +10,14 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
+import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
+import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CertificateType;
+import ch.admin.bag.covidcertificate.backend.verifier.model.sync.TrustList;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.exception.DgcSyncException;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.TrustListMapper;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.UnexpectedAlgorithmException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -20,19 +28,9 @@ import java.security.cert.CertificateNotYetValidException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
-
-import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
-import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
-import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
-import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CertificateType;
-import ch.admin.bag.covidcertificate.backend.verifier.model.sync.TrustList;
-import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.TrustListMapper;
-import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.UnexpectedAlgorithmException;
-import ch.admin.bag.covidcertificate.backend.verifier.sync.exception.DgcSyncException;
 
 public class DgcCertSyncer {
 
@@ -46,7 +44,7 @@ public class DgcCertSyncer {
         this.verifierDataService = verifierDataService;
     }
 
-    @Transactional(rollbackFor = { DgcSyncException.class, Throwable.class })
+    @Transactional(rollbackFor = {DgcSyncException.class, Throwable.class})
     public void sync() throws DgcSyncException {
         logger.info("Start sync with DGC Gateway");
         var start = Instant.now();

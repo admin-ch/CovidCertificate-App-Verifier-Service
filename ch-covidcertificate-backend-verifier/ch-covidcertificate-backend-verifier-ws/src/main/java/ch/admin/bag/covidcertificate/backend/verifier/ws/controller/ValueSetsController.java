@@ -10,10 +10,10 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.model.valuesets.TestValueSets;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.model.valuesets.VaccineValueSets;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.model.valuesets.ValueSets;
-import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import ch.ubique.openapi.docannotations.Documentation;
 import com.fasterxml.jackson.databind.ObjectMapper;

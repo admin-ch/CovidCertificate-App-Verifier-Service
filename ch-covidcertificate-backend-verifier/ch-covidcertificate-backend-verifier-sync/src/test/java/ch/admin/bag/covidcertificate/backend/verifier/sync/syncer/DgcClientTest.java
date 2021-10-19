@@ -41,8 +41,7 @@ class DgcClientTest extends BaseDgcTest {
     @Value("${dgc.baseurl}")
     String baseurl = "https://testurl.europa.eu";
 
-    @Autowired
-    DgcCertClient dgcClient;
+    @Autowired DgcCertClient dgcClient;
 
     @Test
     void downloadTest() throws Exception {

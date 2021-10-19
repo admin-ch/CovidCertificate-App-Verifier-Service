@@ -18,6 +18,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcAppTokenData
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcRevokedCertDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcValueSetDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
+import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.client.RevocationListSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.DcgaController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyController;
@@ -29,7 +30,6 @@ import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.Verification
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.VerificationRulesControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.interceptor.HeaderInjector;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.security.signature.JwsMessageConverter;
-import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.RestTemplateHelper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

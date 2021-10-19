@@ -154,7 +154,7 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         verifierDataService.removeDscsNotIn(Collections.emptyList());
         assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
         assertEquals(ecDsc.getKeyId(), verifierDataService.findActiveDscKeyIds().get(0));
-        
+
         // reset sources to 'SYNC'. everything should now be removed
         updateSourceForAllDscs(CertSource.SYNC);
         verifierDataService.removeDscsNotIn(Collections.emptyList());

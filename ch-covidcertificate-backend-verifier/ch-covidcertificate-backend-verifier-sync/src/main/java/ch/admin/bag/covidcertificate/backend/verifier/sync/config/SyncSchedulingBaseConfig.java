@@ -18,9 +18,8 @@ import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetSyn
 import net.javacrumbs.shedlock.core.LockAssert;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
-
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -56,14 +55,13 @@ public class SyncSchedulingBaseConfig {
     public void dgcSyncCron() {
         if (syncCronEnabled) {
             LockAssert.assertLocked();
-                try {
-                    dgcSyncer.sync();
-                } catch (DgcSyncException e) {
-                  logger.error("{}", DgcSyncException.EXCEPTION_TAG, e.getInnerException());
-                } catch (Exception e) {
-                    logger.error("{}", DgcSyncException.EXCEPTION_TAG, e);
-                }
-            
+            try {
+                dgcSyncer.sync();
+            } catch (DgcSyncException e) {
+                logger.error("{}", DgcSyncException.EXCEPTION_TAG, e.getInnerException());
+            } catch (Exception e) {
+                logger.error("{}", DgcSyncException.EXCEPTION_TAG, e);
+            }
         }
     }
 
