@@ -23,6 +23,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +40,9 @@ class DgcSyncerTest extends BaseDgcTest {
             "src/test/resources/csca.json";
     private final String TEST_JSON_DSC =
             "src/test/resources/dsc.json";
+    
+    private final String TEST_JSON_HUGE_CSCA = "src/test/resources/csca_huge.json";
+    private final String TEST_JSON_HUGE_DSC = "src/test/resources/dsc_huge.json";
 
     private final String TEST_JSON_CSCA_STUB =
             "src/test/resources/covidcert-verifier_test_vectors_CSCA_stub.json";
@@ -55,6 +60,15 @@ class DgcSyncerTest extends BaseDgcTest {
     void downloadTest() throws Exception {
         String expectedCsca = Files.readString(Path.of(TEST_JSON_CSCA_STUB));
         String expectedDsc = Files.readString(Path.of(TEST_JSON_DSC_STUB));
+        setMockServer(expectedCsca, expectedDsc);
+        dgcSyncer.sync();
+    }
+
+    @Disabled
+    @Test
+    void hugeResponseTest() throws Exception {
+        String expectedCsca = Files.readString(Path.of(TEST_JSON_HUGE_CSCA));
+        String expectedDsc = Files.readString(Path.of(TEST_JSON_HUGE_DSC));
         setMockServer(expectedCsca, expectedDsc);
         dgcSyncer.sync();
     }
