@@ -95,7 +95,7 @@ class DgcSyncerTest extends BaseDgcTest {
         assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
     }
 
-    @Disabled
+    @Disabled("load test. takes >1 minute. doesn't need to be run every time.")
     @Test
     void hugeResponseTest() throws Exception {
         String expectedCsca = Files.readString(Path.of(TEST_JSON_HUGE_CSCA));

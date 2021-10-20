@@ -10,8 +10,8 @@
 package ch.admin.bag.covidcertificate.backend.verifier.model.exception;
 
 public class DgcSyncException extends Exception {
-    public static String EXCEPTION_TAG = "[FATAL ERROR] [DgcSyncException] [Gateway Sync Rollback]";
-    private Exception innerException;
+    public static final String EXCEPTION_TAG = "[FATAL ERROR] [DgcSyncException] [Gateway Sync Rollback]";
+    private final Exception innerException;
 
     public DgcSyncException(Exception innerException) {
         this.innerException = innerException;
