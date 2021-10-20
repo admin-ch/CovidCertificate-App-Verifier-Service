@@ -56,6 +56,8 @@ public interface VerifierDataService {
 
     public List<DbDsc> findDscsMarkedForDeletion();
 
+    public List<DbCsca> findCscaMarkedForDeletion();
+
     /** returns the next batch of DSCs after `since` up to `upTo` in the requested format */
     public List<ClientCert> findDscs(Long since, CertFormat certFormat, Long upTo);
 

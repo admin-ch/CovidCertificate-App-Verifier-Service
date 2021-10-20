@@ -194,6 +194,14 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<DbCsca> findCscaMarkedForDeletion() {
+        String sql = "select distinct on (key_id) * from t_country_specific_certificate_authority"
+                + " where deleted_at is not null";
+        return jt.query(sql, new MapSqlParameterSource(), new CscaRowMapper());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<ClientCert> findDscs(Long since, CertFormat certFormat, Long upTo) {
         List<String> formatSpecificSelectFields;
         switch (certFormat) {

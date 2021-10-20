@@ -88,7 +88,8 @@ class DgcSyncerTest extends BaseDgcTest {
 
         // ...this should actually not do a thing
         setMockServer(expectedEmptyCsca, expectedEmptyDsc);
-        dgcSyncer.sync();
+        // ... in fact it should throw
+        assertThrows(DgcSyncException.class, () -> dgcSyncer.sync());
 
         assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
         assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
@@ -172,15 +173,13 @@ class DgcSyncerTest extends BaseDgcTest {
         assertEquals(140 - 22, verifierDataService.findActiveDscKeyIds().size());
 
         // Let's recover the deleted dscs
-        var markedForDeletion = verifierDataService.findDscsMarkedForDeletion();
-        verifierDataService.insertDscs(markedForDeletion);
-        // We should now end up with 2 more
-        // TODO: also add resurection for CSCAs
-        assertEquals(7 - 1, verifierDataService.findActiveCscaKeyIds().size());
-        // ... whereas the DE one is still not there ...
-        assertFalse(verifierDataService.findActiveCscaKeyIds().stream().anyMatch(a -> a.equals("mvIaDalHQRo=")));
-        // ...  all of the 20 DEs are still deleted
-        assertEquals(140 - 20, verifierDataService.findActiveDscKeyIds().size());
+        var cscaMarkedForDeletion = verifierDataService.findCscaMarkedForDeletion();
+        verifierDataService.insertCscas(cscaMarkedForDeletion);
+        var dscMarkedForDeletion = verifierDataService.findDscsMarkedForDeletion();
+        verifierDataService.insertDscs(dscMarkedForDeletion);
+        // We should now end up with all original certificates
+        assertEquals(7 , verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
     }
 
     /**
