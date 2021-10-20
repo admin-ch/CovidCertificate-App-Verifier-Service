@@ -70,6 +70,30 @@ class DgcSyncerTest extends BaseDgcTest {
         
     }
 
+    @Test
+    void emptyListDoesNotDeleteTest() throws Exception {
+        String expectedCsca = Files.readString(Path.of(TEST_JSON_CSCA));
+        String expectedDsc = Files.readString(Path.of(TEST_JSON_DSC));
+        // we set the mock server which returns normal lists
+        setMockServer(expectedCsca, expectedDsc);
+        // ...hence the function inserts 7 * 20 certificates
+        dgcSyncer.sync();
+
+        assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
+
+        // Now we feed an empty list...
+        String expectedEmptyCsca = Files.readString(Path.of(TEST_JSON_CSCA_STUB));
+        String expectedEmptyDsc = Files.readString(Path.of(TEST_JSON_DSC_STUB));
+
+        // ...this should actually not do a thing
+        setMockServer(expectedEmptyCsca, expectedEmptyDsc);
+        dgcSyncer.sync();
+
+        assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
+    }
+
     @Disabled
     @Test
     void hugeResponseTest() throws Exception {
