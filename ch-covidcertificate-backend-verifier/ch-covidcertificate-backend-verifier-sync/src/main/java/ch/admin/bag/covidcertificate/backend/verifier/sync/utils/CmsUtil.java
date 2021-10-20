@@ -12,6 +12,7 @@ package ch.admin.bag.covidcertificate.backend.verifier.sync.utils;
 
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import ch.admin.bag.covidcertificate.backend.verifier.model.exception.InvalidSignatureException;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.exception.InvalidEcKeySizeException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -54,7 +55,8 @@ public class CmsUtil {
 
     public static DbDsc decodeDscCms(String cms)
             throws CMSException, CertificateException, IOException, OperatorCreationException,
-                    UnexpectedAlgorithmException, NoSuchAlgorithmException {
+                    UnexpectedAlgorithmException, NoSuchAlgorithmException,
+                    InvalidEcKeySizeException {
         CMSSignedData cmsSignedData = new CMSSignedData(Base64.getDecoder().decode(cms));
         validateSignature(cmsSignedData);
         X509Certificate x509 = getPayload(cmsSignedData);

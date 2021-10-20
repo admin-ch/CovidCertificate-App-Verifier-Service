@@ -13,9 +13,10 @@ package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
+import ch.admin.bag.covidcertificate.backend.verifier.model.exception.DgcSyncException;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CertificateType;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.TrustList;
-import ch.admin.bag.covidcertificate.backend.verifier.model.exception.DgcSyncException;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.exception.InvalidEcKeySizeException;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.TrustListMapper;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.UnexpectedAlgorithmException;
 import java.security.InvalidKeyException;
@@ -169,6 +170,8 @@ public class DgcCertSyncer {
                         e);
                 // If the algorithm is not known, we should bail!
                 throw new DgcSyncException(e);
+            } catch (InvalidEcKeySizeException e) {
+                logger.info("received an unsupported EC key of size: {}", e.getKeySize());
             }
         }
         // Remove DSCs that weren't returned by the download

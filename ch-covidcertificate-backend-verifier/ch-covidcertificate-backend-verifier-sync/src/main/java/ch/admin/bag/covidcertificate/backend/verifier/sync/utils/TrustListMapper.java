@@ -15,6 +15,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ExtendedKeyUsag
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.TrustList;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.exception.InvalidEcKeySizeException;
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
@@ -74,9 +75,10 @@ public class TrustListMapper {
      * @throws CertificateException if the certificate's encoding was invalid or its validity has
      *     expired
      * @throws UnexpectedAlgorithmException if the public key's signing algorithm isn't EC or RSA
+     * @throws InvalidEcKeySizeException if the EC public key's size is not 256
      */
     public static DbDsc mapDsc(TrustList trustList)
-            throws CertificateException, UnexpectedAlgorithmException {
+            throws CertificateException, UnexpectedAlgorithmException, InvalidEcKeySizeException {
         return mapDsc(
                 fromBase64EncodedStr(trustList.getRawData()),
                 trustList.getCountry(),
@@ -86,7 +88,7 @@ public class TrustListMapper {
     public static DbDsc mapDsc(X509Certificate dscX509, String origin, String kid)
             throws CertificateEncodingException, CertificateParsingException,
                     UnexpectedAlgorithmException, CertificateNotYetValidException,
-                    CertificateExpiredException {
+                    CertificateExpiredException, InvalidEcKeySizeException {
         dscX509.checkValidity();
         var dsc = new DbDsc();
         dsc.setKeyId(kid);
@@ -105,6 +107,11 @@ public class TrustListMapper {
 
         switch (algorithm) {
             case ES256:
+                int keySize =
+                        ((ECPublicKey) dscX509.getPublicKey()).getParams().getOrder().bitLength();
+                if (keySize > 256) {
+                    throw new InvalidEcKeySizeException(keySize);
+                }
                 dsc.setCrv(P256);
                 dsc.setX(getX(dscX509));
                 dsc.setY(getY(dscX509));

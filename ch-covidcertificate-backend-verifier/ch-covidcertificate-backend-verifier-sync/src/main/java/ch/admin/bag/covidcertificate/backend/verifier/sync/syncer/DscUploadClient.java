@@ -15,6 +15,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertToUpload;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import ch.admin.bag.covidcertificate.backend.verifier.model.exception.AlreadyUploadedException;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.exception.InvalidEcKeySizeException;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.CmsUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.UnexpectedAlgorithmException;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.model.DscUploadResponse;
@@ -52,7 +53,8 @@ public class DscUploadClient {
 
     public DscUploadResponse uploadDscs()
             throws CMSException, CertificateException, IOException, OperatorCreationException,
-                    UnexpectedAlgorithmException, NoSuchAlgorithmException {
+                    UnexpectedAlgorithmException, NoSuchAlgorithmException,
+                    InvalidEcKeySizeException {
         Instant start = Instant.now();
         DscUploadResponse response = new DscUploadResponse();
 

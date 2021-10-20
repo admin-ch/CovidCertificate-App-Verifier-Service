@@ -10,6 +10,7 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.ws;
 
+import ch.admin.bag.covidcertificate.backend.verifier.sync.exception.InvalidEcKeySizeException;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DscUploadClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.UnexpectedAlgorithmException;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.model.DscUploadResponse;
@@ -50,7 +51,8 @@ public class DscUploadWs {
     @GetMapping(value = "trigger", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody ResponseEntity<DscUploadResponse> triggerDscUpload()
             throws UnexpectedAlgorithmException, CertificateException, IOException,
-                    NoSuchAlgorithmException, OperatorCreationException, CMSException {
+                    NoSuchAlgorithmException, OperatorCreationException, CMSException,
+                    InvalidEcKeySizeException {
         logger.info("uploading dscs");
         return ResponseEntity.ok(dscUploadClient.uploadDscs());
     }
