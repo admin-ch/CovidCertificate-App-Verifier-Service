@@ -67,6 +67,9 @@ public class DgcCertSyncer {
         final var activeCscaKeyIds = verifierDataService.findActiveCscaKeyIds();
         // Download CSCAs and check validity
         final var cscaTrustLists = dgcClient.download(CertificateType.CSCA);
+        if (cscaTrustLists.length == 0) {
+            throw new DgcSyncException(new Exception("CSCA List is Empty"));
+        }
         final var dbCscaList = new ArrayList<DbCsca>();
         final var cscaListToInsert = new ArrayList<DbCsca>();
         for (TrustList cscaTrustList : cscaTrustLists) {
@@ -119,6 +122,9 @@ public class DgcCertSyncer {
         final var activeDscKeyIds = verifierDataService.findActiveDscKeyIds();
         // Download and insert DSC certificates
         final var dscTrustLists = dgcClient.download(CertificateType.DSC);
+        if (dscTrustLists.length == 0) {
+            throw new DgcSyncException(new Exception("DSC List was empty"));
+        }
         final var dbDscList = new ArrayList<DbDsc>();
         final var dscListToInsert = new ArrayList<DbDsc>();
         for (TrustList dscTrustList : dscTrustLists) {
