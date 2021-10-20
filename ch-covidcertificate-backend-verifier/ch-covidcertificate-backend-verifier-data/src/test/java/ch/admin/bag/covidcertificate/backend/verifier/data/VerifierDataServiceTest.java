@@ -15,6 +15,7 @@ import static ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil.
 import static ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil.getRsaDsc;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil;
@@ -23,6 +24,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
+import ch.admin.bag.covidcertificate.backend.verifier.model.exception.DgcSyncException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,7 +55,9 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
     void removeCscasNotInTest() throws Exception {
         // assert initial state (no cscas)
         assertTrue(verifierDataService.findCscas("CH").isEmpty());
-        verifierDataService.removeCscasNotIn(Collections.emptyList());
+        assertThrows(
+                DgcSyncException.class,
+                () -> verifierDataService.removeCscasNotIn(Collections.emptyList()));
         verifierDataService.removeCscasNotIn(Collections.singletonList("keyid_0"));
 
         // insert 2 cscas for CH
