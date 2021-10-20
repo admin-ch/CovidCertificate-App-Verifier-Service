@@ -69,7 +69,7 @@ public class SyncSchedulingBaseConfig {
         }
     }
 
-    @Scheduled(cron = "${dsc.deleted.clean.cron:0 0 3 ? * *}")
+    @Scheduled(cron = "${dsc.deleted.clean.cron:-}")
     @SchedulerLock(name = "DSC_clean", lockAtLeastFor = "PT15S")
     public void cleanUpDeletedDscs() {
         int removedCount = verifierDataService.cleanUpDscsMarkedForDeletion();

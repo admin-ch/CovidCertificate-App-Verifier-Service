@@ -24,12 +24,12 @@ public interface VerifierDataService {
     public void insertCscas(List<DbCsca> cscas);
 
     /**
-     * removes all csas with key ids in the given list that haven't been added manually
+     * removes all CSCAs with key ids not in the given list that haven't been added manually
      *
-     * @param keyIds
+     * @param keyIdsToKeep
      * @return number of removed CSCAs
      */
-    public int removeCscas(List<String> keyIds);
+    public int removeCscasNotIn(List<String> keyIdsToKeep);
 
     /**
      * finds all CSCAs of the given origin country
@@ -51,8 +51,8 @@ public interface VerifierDataService {
     /** removes all DSCs with key ids not in the given list that haven't been added manually */
     public int removeDscsNotIn(List<String> keyIdsToKeep);
 
-    /** removes all DSCs signed by a CSCA in the given list that haven't been added manually */
-    public int removeDscsWithCscaIn(List<String> cscaKidsToRemove);
+    /** removes all DSCs signed by a CSCA not in the given list that haven't been added manually */
+    public int removeDscsWithCscaNotIn(List<String> cscaKidsToKeep);
 
     public List<DbDsc> findDscsMarkedForDeletion();
 

@@ -78,14 +78,14 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional
-    public int removeCscas(List<String> keyIds) {
-        if (!keyIds.isEmpty()) {
+    public int removeCscasNotIn(List<String> keyIdsToKeep) {
+        if (!keyIdsToKeep.isEmpty()) {
             var sql =
                     "update t_country_specific_certificate_authority"
                             + " set deleted_at = :now"
-                            + " where key_id in (:kids) and source != :manual and deleted_at is null";
+                            + " where key_id not in (:kids) and source != :manual and deleted_at is null";
             final var params = new MapSqlParameterSource();
-            params.addValue("kids", keyIds);
+            params.addValue("kids", keyIdsToKeep);
             params.addValue("manual", CertSource.MANUAL.name());
             params.addValue("now", Date.from(Instant.now()));
             return jt.update(sql, params);
@@ -138,11 +138,12 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
         if (!keyIdsToKeep.isEmpty()) {
             var sql =
                     "update t_document_signer_certificate set deleted_at = :now"
-                            + " where source != :manual and deleted_at is null";
+                            + " where key_id not in (:kids)"
+                            + " and source != :manual"
+                            + " and deleted_at is null";
             final var params = new MapSqlParameterSource();
             params.addValue("manual", CertSource.MANUAL.name());
             params.addValue("now", Date.from(Instant.now()));
-            sql += " and key_id not in (:kids)";
             params.addValue("kids", keyIdsToKeep);
             return jt.update(sql, params);
         } else {
@@ -152,34 +153,26 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional
-    public int removeDscsWithCscaIn(List<String> cscaKidsToRemove) {
-        if (!cscaKidsToRemove.isEmpty()) {
+    public int removeDscsWithCscaNotIn(List<String> cscaKidsToKeep) {
+        if (!cscaKidsToKeep.isEmpty()) {
+            var fkSubQuery =
+                    "select pk_csca_id from t_country_specific_certificate_authority"
+                            + " where key_id in (:csca_key_ids) and deleted_at is null";
             var sql =
                     "update t_document_signer_certificate"
                             + " set deleted_at = :now"
-                            + " where fk_csca_id in (:fk_csca_id)"
+                            + " where fk_csca_id not in ("
+                            + fkSubQuery
+                            + ")"
                             + " and source != :manual"
                             + " and deleted_at is null";
             final var params = new MapSqlParameterSource();
-            params.addValue("fk_csca_id", findCscaPksForKids(cscaKidsToRemove));
+            params.addValue("csca_key_ids", cscaKidsToKeep);
             params.addValue("manual", CertSource.MANUAL.name());
             params.addValue("now", Date.from(Instant.now()));
             return jt.update(sql, params);
         } else {
             return 0;
-        }
-    }
-
-    private List<Long> findCscaPksForKids(List<String> cscaKids) {
-        if (!cscaKids.isEmpty()) {
-            final var sql =
-                    "select pk_csca_id from t_country_specific_certificate_authority"
-                            + " where key_id in (:kids) and deleted_at is null";
-            final var params = new MapSqlParameterSource();
-            params.addValue("kids", cscaKids);
-            return jt.queryForList(sql, params, Long.class);
-        } else {
-            return new ArrayList<>();
         }
     }
 
@@ -195,8 +188,9 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     @Override
     @Transactional(readOnly = true)
     public List<DbCsca> findCscaMarkedForDeletion() {
-        String sql = "select distinct on (key_id) * from t_country_specific_certificate_authority"
-                + " where deleted_at is not null";
+        String sql =
+                "select distinct on (key_id) * from t_country_specific_certificate_authority"
+                        + " where deleted_at is not null";
         return jt.query(sql, new MapSqlParameterSource(), new CscaRowMapper());
     }
 

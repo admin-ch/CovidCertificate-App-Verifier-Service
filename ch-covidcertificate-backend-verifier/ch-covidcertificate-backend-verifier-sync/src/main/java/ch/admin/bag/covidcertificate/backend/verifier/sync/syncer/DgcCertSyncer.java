@@ -27,6 +27,7 @@ import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,11 +101,11 @@ public class DgcCertSyncer {
             }
         }
         // Remove DSCs whose CSCA is about to be removed
-        final var removedCscaList = new ArrayList<>(activeCscaKeyIds);
-        dbCscaList.stream().map(DbCsca::getKeyId).forEach(removedCscaList::remove);
-        final var removedDscs = verifierDataService.removeDscsWithCscaIn(removedCscaList);
+        List<String> cscaKeyIdsToKeep =
+                dbCscaList.stream().map(DbCsca::getKeyId).collect(Collectors.toList());
+        final var removedDscCount = verifierDataService.removeDscsWithCscaNotIn(cscaKeyIdsToKeep);
         // Remove CSCAs that weren't returned by the download
-        final var removedCscas = verifierDataService.removeCscas(removedCscaList);
+        final var removedCscaCount = verifierDataService.removeCscasNotIn(cscaKeyIdsToKeep);
         // Insert CSCAs
         verifierDataService.insertCscas(cscaListToInsert);
         logger.info(
@@ -112,9 +113,9 @@ public class DgcCertSyncer {
                 cscaTrustLists.length,
                 cscaTrustLists.length - dbCscaList.size(),
                 cscaListToInsert.size(),
-                removedCscas,
-                removedDscs,
-                dbCscaList.size() - removedCscaList.size() - cscaListToInsert.size());
+                removedCscaCount,
+                removedDscCount,
+                activeCscaKeyIds.size() - removedCscaCount + cscaListToInsert.size());
     }
 
     private void downloadDscs() throws DgcSyncException {
@@ -162,16 +163,16 @@ public class DgcCertSyncer {
                 throw new DgcSyncException(e);
             } catch (UnexpectedAlgorithmException e) {
                 logger.info(
-                        "Dropping DSC trustlist {} of origin {}: {}",
+                        "Dropping DSC trustlist {} of origin {}",
                         dscTrustList.getKid(),
                         dscTrustList.getCountry(),
-                        e.getMessage());
+                        e);
                 // If the algorithm is not known, we should bail!
                 throw new DgcSyncException(e);
             }
         }
         // Remove DSCs that weren't returned by the download
-        final var removedDscs =
+        final var removedDscCount =
                 verifierDataService.removeDscsNotIn(
                         dbDscList.stream().map(DbDsc::getKeyId).collect(Collectors.toList()));
         // Insert DSCs
@@ -181,8 +182,8 @@ public class DgcCertSyncer {
                 dscTrustLists.length,
                 dscTrustLists.length - dbDscList.size(),
                 dscListToInsert.size(),
-                removedDscs,
-                dbDscList.size() - removedDscs - dscListToInsert.size());
+                removedDscCount,
+                activeDscKeyIds.size() - removedDscCount + dscListToInsert.size());
     }
 
     private boolean verify(DbDsc dbDsc) {
