@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 
 class TrustListMapperTest {
 
-    private final String TEST_JSON = "src/test/resources/covidcert-verifier_test_vectors.json";
+    private final String TEST_JSON = "src/test/resources/covidcert-verifier_test_vectors_DSC.json";
 
     @Test
     void mapCsca() throws Exception {

@@ -62,8 +62,8 @@ class DgcSyncerTest extends BaseDgcTest {
 
     @Test
     void downloadTest() throws Exception {
-        String expectedCsca = Files.readString(Path.of(TEST_JSON_CSCA_STUB));
-        String expectedDsc = Files.readString(Path.of(TEST_JSON_DSC_STUB));
+        String expectedCsca = Files.readString(Path.of(TEST_JSON_CSCA));
+        String expectedDsc = Files.readString(Path.of(TEST_JSON_DSC));
         
         setMockServer(expectedCsca, expectedDsc);
         dgcSyncer.sync();

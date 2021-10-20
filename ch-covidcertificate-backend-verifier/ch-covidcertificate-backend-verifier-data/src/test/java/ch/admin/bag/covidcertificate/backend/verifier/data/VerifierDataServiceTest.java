@@ -62,6 +62,7 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         verifierDataService.insertCscas(Collections.singletonList(toKeep));
         DbCsca toRemove = getDefaultCsca(1, "CH");
         verifierDataService.insertCscas(Collections.singletonList(toRemove));
+        assertEquals(2, verifierDataService.findCscas("CH").size());
 
         // remove 1 csca
         verifierDataService.removeCscasNotIn(List.of(toKeep.getKeyId()));

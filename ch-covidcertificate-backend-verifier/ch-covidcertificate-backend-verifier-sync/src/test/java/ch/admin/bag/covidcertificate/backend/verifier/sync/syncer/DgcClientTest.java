@@ -12,11 +12,13 @@ package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CertificateType;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.exception.DgcSyncException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,7 +36,7 @@ import org.springframework.test.web.client.MockRestServiceServer;
 class DgcClientTest extends BaseDgcTest {
 
     private static final Logger logger = LoggerFactory.getLogger(DgcClientTest.class);
-    private final String TEST_JSON = "src/test/resources/covidcert-verifier_test_vectors.json";
+    private final String TEST_JSON = "src/test/resources/covidcert-verifier_test_vectors_DSC.json";
     private final String TEST_PROBLEM_JSON =
             "src/test/resources/covidcert-verifier_problem-report.json";
 
@@ -79,8 +81,6 @@ class DgcClientTest extends BaseDgcTest {
                         withStatus(HttpStatus.UNAUTHORIZED)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .body(problem));
-        final var trustLists = dgcClient.download(certType);
-        assertNotNull(trustLists);
-        assertEquals(0, trustLists.length);
+        assertThrows(DgcSyncException.class, () -> dgcClient.download(certType));
     }
 }
