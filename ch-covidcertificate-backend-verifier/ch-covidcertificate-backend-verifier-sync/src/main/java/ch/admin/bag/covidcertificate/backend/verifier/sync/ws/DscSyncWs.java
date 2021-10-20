@@ -10,7 +10,7 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.ws;
 
-import ch.admin.bag.covidcertificate.backend.verifier.sync.exception.DgcSyncException;
+import ch.admin.bag.covidcertificate.backend.verifier.model.exception.DgcSyncException;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
 import ch.ubique.openapi.docannotations.Documentation;
 import java.time.Duration;

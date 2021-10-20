@@ -12,7 +12,7 @@ package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
-import ch.admin.bag.covidcertificate.backend.verifier.sync.exception.DgcSyncException;
+import ch.admin.bag.covidcertificate.backend.verifier.model.exception.DgcSyncException;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcRulesSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetSyncer;

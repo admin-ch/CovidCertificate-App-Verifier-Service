@@ -19,6 +19,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
+import ch.admin.bag.covidcertificate.backend.verifier.model.exception.DgcSyncException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional
-    public int removeCscasNotIn(List<String> keyIdsToKeep) {
+    public int removeCscasNotIn(List<String> keyIdsToKeep) throws DgcSyncException {
         if (!keyIdsToKeep.isEmpty()) {
             var sql =
                     "update t_country_specific_certificate_authority"
@@ -90,7 +91,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
             params.addValue("now", Date.from(Instant.now()));
             return jt.update(sql, params);
         } else {
-            return 0;
+            throw new DgcSyncException(new Exception("empty CSCA list to keep"));
         }
     }
 
@@ -134,7 +135,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional
-    public int removeDscsNotIn(List<String> keyIdsToKeep) {
+    public int removeDscsNotIn(List<String> keyIdsToKeep) throws DgcSyncException {
         if (!keyIdsToKeep.isEmpty()) {
             var sql =
                     "update t_document_signer_certificate set deleted_at = :now"
@@ -147,13 +148,13 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
             params.addValue("kids", keyIdsToKeep);
             return jt.update(sql, params);
         } else {
-            return 0;
+            throw new DgcSyncException(new Exception("empty DSC list to keep"));
         }
     }
 
     @Override
     @Transactional
-    public int removeDscsWithCscaNotIn(List<String> cscaKidsToKeep) {
+    public int removeDscsWithCscaNotIn(List<String> cscaKidsToKeep) throws DgcSyncException {
         if (!cscaKidsToKeep.isEmpty()) {
             var fkSubQuery =
                     "select pk_csca_id from t_country_specific_certificate_authority"
@@ -172,7 +173,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
             params.addValue("now", Date.from(Instant.now()));
             return jt.update(sql, params);
         } else {
-            return 0;
+            throw new DgcSyncException(new Exception("empty CSCA list to keep"));
         }
     }
 

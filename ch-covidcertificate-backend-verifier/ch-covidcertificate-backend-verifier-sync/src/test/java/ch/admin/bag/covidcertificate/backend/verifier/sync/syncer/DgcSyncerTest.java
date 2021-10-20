@@ -20,7 +20,7 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
-import ch.admin.bag.covidcertificate.backend.verifier.sync.exception.DgcSyncException;
+import ch.admin.bag.covidcertificate.backend.verifier.model.exception.DgcSyncException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;

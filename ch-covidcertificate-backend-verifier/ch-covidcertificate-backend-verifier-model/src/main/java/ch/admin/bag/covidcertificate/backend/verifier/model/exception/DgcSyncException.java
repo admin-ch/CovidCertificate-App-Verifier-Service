@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: MPL-2.0
  */
-package ch.admin.bag.covidcertificate.backend.verifier.sync.exception;
+package ch.admin.bag.covidcertificate.backend.verifier.model.exception;
 
 public class DgcSyncException extends Exception {
     public static String EXCEPTION_TAG = "[FATAL ERROR] [DgcSyncException] [Gateway Sync Rollback]";

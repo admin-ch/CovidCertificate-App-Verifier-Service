@@ -15,7 +15,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CertificateType;
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.TrustList;
-import ch.admin.bag.covidcertificate.backend.verifier.sync.exception.DgcSyncException;
+import ch.admin.bag.covidcertificate.backend.verifier.model.exception.DgcSyncException;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.TrustListMapper;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.UnexpectedAlgorithmException;
 import java.security.InvalidKeyException;

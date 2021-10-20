@@ -12,7 +12,6 @@ package ch.admin.bag.covidcertificate.backend.verifier.data;
 
 import static ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil.getDefaultCsca;
 import static ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil.getEcDsc;
-import static ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil.getKeyId;
 import static ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil.getRsaDsc;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -51,7 +50,7 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
 
     @Test
     @Transactional
-    void removeCscasNotInTest() {
+    void removeCscasNotInTest() throws Exception {
         // assert initial state (no cscas)
         assertTrue(verifierDataService.findCscas("CH").isEmpty());
         verifierDataService.removeCscasNotIn(Collections.emptyList());
@@ -134,7 +133,7 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
 
     @Test
     @Transactional
-    void removeDscsNotInTest() {
+    void removeDscsNotInTest() throws Exception {
         // insert and test csca
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCsca(0, "CH")));
         final var cscas = verifierDataService.findCscas("CH");
@@ -184,7 +183,7 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
 
     @Test
     @Transactional
-    void removeDscsWithCscaNotInTest() {
+    void removeDscsWithCscaNotInTest() throws Exception {
         // insert 2 cscas
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCsca(0, "DE")));
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCsca(1, "DE")));
@@ -261,7 +260,7 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
 
     @Test
     @Transactional
-    void cleanUpDscsMarkedForDeletionTest() {
+    void cleanUpDscsMarkedForDeletionTest() throws Exception {
         // insert csca and 2 dscs
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCsca(0, "CH")));
         final var cscaId = verifierDataService.findCscas("CH").get(0).getId();

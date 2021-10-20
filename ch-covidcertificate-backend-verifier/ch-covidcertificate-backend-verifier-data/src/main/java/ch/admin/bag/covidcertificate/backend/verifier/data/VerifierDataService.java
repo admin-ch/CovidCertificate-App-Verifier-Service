@@ -14,6 +14,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
+import ch.admin.bag.covidcertificate.backend.verifier.model.exception.DgcSyncException;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +30,7 @@ public interface VerifierDataService {
      * @param keyIdsToKeep
      * @return number of removed CSCAs
      */
-    public int removeCscasNotIn(List<String> keyIdsToKeep);
+    public int removeCscasNotIn(List<String> keyIdsToKeep) throws DgcSyncException;
 
     /**
      * finds all CSCAs of the given origin country
@@ -49,10 +50,10 @@ public interface VerifierDataService {
     void insertManualDsc(DbDsc dsc);
 
     /** removes all DSCs with key ids not in the given list that haven't been added manually */
-    public int removeDscsNotIn(List<String> keyIdsToKeep);
+    public int removeDscsNotIn(List<String> keyIdsToKeep) throws DgcSyncException;
 
     /** removes all DSCs signed by a CSCA not in the given list that haven't been added manually */
-    public int removeDscsWithCscaNotIn(List<String> cscaKidsToKeep);
+    public int removeDscsWithCscaNotIn(List<String> cscaKidsToKeep) throws DgcSyncException;
 
     public List<DbDsc> findDscsMarkedForDeletion();
 
