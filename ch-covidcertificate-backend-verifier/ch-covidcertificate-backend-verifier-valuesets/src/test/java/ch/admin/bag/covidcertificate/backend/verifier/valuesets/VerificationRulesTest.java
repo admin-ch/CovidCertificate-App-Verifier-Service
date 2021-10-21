@@ -38,6 +38,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.core.io.ClassPathResource;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -64,7 +65,7 @@ public class VerificationRulesTest {
     }
 
     @Test
-    @Disabled("enable and run manually to generate new rules jsons")
+    @EnabledIfEnvironmentVariable(named="COVIDCERT_GENERATE_VALIDATION_RULES", matches = "1")
     public void generateRulesJsons() throws Exception {
         JsonNode v2 = mapMasterToV2();
         mapV2RulesToUpload(v2);
