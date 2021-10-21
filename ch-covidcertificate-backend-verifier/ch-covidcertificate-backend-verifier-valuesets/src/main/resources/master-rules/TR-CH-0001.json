@@ -1,0 +1,38 @@
+{
+  "affectedFields": [
+    "t.0",
+    "t.0.tr"
+  ],
+  "certificateType": "Test",
+  "country": "CH",
+  "description": [
+    {
+      "desc": "Test result must be negative (\"not detected\").",
+      "lang": "en"
+    }
+  ],
+  "engine": "CertLogic",
+  "engineVersion": "0.7.5",
+  "identifier": "TR-CH-0001",
+  "logic": {
+    "if": [
+      {
+        "var": "payload.t.0"
+      },
+      {
+        "===": [
+          {
+            "var": "payload.t.0.tr"
+          },
+          "260415000"
+        ]
+      },
+      true
+    ]
+  },
+  "schemaVersion": "1.0.0",
+  "type": "Acceptance",
+  "validFrom": "2021-10-18T12:00:00Z",
+  "validTo": "2031-01-01T00:00:00Z",
+  "version": "1.0.3"
+}

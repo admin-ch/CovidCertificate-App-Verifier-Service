@@ -1,0 +1,63 @@
+{
+  "affectedFields": [
+    "t.0",
+    "t.1",
+    "r.0",
+    "v.0"
+  ],
+  "certificateType": "Test",
+  "country": "CH",
+  "description": [
+    {
+      "desc": "At most one t-event.",
+      "lang": "en"
+    }
+  ],
+  "engine": "CertLogic",
+  "engineVersion": "0.7.5",
+  "identifier": "TR-CH-0000",
+  "logic": {
+    "if": [
+      {
+        "var": "payload.t.0"
+      },
+      {
+        "if": [
+          {
+            "and": [
+              {
+                "!": [
+                  {
+                    "var": "payload.t.1"
+                  }
+                ]
+              },
+              {
+                "!": [
+                  {
+                    "var": "payload.r.0"
+                  }
+                ]
+              },
+              {
+                "!": [
+                  {
+                    "var": "payload.v.0"
+                  }
+                ]
+              }
+            ]
+          },
+          true,
+          false
+        ]
+      },
+      true
+    ]
+  },
+  "schemaVersion": "1.0.0",
+  "type": "Acceptance",
+  "validFrom": "2021-10-18T12:00:00Z",
+  "validTo": "2031-01-01T00:00:00Z",
+  "version": "1.0.3"
+}
