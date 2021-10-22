@@ -40,6 +40,12 @@ class DgcSyncerTest extends BaseDgcTest {
     private final String TEST_JSON_DSC = "src/test/resources/dsc.json";
     private final String TEST_JSON_TRUNCATED_CSCA = "src/test/resources/csca_truncated.json";
     private final String TEST_JSON_TRUNCATED_DSC = "src/test/resources/dsc_truncated.json";
+    private static final int CSCA_COUNT = 7;
+    private static final int DSC_COUNT = CSCA_COUNT * 20;
+    private static final int TRUNCATED_CSCA_COUNT = 6;
+    private static final int TRUNCATED_DSC_COUNT = TRUNCATED_CSCA_COUNT * 20 - 2;
+    private static final int DELETED_CSCA_COUNT = CSCA_COUNT - TRUNCATED_CSCA_COUNT;
+    private static final int DELETED_DSC_COUNT = DSC_COUNT - TRUNCATED_DSC_COUNT;
 
     private final String TEST_JSON_HUGE_CSCA = "src/test/resources/csca_huge.json";
     private final String TEST_JSON_HUGE_DSC = "src/test/resources/dsc_huge.json";
@@ -74,8 +80,8 @@ class DgcSyncerTest extends BaseDgcTest {
         // ...hence the function inserts 7 * 20 certificates
         dgcSyncer.sync();
 
-        assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
-        assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
+        assertEquals(CSCA_COUNT, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(DSC_COUNT, verifierDataService.findActiveDscKeyIds().size());
 
         // Now we feed an empty list...
         String expectedEmptyCsca = Files.readString(Path.of(TEST_JSON_CSCA_STUB));
@@ -86,8 +92,8 @@ class DgcSyncerTest extends BaseDgcTest {
         // ... in fact it should throw
         assertThrows(DgcSyncException.class, () -> dgcSyncer.sync());
 
-        assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
-        assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
+        assertEquals(CSCA_COUNT, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(DSC_COUNT, verifierDataService.findActiveDscKeyIds().size());
     }
 
     @Disabled("load test. takes >1 minute. doesn't need to be run every time.")
@@ -118,8 +124,8 @@ class DgcSyncerTest extends BaseDgcTest {
         dgcSyncer.sync();
 
         // Now the database should _not_ be empty
-        assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
-        assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
+        assertEquals(CSCA_COUNT, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(DSC_COUNT, verifierDataService.findActiveDscKeyIds().size());
     }
 
     @Test
@@ -132,8 +138,8 @@ class DgcSyncerTest extends BaseDgcTest {
         // save max PK id, since after reinsertion the pk should increase
         var maxPkId = verifierDataService.findMaxDscPkId();
         // Everything worked so we should have the full list
-        assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
-        assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
+        assertEquals(CSCA_COUNT, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(DSC_COUNT, verifierDataService.findActiveDscKeyIds().size());
 
         // we delete the DE CSCA and two XX DSCs -> we should end up with...
         String expectedTruncatedCsca = Files.readString(Path.of(TEST_JSON_TRUNCATED_CSCA));
@@ -141,25 +147,25 @@ class DgcSyncerTest extends BaseDgcTest {
         setMockServer(expectedTruncatedCsca, expectedTruncatedDsc);
         dgcSyncer.sync();
         // ... 6 CSCAS ...
-        assertEquals(7 - 1, verifierDataService.findActiveCscaKeyIds().size());
-        assertEquals(1, verifierDataService.findCscasMarkedForDeletion().size());
+        assertEquals(TRUNCATED_CSCA_COUNT, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(DELETED_CSCA_COUNT, verifierDataService.findCscasMarkedForDeletion().size());
         // ... whereas the DE one is not there ...
         assertFalse(
                 verifierDataService.findActiveCscaKeyIds().stream()
                         .anyMatch(a -> a.equals("mvIaDalHQRo=")));
         // ... and 2 XX and all of the 20 DEs are deleted
-        assertEquals(140 - 22, verifierDataService.findActiveDscKeyIds().size());
-        assertEquals(22, verifierDataService.findDscsMarkedForDeletion().size());
+        assertEquals(TRUNCATED_DSC_COUNT, verifierDataService.findActiveDscKeyIds().size());
+        assertEquals(DELETED_DSC_COUNT, verifierDataService.findDscsMarkedForDeletion().size());
 
         // Now the DGC hub all of a sudden returns the same set again
         setMockServer(expectedCsca, expectedDsc);
         dgcSyncer.sync();
         var newMaxPkId = verifierDataService.findMaxDscPkId();
         // since we deleted 22 and now inserted 22 new, the max pk should be maxPkId + 22
-        assertEquals(maxPkId + 22, newMaxPkId);
+        assertEquals(maxPkId + DELETED_DSC_COUNT, newMaxPkId);
         // We also should be back to our intial state
-        assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
-        assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
+        assertEquals(CSCA_COUNT, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(DSC_COUNT, verifierDataService.findActiveDscKeyIds().size());
         assertTrue(verifierDataService.findCscasMarkedForDeletion().isEmpty());
         assertTrue(verifierDataService.findDscsMarkedForDeletion().isEmpty());
 
@@ -168,33 +174,33 @@ class DgcSyncerTest extends BaseDgcTest {
         setMockServer(expectedTruncatedCsca, expectedTruncatedDsc);
         dgcSyncer.sync();
         // ... 6 CSCAS ...
-        assertEquals(7 - 1, verifierDataService.findActiveCscaKeyIds().size());
-        assertEquals(1, verifierDataService.findCscasMarkedForDeletion().size());
+        assertEquals(TRUNCATED_CSCA_COUNT, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(DELETED_CSCA_COUNT, verifierDataService.findCscasMarkedForDeletion().size());
         // ... whereas the DE one is not there ...
         assertFalse(
                 verifierDataService.findActiveCscaKeyIds().stream()
                         .anyMatch(a -> a.equals("mvIaDalHQRo=")));
         // ... and 2 XX and all of the 20 DEs are deleted
-        assertEquals(140 - 22, verifierDataService.findActiveDscKeyIds().size());
-        assertEquals(22, verifierDataService.findDscsMarkedForDeletion().size());
+        assertEquals(TRUNCATED_DSC_COUNT, verifierDataService.findActiveDscKeyIds().size());
+        assertEquals(DELETED_DSC_COUNT, verifierDataService.findDscsMarkedForDeletion().size());
 
         // Let's recover the deleted dscs
         var dscRestoreResponse = verifierDataService.restoreDeletedDscs();
         // We should now end up with all original certificates
-        assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
-        assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
+        assertEquals(CSCA_COUNT, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(DSC_COUNT, verifierDataService.findActiveDscKeyIds().size());
         assertTrue(verifierDataService.findCscasMarkedForDeletion().isEmpty());
         assertTrue(verifierDataService.findDscsMarkedForDeletion().isEmpty());
-        assertEquals(1, dscRestoreResponse.getRestoredCscaCount());
-        assertEquals(22, dscRestoreResponse.getRestoredDscCount());
+        assertEquals(DELETED_CSCA_COUNT, dscRestoreResponse.getRestoredCscaCount());
+        assertEquals(DELETED_DSC_COUNT, dscRestoreResponse.getRestoredDscCount());
         // max pk should have been increased by 22 again
-        long expectedMaxPkId = newMaxPkId + 22;
+        long expectedMaxPkId = newMaxPkId + DELETED_DSC_COUNT;
         assertEquals(expectedMaxPkId, verifierDataService.findMaxDscPkId());
 
         // Let's see that restore function does nothing when there's nothing to restore
         dscRestoreResponse = verifierDataService.restoreDeletedDscs();
-        assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
-        assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
+        assertEquals(CSCA_COUNT, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(DSC_COUNT, verifierDataService.findActiveDscKeyIds().size());
         assertTrue(verifierDataService.findCscasMarkedForDeletion().isEmpty());
         assertTrue(verifierDataService.findDscsMarkedForDeletion().isEmpty());
         assertEquals(0, dscRestoreResponse.getRestoredCscaCount());
