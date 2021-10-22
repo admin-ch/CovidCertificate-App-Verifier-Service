@@ -15,6 +15,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import ch.admin.bag.covidcertificate.backend.verifier.model.exception.DgcSyncException;
+import ch.admin.bag.covidcertificate.backend.verifier.model.sync.DscRestoreResponse;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
@@ -57,7 +58,9 @@ public interface VerifierDataService {
 
     public List<DbDsc> findDscsMarkedForDeletion();
 
-    public List<DbCsca> findCscaMarkedForDeletion();
+    public List<DbCsca> findCscasMarkedForDeletion();
+
+    public DscRestoreResponse restoreDeletedDscs();
 
     /** returns the next batch of DSCs after `since` up to `upTo` in the requested format */
     public List<ClientCert> findDscs(Long since, CertFormat certFormat, Long upTo);

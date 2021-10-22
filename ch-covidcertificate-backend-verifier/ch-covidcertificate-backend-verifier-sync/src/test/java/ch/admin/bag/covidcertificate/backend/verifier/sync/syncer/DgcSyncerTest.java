@@ -12,7 +12,6 @@ package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
@@ -25,7 +24,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,13 +36,11 @@ import org.springframework.test.web.client.MockRestServiceServer;
 
 class DgcSyncerTest extends BaseDgcTest {
 
-    private final String TEST_JSON_CSCA =
-            "src/test/resources/csca.json";
-    private final String TEST_JSON_DSC =
-            "src/test/resources/dsc.json";
+    private final String TEST_JSON_CSCA = "src/test/resources/csca.json";
+    private final String TEST_JSON_DSC = "src/test/resources/dsc.json";
     private final String TEST_JSON_TRUNCATED_CSCA = "src/test/resources/csca_truncated.json";
     private final String TEST_JSON_TRUNCATED_DSC = "src/test/resources/dsc_truncated.json";
-    
+
     private final String TEST_JSON_HUGE_CSCA = "src/test/resources/csca_huge.json";
     private final String TEST_JSON_HUGE_DSC = "src/test/resources/dsc_huge.json";
 
@@ -64,10 +60,9 @@ class DgcSyncerTest extends BaseDgcTest {
     void downloadTest() throws Exception {
         String expectedCsca = Files.readString(Path.of(TEST_JSON_CSCA));
         String expectedDsc = Files.readString(Path.of(TEST_JSON_DSC));
-        
+
         setMockServer(expectedCsca, expectedDsc);
         dgcSyncer.sync();
-        
     }
 
     @Test
@@ -110,7 +105,7 @@ class DgcSyncerTest extends BaseDgcTest {
         String expectedDsc = Files.readString(Path.of(TEST_JSON_DSC));
         // we set the mock server which returns 500 for any dsc request...
         setErrorMockServer(expectedCsca);
-        //...hence the function throws a DgcSyncException!
+        // ...hence the function throws a DgcSyncException!
         assertThrows(DgcSyncException.class, () -> dgcSyncer.sync());
 
         // We did not insert anything and the request failed, so the database should be
@@ -134,23 +129,27 @@ class DgcSyncerTest extends BaseDgcTest {
         String expectedDsc = Files.readString(Path.of(TEST_JSON_DSC));
         setMockServer(expectedCsca, expectedDsc);
         dgcSyncer.sync();
-        // save max PK id, since after reinsertion the pk should increase 
+        // save max PK id, since after reinsertion the pk should increase
         var maxPkId = verifierDataService.findMaxDscPkId();
         // Everything worked so we should have the full list
         assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
         assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
 
-        // we delete the DE CSCA and two XX DSCs -> we should end up with... 
+        // we delete the DE CSCA and two XX DSCs -> we should end up with...
         String expectedTruncatedCsca = Files.readString(Path.of(TEST_JSON_TRUNCATED_CSCA));
         String expectedTruncatedDsc = Files.readString(Path.of(TEST_JSON_TRUNCATED_DSC));
         setMockServer(expectedTruncatedCsca, expectedTruncatedDsc);
         dgcSyncer.sync();
         // ... 6 CSCAS ...
-        assertEquals(7-1, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(7 - 1, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(1, verifierDataService.findCscasMarkedForDeletion().size());
         // ... whereas the DE one is not there ...
-        assertFalse(verifierDataService.findActiveCscaKeyIds().stream().anyMatch(a -> a.equals("mvIaDalHQRo=")));
-        // ... and 2 XX and all of the 20 DEs are deleted 
-        assertEquals(140-22, verifierDataService.findActiveDscKeyIds().size());
+        assertFalse(
+                verifierDataService.findActiveCscaKeyIds().stream()
+                        .anyMatch(a -> a.equals("mvIaDalHQRo=")));
+        // ... and 2 XX and all of the 20 DEs are deleted
+        assertEquals(140 - 22, verifierDataService.findActiveDscKeyIds().size());
+        assertEquals(22, verifierDataService.findDscsMarkedForDeletion().size());
 
         // Now the DGC hub all of a sudden returns the same set again
         setMockServer(expectedCsca, expectedDsc);
@@ -161,29 +160,53 @@ class DgcSyncerTest extends BaseDgcTest {
         // We also should be back to our intial state
         assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
         assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
+        assertTrue(verifierDataService.findCscasMarkedForDeletion().isEmpty());
+        assertTrue(verifierDataService.findDscsMarkedForDeletion().isEmpty());
 
-        // we delete the DE CSCA and two XX DSCs again to test the manual undelete -> we should end up with...
+        // we delete the DE CSCA and two XX DSCs again to test the manual undelete -> we should end
+        // up with ...
         setMockServer(expectedTruncatedCsca, expectedTruncatedDsc);
         dgcSyncer.sync();
         // ... 6 CSCAS ...
         assertEquals(7 - 1, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(1, verifierDataService.findCscasMarkedForDeletion().size());
         // ... whereas the DE one is not there ...
-        assertFalse(verifierDataService.findActiveCscaKeyIds().stream().anyMatch(a -> a.equals("mvIaDalHQRo=")));
+        assertFalse(
+                verifierDataService.findActiveCscaKeyIds().stream()
+                        .anyMatch(a -> a.equals("mvIaDalHQRo=")));
         // ... and 2 XX and all of the 20 DEs are deleted
         assertEquals(140 - 22, verifierDataService.findActiveDscKeyIds().size());
+        assertEquals(22, verifierDataService.findDscsMarkedForDeletion().size());
 
         // Let's recover the deleted dscs
-        var cscaMarkedForDeletion = verifierDataService.findCscaMarkedForDeletion();
-        verifierDataService.insertCscas(cscaMarkedForDeletion);
-        var dscMarkedForDeletion = verifierDataService.findDscsMarkedForDeletion();
-        verifierDataService.insertDscs(dscMarkedForDeletion);
+        var dscRestoreResponse = verifierDataService.restoreDeletedDscs();
         // We should now end up with all original certificates
-        assertEquals(7 , verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
         assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
+        assertTrue(verifierDataService.findCscasMarkedForDeletion().isEmpty());
+        assertTrue(verifierDataService.findDscsMarkedForDeletion().isEmpty());
+        assertEquals(1, dscRestoreResponse.getRestoredCscaCount());
+        assertEquals(22, dscRestoreResponse.getRestoredDscCount());
+        // max pk should have been increased by 22 again
+        long expectedMaxPkId = newMaxPkId + 22;
+        assertEquals(expectedMaxPkId, verifierDataService.findMaxDscPkId());
+
+        // Let's see that restore function does nothing when there's nothing to restore
+        dscRestoreResponse = verifierDataService.restoreDeletedDscs();
+        assertEquals(7, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(140, verifierDataService.findActiveDscKeyIds().size());
+        assertTrue(verifierDataService.findCscasMarkedForDeletion().isEmpty());
+        assertTrue(verifierDataService.findDscsMarkedForDeletion().isEmpty());
+        assertEquals(0, dscRestoreResponse.getRestoredCscaCount());
+        assertEquals(0, dscRestoreResponse.getRestoredDscCount());
+        // max pk should remain unchanged
+        assertEquals(expectedMaxPkId, verifierDataService.findMaxDscPkId());
     }
 
     /**
-     * Set a mock server which returns a 500 Internal Server Error if the /trustlist/DSC endpoint is called
+     * Set a mock server which returns a 500 Internal Server Error if the /trustlist/DSC endpoint is
+     * called
+     *
      * @param expectedCsca JSON response of the CSCA request
      * @throws Exception
      */
@@ -203,7 +226,8 @@ class DgcSyncerTest extends BaseDgcTest {
     }
 
     /**
-     * Set a mock server which succeeds for dsc and cscas both with a 200 and the corresponding JSON 
+     * Set a mock server which succeeds for dsc and cscas both with a 200 and the corresponding JSON
+     *
      * @param expectedCsca JSON Response of the CSCA request
      * @param expectedDsc JSON response of the dsc request
      * @throws URISyntaxException

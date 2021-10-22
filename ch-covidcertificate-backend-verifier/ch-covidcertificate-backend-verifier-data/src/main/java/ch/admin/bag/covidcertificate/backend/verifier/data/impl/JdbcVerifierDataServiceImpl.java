@@ -20,6 +20,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import ch.admin.bag.covidcertificate.backend.verifier.model.exception.DgcSyncException;
+import ch.admin.bag.covidcertificate.backend.verifier.model.sync.DscRestoreResponse;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -182,17 +183,38 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     public List<DbDsc> findDscsMarkedForDeletion() {
         String sql =
                 "select distinct on (key_id) * from t_document_signer_certificate"
-                        + " where deleted_at is not null";
+                        + " where deleted_at is not null"
+                        + " and key_id not in"
+                        + " (select key_id from t_document_signer_certificate where deleted_at is null)";
         return jt.query(sql, new MapSqlParameterSource(), new DscRowMapper());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<DbCsca> findCscaMarkedForDeletion() {
+    public List<DbCsca> findCscasMarkedForDeletion() {
         String sql =
                 "select distinct on (key_id) * from t_country_specific_certificate_authority"
-                        + " where deleted_at is not null";
+                        + " where deleted_at is not null"
+                        + " and key_id not in"
+                        + " (select key_id from t_country_specific_certificate_authority where deleted_at is null)";
         return jt.query(sql, new MapSqlParameterSource(), new CscaRowMapper());
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public DscRestoreResponse restoreDeletedDscs() {
+        List<DbDsc> dscsToResurrect = findDscsMarkedForDeletion();
+        List<DbCsca> cscasToResurrect = findCscasMarkedForDeletion();
+        cscasToResurrect =
+                cscasToResurrect.stream()
+                        .filter(
+                                c ->
+                                        dscsToResurrect.stream()
+                                                .anyMatch(d -> d.getFkCsca().equals(c.getId())))
+                        .collect(Collectors.toList());
+        insertDscs(dscsToResurrect);
+        insertCscas(cscasToResurrect);
+        return new DscRestoreResponse(cscasToResurrect.size(), dscsToResurrect.size());
     }
 
     @Override
