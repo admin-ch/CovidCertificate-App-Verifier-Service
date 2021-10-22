@@ -9,3 +9,11 @@ Accept: application/json
 ### upload dsc aliases
 GET {{syncBaseUrl}}/dsc/upload/trigger
 Accept: application/json
+
+### sync dscs from EU hub
+GET {{syncBaseUrl}}/dsc/sync/trigger
+Accept: application/json
+
+### restore deleted dscs
+GET {{syncBaseUrl}}/resurrection/dsc
+Accept: application/json

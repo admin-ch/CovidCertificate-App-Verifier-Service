@@ -24,9 +24,13 @@ public class TestUtil {
 
     private TestUtil() {}
 
+    public static String getKeyId(int idSuffix) {
+        return "keyid_" + idSuffix;
+    }
+
     public static DbCsca getDefaultCsca(int idSuffix, String origin) {
         var dbCsca = new DbCsca();
-        dbCsca.setKeyId("keyid_" + idSuffix);
+        dbCsca.setKeyId(getKeyId(idSuffix));
         dbCsca.setCertificateRaw("cert");
         dbCsca.setOrigin(origin);
         dbCsca.setSubjectPrincipalName("admin_ch");
@@ -35,7 +39,7 @@ public class TestUtil {
 
     public static DbDsc getRsaDsc(int idSuffix, String origin, long fkCsca) {
         final var dbDsc = new DbDsc();
-        dbDsc.setKeyId("keyid_" + idSuffix);
+        dbDsc.setKeyId(getKeyId(idSuffix));
         dbDsc.setFkCsca(fkCsca);
         dbDsc.setCertificateRaw("cert");
         dbDsc.setOrigin(origin);
@@ -49,7 +53,7 @@ public class TestUtil {
 
     public static DbDsc getEcDsc(int idSuffix, String origin, long fkCsca) {
         final var dbDsc = new DbDsc();
-        dbDsc.setKeyId("keyid_" + idSuffix);
+        dbDsc.setKeyId(getKeyId(idSuffix));
         dbDsc.setFkCsca(fkCsca);
         dbDsc.setCertificateRaw("cert");
         dbDsc.setOrigin(origin);
@@ -79,5 +83,13 @@ public class TestUtil {
 
     public static void clearRevokedCerts(NamedParameterJdbcTemplate jt) {
         jt.update("delete from t_revoked_cert", new MapSqlParameterSource());
+    }
+
+    public static void shiftDscDeletedAtBack(NamedParameterJdbcTemplate jt, int numOfDaysToShift) {
+        String sql =
+                String.format(
+                        "update t_document_signer_certificate set deleted_at = deleted_at - INTERVAL '%d DAY'",
+                        numOfDaysToShift);
+        jt.update(sql, new MapSqlParameterSource());
     }
 }

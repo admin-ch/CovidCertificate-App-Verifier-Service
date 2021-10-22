@@ -15,12 +15,16 @@ import static ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil.
 import static ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil.getRsaDsc;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.model.CertSource;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertFormat;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
+import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbCsca;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
+import ch.admin.bag.covidcertificate.backend.verifier.model.exception.DgcSyncException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,22 +52,35 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
 
     @Test
     @Transactional
-    void removeCscasNotInTest() {
+    void removeCscasNotInTest() throws Exception {
+        // assert initial state (no cscas)
         assertTrue(verifierDataService.findCscas("CH").isEmpty());
-        verifierDataService.removeCscas(Collections.emptyList());
-        verifierDataService.removeCscas(Collections.singletonList("keyid_0"));
-        verifierDataService.insertCscas(Collections.singletonList(getDefaultCsca(0, "CH")));
-        verifierDataService.insertCscas(Collections.singletonList(getDefaultCsca(1, "CH")));
-        verifierDataService.removeCscas(Collections.singletonList("keyid_0"));
+        assertThrows(
+                DgcSyncException.class,
+                () -> verifierDataService.removeCscasNotIn(Collections.emptyList()));
+        verifierDataService.removeCscasNotIn(Collections.singletonList("keyid_0"));
+
+        // insert 2 cscas for CH
+        DbCsca toKeep = getDefaultCsca(0, "CH");
+        verifierDataService.insertCscas(Collections.singletonList(toKeep));
+        DbCsca toRemove = getDefaultCsca(1, "CH");
+        verifierDataService.insertCscas(Collections.singletonList(toRemove));
+        assertEquals(2, verifierDataService.findCscas("CH").size());
+
+        // remove 1 csca
+        verifierDataService.removeCscasNotIn(List.of(toKeep.getKeyId()));
         assertEquals(1, verifierDataService.findCscas("CH").size());
+        assertEquals(toKeep.getKeyId(), verifierDataService.findCscas("CH").get(0).getKeyId());
 
         // verify manual doesnt get removed
         updateSourceForAllCscas(CertSource.MANUAL);
-        verifierDataService.removeCscas(Collections.singletonList("keyid_1"));
+        verifierDataService.removeCscasNotIn(List.of("INEXISTENT_KEY_ID"));
         assertEquals(1, verifierDataService.findCscas("CH").size());
+        assertEquals(toKeep.getKeyId(), verifierDataService.findCscas("CH").get(0).getKeyId());
 
         updateSourceForAllCscas(CertSource.SYNC);
-        verifierDataService.removeCscas(Collections.singletonList("keyid_1"));
+        // remove remaining csca
+        verifierDataService.removeCscasNotIn(List.of("INEXISTENT_KEY_ID"));
         assertEquals(0, verifierDataService.findCscas("CH").size());
     }
 
@@ -120,55 +137,89 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
 
     @Test
     @Transactional
-    void removeDscsNotInTest() {
+    void removeDscsNotInTest() throws Exception {
+        // insert and test csca
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCsca(0, "CH")));
         final var cscas = verifierDataService.findCscas("CH");
         assertEquals(1, cscas.size());
+
+        // insert and test dsc
         final var cscaId = cscas.get(0).getId();
         final var rsaDsc = getRsaDsc(0, "CH", cscaId);
         verifierDataService.insertDscs(Collections.singletonList(rsaDsc));
-        verifierDataService.removeDscsNotIn(Collections.emptyList());
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+
+        // remove all dscs
+        verifierDataService.removeDscsNotIn(List.of("INEXISTENT_KEY_ID"));
         assertTrue(verifierDataService.findActiveDscKeyIds().isEmpty());
-        verifierDataService.removeDscsNotIn(Collections.singletonList("keyid_0"));
+        assertEquals(
+                rsaDsc.getKeyId(),
+                verifierDataService.findDscsMarkedForDeletion().get(0).getKeyId());
+
+        // insert 2 dscs
         final var ecDsc = getEcDsc(1, "CH", cscaId);
         verifierDataService.insertDscs(List.of(rsaDsc, ecDsc));
-        verifierDataService.removeDscsNotIn(Collections.singletonList(rsaDsc.getKeyId()));
-        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
 
-        // verify manual doesnt get removed
+        // remove 1 dsc
+        verifierDataService.removeDscsNotIn(Collections.singletonList(ecDsc.getKeyId()));
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+        assertEquals(ecDsc.getKeyId(), verifierDataService.findActiveDscKeyIds().get(0));
+        assertEquals(
+                rsaDsc.getKeyId(),
+                verifierDataService.findDscsMarkedForDeletion().get(0).getKeyId());
+
+        // set source to 'MANUAL' for current dsc in db
         updateSourceForAllDscs(CertSource.MANUAL);
-        verifierDataService.removeDscsNotIn(Collections.singletonList(ecDsc.getKeyId()));
+        // insert another dsc with source = 'SYNC'
+        verifierDataService.insertDscs(List.of(rsaDsc));
+        assertEquals(2, verifierDataService.findActiveDscKeyIds().size());
+        // verify manual doesnt get removed
+        verifierDataService.removeDscsNotIn(List.of("INEXISTENT_KEY_ID"));
         assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+        assertEquals(ecDsc.getKeyId(), verifierDataService.findActiveDscKeyIds().get(0));
 
+        // reset sources to 'SYNC'. everything should now be removed
         updateSourceForAllDscs(CertSource.SYNC);
-        verifierDataService.removeDscsNotIn(Collections.singletonList(ecDsc.getKeyId()));
+        verifierDataService.removeDscsNotIn(List.of("INEXISTENT_KEY_ID"));
         assertEquals(0, verifierDataService.findActiveDscKeyIds().size());
+        assertEquals(2, verifierDataService.findDscsMarkedForDeletion().size());
     }
 
     @Test
     @Transactional
-    void removeDscsWithCscaIn() {
+    void removeDscsWithCscaNotInTest() throws Exception {
+        // insert 2 cscas
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCsca(0, "DE")));
         verifierDataService.insertCscas(Collections.singletonList(getDefaultCsca(1, "DE")));
         final var cscas = verifierDataService.findCscas("DE");
         assertEquals(2, cscas.size());
+
+        // insert 2 dscs (1 per csca)
         final var cscaId0 = cscas.get(0).getId();
+        final var cscaKeyId0 = cscas.get(0).getKeyId();
         final var cscaId1 = cscas.get(1).getId();
+        final var cscaKeyId1 = cscas.get(1).getKeyId();
         final var rsaDsc = getRsaDsc(0, "DE", cscaId0);
         final var ecDsc = getEcDsc(1, "DE", cscaId1);
         verifierDataService.insertDscs(List.of(rsaDsc, ecDsc));
-        verifierDataService.removeDscsWithCscaIn(Collections.emptyList());
+
+        // remove nothing
+        verifierDataService.removeDscsWithCscaNotIn(List.of(cscaKeyId0, cscaKeyId1));
         assertEquals(2, verifierDataService.findActiveDscKeyIds().size());
-        verifierDataService.removeDscsWithCscaIn(List.of(cscas.get(0).getKeyId()));
+
+        // remove 1 csca
+        verifierDataService.removeDscsWithCscaNotIn(List.of(cscaKeyId0));
         assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+        assertTrue(verifierDataService.findActiveDscKeyIds().contains(cscaKeyId0));
 
         // verify manual doesnt get removed
         updateSourceForAllDscs(CertSource.MANUAL);
-        verifierDataService.removeDscsWithCscaIn(List.of(cscas.get(1).getKeyId()));
+        verifierDataService.removeDscsWithCscaNotIn(List.of(cscaKeyId1));
         assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+        assertTrue(verifierDataService.findActiveDscKeyIds().contains(cscaKeyId0));
 
         updateSourceForAllDscs(CertSource.SYNC);
-        verifierDataService.removeDscsWithCscaIn(List.of(cscas.get(1).getKeyId()));
+        verifierDataService.removeDscsWithCscaNotIn(List.of(cscaKeyId1));
         assertEquals(0, verifierDataService.findActiveDscKeyIds().size());
     }
 
@@ -209,5 +260,42 @@ class VerifierDataServiceTest extends BaseDataServiceTest {
         final var maxDscPkId = verifierDataService.findMaxDscPkId();
         assertTrue(verifierDataService.findDscs(maxDscPkId, CertFormat.IOS, null).isEmpty());
         assertEquals(1, verifierDataService.findDscs(maxDscPkId - 1, CertFormat.IOS, null).size());
+    }
+
+    @Test
+    @Transactional
+    void cleanUpDscsMarkedForDeletionTest() throws Exception {
+        // insert csca and 2 dscs
+        verifierDataService.insertCscas(Collections.singletonList(getDefaultCsca(0, "CH")));
+        final var cscaId = verifierDataService.findCscas("CH").get(0).getId();
+        DbDsc toRemove = getRsaDsc(0, "CH", cscaId);
+        DbDsc toKeep = getEcDsc(1, "DE", cscaId);
+        verifierDataService.insertDscs(List.of(toRemove, toKeep));
+
+        // mark 1 dsc for deletion (assert pre and post)
+        assertEquals(0, verifierDataService.findDscsMarkedForDeletion().size());
+        assertEquals(2, verifierDataService.findActiveDscKeyIds().size());
+        verifierDataService.removeDscsNotIn(List.of(toKeep.getKeyId()));
+        assertEquals(1, verifierDataService.findDscsMarkedForDeletion().size());
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+
+        // run clean up. dsc should not be removed since it is too young
+        verifierDataService.cleanUpDscsMarkedForDeletion();
+        assertEquals(1, verifierDataService.findDscsMarkedForDeletion().size());
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+
+        // move deleted_at timestamp back 2 days and test again.
+        // dsc should not be removed since it is too young
+        TestUtil.shiftDscDeletedAtBack(jt, 2);
+        verifierDataService.cleanUpDscsMarkedForDeletion();
+        assertEquals(1, verifierDataService.findDscsMarkedForDeletion().size());
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
+
+        // move deleted_at timestamp back 6 days and test again.
+        // dsc should now be removed
+        TestUtil.shiftDscDeletedAtBack(jt, 6);
+        verifierDataService.cleanUpDscsMarkedForDeletion();
+        assertEquals(0, verifierDataService.findDscsMarkedForDeletion().size());
+        assertEquals(1, verifierDataService.findActiveDscKeyIds().size());
     }
 }

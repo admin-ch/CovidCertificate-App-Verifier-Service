@@ -26,7 +26,9 @@ import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DscUploadClien
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.SigningClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.DgcHubProxy;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.DscSyncWs;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.DscUploadWs;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.ResurrectionWs;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
@@ -34,6 +36,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.time.Duration;
 import javax.sql.DataSource;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
@@ -113,8 +116,11 @@ public abstract class SyncBaseConfig {
     }
 
     @Bean
-    public VerifierDataService verifierDataService(DataSource dataSource) {
-        return new JdbcVerifierDataServiceImpl(dataSource, dscBatchSize);
+    public VerifierDataService verifierDataService(
+            DataSource dataSource,
+            @Value("${dsc.deleted.keep.duration:P7D}") Duration keepDscsMarkedForDeletionDuration) {
+        return new JdbcVerifierDataServiceImpl(
+                dataSource, dscBatchSize, keepDscsMarkedForDeletionDuration);
     }
 
     @Bean
@@ -189,5 +195,15 @@ public abstract class SyncBaseConfig {
     @Bean
     public DscUploadWs dscUploadWs(DscUploadClient dscUploadClient) {
         return new DscUploadWs(dscUploadClient);
+    }
+
+    @Bean
+    public DscSyncWs dgcSyncWs(DgcCertSyncer dgcCertSyncer, LockProvider lockProvider) {
+        return new DscSyncWs(dgcCertSyncer, lockProvider);
+    }
+
+    @Bean
+    public ResurrectionWs resurrectionWs(VerifierDataService verifierDataService) {
+        return new ResurrectionWs(verifierDataService);
     }
 }
