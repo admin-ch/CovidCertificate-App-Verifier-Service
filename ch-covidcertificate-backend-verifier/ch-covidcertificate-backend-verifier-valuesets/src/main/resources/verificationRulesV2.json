@@ -468,7 +468,7 @@
       "country": "CH",
       "description": [
         {
-          "desc": "The validation date must be before the date of first positive test plus 180 days",
+          "desc": "The validation date must be before the date of first positive test plus 365 days",
           "lang": "en"
         }
       ],
@@ -496,7 +496,7 @@
                   {
                     "var": "payload.r.0.fr"
                   },
-                  180,
+                  365,
                   "day"
                 ]
               }

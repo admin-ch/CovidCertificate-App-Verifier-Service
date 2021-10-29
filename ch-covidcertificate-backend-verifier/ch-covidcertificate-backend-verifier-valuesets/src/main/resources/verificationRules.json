@@ -168,7 +168,7 @@
     },
     {
       "inputParameter": "[\"r.0\",\"r.0.fr\"]",
-      "description": "The validation date must be before the date of first positive test plus 180 days",
+      "description": "The validation date must be before the date of first positive test plus 365 days",
       "id": "RR-CH-0003",
       "logic": {
         "if": [
@@ -191,7 +191,7 @@
                   {
                     "var": "payload.r.0.fr"
                   },
-                  180,
+                  365,
                   "day"
                 ]
               }
