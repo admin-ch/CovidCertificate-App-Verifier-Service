@@ -8,7 +8,7 @@
   "country": "CH",
   "description": [
     {
-      "desc": "Today must be less than the vaccination date plus 364 days for 2-dose vaccines",
+      "desc": "For 2/2 doses, the current date and time must be before the vaccination date plus 365 days for 2-dose vaccines",
       "lang": "en"
     }
   ],

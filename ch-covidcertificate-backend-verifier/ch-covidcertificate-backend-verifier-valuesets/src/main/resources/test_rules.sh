@@ -2,7 +2,7 @@
 
 #Test master rules against test cases in EU repo
 
-cd ../../../
+cd $(dirname "$0")/../../../
 if [[ -d "dgc-business-rules-testdata" ]]; then
   echo "DGC rule repo already exists. Not cloning again"
 else

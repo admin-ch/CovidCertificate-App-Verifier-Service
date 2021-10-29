@@ -7,7 +7,7 @@
   "Country": "CH",
   "Description": [
     {
-      "desc": "The validation date must be less than the date of first positive test plus 179 days",
+      "desc": "The validation date must be before the date of first positive test plus 180 days",
       "lang": "en"
     }
   ],
