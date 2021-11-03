@@ -1,8 +1,97 @@
 {
-  "displayRules": [
+  "displayRules":[
     {
-      "id": "display-from-date",
-      "logic": {
+      "id":"display-from-date",
+      "logic":{
+        "if":[
+          {
+            "var":"payload.v.0"
+          },
+          {
+            "if":[
+              {
+                "and":[
+                  {
+                    "in":[
+                      {
+                        "var":"payload.v.0.mp"
+                      },
+                      [
+                        "EU/1/20/1525"
+                      ]
+                    ]
+                  },
+                  {
+                    "===":[
+                      {
+                        "var":"payload.v.0.dn"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              },
+              {
+                "plusTime":[
+                  {
+                    "var":"payload.v.0.dt"
+                  },
+                  21,
+                  "day"
+                ]
+              },
+              {
+                "plusTime":[
+                  {
+                    "var":"payload.v.0.dt"
+                  },
+                  0,
+                  "day"
+                ]
+              }
+            ]
+          },
+          {
+            "if":[
+              {
+                "var":"payload.t.0"
+              },
+              {
+                "plusTime":[
+                  {
+                    "var":"payload.t.0.sc"
+                  },
+                  0,
+                  "day"
+                ]
+              },
+              {
+                "if":[
+                  {
+                    "var":"payload.r.0"
+                  },
+                  {
+                    "plusTime":[
+                      {
+                        "var":"payload.r.0.fr"
+                      },
+                      10,
+                      "day"
+                    ]
+                  },
+                  {
+                    "var":"undefined"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id":"display-until-date",
+      "logic":{
         "if": [
           {
             "var": "payload.v.0"
@@ -36,7 +125,7 @@
                   {
                     "var": "payload.v.0.dt"
                   },
-                  21,
+                  386,
                   "day"
                 ]
               },
@@ -45,64 +134,10 @@
                   {
                     "var": "payload.v.0.dt"
                   },
-                  0,
+                  364,
                   "day"
                 ]
               }
-            ]
-          },
-          {
-            "if": [
-              {
-                "var": "payload.t.0"
-              },
-              {
-                "plusTime": [
-                  {
-                    "var": "payload.t.0.sc"
-                  },
-                  0,
-                  "day"
-                ]
-              },
-              {
-                "if": [
-                  {
-                    "var": "payload.r.0"
-                  },
-                  {
-                    "plusTime": [
-                      {
-                        "var": "payload.r.0.fr"
-                      },
-                      10,
-                      "day"
-                    ]
-                  },
-                  {
-                    "var": "undefined"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "id": "display-until-date",
-      "logic": {
-        "if": [
-          {
-            "var": "payload.v.0"
-          },
-          {
-            "plusTime": [
-              {
-                "var": "payload.v.0.dt"
-              },
-              364,
-              "day"
             ]
           },
           {
@@ -165,7 +200,7 @@
                       {
                         "var": "payload.r.0.fr"
                       },
-                      179,
+                      364,
                       "day"
                     ]
                   },
