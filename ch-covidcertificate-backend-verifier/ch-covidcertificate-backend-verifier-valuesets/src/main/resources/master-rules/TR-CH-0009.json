@@ -1,0 +1,57 @@
+{
+  "affectedFields": [
+    "t.0.tt",
+    "t.0.sc"
+  ],
+  "certificateType": "Test",
+  "country": "CH",
+  "description": [
+    {
+      "desc": "If the test is a serum antibody test, then the validation date must be before the date of sample collection plus 90 days",
+      "lang": "en"
+    }
+  ],
+  "engine": "CertLogic",
+  "engineVersion": "0.7.5",
+  "identifier": "TR-CH-0009",
+  "logic": {
+    "if": [
+      {
+        "===": [
+          {
+            "var": "payload.t.0.tt"
+          },
+          "94504-8"
+        ]
+      },
+      {
+        "before": [
+          {
+            "plusTime": [
+              {
+                "var": "external.validationClock"
+              },
+              0,
+              "day"
+            ]
+          },
+          {
+            "plusTime": [
+              {
+                "var": "payload.t.0.sc"
+              },
+              90,
+              "day"
+            ]
+          }
+        ]
+      },
+      true
+    ]
+  },
+  "schemaVersion": "1.0.0",
+  "type": "Acceptance",
+  "validFrom": "2021-10-18T12:00:00Z",
+  "validTo": "2031-01-01T00:00:00Z",
+  "version": "1.0.3"
+}

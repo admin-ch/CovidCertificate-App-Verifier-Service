@@ -246,13 +246,28 @@
       }
     },
     {
-      "inputParameter": "[\"t.0\",\"t.0.tr\"]",
-      "description": "Test result must be negative (\"not detected\").",
+      "inputParameter": "[\"t.0\",\"t.0.tr\",\"t.0.tt\"]",
+      "description": "For rapid or PCR test, the result must be negative (\"not detected\").",
       "id": "TR-CH-0001",
       "logic": {
         "if": [
           {
-            "var": "payload.t.0"
+            "and": [
+              {
+                "var": "payload.t.0"
+              },
+              {
+                "in": [
+                  {
+                    "var": "payload.t.0.tt"
+                  },
+                  [
+                    "LP217198-3",
+                    "LP6464-4"
+                  ]
+                ]
+              }
+            ]
           },
           {
             "===": [
@@ -268,7 +283,7 @@
     },
     {
       "inputParameter": "[\"t.0\",\"t.0.tt\"]",
-      "description": "The test type must be one of the value set list (RAT OR NAA).",
+      "description": "The test type must be one of the value set list (RAT OR NAA or serum antibody).",
       "id": "TR-CH-0002",
       "logic": {
         "if": [
@@ -421,6 +436,81 @@
                   },
                   72,
                   "hour"
+                ]
+              }
+            ]
+          },
+          true
+        ]
+      }
+    },
+    {
+      "inputParameter": "[\"t.0\",\"t.0.tr\",\"t.0.tt\"]",
+      "description": "For serum antibody tests, the result must be positive.",
+      "id": "TR-CH-0008",
+      "logic": {
+        "if": [
+          {
+            "and": [
+              {
+                "var": "payload.t.0"
+              },
+              {
+                "in": [
+                  {
+                    "var": "payload.t.0.tt"
+                  },
+                  [
+                    "94504-8"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "===": [
+              {
+                "var": "payload.t.0.tr"
+              },
+              "260373001"
+            ]
+          },
+          true
+        ]
+      }
+    },
+    {
+      "inputParameter": "[\"t.0.tt\",\"t.0.sc\"]",
+      "description": "If the test is a serum antibody test, then the validation date must be before the date of sample collection plus 90 days",
+      "id": "TR-CH-0009",
+      "logic": {
+        "if": [
+          {
+            "===": [
+              {
+                "var": "payload.t.0.tt"
+              },
+              "94504-8"
+            ]
+          },
+          {
+            "<": [
+              {
+                "plusTime": [
+                  {
+                    "var": "external.validationClock"
+                  },
+                  0,
+                  "day"
+                ]
+              },
+              {
+                "plusTime": [
+                  {
+                    "var": "payload.t.0.sc"
+                  },
+                  90,
+                  "day"
                 ]
               }
             ]

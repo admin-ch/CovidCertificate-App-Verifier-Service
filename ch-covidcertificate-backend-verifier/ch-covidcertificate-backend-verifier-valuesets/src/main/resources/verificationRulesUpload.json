@@ -370,13 +370,14 @@
     {
       "AffectedFields": [
         "t.0",
-        "t.0.tr"
+        "t.0.tr",
+        "t.0.tt"
       ],
       "CertificateType": "Test",
       "Country": "CH",
       "Description": [
         {
-          "desc": "Test result must be negative (\"not detected\").",
+          "desc": "For rapid or PCR test, the result must be negative (\"not detected\").",
           "lang": "en"
         }
       ],
@@ -386,7 +387,22 @@
       "Logic": {
         "if": [
           {
-            "var": "payload.t.0"
+            "and": [
+              {
+                "var": "payload.t.0"
+              },
+              {
+                "in": [
+                  {
+                    "var": "payload.t.0.tt"
+                  },
+                  [
+                    "LP217198-3",
+                    "LP6464-4"
+                  ]
+                ]
+              }
+            ]
           },
           {
             "===": [
@@ -416,7 +432,7 @@
       "Country": "CH",
       "Description": [
         {
-          "desc": "The test type must be one of the value set list (RAT OR NAA).",
+          "desc": "The test type must be one of the value set list (RAT OR NAA or serum antibody).",
           "lang": "en"
         }
       ],
@@ -650,6 +666,120 @@
                   },
                   72,
                   "hour"
+                ]
+              }
+            ]
+          },
+          true
+        ]
+      },
+      "SchemaVersion": "1.0.0",
+      "Type": "Acceptance",
+      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidTo": "2031-01-01T00:00:00Z",
+      "Version": "1.0.3"
+    }
+  ],
+  "TR-CH-0008": [
+    {
+      "AffectedFields": [
+        "t.0",
+        "t.0.tr",
+        "t.0.tt"
+      ],
+      "CertificateType": "Test",
+      "Country": "CH",
+      "Description": [
+        {
+          "desc": "For serum antibody tests, the result must be positive.",
+          "lang": "en"
+        }
+      ],
+      "Engine": "CERTLOGIC",
+      "EngineVersion": "0.7.5",
+      "Identifier": "TR-CH-0008",
+      "Logic": {
+        "if": [
+          {
+            "and": [
+              {
+                "var": "payload.t.0"
+              },
+              {
+                "in": [
+                  {
+                    "var": "payload.t.0.tt"
+                  },
+                  [
+                    "94504-8"
+                  ]
+                ]
+              }
+            ]
+          },
+          {
+            "===": [
+              {
+                "var": "payload.t.0.tr"
+              },
+              "260373001"
+            ]
+          },
+          true
+        ]
+      },
+      "SchemaVersion": "1.0.0",
+      "Type": "Acceptance",
+      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidTo": "2031-01-01T00:00:00Z",
+      "Version": "1.0.3"
+    }
+  ],
+  "TR-CH-0009": [
+    {
+      "AffectedFields": [
+        "t.0.tt",
+        "t.0.sc"
+      ],
+      "CertificateType": "Test",
+      "Country": "CH",
+      "Description": [
+        {
+          "desc": "If the test is a serum antibody test, then the validation date must be before the date of sample collection plus 90 days",
+          "lang": "en"
+        }
+      ],
+      "Engine": "CERTLOGIC",
+      "EngineVersion": "0.7.5",
+      "Identifier": "TR-CH-0009",
+      "Logic": {
+        "if": [
+          {
+            "===": [
+              {
+                "var": "payload.t.0.tt"
+              },
+              "94504-8"
+            ]
+          },
+          {
+            "before": [
+              {
+                "plusTime": [
+                  {
+                    "var": "external.validationClock"
+                  },
+                  0,
+                  "day"
+                ]
+              },
+              {
+                "plusTime": [
+                  {
+                    "var": "payload.t.0.sc"
+                  },
+                  90,
+                  "day"
                 ]
               }
             ]

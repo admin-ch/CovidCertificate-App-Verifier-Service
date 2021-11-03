@@ -8,13 +8,13 @@
   "country": "CH",
   "description": [
     {
-      "desc": "For rapid or PCR test, the result must be negative (\"not detected\").",
+      "desc": "For serum antibody tests, the result must be positive.",
       "lang": "en"
     }
   ],
   "engine": "CertLogic",
   "engineVersion": "0.7.5",
-  "identifier": "TR-CH-0001",
+  "identifier": "TR-CH-0008",
   "logic": {
     "if": [
       {
@@ -28,8 +28,7 @@
                 "var": "payload.t.0.tt"
               },
               [
-                "LP217198-3",
-                "LP6464-4"
+                "94504-8"
               ]
             ]
           }
@@ -40,7 +39,7 @@
           {
             "var": "payload.t.0.tr"
           },
-          "260415000"
+          "260373001"
         ]
       },
       true
