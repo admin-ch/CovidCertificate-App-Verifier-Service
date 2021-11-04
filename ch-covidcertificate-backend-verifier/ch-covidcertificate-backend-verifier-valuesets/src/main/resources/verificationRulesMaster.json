@@ -1,20 +1,20 @@
 {
-  "displayRules":[
+  "displayRules": [
     {
-      "id":"display-from-date",
-      "logic":{
-        "if":[
+      "id": "display-from-date",
+      "logic": {
+        "if": [
           {
-            "var":"payload.v.0"
+            "var": "payload.v.0"
           },
           {
-            "if":[
+            "if": [
               {
-                "and":[
+                "and": [
                   {
-                    "in":[
+                    "in": [
                       {
-                        "var":"payload.v.0.mp"
+                        "var": "payload.v.0.mp"
                       },
                       [
                         "EU/1/20/1525"
@@ -22,9 +22,9 @@
                     ]
                   },
                   {
-                    "===":[
+                    "===": [
                       {
-                        "var":"payload.v.0.dn"
+                        "var": "payload.v.0.dn"
                       },
                       1
                     ]
@@ -32,18 +32,18 @@
                 ]
               },
               {
-                "plusTime":[
+                "plusTime": [
                   {
-                    "var":"payload.v.0.dt"
+                    "var": "payload.v.0.dt"
                   },
                   21,
                   "day"
                 ]
               },
               {
-                "plusTime":[
+                "plusTime": [
                   {
-                    "var":"payload.v.0.dt"
+                    "var": "payload.v.0.dt"
                   },
                   0,
                   "day"
@@ -52,35 +52,35 @@
             ]
           },
           {
-            "if":[
+            "if": [
               {
-                "var":"payload.t.0"
+                "var": "payload.t.0"
               },
               {
-                "plusTime":[
+                "plusTime": [
                   {
-                    "var":"payload.t.0.sc"
+                    "var": "payload.t.0.sc"
                   },
                   0,
                   "day"
                 ]
               },
               {
-                "if":[
+                "if": [
                   {
-                    "var":"payload.r.0"
+                    "var": "payload.r.0"
                   },
                   {
-                    "plusTime":[
+                    "plusTime": [
                       {
-                        "var":"payload.r.0.fr"
+                        "var": "payload.r.0.fr"
                       },
                       10,
                       "day"
                     ]
                   },
                   {
-                    "var":"undefined"
+                    "var": "undefined"
                   }
                 ]
               }
@@ -90,8 +90,8 @@
       }
     },
     {
-      "id":"display-until-date",
-      "logic":{
+      "id": "display-until-date",
+      "logic": {
         "if": [
           {
             "var": "payload.v.0"
@@ -184,7 +184,28 @@
                         ]
                       },
                       {
-                        "var": "undefined"
+                        "if": [
+                          {
+                            "===": [
+                              {
+                                "var": "payload.t.0.tt"
+                              },
+                              "94504-8"
+                            ]
+                          },
+                          {
+                            "plusTime": [
+                              {
+                                "var": "payload.t.0.sc"
+                              },
+                              89,
+                              "day"
+                            ]
+                          },
+                          {
+                            "var": "undefined"
+                          }
+                        ]
                       }
                     ]
                   }
