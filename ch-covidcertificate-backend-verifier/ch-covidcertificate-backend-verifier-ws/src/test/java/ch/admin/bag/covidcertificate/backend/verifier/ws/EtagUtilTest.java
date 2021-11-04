@@ -41,7 +41,7 @@ public class EtagUtilTest {
 
     @Test
     public void testFileHash() throws Exception {
-        String expected = "W/\"fc31e4f8b9023a319340da685848e3106900204a\"";
+        String expected = "W/\"bce3ac58ce97118fe99eb356886d54f4465af9b2\"";
         String sha1 = EtagUtil.getSha1HashForFiles(true, PATH_TO_VERIFICATION_RULES);
         assertEquals(expected, sha1);
         assertNotEquals(

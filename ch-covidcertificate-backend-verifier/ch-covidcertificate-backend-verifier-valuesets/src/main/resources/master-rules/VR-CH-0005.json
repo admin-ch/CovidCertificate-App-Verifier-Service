@@ -9,7 +9,7 @@
   "country": "CH",
   "description": [
     {
-      "desc": "If the vaccine requires one dose, and only one dose was administered, it is valid after 21 days and until 387 days later",
+      "desc": "If the vaccine requires one dose, and only one dose was administered, it becomes valid after 21 days and stays valid until 21+365=386 days",
       "lang": "en"
     }
   ],
@@ -85,7 +85,7 @@
                       {
                         "var": "payload.v.0.dt"
                       },
-                      387,
+                      386,
                       "day"
                     ]
                   }

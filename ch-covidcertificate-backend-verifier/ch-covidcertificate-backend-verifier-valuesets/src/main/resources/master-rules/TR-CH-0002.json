@@ -7,7 +7,7 @@
   "country": "CH",
   "description": [
     {
-      "desc": "The test type must be one of the value set list (RAT OR NAA).",
+      "desc": "The test type must be one of the value set list (RAT OR NAA or serum antibody).",
       "lang": "en"
     }
   ],

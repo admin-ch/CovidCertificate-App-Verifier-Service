@@ -1,13 +1,14 @@
 {
   "AffectedFields": [
     "t.0",
-    "t.0.tr"
+    "t.0.tr",
+    "t.0.tt"
   ],
   "CertificateType": "Test",
   "Country": "CH",
   "Description": [
     {
-      "desc": "Test result must be negative (\"not detected\").",
+      "desc": "For rapid or PCR test, the result must be negative (\"not detected\").",
       "lang": "en"
     }
   ],
@@ -17,7 +18,22 @@
   "Logic": {
     "if": [
       {
-        "var": "payload.t.0"
+        "and": [
+          {
+            "var": "payload.t.0"
+          },
+          {
+            "in": [
+              {
+                "var": "payload.t.0.tt"
+              },
+              [
+                "LP217198-3",
+                "LP6464-4"
+              ]
+            ]
+          }
+        ]
       },
       {
         "===": [

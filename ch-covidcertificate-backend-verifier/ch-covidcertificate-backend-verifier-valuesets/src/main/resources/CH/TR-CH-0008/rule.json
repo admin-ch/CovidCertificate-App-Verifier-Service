@@ -1,33 +1,45 @@
 {
   "AffectedFields": [
     "t.0",
+    "t.0.tr",
     "t.0.tt"
   ],
   "CertificateType": "Test",
   "Country": "CH",
   "Description": [
     {
-      "desc": "The test type must be one of the value set list (RAT OR NAA or serum antibody).",
+      "desc": "For serum antibody tests, the result must be positive.",
       "lang": "en"
     }
   ],
   "Engine": "CERTLOGIC",
   "EngineVersion": "0.7.5",
-  "Identifier": "TR-CH-0002",
+  "Identifier": "TR-CH-0008",
   "Logic": {
     "if": [
       {
-        "var": "payload.t.0"
+        "and": [
+          {
+            "var": "payload.t.0"
+          },
+          {
+            "in": [
+              {
+                "var": "payload.t.0.tt"
+              },
+              [
+                "94504-8"
+              ]
+            ]
+          }
+        ]
       },
       {
-        "in": [
+        "===": [
           {
-            "var": "payload.t.0.tt"
+            "var": "payload.t.0.tr"
           },
-          [
-            "LP217198-3",
-            "LP6464-4"
-          ]
+          "260373001"
         ]
       },
       true
