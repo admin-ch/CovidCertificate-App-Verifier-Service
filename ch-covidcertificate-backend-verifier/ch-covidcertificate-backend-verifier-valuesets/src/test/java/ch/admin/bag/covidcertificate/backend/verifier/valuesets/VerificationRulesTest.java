@@ -20,24 +20,33 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.internal.Classes;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.core.io.ClassPathResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 @TestInstance(Lifecycle.PER_CLASS)
 public class VerificationRulesTest {
-
+    private static final Logger logger = LoggerFactory.getLogger(VerificationRulesTest.class);
     private ObjectMapper mapper;
 
     private static final String RULES_V1_PATH = "src/main/resources/verificationRules.json";
@@ -45,6 +54,7 @@ public class VerificationRulesTest {
     private static final String RULES_UPLOAD_PATH =
             "src/main/resources/verificationRulesUpload.json";
     private static final String RULES_MASTER_CLASSPATH = "verificationRulesMaster.json";
+    private static final String RULES_MASTER_DIR = "master-rules";
     private static final String EU_TEST_RULES_OUTPUT_PATH = "src/main/resources/CH/";
 
     @BeforeAll
@@ -58,7 +68,7 @@ public class VerificationRulesTest {
     }
 
     @Test
-    @Disabled("enable and run manually to generate new rules jsons")
+    @EnabledIfEnvironmentVariable(named="COVIDCERT_GENERATE_VALIDATION_RULES", matches = "1")
     public void generateRulesJsons() throws Exception {
         JsonNode v2 = mapMasterToV2();
         mapV2RulesToUpload(v2);
@@ -68,6 +78,19 @@ public class VerificationRulesTest {
     private JsonNode mapMasterToV2() throws Exception {
         JsonNode master =
                 mapper.readTree(new ClassPathResource(RULES_MASTER_CLASSPATH).getInputStream());
+
+        List<JsonNode> rules = Arrays.stream(new ClassPathResource(RULES_MASTER_DIR).getFile().list())
+            .filter(filename -> filename.endsWith(".json"))
+            .sorted()
+            .map(filename -> {
+                try {
+                    return mapper.readTree(new ClassPathResource(RULES_MASTER_DIR + "/" + filename).getInputStream());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }).collect(Collectors.toList());
+        ((ObjectNode) master).putArray("rules").addAll(rules);
         ObjectNode v2 = master.deepCopy();
         resolvedInlineVars(v2, master);
         mapper.writerWithDefaultPrettyPrinter().writeValue(new File(RULES_V2_PATH), v2);

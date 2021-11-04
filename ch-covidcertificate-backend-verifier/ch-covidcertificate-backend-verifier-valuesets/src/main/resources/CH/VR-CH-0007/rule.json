@@ -9,7 +9,7 @@
   "Country": "CH",
   "Description": [
     {
-      "desc": "If the vaccine requires only one dose but more than one dose was administered, it is valid from today ",
+      "desc": "If the vaccine requires only one dose but more than one dose was administered, it is valid from today for 365 days",
       "lang": "en"
     }
   ],
@@ -46,23 +46,49 @@
             ]
           },
           {
-            "not-before": [
+            "and": [
               {
-                "plusTime": [
+                "not-before": [
                   {
-                    "var": "external.validationClock"
+                    "plusTime": [
+                      {
+                        "var": "external.validationClock"
+                      },
+                      0,
+                      "day"
+                    ]
                   },
-                  0,
-                  "day"
+                  {
+                    "plusTime": [
+                      {
+                        "var": "payload.v.0.dt"
+                      },
+                      0,
+                      "day"
+                    ]
+                  }
                 ]
               },
               {
-                "plusTime": [
+                "before": [
                   {
-                    "var": "payload.v.0.dt"
+                    "plusTime": [
+                      {
+                        "var": "external.validationClock"
+                      },
+                      0,
+                      "day"
+                    ]
                   },
-                  0,
-                  "day"
+                  {
+                    "plusTime": [
+                      {
+                        "var": "payload.v.0.dt"
+                      },
+                      365,
+                      "day"
+                    ]
+                  }
                 ]
               }
             ]

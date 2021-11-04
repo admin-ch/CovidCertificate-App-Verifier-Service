@@ -97,12 +97,47 @@
             "var": "payload.v.0"
           },
           {
-            "plusTime": [
+            "if": [
               {
-                "var": "payload.v.0.dt"
+                "and": [
+                  {
+                    "in": [
+                      {
+                        "var": "payload.v.0.mp"
+                      },
+                      [
+                        "EU/1/20/1525"
+                      ]
+                    ]
+                  },
+                  {
+                    "===": [
+                      {
+                        "var": "payload.v.0.dn"
+                      },
+                      1
+                    ]
+                  }
+                ]
               },
-              364,
-              "day"
+              {
+                "plusTime": [
+                  {
+                    "var": "payload.v.0.dt"
+                  },
+                  386,
+                  "day"
+                ]
+              },
+              {
+                "plusTime": [
+                  {
+                    "var": "payload.v.0.dt"
+                  },
+                  364,
+                  "day"
+                ]
+              }
             ]
           },
           {
@@ -113,7 +148,7 @@
               {
                 "if": [
                   {
-                    "===": [
+                    "==": [
                       {
                         "var": "payload.t.0.tt"
                       },
@@ -132,7 +167,7 @@
                   {
                     "if": [
                       {
-                        "===": [
+                        "==": [
                           {
                             "var": "payload.t.0.tt"
                           },
@@ -165,7 +200,7 @@
                       {
                         "var": "payload.r.0.fr"
                       },
-                      179,
+                      364,
                       "day"
                     ]
                   },
@@ -180,6 +215,44 @@
       }
     }
   ],
+  "validDuration": 172800000,
+  "valueSets": {
+    "disease-agent-targeted": [
+      "840539006"
+    ],
+    "accepted-vaccines": [
+      "EU/1/20/1528",
+      "EU/1/20/1507",
+      "EU/1/21/1529",
+      "EU/1/20/1525",
+      "CoronaVac",
+      "BBIBP-CorV",
+      "Covishield"
+    ],
+    "two-dose-vaccines": [
+      "EU/1/20/1528",
+      "EU/1/20/1507",
+      "EU/1/21/1529",
+      "CoronaVac",
+      "BBIBP-CorV",
+      "Covishield"
+    ],
+    "one-dose-vaccines-with-offset": [
+      "EU/1/20/1525"
+    ],
+    "covid-19-lab-test-type": [
+      "LP217198-3",
+      "LP6464-4"
+    ],
+    "acceptance-criteria": {
+      "single-vaccine-validity-offset": 21,
+      "vaccine-immunity": 364,
+      "rat-test-validity": 48,
+      "pcr-test-validity": 72,
+      "recovery-offset-valid-from": 10,
+      "recovery-offset-valid-until": 179
+    }
+  },
   "rules": [
     {
       "affectedFields": [
@@ -267,26 +340,26 @@
     },
     {
       "affectedFields": [
-        "v.0",
-        "v.1",
         "r.0",
+        "r.1",
+        "v.0",
         "t.0"
       ],
-      "certificateType": "Vaccination",
+      "certificateType": "Recovery",
       "country": "CH",
       "description": [
         {
-          "desc": "At most one v-event.",
+          "desc": "At most one r-event.",
           "lang": "en"
         }
       ],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "VR-CH-0000",
+      "identifier": "RR-CH-0000",
       "logic": {
         "if": [
           {
-            "var": "payload.v.0"
+            "var": "payload.r.0"
           },
           {
             "if": [
@@ -295,14 +368,14 @@
                   {
                     "!": [
                       {
-                        "var": "payload.v.1"
+                        "var": "payload.r.1"
                       }
                     ]
                   },
                   {
                     "!": [
                       {
-                        "var": "payload.r.0"
+                        "var": "payload.v.0"
                       }
                     ]
                   },
@@ -330,118 +403,31 @@
     },
     {
       "affectedFields": [
-        "v.0",
-        "v.0.dn",
-        "v.0.sd"
+        "r.0",
+        "r.0.fr"
       ],
-      "certificateType": "Vaccination",
+      "certificateType": "Recovery",
       "country": "CH",
       "description": [
         {
-          "desc": "Vaccination doses must be equal or greater than expected doses.",
+          "desc": "Date of first positive test must exist",
           "lang": "en"
         }
       ],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "VR-CH-0001",
+      "identifier": "RR-CH-0001",
       "logic": {
         "if": [
           {
-            "var": "payload.v.0"
-          },
-          {
-            ">=": [
-              {
-                "var": "payload.v.0.dn"
-              },
-              {
-                "var": "payload.v.0.sd"
-              }
-            ]
-          },
-          true
-        ]
-      },
-      "schemaVersion": "1.0.0",
-      "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
-      "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
-    },
-    {
-      "affectedFields": [
-        "v.0",
-        "v.0.mp"
-      ],
-      "certificateType": "Vaccination",
-      "country": "CH",
-      "description": [
-        {
-          "desc": "Only vaccines in the allowed valueset that have been approved by the EMA are allowed.",
-          "lang": "en"
-        }
-      ],
-      "engine": "CertLogic",
-      "engineVersion": "0.7.5",
-      "identifier": "VR-CH-0002",
-      "logic": {
-        "if": [
-          {
-            "var": "payload.v.0"
-          },
-          {
-            "in": [
-              {
-                "var": "payload.v.0.mp"
-              },
-              [
-                "EU/1/20/1528",
-                "EU/1/20/1507",
-                "EU/1/21/1529",
-                "EU/1/20/1525",
-                "CoronaVac",
-                "BBIBP-CorV",
-                "Covishield"
-              ]
-            ]
-          },
-          true
-        ]
-      },
-      "schemaVersion": "1.0.0",
-      "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
-      "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
-    },
-    {
-      "affectedFields": [
-        "v.0",
-        "v.0.dt"
-      ],
-      "certificateType": "Vaccination",
-      "country": "CH",
-      "description": [
-        {
-          "desc": "Date of vaccination must exist",
-          "lang": "en"
-        }
-      ],
-      "engine": "CertLogic",
-      "engineVersion": "0.7.5",
-      "identifier": "VR-CH-0003",
-      "logic": {
-        "if": [
-          {
-            "var": "payload.v.0"
+            "var": "payload.r.0"
           },
           {
             "!": [
               {
                 "!": [
                   {
-                    "var": "payload.v.0.dt"
+                    "var": "payload.r.0.fr"
                   }
                 ]
               }
@@ -458,53 +444,27 @@
     },
     {
       "affectedFields": [
-        "v.0",
-        "v.0.mp",
-        "v.0.dt"
+        "r.0",
+        "r.0.fr"
       ],
-      "certificateType": "Vaccination",
+      "certificateType": "Recovery",
       "country": "CH",
       "description": [
         {
-          "desc": "If the vaccine requires two doses, the vaccination date must be before today",
+          "desc": "The validation date must be after the date of first positive test plus 10 days",
           "lang": "en"
         }
       ],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "VR-CH-0004",
+      "identifier": "RR-CH-0002",
       "logic": {
         "if": [
           {
-            "and": [
-              {
-                "var": "payload.v.0"
-              },
-              {
-                "in": [
-                  {
-                    "var": "payload.v.0.mp"
-                  },
-                  [
-                    "EU/1/20/1528",
-                    "EU/1/20/1507",
-                    "EU/1/21/1529"
-                  ]
-                ]
-              }
-            ]
+            "var": "payload.r.0"
           },
           {
-            "not-after": [
-              {
-                "plusTime": [
-                  {
-                    "var": "payload.v.0.dt"
-                  },
-                  0,
-                  "day"
-                ]
-              },
+            "after": [
               {
                 "plusTime": [
                   {
@@ -513,6 +473,15 @@
                   0,
                   "day"
                 ]
+              },
+              {
+                "plusTime": [
+                  {
+                    "var": "payload.r.0.fr"
+                  },
+                  10,
+                  "day"
+                ]
               }
             ]
           },
@@ -527,105 +496,24 @@
     },
     {
       "affectedFields": [
-        "v.0",
-        "v.0.mp",
-        "v.0.dn",
-        "v.0.dt"
+        "r.0",
+        "r.0.fr"
       ],
-      "certificateType": "Vaccination",
+      "certificateType": "Recovery",
       "country": "CH",
       "description": [
         {
-          "desc": "If the vaccine requires one dose, and only one dose was administered, it is valid after 21 days ",
+          "desc": "The validation date must be before the date of first positive test plus 365 days",
           "lang": "en"
         }
       ],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "VR-CH-0005",
+      "identifier": "RR-CH-0003",
       "logic": {
         "if": [
           {
-            "var": "payload.v.0"
-          },
-          {
-            "if": [
-              {
-                "and": [
-                  {
-                    "in": [
-                      {
-                        "var": "payload.v.0.mp"
-                      },
-                      [
-                        "EU/1/20/1525"
-                      ]
-                    ]
-                  },
-                  {
-                    "===": [
-                      {
-                        "var": "payload.v.0.dn"
-                      },
-                      1
-                    ]
-                  }
-                ]
-              },
-              {
-                "not-before": [
-                  {
-                    "plusTime": [
-                      {
-                        "var": "external.validationClock"
-                      },
-                      0,
-                      "day"
-                    ]
-                  },
-                  {
-                    "plusTime": [
-                      {
-                        "var": "payload.v.0.dt"
-                      },
-                      21,
-                      "day"
-                    ]
-                  }
-                ]
-              },
-              true
-            ]
-          },
-          true
-        ]
-      },
-      "schemaVersion": "1.0.0",
-      "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
-      "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
-    },
-    {
-      "affectedFields": [
-        "v.0",
-        "v.0.dt"
-      ],
-      "certificateType": "Vaccination",
-      "country": "CH",
-      "description": [
-        {
-          "desc": "Today must be less than the vaccination date plus 364 days",
-          "lang": "en"
-        }
-      ],
-      "engine": "CertLogic",
-      "engineVersion": "0.7.5",
-      "identifier": "VR-CH-0006",
-      "logic": {
-        "if": [
-          {
-            "var": "payload.v.0"
+            "var": "payload.r.0"
           },
           {
             "before": [
@@ -641,93 +529,12 @@
               {
                 "plusTime": [
                   {
-                    "var": "payload.v.0.dt"
+                    "var": "payload.r.0.fr"
                   },
                   365,
                   "day"
                 ]
               }
-            ]
-          },
-          true
-        ]
-      },
-      "schemaVersion": "1.0.0",
-      "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
-      "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
-    },
-    {
-      "affectedFields": [
-        "v.0",
-        "v.0.mp",
-        "v.0.dn",
-        "v.0.dt"
-      ],
-      "certificateType": "Vaccination",
-      "country": "CH",
-      "description": [
-        {
-          "desc": "If the vaccine requires only one dose but more than one dose was administered, it is valid from today ",
-          "lang": "en"
-        }
-      ],
-      "engine": "CertLogic",
-      "engineVersion": "0.7.5",
-      "identifier": "VR-CH-0007",
-      "logic": {
-        "if": [
-          {
-            "var": "payload.v.0"
-          },
-          {
-            "if": [
-              {
-                "and": [
-                  {
-                    "in": [
-                      {
-                        "var": "payload.v.0.mp"
-                      },
-                      [
-                        "EU/1/20/1525"
-                      ]
-                    ]
-                  },
-                  {
-                    ">": [
-                      {
-                        "var": "payload.v.0.dn"
-                      },
-                      1
-                    ]
-                  }
-                ]
-              },
-              {
-                "not-before": [
-                  {
-                    "plusTime": [
-                      {
-                        "var": "external.validationClock"
-                      },
-                      0,
-                      "day"
-                    ]
-                  },
-                  {
-                    "plusTime": [
-                      {
-                        "var": "payload.v.0.dt"
-                      },
-                      0,
-                      "day"
-                    ]
-                  }
-                ]
-              },
-              true
             ]
           },
           true
@@ -1090,26 +897,26 @@
     },
     {
       "affectedFields": [
-        "r.0",
-        "r.1",
         "v.0",
+        "v.1",
+        "r.0",
         "t.0"
       ],
-      "certificateType": "Recovery",
+      "certificateType": "Vaccination",
       "country": "CH",
       "description": [
         {
-          "desc": "At most one r-event.",
+          "desc": "At most one v-event.",
           "lang": "en"
         }
       ],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "RR-CH-0000",
+      "identifier": "VR-CH-0000",
       "logic": {
         "if": [
           {
-            "var": "payload.r.0"
+            "var": "payload.v.0"
           },
           {
             "if": [
@@ -1118,14 +925,14 @@
                   {
                     "!": [
                       {
-                        "var": "payload.r.1"
+                        "var": "payload.v.1"
                       }
                     ]
                   },
                   {
                     "!": [
                       {
-                        "var": "payload.v.0"
+                        "var": "payload.r.0"
                       }
                     ]
                   },
@@ -1153,31 +960,118 @@
     },
     {
       "affectedFields": [
-        "r.0",
-        "r.0.fr"
+        "v.0",
+        "v.0.dn",
+        "v.0.sd"
       ],
-      "certificateType": "Recovery",
+      "certificateType": "Vaccination",
       "country": "CH",
       "description": [
         {
-          "desc": "Date of first positive test must exist",
+          "desc": "Vaccination doses must be equal or greater than expected doses.",
           "lang": "en"
         }
       ],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "RR-CH-0001",
+      "identifier": "VR-CH-0001",
       "logic": {
         "if": [
           {
-            "var": "payload.r.0"
+            "var": "payload.v.0"
+          },
+          {
+            ">=": [
+              {
+                "var": "payload.v.0.dn"
+              },
+              {
+                "var": "payload.v.0.sd"
+              }
+            ]
+          },
+          true
+        ]
+      },
+      "schemaVersion": "1.0.0",
+      "type": "Acceptance",
+      "validFrom": "2021-10-18T12:00:00Z",
+      "validTo": "2031-01-01T00:00:00Z",
+      "version": "1.0.3"
+    },
+    {
+      "affectedFields": [
+        "v.0",
+        "v.0.mp"
+      ],
+      "certificateType": "Vaccination",
+      "country": "CH",
+      "description": [
+        {
+          "desc": "Only vaccines in the allowed valueset that have been approved by the EMA are allowed.",
+          "lang": "en"
+        }
+      ],
+      "engine": "CertLogic",
+      "engineVersion": "0.7.5",
+      "identifier": "VR-CH-0002",
+      "logic": {
+        "if": [
+          {
+            "var": "payload.v.0"
+          },
+          {
+            "in": [
+              {
+                "var": "payload.v.0.mp"
+              },
+              [
+                "EU/1/20/1528",
+                "EU/1/20/1507",
+                "EU/1/21/1529",
+                "EU/1/20/1525",
+                "CoronaVac",
+                "BBIBP-CorV",
+                "Covishield"
+              ]
+            ]
+          },
+          true
+        ]
+      },
+      "schemaVersion": "1.0.0",
+      "type": "Acceptance",
+      "validFrom": "2021-10-18T12:00:00Z",
+      "validTo": "2031-01-01T00:00:00Z",
+      "version": "1.0.3"
+    },
+    {
+      "affectedFields": [
+        "v.0",
+        "v.0.dt"
+      ],
+      "certificateType": "Vaccination",
+      "country": "CH",
+      "description": [
+        {
+          "desc": "Date of vaccination must exist",
+          "lang": "en"
+        }
+      ],
+      "engine": "CertLogic",
+      "engineVersion": "0.7.5",
+      "identifier": "VR-CH-0003",
+      "logic": {
+        "if": [
+          {
+            "var": "payload.v.0"
           },
           {
             "!": [
               {
                 "!": [
                   {
-                    "var": "payload.r.0.fr"
+                    "var": "payload.v.0.dt"
                   }
                 ]
               }
@@ -1194,31 +1088,48 @@
     },
     {
       "affectedFields": [
-        "r.0",
-        "r.0.fr"
+        "v.0",
+        "v.0.mp",
+        "v.0.dt"
       ],
-      "certificateType": "Recovery",
+      "certificateType": "Vaccination",
       "country": "CH",
       "description": [
         {
-          "desc": "The validation date must be after the date of first positive test plus 10 days",
+          "desc": "If the vaccine requires two doses, the vaccination date must be before today",
           "lang": "en"
         }
       ],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "RR-CH-0002",
+      "identifier": "VR-CH-0004",
       "logic": {
         "if": [
           {
-            "var": "payload.r.0"
+            "and": [
+              {
+                "var": "payload.v.0"
+              },
+              {
+                "in": [
+                  {
+                    "var": "payload.v.0.mp"
+                  },
+                  [
+                    "EU/1/20/1528",
+                    "EU/1/20/1507",
+                    "EU/1/21/1529"
+                  ]
+                ]
+              }
+            ]
           },
           {
-            "after": [
+            "not-after": [
               {
                 "plusTime": [
                   {
-                    "var": "external.validationClock"
+                    "var": "payload.v.0.dt"
                   },
                   0,
                   "day"
@@ -1227,9 +1138,9 @@
               {
                 "plusTime": [
                   {
-                    "var": "payload.r.0.fr"
+                    "var": "external.validationClock"
                   },
-                  10,
+                  0,
                   "day"
                 ]
               }
@@ -1246,24 +1157,151 @@
     },
     {
       "affectedFields": [
-        "r.0",
-        "r.0.fr"
+        "v.0",
+        "v.0.mp",
+        "v.0.dn",
+        "v.0.dt"
       ],
-      "certificateType": "Recovery",
+      "certificateType": "Vaccination",
       "country": "CH",
       "description": [
         {
-          "desc": "The validation date must be less than the date of first positive test plus 179 days",
+          "desc": "If the vaccine requires one dose, and only one dose was administered, it is valid after 21 days and until 387 days later",
           "lang": "en"
         }
       ],
       "engine": "CertLogic",
       "engineVersion": "0.7.5",
-      "identifier": "RR-CH-0003",
+      "identifier": "VR-CH-0005",
       "logic": {
         "if": [
           {
-            "var": "payload.r.0"
+            "var": "payload.v.0"
+          },
+          {
+            "if": [
+              {
+                "and": [
+                  {
+                    "in": [
+                      {
+                        "var": "payload.v.0.mp"
+                      },
+                      [
+                        "EU/1/20/1525"
+                      ]
+                    ]
+                  },
+                  {
+                    "===": [
+                      {
+                        "var": "payload.v.0.dn"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              },
+              {
+                "and": [
+                  {
+                    "not-before": [
+                      {
+                        "plusTime": [
+                          {
+                            "var": "external.validationClock"
+                          },
+                          0,
+                          "day"
+                        ]
+                      },
+                      {
+                        "plusTime": [
+                          {
+                            "var": "payload.v.0.dt"
+                          },
+                          21,
+                          "day"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "before": [
+                      {
+                        "plusTime": [
+                          {
+                            "var": "external.validationClock"
+                          },
+                          0,
+                          "day"
+                        ]
+                      },
+                      {
+                        "plusTime": [
+                          {
+                            "var": "payload.v.0.dt"
+                          },
+                          387,
+                          "day"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              true
+            ]
+          },
+          true
+        ]
+      },
+      "schemaVersion": "1.0.0",
+      "type": "Acceptance",
+      "validFrom": "2021-10-18T12:00:00Z",
+      "validTo": "2031-01-01T00:00:00Z",
+      "version": "1.0.3"
+    },
+    {
+      "affectedFields": [
+        "v.0",
+        "v.0.dt",
+        "v.0.mp"
+      ],
+      "certificateType": "Vaccination",
+      "country": "CH",
+      "description": [
+        {
+          "desc": "For 2/2 doses, the current date and time must be before the vaccination date plus 365 days for 2-dose vaccines",
+          "lang": "en"
+        }
+      ],
+      "engine": "CertLogic",
+      "engineVersion": "0.7.5",
+      "identifier": "VR-CH-0006",
+      "logic": {
+        "if": [
+          {
+            "and": [
+              {
+                "var": "payload.v.0"
+              },
+              {
+                "in": [
+                  {
+                    "var": "payload.v.0.mp"
+                  },
+                  [
+                    "EU/1/20/1528",
+                    "EU/1/20/1507",
+                    "EU/1/21/1529",
+                    "CoronaVac",
+                    "BBIBP-CorV",
+                    "Covishield"
+                  ]
+                ]
+              }
+            ]
           },
           {
             "before": [
@@ -1279,9 +1317,9 @@
               {
                 "plusTime": [
                   {
-                    "var": "payload.r.0.fr"
+                    "var": "payload.v.0.dt"
                   },
-                  180,
+                  365,
                   "day"
                 ]
               }
@@ -1295,44 +1333,113 @@
       "validFrom": "2021-10-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
       "version": "1.0.3"
+    },
+    {
+      "affectedFields": [
+        "v.0",
+        "v.0.mp",
+        "v.0.dn",
+        "v.0.dt"
+      ],
+      "certificateType": "Vaccination",
+      "country": "CH",
+      "description": [
+        {
+          "desc": "If the vaccine requires only one dose but more than one dose was administered, it is valid from today for 365 days",
+          "lang": "en"
+        }
+      ],
+      "engine": "CertLogic",
+      "engineVersion": "0.7.5",
+      "identifier": "VR-CH-0007",
+      "logic": {
+        "if": [
+          {
+            "var": "payload.v.0"
+          },
+          {
+            "if": [
+              {
+                "and": [
+                  {
+                    "in": [
+                      {
+                        "var": "payload.v.0.mp"
+                      },
+                      [
+                        "EU/1/20/1525"
+                      ]
+                    ]
+                  },
+                  {
+                    ">": [
+                      {
+                        "var": "payload.v.0.dn"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              },
+              {
+                "and": [
+                  {
+                    "not-before": [
+                      {
+                        "plusTime": [
+                          {
+                            "var": "external.validationClock"
+                          },
+                          0,
+                          "day"
+                        ]
+                      },
+                      {
+                        "plusTime": [
+                          {
+                            "var": "payload.v.0.dt"
+                          },
+                          0,
+                          "day"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "before": [
+                      {
+                        "plusTime": [
+                          {
+                            "var": "external.validationClock"
+                          },
+                          0,
+                          "day"
+                        ]
+                      },
+                      {
+                        "plusTime": [
+                          {
+                            "var": "payload.v.0.dt"
+                          },
+                          365,
+                          "day"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              true
+            ]
+          },
+          true
+        ]
+      },
+      "schemaVersion": "1.0.0",
+      "type": "Acceptance",
+      "validFrom": "2021-10-18T12:00:00Z",
+      "validTo": "2031-01-01T00:00:00Z",
+      "version": "1.0.3"
     }
-  ],
-  "validDuration": 172800000,
-  "valueSets": {
-    "disease-agent-targeted": [
-      "840539006"
-    ],
-    "accepted-vaccines": [
-      "EU/1/20/1528",
-      "EU/1/20/1507",
-      "EU/1/21/1529",
-      "EU/1/20/1525",
-      "CoronaVac",
-      "BBIBP-CorV",
-      "Covishield"
-    ],
-    "two-dose-vaccines": [
-      "EU/1/20/1528",
-      "EU/1/20/1507",
-      "EU/1/21/1529",
-      "CoronaVac",
-      "BBIBP-CorV",
-      "Covishield"
-    ],
-    "one-dose-vaccines-with-offset": [
-      "EU/1/20/1525"
-    ],
-    "covid-19-lab-test-type": [
-      "LP217198-3",
-      "LP6464-4"
-    ],
-    "acceptance-criteria": {
-      "single-vaccine-validity-offset": 21,
-      "vaccine-immunity": 364,
-      "rat-test-validity": 48,
-      "pcr-test-validity": 72,
-      "recovery-offset-valid-from": 10,
-      "recovery-offset-valid-until": 179
-    }
-  }
+  ]
 }

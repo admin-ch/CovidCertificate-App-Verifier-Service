@@ -1,0 +1,41 @@
+{
+  "affectedFields": [
+    "t.0",
+    "t.0.tt"
+  ],
+  "certificateType": "Test",
+  "country": "CH",
+  "description": [
+    {
+      "desc": "The test type must be one of the value set list (RAT OR NAA).",
+      "lang": "en"
+    }
+  ],
+  "engine": "CertLogic",
+  "engineVersion": "0.7.5",
+  "identifier": "TR-CH-0002",
+  "logic": {
+    "if": [
+      {
+        "var": "payload.t.0"
+      },
+      {
+        "in": [
+          {
+            "var": "payload.t.0.tt"
+          },
+          [
+            "LP217198-3",
+            "LP6464-4"
+          ]
+        ]
+      },
+      true
+    ]
+  },
+  "schemaVersion": "1.0.0",
+  "type": "Acceptance",
+  "validFrom": "2021-10-18T12:00:00Z",
+  "validTo": "2031-01-01T00:00:00Z",
+  "version": "1.0.3"
+}
