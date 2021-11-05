@@ -248,7 +248,8 @@
       "EU/1/20/1525",
       "CoronaVac",
       "BBIBP-CorV",
-      "Covishield"
+      "Covishield",
+      "Covaxin"
     ],
     "two-dose-vaccines": [
       "EU/1/20/1528",
@@ -256,14 +257,16 @@
       "EU/1/21/1529",
       "CoronaVac",
       "BBIBP-CorV",
-      "Covishield"
+      "Covishield",
+      "Covaxin"
     ],
     "one-dose-vaccines-with-offset": [
       "EU/1/20/1525"
     ],
     "covid-19-lab-test-type": [
       "LP217198-3",
-      "LP6464-4"
+      "LP6464-4",
+      "94504-8"
     ],
     "acceptance-criteria": {
       "single-vaccine-validity-offset": 21,
@@ -271,7 +274,7 @@
       "rat-test-validity": 48,
       "pcr-test-validity": 72,
       "recovery-offset-valid-from": 10,
-      "recovery-offset-valid-until": 179
+      "recovery-offset-valid-until": 364
     }
   }
 }
