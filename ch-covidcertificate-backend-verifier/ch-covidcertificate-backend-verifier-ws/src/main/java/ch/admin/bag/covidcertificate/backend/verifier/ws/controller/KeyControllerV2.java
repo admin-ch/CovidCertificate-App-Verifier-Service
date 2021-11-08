@@ -116,7 +116,7 @@ public class KeyControllerV2 {
 
         return ResponseEntity.ok()
                 .headers(getKeysListHeaders(maxDscPkId, now))
-                .body(new ActiveCertsResponse(activeKeyIds));
+                .body(new ActiveCertsResponse(activeKeyIds, maxDscPkId));
     }
 
     private HttpHeaders getKeysListHeaders(Long upTo, Instant now) {
