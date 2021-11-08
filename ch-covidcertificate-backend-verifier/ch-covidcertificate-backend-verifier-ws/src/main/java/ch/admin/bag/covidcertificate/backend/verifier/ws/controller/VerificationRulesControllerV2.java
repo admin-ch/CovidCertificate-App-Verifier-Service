@@ -12,19 +12,23 @@ package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
+import ch.admin.bag.covidcertificate.backend.verifier.model.DbRevokedCert;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import ch.ubique.openapi.docannotations.Documentation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -64,6 +68,7 @@ public class VerificationRulesControllerV2 {
     @GetMapping(value = "/verificationRules")
     public @ResponseBody ResponseEntity<Map> getVerificationRules(WebRequest request)
             throws NoSuchAlgorithmException {
+        Instant now = Instant.now();
         var allIds = valueSetDataService.findAllValueSetIds();
         HashMap<String, ArrayList<String>> valueSets = new HashMap<>();
         ArrayList<String> strings = new ArrayList<>();
@@ -93,7 +98,14 @@ public class VerificationRulesControllerV2 {
         }
         verificationRules.put(VALUE_SETS_KEY, valueSets);
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(CacheUtil.VERIFICATION_RULES_MAX_AGE))
+                .headers(getVerificationRulesHeaders(now))
                 .body(verificationRules);
+    }
+
+    private HttpHeaders getVerificationRulesHeaders(Instant now) {
+        HttpHeaders headers =
+            CacheUtil.createExpiresHeader(
+                CacheUtil.roundToNextVerificationRulesBucketStart(now));
+        return headers;
     }
 }
