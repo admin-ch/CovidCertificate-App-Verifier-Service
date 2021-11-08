@@ -21,6 +21,7 @@ import ch.ubique.openapi.docannotations.Documentation;
 import java.sql.Date;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -124,15 +125,17 @@ public class KeyController {
 
         List<String> activeKeyIds =
                 verifierDataService.findActiveDscKeyIdsBefore(Date.from(previousBucketRelease));
-
+        long maxDscPkId = verifierDataService.findMaxDscPkId();
+        List<String> etagComponents = new ArrayList<>(activeKeyIds);
+        etagComponents.add(String.valueOf(maxDscPkId));
         // check etag
-        String currentEtag = EtagUtil.getUnsortedListEtag(true, activeKeyIds);
+        String currentEtag = EtagUtil.getUnsortedListEtag(true, etagComponents);
         if (request.checkNotModified(currentEtag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
 
         return ResponseEntity.ok()
                 .headers(CacheUtil.createExpiresHeader(nextBucketRelease))
-                .body(new ActiveCertsResponse(activeKeyIds));
+                .body(new ActiveCertsResponse(activeKeyIds, maxDscPkId));
     }
 }

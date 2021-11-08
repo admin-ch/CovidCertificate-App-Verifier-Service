@@ -19,6 +19,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import ch.ubique.openapi.docannotations.Documentation;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
@@ -107,9 +108,10 @@ public class KeyControllerV2 {
         Instant now = Instant.now();
         long maxDscPkId = verifierDataService.findMaxDscPkId();
         List<String> activeKeyIds = verifierDataService.findActiveDscKeyIds();
-
+        List<String> etagComponents = new ArrayList<>(activeKeyIds);
+        etagComponents.add(String.valueOf(maxDscPkId));
         // check etag
-        String currentEtag = EtagUtil.getUnsortedListEtag(true, activeKeyIds);
+        String currentEtag = EtagUtil.getUnsortedListEtag(true, etagComponents);
         if (request.checkNotModified(currentEtag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
