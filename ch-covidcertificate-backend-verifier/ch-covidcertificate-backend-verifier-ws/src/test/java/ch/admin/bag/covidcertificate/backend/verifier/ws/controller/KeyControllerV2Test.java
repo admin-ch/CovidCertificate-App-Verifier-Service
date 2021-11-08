@@ -14,6 +14,7 @@ import static ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil.
 import static ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil.getEcDsc;
 import static ch.admin.bag.covidcertificate.backend.verifier.data.util.TestUtil.getRsaDsc;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -27,8 +28,10 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertsResponse;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.util.TestHelper;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -276,13 +279,14 @@ public abstract class KeyControllerV2Test extends BaseControllerTest {
                         Math.max((int) verifierDataService.findMaxDscPkId() - dscs.size(), since)
                                 + expectedSize),
                 response.getHeader(NEXT_SINCE_HEADER));
-        assertMaxAge(response, CacheUtil.KEYS_UPDATES_MAX_AGE);
+        assertExpiry(response, CacheUtil.KEYS_BUCKET_DURATION);
     }
 
-    private void assertMaxAge(MockHttpServletResponse response, Duration expectedDuration) {
-        assertEquals(
-                "max-age=" + expectedDuration.get(ChronoUnit.SECONDS),
-                response.getHeader("Cache-Control"));
+    private void assertExpiry(MockHttpServletResponse response, Duration bucketDuration)
+        throws ParseException {
+        Instant expires = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz").parse(response.getHeader("Expires")).toInstant();
+        assertTrue(expires.isAfter(Instant.now()));
+        assertFalse(expires.isAfter(Instant.now().plus(bucketDuration)));
     }
 
     @Test
@@ -318,7 +322,7 @@ public abstract class KeyControllerV2Test extends BaseControllerTest {
 
         String upTo = response.getHeader(UP_TO_HEADER);
         assertEquals(String.valueOf((int) verifierDataService.findMaxDscPkId()), upTo);
-        assertMaxAge(response, CacheUtil.KEYS_LIST_MAX_AGE);
+        assertExpiry(response, CacheUtil.KEYS_BUCKET_DURATION);
 
         // insert new dscs
         List<DbDsc> newDscs = insertSomeDscs(cscaId);
