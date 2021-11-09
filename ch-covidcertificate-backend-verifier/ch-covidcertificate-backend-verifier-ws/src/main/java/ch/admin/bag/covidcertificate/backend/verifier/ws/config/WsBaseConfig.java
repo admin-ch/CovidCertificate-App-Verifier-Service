@@ -85,7 +85,7 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
 
     public abstract Flyway flyway();
 
-    @Value("${ws.keys.release-bucket-duration:PT1H}")
+    @Value("${ws.keys.release-bucket-duration:PT6H}")
     public void setKeysBucketDuration(Duration bucketDuration) {
         CacheUtil.KEYS_BUCKET_DURATION = bucketDuration;
     }
