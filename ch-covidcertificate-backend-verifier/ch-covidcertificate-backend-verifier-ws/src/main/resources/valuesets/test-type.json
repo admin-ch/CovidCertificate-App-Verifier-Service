@@ -15,6 +15,13 @@
       "active": true,
       "version": "2.69",
       "system": "http://loinc.org"
+    },
+    "94504-8": {
+      "display": "Antibody Panel, Blood",
+      "lang": "en",
+      "active": true,
+      "version": "2.69",
+      "system": "http://loinc.org"
     }
   }
 }
