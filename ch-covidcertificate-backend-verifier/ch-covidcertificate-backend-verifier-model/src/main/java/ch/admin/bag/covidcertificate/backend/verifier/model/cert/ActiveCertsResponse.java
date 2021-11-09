@@ -24,13 +24,17 @@ public class ActiveCertsResponse {
             example = "172800000")
     private Duration validDuration = Duration.ofHours(48);
 
+    @Documentation(description = "up to which key id can be requested")
+    private Long upTo;
+
     public ActiveCertsResponse() {}
 
-    public ActiveCertsResponse(List<String> activeKeyIds) {
+    public ActiveCertsResponse(List<String> activeKeyIds, Long upTo) {
         if (activeKeyIds == null) {
             activeKeyIds = new ArrayList<>();
         }
         this.activeKeyIds = activeKeyIds;
+        this.upTo = upTo;
     }
 
     public List<String> getActiveKeyIds() {
@@ -47,5 +51,13 @@ public class ActiveCertsResponse {
 
     public void setValidDuration(Long durationInMs) {
         this.validDuration = Duration.ofMillis(durationInMs);
+    }
+
+    public Long getUpTo() {
+        return upTo;
+    }
+
+    public void setUpTo(Long upTo) {
+        this.upTo = upTo;
     }
 }

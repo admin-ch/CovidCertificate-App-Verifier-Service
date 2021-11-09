@@ -18,6 +18,8 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.CertsResponse;
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import ch.ubique.openapi.docannotations.Documentation;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
@@ -69,15 +71,18 @@ public class KeyControllerV2 {
             @RequestParam(required = false, defaultValue = "0") Long since,
             @RequestParam Long upTo,
             @RequestParam CertFormat certFormat) {
+        Instant now = Instant.now();
         List<ClientCert> dscs = verifierDataService.findDscs(since, certFormat, upTo);
         return ResponseEntity.ok()
-                .headers(getKeysUpdatesHeaders(dscs, upTo))
+                .headers(getKeysUpdatesHeaders(dscs, upTo, now))
                 .cacheControl(CacheControl.maxAge(CacheUtil.KEYS_UPDATES_MAX_AGE))
                 .body(new CertsResponse(dscs));
     }
 
-    private HttpHeaders getKeysUpdatesHeaders(List<ClientCert> dscs, Long upTo) {
-        HttpHeaders headers = new HttpHeaders();
+    private HttpHeaders getKeysUpdatesHeaders(List<ClientCert> dscs, Long upTo, Instant now) {
+        HttpHeaders headers =
+            CacheUtil.createExpiresHeader(
+                CacheUtil.roundToNextKeysBucketStart(now));
         long maxDscPkId = upTo != null ? upTo : verifierDataService.findMaxDscPkId();
         Long nextSince = dscs.stream().mapToLong(ClientCert::getPkId).max().orElse(maxDscPkId);
         headers.add(NEXT_SINCE_HEADER, nextSince.toString());
@@ -100,23 +105,26 @@ public class KeyControllerV2 {
     @GetMapping(value = "list")
     public @ResponseBody ResponseEntity<ActiveCertsResponse> getActiveSignerCertKeyIds(
             WebRequest request) {
+        Instant now = Instant.now();
         long maxDscPkId = verifierDataService.findMaxDscPkId();
         List<String> activeKeyIds = verifierDataService.findActiveDscKeyIds();
-
+        List<String> etagComponents = new ArrayList<>(activeKeyIds);
+        etagComponents.add(String.valueOf(maxDscPkId));
         // check etag
-        String currentEtag = EtagUtil.getUnsortedListEtag(true, activeKeyIds);
+        String currentEtag = EtagUtil.getUnsortedListEtag(true, etagComponents);
         if (request.checkNotModified(currentEtag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
 
         return ResponseEntity.ok()
-                .headers(getKeysListHeaders(maxDscPkId))
-                .cacheControl(CacheControl.maxAge(CacheUtil.KEYS_LIST_MAX_AGE))
-                .body(new ActiveCertsResponse(activeKeyIds));
+                .headers(getKeysListHeaders(maxDscPkId, now))
+                .body(new ActiveCertsResponse(activeKeyIds, maxDscPkId));
     }
 
-    private HttpHeaders getKeysListHeaders(Long upTo) {
-        HttpHeaders headers = new HttpHeaders();
+    private HttpHeaders getKeysListHeaders(Long upTo, Instant now) {
+        HttpHeaders headers =
+            CacheUtil.createExpiresHeader(
+                CacheUtil.roundToNextKeysBucketStart(now));
         headers.add(UP_TO_HEADER, upTo.toString());
         return headers;
     }
