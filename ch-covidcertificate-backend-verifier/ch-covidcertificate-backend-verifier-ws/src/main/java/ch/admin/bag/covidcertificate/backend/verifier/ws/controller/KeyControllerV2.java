@@ -19,9 +19,8 @@ import ch.admin.bag.covidcertificate.backend.verifier.model.cert.ClientCert;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import ch.ubique.openapi.docannotations.Documentation;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
-import org.springframework.http.CacheControl;
+import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,37 +51,52 @@ public class KeyControllerV2 {
             responses = {"200 => Hello from CH Covidcertificate Verifier WS"})
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "")
-    public @ResponseBody String hello() {
+    public @ResponseBody
+    String hello() {
         return "Hello from CH Covidcertificate Verifier WS";
     }
 
     @Documentation(
             description = "get signer certificates",
             responses = {
-                "200 => next certificate batch after `since` up to `upTo` (optional). keep requesting until `up-to-date` header is `true`"
+                    "200 => next certificate batch after `since` up to `upTo` (optional). keep requesting until `up-to-date` header is `true`"
             },
             responseHeaders = {
-                "X-Next-Since:`since` to set for next request:string",
-                "up-to-date:set to 'true' when no more certs to fetch:string"
+                    "X-Next-Since:`since` to set for next request:string",
+                    "up-to-date:set to 'true' when no more certs to fetch:string"
             })
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "updates")
-    public @ResponseBody ResponseEntity<CertsResponse> getSignerCerts(
+    public @ResponseBody
+    ResponseEntity<CertsResponse> getSignerCerts(
             @RequestParam(required = false, defaultValue = "0") Long since,
             @RequestParam Long upTo,
-            @RequestParam CertFormat certFormat) {
+            @RequestParam CertFormat certFormat,
+            WebRequest request) {
         Instant now = Instant.now();
         List<ClientCert> dscs = verifierDataService.findDscs(since, certFormat, upTo);
+
+        long maxDscPkId = verifierDataService.findMaxDscPkId();
+        String etag = EtagUtil.getKeyListEtag(true, dscs.stream().map(Object::toString).collect(
+                        Collectors.toList()),
+                maxDscPkId);
+
+        if (request.checkNotModified(etag)) {
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+        }
+
+        HttpHeaders headers = CacheUtil.createExpiresHeader(
+                CacheUtil.roundToNextKeysBucketStart(now));
+        headers.addAll(getKeysUpdatesHeaders(dscs, upTo, now));
         return ResponseEntity.ok()
-                .headers(getKeysUpdatesHeaders(dscs, upTo, now))
-                .cacheControl(CacheControl.maxAge(CacheUtil.KEYS_UPDATES_MAX_AGE))
+                .headers(headers)
                 .body(new CertsResponse(dscs));
     }
 
     private HttpHeaders getKeysUpdatesHeaders(List<ClientCert> dscs, Long upTo, Instant now) {
         HttpHeaders headers =
-            CacheUtil.createExpiresHeader(
-                CacheUtil.roundToNextKeysBucketStart(now));
+                CacheUtil.createExpiresHeader(
+                        CacheUtil.roundToNextKeysBucketStart(now));
         long maxDscPkId = upTo != null ? upTo : verifierDataService.findMaxDscPkId();
         Long nextSince = dscs.stream().mapToLong(ClientCert::getPkId).max().orElse(maxDscPkId);
         headers.add(NEXT_SINCE_HEADER, nextSince.toString());
@@ -94,24 +108,22 @@ public class KeyControllerV2 {
     @Documentation(
             description = "get all key IDs of active signer certs",
             responses = {
-                "200 => list of Key IDs of all active signer certs",
-                "304 => no changes since last request"
+                    "200 => list of Key IDs of all active signer certs",
+                    "304 => no changes since last request"
             },
             responseHeaders = {
-                "ETag:etag to set for next request:string",
-                "up-to: `upTo` to set for next keys/update request:string"
+                    "ETag:etag to set for next request:string",
+                    "up-to: `upTo` to set for next keys/update request:string"
             })
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "list")
-    public @ResponseBody ResponseEntity<ActiveCertsResponse> getActiveSignerCertKeyIds(
+    public @ResponseBody
+    ResponseEntity<ActiveCertsResponse> getActiveSignerCertKeyIds(
             WebRequest request) {
         Instant now = Instant.now();
         long maxDscPkId = verifierDataService.findMaxDscPkId();
         List<String> activeKeyIds = verifierDataService.findActiveDscKeyIds();
-        List<String> etagComponents = new ArrayList<>(activeKeyIds);
-        etagComponents.add(String.valueOf(maxDscPkId));
-        // check etag
-        String currentEtag = EtagUtil.getUnsortedListEtag(true, etagComponents);
+        String currentEtag = EtagUtil.getKeyListEtag(true, activeKeyIds, maxDscPkId);
         if (request.checkNotModified(currentEtag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
@@ -123,8 +135,8 @@ public class KeyControllerV2 {
 
     private HttpHeaders getKeysListHeaders(Long upTo, Instant now) {
         HttpHeaders headers =
-            CacheUtil.createExpiresHeader(
-                CacheUtil.roundToNextKeysBucketStart(now));
+                CacheUtil.createExpiresHeader(
+                        CacheUtil.roundToNextKeysBucketStart(now));
         headers.add(UP_TO_HEADER, upTo.toString());
         return headers;
     }

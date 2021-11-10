@@ -14,12 +14,14 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.model.RevocationResponse;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import ch.ubique.openapi.docannotations.Documentation;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -62,7 +64,8 @@ public class RevocationListController {
             responseHeaders = {"ETag:etag to set for next request:string"})
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "/revocationList")
-    public @ResponseBody ResponseEntity<RevocationResponse> getCerts(WebRequest request)
+    public @ResponseBody
+    ResponseEntity<RevocationResponse> getCerts(WebRequest request)
             throws HttpStatusCodeException {
         final var response = new RevocationResponse();
         List<String> revokedCerts = getRevokedCerts();
@@ -73,9 +76,11 @@ public class RevocationListController {
         if (request.checkNotModified(currentEtag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
-
+        HttpHeaders headers = CacheUtil.createExpiresHeader(
+                CacheUtil.roundToNextRevocationRetentionBucketStart(
+                        Instant.now()));
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(CacheUtil.REVOCATION_LIST_V1_MAX_AGE))
+                .headers(headers)
                 .body(response);
     }
 

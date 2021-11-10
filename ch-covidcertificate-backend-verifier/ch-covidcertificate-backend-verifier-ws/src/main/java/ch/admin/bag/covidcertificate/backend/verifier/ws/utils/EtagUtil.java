@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.codec.binary.Hex;
@@ -38,6 +39,19 @@ public class EtagUtil {
         int hash = list != null ? list.stream().map(Objects::hash).reduce(0, (a, b) -> a ^ b) : 0;
         String hashString = String.valueOf(hash);
         return asWeakEtag ? toWeakEtag(hashString) : hashString;
+    }
+
+    /**
+     * Generates a weak etag for an unsorted list and a number
+     * @param asWeakEtag
+     * @param list
+     * @param number
+     * @return
+     */
+    public static String getKeyListEtag(boolean asWeakEtag, List<String> list, long number){
+        List<String> etagComponents = new ArrayList<>(list);
+        etagComponents.add(String.valueOf(number));
+        return getUnsortedListEtag(asWeakEtag, etagComponents);
     }
 
     public static String getSha1HashForFiles(boolean asWeakEtag, String... pathToFiles)

@@ -23,6 +23,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -73,6 +74,7 @@ public class KeyController {
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "updates")
     public @ResponseBody ResponseEntity<CertsResponse> getSignerCerts(
+            WebRequest request,
             @RequestParam(required = false, defaultValue = "0") Long since,
             @RequestParam CertFormat certFormat) {
         Instant nextBucketRelease = CacheUtil.roundToNextKeysBucketStart(Instant.now());
@@ -85,6 +87,14 @@ public class KeyController {
         List<ClientCert> dscs =
                 verifierDataService.findDscsBefore(
                         since, certFormat, Date.from(previousBucketRelease));
+        long maxDscPkId = verifierDataService.findMaxDscPkId();
+
+        String etag = EtagUtil.getKeyListEtag(true, dscs.stream().map(Object::toString).collect(
+                        Collectors.toList()),
+                maxDscPkId);
+        if (request.checkNotModified(etag)) {
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+        }
         return ResponseEntity.ok()
                 .headers(getKeysUpdatesHeaders(dscs))
                 .headers(CacheUtil.createExpiresHeader(nextBucketRelease))
@@ -126,10 +136,8 @@ public class KeyController {
         List<String> activeKeyIds =
                 verifierDataService.findActiveDscKeyIdsBefore(Date.from(previousBucketRelease));
         long maxDscPkId = verifierDataService.findMaxDscPkId();
-        List<String> etagComponents = new ArrayList<>(activeKeyIds);
-        etagComponents.add(String.valueOf(maxDscPkId));
         // check etag
-        String currentEtag = EtagUtil.getUnsortedListEtag(true, etagComponents);
+        String currentEtag = EtagUtil.getKeyListEtag(true, activeKeyIds, maxDscPkId);
         if (request.checkNotModified(currentEtag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }

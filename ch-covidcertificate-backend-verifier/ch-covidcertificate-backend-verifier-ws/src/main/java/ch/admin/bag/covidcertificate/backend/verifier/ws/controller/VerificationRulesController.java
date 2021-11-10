@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -72,17 +74,21 @@ public class VerificationRulesController {
     @Documentation(
             description = "get list of verification rules",
             responses = {
-                "200 => list of verification rules",
-                "304 => no changes since last request"
+                    "200 => list of verification rules",
+                    "304 => no changes since last request"
             },
             responseHeaders = {"ETag:etag to set for next request:string"})
     @GetMapping(value = "/verificationRules")
-    public @ResponseBody ResponseEntity<Map> getVerificationRules(WebRequest request) {
+    public @ResponseBody
+    ResponseEntity<Map> getVerificationRules(WebRequest request) {
         if (request.checkNotModified(verificationRulesEtag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
+        HttpHeaders headers =
+                CacheUtil.createExpiresHeader(
+                        CacheUtil.roundToNextVerificationRulesBucketStart(Instant.now()));
         return ResponseEntity.ok()
-                .cacheControl(CacheControl.maxAge(CacheUtil.VERIFICATION_RULES_MAX_AGE))
+                .headers(headers)
                 .body(verificationRules);
     }
 }
