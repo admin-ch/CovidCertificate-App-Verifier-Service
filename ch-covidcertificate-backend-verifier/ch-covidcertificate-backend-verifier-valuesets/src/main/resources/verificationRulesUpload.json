@@ -80,9 +80,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "RR-CH-0000": [
@@ -145,9 +145,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "RR-CH-0001": [
@@ -188,9 +188,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "RR-CH-0002": [
@@ -242,9 +242,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "RR-CH-0003": [
@@ -296,9 +296,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "TR-CH-0000": [
@@ -361,9 +361,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "TR-CH-0001": [
@@ -417,9 +417,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "TR-CH-0002": [
@@ -461,9 +461,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "TR-CH-0004": [
@@ -504,9 +504,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "TR-CH-0005": [
@@ -558,9 +558,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "TR-CH-0006": [
@@ -617,9 +617,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "TR-CH-0007": [
@@ -676,9 +676,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "TR-CH-0008": [
@@ -731,9 +731,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "TR-CH-0009": [
@@ -790,9 +790,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "VR-CH-0000": [
@@ -855,9 +855,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "VR-CH-0001": [
@@ -898,9 +898,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "VR-CH-0002": [
@@ -947,9 +947,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "VR-CH-0003": [
@@ -990,9 +990,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "VR-CH-0004": [
@@ -1065,9 +1065,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "VR-CH-0005": [
@@ -1148,9 +1148,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "VR-CH-0006": [
@@ -1223,9 +1223,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "VR-CH-0007": [
@@ -1332,9 +1332,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ],
   "VR-CH-0008": [
@@ -1415,9 +1415,9 @@
       },
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
-      "ValidFrom": "2021-10-18T12:00:00Z",
+      "ValidFrom": "2021-11-18T12:00:00Z",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Version": "1.0.3"
+      "Version": "1.0.4"
     }
   ]
 }
