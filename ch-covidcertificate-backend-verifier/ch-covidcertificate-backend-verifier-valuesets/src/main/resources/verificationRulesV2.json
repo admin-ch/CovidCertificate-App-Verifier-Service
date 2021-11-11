@@ -358,9 +358,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -421,9 +421,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -462,9 +462,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -514,9 +514,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -566,9 +566,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -629,9 +629,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -683,9 +683,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -725,9 +725,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -766,9 +766,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -818,9 +818,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -875,9 +875,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -932,9 +932,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -985,9 +985,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -1042,9 +1042,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -1105,9 +1105,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -1146,9 +1146,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -1193,9 +1193,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -1234,9 +1234,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -1307,9 +1307,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -1322,7 +1322,7 @@
       "country": "CH",
       "description": [
         {
-          "desc": "If the vaccine requires one dose, and only one dose was administered, it becomes valid after 21 days and stays valid until 21+365=386 days",
+          "desc": "If the vaccine requires one dose, and only one dose was administered, it becomes valid after 21 days",
           "lang": "en"
         }
       ],
@@ -1359,49 +1359,23 @@
                 ]
               },
               {
-                "and": [
+                "not-before": [
                   {
-                    "not-before": [
+                    "plusTime": [
                       {
-                        "plusTime": [
-                          {
-                            "var": "external.validationClock"
-                          },
-                          0,
-                          "day"
-                        ]
+                        "var": "external.validationClock"
                       },
-                      {
-                        "plusTime": [
-                          {
-                            "var": "payload.v.0.dt"
-                          },
-                          21,
-                          "day"
-                        ]
-                      }
+                      0,
+                      "day"
                     ]
                   },
                   {
-                    "before": [
+                    "plusTime": [
                       {
-                        "plusTime": [
-                          {
-                            "var": "external.validationClock"
-                          },
-                          0,
-                          "day"
-                        ]
+                        "var": "payload.v.0.dt"
                       },
-                      {
-                        "plusTime": [
-                          {
-                            "var": "payload.v.0.dt"
-                          },
-                          386,
-                          "day"
-                        ]
-                      }
+                      21,
+                      "day"
                     ]
                   }
                 ]
@@ -1414,9 +1388,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -1487,9 +1461,9 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
     },
     {
       "affectedFields": [
@@ -1594,9 +1568,90 @@
       },
       "schemaVersion": "1.0.0",
       "type": "Acceptance",
-      "validFrom": "2021-10-18T12:00:00Z",
+      "validFrom": "2021-11-18T12:00:00Z",
       "validTo": "2031-01-01T00:00:00Z",
-      "version": "1.0.3"
+      "version": "1.0.4"
+    },
+    {
+      "affectedFields": [
+        "v.0",
+        "v.0.mp",
+        "v.0.dn",
+        "v.0.dt"
+      ],
+      "certificateType": "Vaccination",
+      "country": "CH",
+      "description": [
+        {
+          "desc": "If the vaccine requires one dose, and only one dose was administered, it is valid until 365+21=386 days",
+          "lang": "en"
+        }
+      ],
+      "engine": "CertLogic",
+      "engineVersion": "0.7.5",
+      "identifier": "VR-CH-0008",
+      "logic": {
+        "if": [
+          {
+            "var": "payload.v.0"
+          },
+          {
+            "if": [
+              {
+                "and": [
+                  {
+                    "in": [
+                      {
+                        "var": "payload.v.0.mp"
+                      },
+                      [
+                        "EU/1/20/1525"
+                      ]
+                    ]
+                  },
+                  {
+                    "===": [
+                      {
+                        "var": "payload.v.0.dn"
+                      },
+                      1
+                    ]
+                  }
+                ]
+              },
+              {
+                "before": [
+                  {
+                    "plusTime": [
+                      {
+                        "var": "external.validationClock"
+                      },
+                      0,
+                      "day"
+                    ]
+                  },
+                  {
+                    "plusTime": [
+                      {
+                        "var": "payload.v.0.dt"
+                      },
+                      386,
+                      "day"
+                    ]
+                  }
+                ]
+              },
+              true
+            ]
+          },
+          true
+        ]
+      },
+      "schemaVersion": "1.0.0",
+      "type": "Acceptance",
+      "validFrom": "2021-11-18T12:00:00Z",
+      "validTo": "2031-01-01T00:00:00Z",
+      "version": "1.0.4"
     }
   ]
 }

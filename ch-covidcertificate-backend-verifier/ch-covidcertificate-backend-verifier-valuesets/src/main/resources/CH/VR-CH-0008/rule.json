@@ -1,22 +1,22 @@
 {
-  "affectedFields": [
+  "AffectedFields": [
     "v.0",
     "v.0.mp",
     "v.0.dn",
     "v.0.dt"
   ],
-  "certificateType": "Vaccination",
-  "country": "CH",
-  "description": [
+  "CertificateType": "Vaccination",
+  "Country": "CH",
+  "Description": [
     {
-      "desc": "If the vaccine requires one dose, and only one dose was administered, it becomes valid after 21 days",
+      "desc": "If the vaccine requires one dose, and only one dose was administered, it is valid until 365+21=386 days",
       "lang": "en"
     }
   ],
-  "engine": "CertLogic",
-  "engineVersion": "0.7.5",
-  "identifier": "VR-CH-0005",
-  "logic": {
+  "Engine": "CERTLOGIC",
+  "EngineVersion": "0.7.5",
+  "Identifier": "VR-CH-0008",
+  "Logic": {
     "if": [
       {
         "var": "payload.v.0"
@@ -46,7 +46,7 @@
             ]
           },
           {
-            "not-before": [
+            "before": [
               {
                 "plusTime": [
                   {
@@ -61,7 +61,7 @@
                   {
                     "var": "payload.v.0.dt"
                   },
-                  21,
+                  386,
                   "day"
                 ]
               }
@@ -73,9 +73,9 @@
       true
     ]
   },
-  "schemaVersion": "1.0.0",
-  "type": "Acceptance",
-  "validFrom": "2021-11-18T12:00:00Z",
-  "validTo": "2031-01-01T00:00:00Z",
-  "version": "1.0.4"
+  "SchemaVersion": "1.0.0",
+  "Type": "Acceptance",
+  "ValidFrom": "2021-11-18T12:00:00Z",
+  "ValidTo": "2031-01-01T00:00:00Z",
+  "Version": "1.0.4"
 }

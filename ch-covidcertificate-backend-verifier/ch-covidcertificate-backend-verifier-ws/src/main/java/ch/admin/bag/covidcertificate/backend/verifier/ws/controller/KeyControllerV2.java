@@ -75,7 +75,6 @@ public class KeyControllerV2 {
         List<ClientCert> dscs = verifierDataService.findDscs(since, certFormat, upTo);
         return ResponseEntity.ok()
                 .headers(getKeysUpdatesHeaders(dscs, upTo, now))
-                .cacheControl(CacheControl.maxAge(CacheUtil.KEYS_UPDATES_MAX_AGE))
                 .body(new CertsResponse(dscs));
     }
 

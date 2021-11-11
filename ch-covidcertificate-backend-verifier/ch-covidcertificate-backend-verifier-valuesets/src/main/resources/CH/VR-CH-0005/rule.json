@@ -9,7 +9,7 @@
   "Country": "CH",
   "Description": [
     {
-      "desc": "If the vaccine requires one dose, and only one dose was administered, it becomes valid after 21 days and stays valid until 21+365=386 days",
+      "desc": "If the vaccine requires one dose, and only one dose was administered, it becomes valid after 21 days",
       "lang": "en"
     }
   ],
@@ -46,49 +46,23 @@
             ]
           },
           {
-            "and": [
+            "not-before": [
               {
-                "not-before": [
+                "plusTime": [
                   {
-                    "plusTime": [
-                      {
-                        "var": "external.validationClock"
-                      },
-                      0,
-                      "day"
-                    ]
+                    "var": "external.validationClock"
                   },
-                  {
-                    "plusTime": [
-                      {
-                        "var": "payload.v.0.dt"
-                      },
-                      21,
-                      "day"
-                    ]
-                  }
+                  0,
+                  "day"
                 ]
               },
               {
-                "before": [
+                "plusTime": [
                   {
-                    "plusTime": [
-                      {
-                        "var": "external.validationClock"
-                      },
-                      0,
-                      "day"
-                    ]
+                    "var": "payload.v.0.dt"
                   },
-                  {
-                    "plusTime": [
-                      {
-                        "var": "payload.v.0.dt"
-                      },
-                      386,
-                      "day"
-                    ]
-                  }
+                  21,
+                  "day"
                 ]
               }
             ]
@@ -101,7 +75,7 @@
   },
   "SchemaVersion": "1.0.0",
   "Type": "Acceptance",
-  "ValidFrom": "2021-10-18T12:00:00Z",
+  "ValidFrom": "2021-11-18T12:00:00Z",
   "ValidTo": "2031-01-01T00:00:00Z",
-  "Version": "1.0.3"
+  "Version": "1.0.4"
 }
