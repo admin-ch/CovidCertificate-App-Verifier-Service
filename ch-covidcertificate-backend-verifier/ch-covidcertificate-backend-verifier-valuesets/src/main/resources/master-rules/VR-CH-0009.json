@@ -1,0 +1,68 @@
+{
+  "affectedFields": [
+    "v.0",
+    "v.0.mp",
+    "v.0.dt"
+  ],
+  "certificateType": "Vaccination",
+  "country": "CH",
+  "description": [
+    {
+      "desc": "For vaccines approved for travellers in Switzerland, the vaccination date must be in the past",
+      "lang": "en"
+    }
+  ],
+  "engine": "CertLogic",
+  "engineVersion": "0.7.5",
+  "identifier": "VR-CH-0009",
+  "logic": {
+    "if": [
+      {
+        "var": "payload.v.0"
+      },
+      {
+        "if": [
+          {
+                "in": [
+                  {
+                    "var": "payload.v.0.mp"
+                  },
+                  [
+                    "PLACEHOLDER_TOURIST"
+                  ]
+                ]
+              },
+              {
+                "not-before": [
+                  {
+                    "plusTime": [
+                      {
+                        "var": "external.validationClock"
+                      },
+                      0,
+                      "day"
+                    ]
+                  },
+                  {
+                    "plusTime": [
+                      {
+                        "var": "payload.v.0.dt"
+                      },
+                      0,
+                      "day"
+                    ]
+                  }
+                ]
+              },
+              true
+            ]
+          },
+          true
+        ]
+  },
+  "schemaVersion": "1.0.0",
+  "type": "Acceptance",
+  "validFrom": "2021-11-18T12:00:00Z",
+  "validTo": "2031-01-01T00:00:00Z",
+  "version": "1.0.4"
+}
