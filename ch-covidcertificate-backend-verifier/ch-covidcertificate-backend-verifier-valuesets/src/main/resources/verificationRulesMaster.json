@@ -3,6 +3,9 @@
     {
       "id": "is-only-valid-in-ch",
       "logic": {
+        "!": [
+          {}
+        ]
       }
     },
     {
