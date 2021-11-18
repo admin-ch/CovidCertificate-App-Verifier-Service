@@ -41,12 +41,47 @@
                 ]
               },
               {
-                "plusTime": [
+                "if": [
                   {
-                    "var": "payload.v.0.dt"
+                    "in": [
+                      {
+                        "var": "payload.v.0.mp"
+                      },
+                      [
+                        "BBIBP-CorV_T",
+                        "CoronaVac_T",
+                        "Covaxin_T"
+                      ]
+                    ]
                   },
-                  0,
-                  "day"
+                  {
+                    "if": [
+                      {
+                        "var": "payload.h.iat"
+                      },
+                      {
+                        "plusTime": [
+                          {
+                            "var": "payload.h.iat"
+                          },
+                          0,
+                          "day"
+                        ]
+                      },
+                      {
+                        "var": "undefined"
+                      }
+                    ]
+                  },
+                  {
+                    "plusTime": [
+                      {
+                        "var": "payload.v.0.dt"
+                      },
+                      0,
+                      "day"
+                    ]
+                  }
                 ]
               }
             ]
@@ -130,12 +165,47 @@
                 ]
               },
               {
-                "plusTime": [
+                "if": [
                   {
-                    "var": "payload.v.0.dt"
+                    "in": [
+                      {
+                        "var": "payload.v.0.mp"
+                      },
+                      [
+                        "BBIBP-CorV_T",
+                        "CoronaVac_T",
+                        "Covaxin_T"
+                      ]
+                    ]
                   },
-                  364,
-                  "day"
+                  {
+                    "if": [
+                      {
+                        "var": "payload.h.iat"
+                      },
+                      {
+                        "plusTime": [
+                          {
+                            "var": "payload.h.iat"
+                          },
+                          29,
+                          "day"
+                        ]
+                      },
+                      {
+                        "var": "undefined"
+                      }
+                    ]
+                  },
+                  {
+                    "plusTime": [
+                      {
+                        "var": "payload.v.0.dt"
+                      },
+                      364,
+                      "day"
+                    ]
+                  }
                 ]
               }
             ]

@@ -33,7 +33,9 @@
             "BBIBP-CorV",
             "Covishield",
             "Covaxin",
-            "PLACEHOLDER_TOURIST"
+            "BBIBP-CorV_T",
+            "CoronaVac_T",
+            "Covaxin_T"
           ]
         ]
       },
