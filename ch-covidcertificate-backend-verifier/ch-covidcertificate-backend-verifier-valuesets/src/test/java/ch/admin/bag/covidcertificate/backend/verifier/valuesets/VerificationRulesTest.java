@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
@@ -104,9 +105,10 @@ public class VerificationRulesTest {
                         .map(
                                 filename -> {
                                     try {
-                                        return mapper.readTree(
+                                        return ((JsonNode) new ObjectNode(JsonNodeFactory.instance).set("!",
+                                                mapper.readTree(
                                                 new ClassPathResource(CH_ONLY_DIR + "/" + filename)
-                                                        .getInputStream());
+                                                        .getInputStream())));
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                         return null;
@@ -119,7 +121,7 @@ public class VerificationRulesTest {
                         (displayRule -> {
                             if (displayRule.get("id").asText().equals("is-only-valid-in-ch")) {
                                 ((ObjectNode) displayRule.get("logic"))
-                                        .putArray("or")
+                                        .putArray("and")
                                         .addAll(chRules);
                             }
                         }));
