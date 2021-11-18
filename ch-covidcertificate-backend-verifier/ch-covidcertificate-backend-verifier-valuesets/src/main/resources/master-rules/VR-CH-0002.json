@@ -7,7 +7,7 @@
   "country": "CH",
   "description": [
     {
-      "desc": "Only vaccines in the allowed valueset that have been approved by the EMA are allowed.",
+      "desc": "Only vaccines in the allowed valueset that have been approved by the EMA or are otherwise accepted in Switzerland are allowed.",
       "lang": "en"
     }
   ],
@@ -32,7 +32,10 @@
             "CoronaVac",
             "BBIBP-CorV",
             "Covishield",
-            "Covaxin"
+            "Covaxin",
+            "BBIBP-CorV_T",
+            "CoronaVac_T",
+            "Covaxin_T"
           ]
         ]
       },

@@ -589,7 +589,7 @@
     },
     {
       "inputParameter": "[\"v.0\",\"v.0.mp\"]",
-      "description": "Only vaccines in the allowed valueset that have been approved by the EMA are allowed.",
+      "description": "Only vaccines in the allowed valueset that have been approved by the EMA or are otherwise accepted in Switzerland are allowed.",
       "id": "VR-CH-0002",
       "logic": {
         "if": [
@@ -609,7 +609,10 @@
                 "CoronaVac",
                 "BBIBP-CorV",
                 "Covishield",
-                "Covaxin"
+                "Covaxin",
+                "BBIBP-CorV_T",
+                "CoronaVac_T",
+                "Covaxin_T"
               ]
             ]
           },
@@ -664,7 +667,10 @@
                     "CoronaVac",
                     "BBIBP-CorV",
                     "Covishield",
-                    "Covaxin"
+                    "Covaxin",
+                    "BBIBP-CorV_T",
+                    "CoronaVac_T",
+                    "Covaxin_T"
                   ]
                 ]
               }
@@ -781,7 +787,10 @@
                     "CoronaVac",
                     "BBIBP-CorV",
                     "Covishield",
-                    "Covaxin"
+                    "Covaxin",
+                    "BBIBP-CorV_T",
+                    "CoronaVac_T",
+                    "Covaxin_T"
                   ]
                 ]
               }
