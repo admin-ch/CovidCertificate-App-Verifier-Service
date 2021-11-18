@@ -1,6 +1,11 @@
 {
   "displayRules": [
     {
+      "id": "is-only-valid-in-ch",
+      "logic": {
+      }
+    },
+    {
       "id": "display-from-date",
       "logic": {
         "if": [

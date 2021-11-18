@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
@@ -43,7 +44,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 @TestInstance(Lifecycle.PER_CLASS)
 public class VerificationRulesTest {
     private static final Logger logger = LoggerFactory.getLogger(VerificationRulesTest.class);
@@ -55,6 +55,7 @@ public class VerificationRulesTest {
             "src/main/resources/verificationRulesUpload.json";
     private static final String RULES_MASTER_CLASSPATH = "verificationRulesMaster.json";
     private static final String RULES_MASTER_DIR = "master-rules";
+    private static final String CH_ONLY_DIR = "ch-only-rules";
     private static final String EU_TEST_RULES_OUTPUT_PATH = "src/main/resources/CH/";
 
     @BeforeAll
@@ -68,7 +69,7 @@ public class VerificationRulesTest {
     }
 
     @Test
-    @EnabledIfEnvironmentVariable(named="COVIDCERT_GENERATE_VALIDATION_RULES", matches = "1")
+    @EnabledIfEnvironmentVariable(named = "COVIDCERT_GENERATE_VALIDATION_RULES", matches = "1")
     public void generateRulesJsons() throws Exception {
         JsonNode v2 = mapMasterToV2();
         mapV2RulesToUpload(v2);
@@ -79,18 +80,52 @@ public class VerificationRulesTest {
         JsonNode master =
                 mapper.readTree(new ClassPathResource(RULES_MASTER_CLASSPATH).getInputStream());
 
-        List<JsonNode> rules = Arrays.stream(new ClassPathResource(RULES_MASTER_DIR).getFile().list())
-            .filter(filename -> filename.endsWith(".json"))
-            .sorted()
-            .map(filename -> {
-                try {
-                    return mapper.readTree(new ClassPathResource(RULES_MASTER_DIR + "/" + filename).getInputStream());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }).collect(Collectors.toList());
+        List<JsonNode> rules =
+                Arrays.stream(new ClassPathResource(RULES_MASTER_DIR).getFile().list())
+                        .filter(filename -> filename.endsWith(".json"))
+                        .sorted()
+                        .map(
+                                filename -> {
+                                    try {
+                                        return mapper.readTree(
+                                                new ClassPathResource(
+                                                                RULES_MASTER_DIR + "/" + filename)
+                                                        .getInputStream());
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        return null;
+                                    }
+                                })
+                        .collect(Collectors.toList());
         ((ObjectNode) master).putArray("rules").addAll(rules);
+        List<JsonNode> chRules =
+                Arrays.stream(new ClassPathResource(CH_ONLY_DIR).getFile().list())
+                        .filter(filename -> filename.endsWith(".json"))
+                        .sorted()
+                        .map(
+                                filename -> {
+                                    try {
+                                        return ((JsonNode) new ObjectNode(JsonNodeFactory.instance).set("!",
+                                                mapper.readTree(
+                                                new ClassPathResource(CH_ONLY_DIR + "/" + filename)
+                                                        .getInputStream())));
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        return null;
+                                    }
+                                })
+                        .collect(Collectors.toList());
+        master.get("displayRules")
+                .elements()
+                .forEachRemaining(
+                        (displayRule -> {
+                            if (displayRule.get("id").asText().equals("is-only-valid-in-ch")) {
+                                ((ObjectNode) displayRule.get("logic"))
+                                        .putArray("and")
+                                        .addAll(chRules);
+                            }
+                        }));
+
         ObjectNode v2 = master.deepCopy();
         resolvedInlineVars(v2, master);
         mapper.writerWithDefaultPrettyPrinter().writeValue(new File(RULES_V2_PATH), v2);
