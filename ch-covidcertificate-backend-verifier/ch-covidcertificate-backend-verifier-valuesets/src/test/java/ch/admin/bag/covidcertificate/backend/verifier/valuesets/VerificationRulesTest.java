@@ -105,10 +105,12 @@ public class VerificationRulesTest {
                         .map(
                                 filename -> {
                                     try {
-                                        return ((JsonNode) new ObjectNode(JsonNodeFactory.instance).set("!",
+                                        ObjectNode node = new ObjectNode(JsonNodeFactory.instance);
+                                        node.putArray("!").add(
                                                 mapper.readTree(
                                                 new ClassPathResource(CH_ONLY_DIR + "/" + filename)
-                                                        .getInputStream())));
+                                                        .getInputStream()));
+                                        return node;
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                         return null;
@@ -120,7 +122,7 @@ public class VerificationRulesTest {
                 .forEachRemaining(
                         (displayRule -> {
                             if (displayRule.get("id").asText().equals("is-only-valid-in-ch")) {
-                                ((ObjectNode) displayRule.get("logic"))
+                                ((ObjectNode) displayRule.get("logic").get("!").get(0))
                                         .putArray("and")
                                         .addAll(chRules);
                             }
