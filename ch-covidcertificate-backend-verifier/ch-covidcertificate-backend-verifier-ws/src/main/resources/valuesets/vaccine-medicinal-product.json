@@ -65,6 +65,13 @@
       "system": "http://ec.europa.eu/temp/vaccineproductname",
       "version": "1.0"
     },
+    "BBIBP-CorV_T": {
+      "display": "BBIBP-CorV",
+      "lang": "en",
+      "active": true,
+      "system": "http://ec.europa.eu/temp/vaccineproductname",
+      "version": "1.0"
+    },
     "Inactivated-SARS-CoV-2-Vero-Cell": {
       "display": "Inactivated SARS-CoV-2 (Vero Cell)",
       "lang": "en",
@@ -79,7 +86,21 @@
       "system": "http://ec.europa.eu/temp/vaccineproductname",
       "version": "1.0"
     },
+    "CoronaVac_T": {
+      "display": "CoronaVac",
+      "lang": "en",
+      "active": true,
+      "system": "http://ec.europa.eu/temp/vaccineproductname",
+      "version": "1.0"
+    },
     "Covaxin": {
+      "display": "Covaxin (also known as BBV152 A, B, C)",
+      "lang": "en",
+      "active": true,
+      "system": "http://ec.europa.eu/temp/vaccineproductname",
+      "version": "1.0"
+    },
+    "Covaxin_T": {
       "display": "Covaxin (also known as BBV152 A, B, C)",
       "lang": "en",
       "active": true,
