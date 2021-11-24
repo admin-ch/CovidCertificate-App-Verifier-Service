@@ -985,7 +985,10 @@
       "CoronaVac",
       "BBIBP-CorV",
       "Covishield",
-      "Covaxin"
+      "Covaxin",
+      "BBIBP-CorV_T",
+      "CoronaVac_T",
+      "Covaxin_T"
     ],
     "two-dose-vaccines": [
       "EU/1/20/1528",
@@ -994,7 +997,10 @@
       "CoronaVac",
       "BBIBP-CorV",
       "Covishield",
-      "Covaxin"
+      "Covaxin",
+      "BBIBP-CorV_T",
+      "CoronaVac_T",
+      "Covaxin_T"
     ],
     "one-dose-vaccines-with-offset": [
       "EU/1/20/1525"
