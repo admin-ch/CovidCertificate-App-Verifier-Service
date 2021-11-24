@@ -189,7 +189,7 @@
                   {
                     "if": [
                       {
-                        "var": "payload.h.iat"
+                        "var": "payload.h.exp"
                       },
                       {
                         "if": [
