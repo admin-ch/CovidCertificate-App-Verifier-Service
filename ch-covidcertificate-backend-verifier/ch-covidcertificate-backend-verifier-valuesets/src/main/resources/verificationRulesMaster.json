@@ -65,12 +65,12 @@
                   {
                     "if": [
                       {
-                        "var": "payload.h.iat"
+                        "var": "payload.h.exp"
                       },
                       {
                         "plusTime": [
                           {
-                            "var": "payload.h.iat"
+                            "var": "payload.h.exp"
                           },
                           0,
                           "day"
@@ -189,15 +189,50 @@
                   {
                     "if": [
                       {
-                        "var": "payload.h.iat"
+                        "var": "payload.h.exp"
                       },
                       {
-                        "plusTime": [
+                        "if": [
                           {
-                            "var": "payload.h.iat"
+                            "before": [
+                              {
+                                "plusTime": [
+                                  {
+                                    "var": "payload.v.0.dt"
+                                  },
+                                  364,
+                                  "day"
+                                ]
+                              },
+                              {
+                                "plusTime": [
+                                  {
+                                    "var": "payload.h.exp"
+                                  },
+                                  0,
+                                  "day"
+                                ]
+                              }
+                            ]
                           },
-                          29,
-                          "day"
+                          {
+                            "plusTime": [
+                              {
+                                "var": "payload.v.0.dt"
+                              },
+                              364,
+                              "day"
+                            ]
+                          },
+                          {
+                            "plusTime": [
+                              {
+                                "var": "payload.h.exp"
+                              },
+                              0,
+                              "day"
+                            ]
+                          }
                         ]
                       },
                       {
@@ -327,7 +362,10 @@
       "CoronaVac",
       "BBIBP-CorV",
       "Covishield",
-      "Covaxin"
+      "Covaxin",
+      "BBIBP-CorV_T",
+      "CoronaVac_T",
+      "Covaxin_T"
     ],
     "two-dose-vaccines": [
       "EU/1/20/1528",
@@ -336,7 +374,10 @@
       "CoronaVac",
       "BBIBP-CorV",
       "Covishield",
-      "Covaxin"
+      "Covaxin",
+      "BBIBP-CorV_T",
+      "CoronaVac_T",
+      "Covaxin_T"
     ],
     "one-dose-vaccines-with-offset": [
       "EU/1/20/1525"

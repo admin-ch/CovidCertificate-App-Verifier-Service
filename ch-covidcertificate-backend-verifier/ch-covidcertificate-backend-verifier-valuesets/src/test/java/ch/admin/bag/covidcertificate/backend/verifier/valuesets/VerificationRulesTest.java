@@ -98,7 +98,10 @@ public class VerificationRulesTest {
                                 })
                         .collect(Collectors.toList());
         ((ObjectNode) master).putArray("rules").addAll(rules);
-        List<JsonNode> chRules =
+        // Insert rules for display logic, for tests and vaccines only valid in
+        // switzerland
+        // NOTE: we need to use DeMorgans rule to desugar 'or' since CertLogic does not support it
+        List<JsonNode> chDisplayRules =
                 Arrays.stream(new ClassPathResource(CH_ONLY_DIR).getFile().list())
                         .filter(filename -> filename.endsWith(".json"))
                         .sorted()
@@ -124,7 +127,7 @@ public class VerificationRulesTest {
                             if (displayRule.get("id").asText().equals("is-only-valid-in-ch")) {
                                 ((ObjectNode) displayRule.get("logic").get("!").get(0))
                                         .putArray("and")
-                                        .addAll(chRules);
+                                        .addAll(chDisplayRules);
                             }
                         }));
 
