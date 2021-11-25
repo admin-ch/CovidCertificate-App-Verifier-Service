@@ -278,7 +278,7 @@
                             "plusTime": [
                               {
                                 "var": "external.validationClock"
-                              }v,
+                              },
                               1,
                               "day"
                             ]
