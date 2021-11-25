@@ -126,7 +126,13 @@
                         ]
                       },
                       {
-                        "var": "undefined"
+                        "plusTime": [
+                          {
+                            "var": "external.validationClock"
+                          },
+                          0,
+                          "day"
+                        ]
                       }
                     ]
                   },
@@ -285,7 +291,48 @@
                         ]
                       },
                       {
-                        "var": "undefined"
+                        "if": [
+                          {
+                            "before": [
+                              {
+                                "plusTime": [
+                                  {
+                                    "var": "payload.v.0.dt"
+                                  },
+                                  364,
+                                  "day"
+                                ]
+                              },
+                              {
+                                "plusTime": [
+                                  {
+                                    "var": "external.validationClock"
+                                  },
+                                  0,
+                                  "day"
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "plusTime": [
+                              {
+                                "var": "payload.v.0.dt"
+                              },
+                              364,
+                              "day"
+                            ]
+                          },
+                          {
+                            "plusTime": [
+                              {
+                                "var": "external.validationClock"
+                              },
+                              1,
+                              "day"
+                            ]
+                          }
+                        ]
                       }
                     ]
                   },
