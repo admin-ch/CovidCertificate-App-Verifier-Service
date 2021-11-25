@@ -65,12 +65,12 @@
                   {
                     "if": [
                       {
-                        "var": "payload.h.exp"
+                        "var": "payload.h.iat"
                       },
                       {
                         "plusTime": [
                           {
-                            "var": "payload.h.exp"
+                            "var": "payload.h.iat"
                           },
                           0,
                           "day"
