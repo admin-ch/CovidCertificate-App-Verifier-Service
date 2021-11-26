@@ -1,3 +1,6 @@
+/*
+At most one t-event.
+*/
 if (payload.t.0) {
   if (not payload.t.1 
       && not payload.r.0

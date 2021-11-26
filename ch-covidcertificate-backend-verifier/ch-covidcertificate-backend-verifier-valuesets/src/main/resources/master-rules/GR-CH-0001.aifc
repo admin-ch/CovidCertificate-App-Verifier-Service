@@ -1,3 +1,6 @@
+/*
+The targeted disease agent must be COVID-19 of the value set list.
+*/
 (
     if (payload.r.0) { 
         payload.r.0.tg in ["840539006"] 
