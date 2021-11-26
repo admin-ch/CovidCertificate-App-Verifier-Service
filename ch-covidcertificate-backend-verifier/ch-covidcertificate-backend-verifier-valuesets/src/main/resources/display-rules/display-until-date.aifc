@@ -29,7 +29,7 @@ if (payload.v.0) {
         "CoronaVac",
         "BBIBP-CorV",
         "Covishield",
-        "Covaxin"] => {
+        "Covaxin"] : if payload.v.0.dn >= payload.v.0.sd => {
             /* If we have a 2 dose vaccine just show the dt + 364 days */
             payload.v.0.dt as DateTime + 364#days
         }
