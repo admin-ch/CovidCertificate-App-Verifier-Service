@@ -2,13 +2,11 @@
 Logic to display valid until date
 */
 if (payload.v.0) {
-    if (payload.v.0.mp in ["EU/1/20/1525"] and payload.v.0.dn === 1) {
-        payload.v.0.dt as DateTime + 386#days
-    } else {
-        if (payload.v.0.map in [
-            "BBIBP-CorV_T",
-            "CoronaVac_T",
-            "Covaxin_T"]) {
+    switch(payload.v.0.mp) {
+        "EU/1/20/1525" : if payload.v.0.dn === 1 => {
+             payload.v.0.dt as DateTime + 386#days
+        }
+        ["BBIBP-CorV_T","CoronaVac_T", "Covaxin_T"] => {
             if (payload.h.exp) {
                 /* If we have a tourist certificate, we try to use exp (should be 30 days after iat) */
                 min((payload.v.0.dt as DateTime + 364#days), payload.h.exp as DateTime + 0#days)
@@ -20,10 +18,13 @@ if (payload.v.0) {
                     /* 
                         We cannot use minimum, to prevent confusion of valid from today until today. 
                         In  this edge case we just show valid from today until tomorrow, though technically not correct
-                     */
+                    */
                     now() + 1#days
                 }
             }
+        }
+        _ => {
+            payload.v.0.dt as DateTime + 364#days
         }
     }
 } else {
