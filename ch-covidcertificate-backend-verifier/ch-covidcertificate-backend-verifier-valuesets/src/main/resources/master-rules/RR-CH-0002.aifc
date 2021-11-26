@@ -1,0 +1,5 @@
+if (payload.r.0) {
+  (now() + 0#day) is after (payload.r.0.fr as DateTime + 10#days)
+} else {
+  true
+}

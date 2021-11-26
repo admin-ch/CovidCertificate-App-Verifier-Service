@@ -1,0 +1,13 @@
+/*
+For serum antibody tests, the result must be positive.
+*/
+
+if(payload.t.0 && payload.t.0.tt in ["94504-8"]) {
+  /*
+    tr: TestResult
+    260373001: Positive test result
+  */
+  payload.t.0.tr === "260373001"
+} else {
+  true
+}

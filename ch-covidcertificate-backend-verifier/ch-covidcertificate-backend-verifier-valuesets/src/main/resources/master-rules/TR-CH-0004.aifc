@@ -1,0 +1,8 @@
+/*
+Date of sample collection must exist
+*/
+if (payload.t.0) {
+  not not payload.t.0.sc
+} else {
+  true
+}
