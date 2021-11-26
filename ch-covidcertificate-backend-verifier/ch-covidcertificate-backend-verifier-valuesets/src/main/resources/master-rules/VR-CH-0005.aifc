@@ -1,0 +1,14 @@
+/*
+If the vaccine requires one dose, and only one dose was administered, it becomes valid after 21 days
+*/
+
+if (payload.v.0) {
+  if (payload.v.0.mp in ["EU/1/20/1525"] 
+      && payload.v.0.dn === 1) {
+        (now() + 0#days) is not before (payload.v.0.dt as DateTime + 21#days)
+  } else {
+    true
+  }
+} else {
+  true
+}

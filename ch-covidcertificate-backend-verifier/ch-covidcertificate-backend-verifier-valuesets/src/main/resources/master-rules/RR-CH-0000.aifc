@@ -1,3 +1,6 @@
+/*
+At most one r-event.
+*/
 if (payload.r.0) {
   if (
     not payload.r.1 

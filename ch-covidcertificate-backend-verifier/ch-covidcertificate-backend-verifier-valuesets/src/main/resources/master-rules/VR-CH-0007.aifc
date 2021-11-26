@@ -1,0 +1,16 @@
+/*
+If the vaccine requires only one dose but more than one dose was administered, it is valid from today for 365 days
+*/
+
+if (payload.v.0) {
+  if(payload.v.0.mp in ["EU/1/20/1525"]
+    && payload.v.0.dn > 1) {
+      ((now() + 0#days) is not before (payload.v.0.dt as DateTime + 0#days))
+      and 
+      ((now() + 0#days) is before (payload.v.0.dt as DateTime + 365#days))
+  } else {
+    true
+  }
+} else {
+  true
+}
