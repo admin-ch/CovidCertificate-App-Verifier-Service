@@ -1,23 +1,14 @@
 {
-  "AffectedFields": [
-    "r.0",
-    "r.0.tg",
-    "t.0",
-    "t.0.tg",
-    "v.0",
-    "v.0.tg"
-  ],
-  "CertificateType": "General",
   "Country": "CH",
-  "Description": [
-    {
-      "desc": "The targeted disease agent must be COVID-19 of the value set list.",
-      "lang": "en"
-    }
-  ],
   "Engine": "CERTLOGIC",
   "EngineVersion": "0.7.5",
+  "SchemaVersion": "1.0.0",
+  "Type": "Acceptance",
+  "ValidTo": "2031-01-01T00:00:00Z",
   "Identifier": "GR-CH-0001",
+  "Version": "1.0.5",
+  "ValidFrom": "2021-12-03T12:00:00Z",
+  "CertificateType": "General",
   "Logic": {
     "and": [
       {
@@ -76,9 +67,18 @@
       }
     ]
   },
-  "SchemaVersion": "1.0.0",
-  "Type": "Acceptance",
-  "ValidFrom": "2021-12-03T00:00:00Z",
-  "ValidTo": "2031-01-01T00:00:00Z",
-  "Version": "1.0.4"
+  "AffectedFields": [
+    "v.0.tg",
+    "r.0",
+    "t.0",
+    "v.0",
+    "r.0.tg",
+    "t.0.tg"
+  ],
+  "Description": [
+    {
+      "desc": "\nThe targeted disease agent must be COVID-19 of the value set list.\n",
+      "lang": "en"
+    }
+  ]
 }

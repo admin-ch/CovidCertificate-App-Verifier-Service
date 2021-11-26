@@ -1,20 +1,14 @@
 {
-  "AffectedFields": [
-    "v.0",
-    "v.0.dt",
-    "v.0.mp"
-  ],
-  "CertificateType": "Vaccination",
   "Country": "CH",
-  "Description": [
-    {
-      "desc": "For 2/2 doses, the current date and time must be before the vaccination date plus 365 days for 2-dose vaccines",
-      "lang": "en"
-    }
-  ],
   "Engine": "CERTLOGIC",
   "EngineVersion": "0.7.5",
+  "SchemaVersion": "1.0.0",
+  "Type": "Acceptance",
+  "ValidTo": "2031-01-01T00:00:00Z",
   "Identifier": "VR-CH-0006",
+  "Version": "1.0.5",
+  "ValidFrom": "2021-12-03T12:00:00Z",
+  "CertificateType": "Vaccination",
   "Logic": {
     "if": [
       {
@@ -68,9 +62,15 @@
       true
     ]
   },
-  "SchemaVersion": "1.0.0",
-  "Type": "Acceptance",
-  "ValidFrom": "2021-12-03T00:00:00Z",
-  "ValidTo": "2031-01-01T00:00:00Z",
-  "Version": "1.0.4"
+  "AffectedFields": [
+    "v.0.mp",
+    "v.0",
+    "v.0.dt"
+  ],
+  "Description": [
+    {
+      "desc": "\nFor 2/2 doses, the current date and time must be before the vaccination date plus 365 days for 2-dose vaccines\n",
+      "lang": "en"
+    }
+  ]
 }

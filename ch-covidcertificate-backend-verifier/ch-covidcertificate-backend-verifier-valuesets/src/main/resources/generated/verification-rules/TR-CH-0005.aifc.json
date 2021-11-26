@@ -1,0 +1,30 @@
+{
+  "if": [
+    {
+      "var": "payload.t.0"
+    },
+    {
+      "before": [
+        {
+          "plusTime": [
+            {
+              "var": "payload.t.0.sc"
+            },
+            0,
+            "day"
+          ]
+        },
+        {
+          "plusTime": [
+            {
+              "var": "external.validationClock"
+            },
+            0,
+            "day"
+          ]
+        }
+      ]
+    },
+    true
+  ]
+}
