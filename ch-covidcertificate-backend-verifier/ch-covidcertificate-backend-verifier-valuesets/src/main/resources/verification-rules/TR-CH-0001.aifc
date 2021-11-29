@@ -2,9 +2,8 @@
 For rapid or PCR test, the result must be negative (\"not detected\").
 */
 if (
-  /* 
-    TODO: fix correct test type description
-    LP217198-3: PCR-Test
+  /*
+    LP217198-3: Rapid Test
     LP6464-4": PCR
   */
   payload.t.0 
