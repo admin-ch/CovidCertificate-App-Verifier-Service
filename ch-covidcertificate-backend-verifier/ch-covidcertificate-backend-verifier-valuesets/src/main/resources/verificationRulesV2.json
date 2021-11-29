@@ -76,7 +76,7 @@
       ],
       "description": [
         {
-          "desc": "\nIf the vaccine requires one dose, and only one dose was administered, it becomes valid after 21 days\n",
+          "desc": "If the vaccine requires one dose, and only one dose was administered, it becomes valid after 21 days",
           "lang": "en"
         }
       ]
@@ -117,7 +117,7 @@
       ],
       "description": [
         {
-          "desc": "\nDate of vaccination must exist\n",
+          "desc": "Date of vaccination must exist",
           "lang": "en"
         }
       ]
@@ -158,7 +158,7 @@
       ],
       "description": [
         {
-          "desc": "\nDate of first positive test must exist\n",
+          "desc": "Date of first positive test must exist",
           "lang": "en"
         }
       ]
@@ -221,7 +221,7 @@
       ],
       "description": [
         {
-          "desc": "\nAt most one r-event.\n",
+          "desc": "At most one r-event.",
           "lang": "en"
         }
       ]
@@ -278,7 +278,7 @@
       ],
       "description": [
         {
-          "desc": "\nIf the test type is \\\"PCR\\\" then the validation date must be before the date of sample collection plus 72 hours\n",
+          "desc": "If the test type is \\\"PCR\\\" then the validation date must be before the date of sample collection plus 72 hours",
           "lang": "en"
         }
       ]
@@ -341,7 +341,7 @@
       ],
       "description": [
         {
-          "desc": "\nAt most one v-event.\n",
+          "desc": "At most one v-event.",
           "lang": "en"
         }
       ]
@@ -422,7 +422,7 @@
       ],
       "description": [
         {
-          "desc": "\nIf the vaccine requires one dose, and only one dose was administered, it is valid until 365+21=386 days\n",
+          "desc": "If the vaccine requires one dose, and only one dose was administered, it is valid until 365+21=386 days",
           "lang": "en"
         }
       ]
@@ -476,7 +476,7 @@
       ],
       "description": [
         {
-          "desc": "\nFor rapid or PCR test, the result must be negative (\\\"not detected\\\").\n",
+          "desc": "For rapid or PCR test, the result must be negative (\\\"not detected\\\").",
           "lang": "en"
         }
       ]
@@ -517,7 +517,7 @@
       ],
       "description": [
         {
-          "desc": "\nDate of sample collection must exist\n",
+          "desc": "Date of sample collection must exist",
           "lang": "en"
         }
       ]
@@ -574,7 +574,7 @@
       ],
       "description": [
         {
-          "desc": "\nIf the test is a serum antibody test, then the validation date must be before the date of sample collection plus 90 days\n",
+          "desc": "If the test is a serum antibody test, then the validation date must be before the date of sample collection plus 90 days",
           "lang": "en"
         }
       ]
@@ -658,7 +658,7 @@
       ],
       "description": [
         {
-          "desc": "\nThe targeted disease agent must be COVID-19 of the value set list.\n",
+          "desc": "The targeted disease agent must be COVID-19 of the value set list.",
           "lang": "en"
         }
       ]
@@ -711,7 +711,7 @@
       ],
       "description": [
         {
-          "desc": "\nFor serum antibody tests, the result must be positive.\n",
+          "desc": "For serum antibody tests, the result must be positive.",
           "lang": "en"
         }
       ]
@@ -787,7 +787,7 @@
       ],
       "description": [
         {
-          "desc": "\nIf the vaccine requires two doses, the vaccination date must be before today\n",
+          "desc": "If the vaccine requires two doses, the vaccination date must be before today",
           "lang": "en"
         }
       ]
@@ -829,7 +829,7 @@
       ],
       "description": [
         {
-          "desc": "\nThe test type must be one of the value set list (RAT OR NAA or serum antibody).\n",
+          "desc": "The test type must be one of the value set list (RAT OR NAA or serum antibody).",
           "lang": "en"
         }
       ]
@@ -881,7 +881,7 @@
       ],
       "description": [
         {
-          "desc": "\nThe date of sample collection must be before the validation date\n",
+          "desc": "The date of sample collection must be before the validation date",
           "lang": "en"
         }
       ]
@@ -931,7 +931,7 @@
       ],
       "description": [
         {
-          "desc": "\nOnly vaccines in the allowed valueset that have been approved by the EMA or are otherwise accepted in Switzerland are allowed.\n",
+          "desc": "Only vaccines in the allowed valueset that have been approved by the EMA or are otherwise accepted in Switzerland are allowed.",
           "lang": "en"
         }
       ]
@@ -994,7 +994,7 @@
       ],
       "description": [
         {
-          "desc": "\nAt most one t-event.\n",
+          "desc": "At most one t-event.",
           "lang": "en"
         }
       ]
@@ -1101,7 +1101,7 @@
       ],
       "description": [
         {
-          "desc": "\nIf the vaccine requires only one dose but more than one dose was administered, it is valid from today for 365 days\n",
+          "desc": "If the vaccine requires only one dose but more than one dose was administered, it is valid from today for 365 days",
           "lang": "en"
         }
       ]
@@ -1177,7 +1177,7 @@
       ],
       "description": [
         {
-          "desc": "\nFor 2/2 doses, the current date and time must be before the vaccination date plus 365 days for 2-dose vaccines\n",
+          "desc": "For 2/2 doses, the current date and time must be before the vaccination date plus 365 days for 2-dose vaccines",
           "lang": "en"
         }
       ]
@@ -1234,7 +1234,7 @@
       ],
       "description": [
         {
-          "desc": "\nIf the test type is \\\"RAT\\\" then the validation date must be before the date of sample collection plus 48 hours\n",
+          "desc": "If the test type is \\\"RAT\\\" then the validation date must be before the date of sample collection plus 48 hours",
           "lang": "en"
         }
       ]
@@ -1286,7 +1286,7 @@
       ],
       "description": [
         {
-          "desc": "\nThe validation date must be after the date of first positive test plus 10 day\n",
+          "desc": "The validation date must be after the date of first positive test plus 10 day",
           "lang": "en"
         }
       ]
@@ -1327,7 +1327,7 @@
       ],
       "description": [
         {
-          "desc": "\nVaccination doses must be equal or greater than expected doses.\n",
+          "desc": "Vaccination doses must be equal or greater than expected doses.",
           "lang": "en"
         }
       ]
@@ -1379,7 +1379,7 @@
       ],
       "description": [
         {
-          "desc": "\nThe validation date must be before the date of first positive test plus 365 days\n",
+          "desc": "The validation date must be before the date of first positive test plus 365 days",
           "lang": "en"
         }
       ]

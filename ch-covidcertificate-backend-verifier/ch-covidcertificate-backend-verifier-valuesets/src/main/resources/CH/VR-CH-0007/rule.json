@@ -100,7 +100,7 @@
   ],
   "Description": [
     {
-      "desc": "\nIf the vaccine requires only one dose but more than one dose was administered, it is valid from today for 365 days\n",
+      "desc": "If the vaccine requires only one dose but more than one dose was administered, it is valid from today for 365 days",
       "lang": "en"
     }
   ]

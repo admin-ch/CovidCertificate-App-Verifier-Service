@@ -69,7 +69,7 @@
   ],
   "Description": [
     {
-      "desc": "\nFor 2/2 doses, the current date and time must be before the vaccination date plus 365 days for 2-dose vaccines\n",
+      "desc": "For 2/2 doses, the current date and time must be before the vaccination date plus 365 days for 2-dose vaccines",
       "lang": "en"
     }
   ]

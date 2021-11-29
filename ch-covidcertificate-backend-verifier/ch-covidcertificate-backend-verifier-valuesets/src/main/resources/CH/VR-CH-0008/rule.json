@@ -74,7 +74,7 @@
   ],
   "Description": [
     {
-      "desc": "\nIf the vaccine requires one dose, and only one dose was administered, it is valid until 365+21=386 days\n",
+      "desc": "If the vaccine requires one dose, and only one dose was administered, it is valid until 365+21=386 days",
       "lang": "en"
     }
   ]

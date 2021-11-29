@@ -35,7 +35,7 @@
   ],
   "Description": [
     {
-      "desc": "\nThe test type must be one of the value set list (RAT OR NAA or serum antibody).\n",
+      "desc": "The test type must be one of the value set list (RAT OR NAA or serum antibody).",
       "lang": "en"
     }
   ]

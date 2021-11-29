@@ -69,7 +69,7 @@
   ],
   "Description": [
     {
-      "desc": "\nIf the vaccine requires two doses, the vaccination date must be before today\n",
+      "desc": "If the vaccine requires two doses, the vaccination date must be before today",
       "lang": "en"
     }
   ]

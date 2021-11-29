@@ -74,7 +74,7 @@
   ],
   "Description": [
     {
-      "desc": "\nIf the vaccine requires one dose, and only one dose was administered, it becomes valid after 21 days\n",
+      "desc": "If the vaccine requires one dose, and only one dose was administered, it becomes valid after 21 days",
       "lang": "en"
     }
   ]

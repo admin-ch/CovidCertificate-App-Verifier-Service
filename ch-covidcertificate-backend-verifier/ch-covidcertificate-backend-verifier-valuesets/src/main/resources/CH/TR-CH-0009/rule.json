@@ -50,7 +50,7 @@
   ],
   "Description": [
     {
-      "desc": "\nIf the test is a serum antibody test, then the validation date must be before the date of sample collection plus 90 days\n",
+      "desc": "If the test is a serum antibody test, then the validation date must be before the date of sample collection plus 90 days",
       "lang": "en"
     }
   ]

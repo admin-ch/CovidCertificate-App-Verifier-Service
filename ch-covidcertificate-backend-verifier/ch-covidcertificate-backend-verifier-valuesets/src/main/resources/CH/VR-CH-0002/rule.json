@@ -43,7 +43,7 @@
   ],
   "Description": [
     {
-      "desc": "\nOnly vaccines in the allowed valueset that have been approved by the EMA or are otherwise accepted in Switzerland are allowed.\n",
+      "desc": "Only vaccines in the allowed valueset that have been approved by the EMA or are otherwise accepted in Switzerland are allowed.",
       "lang": "en"
     }
   ]

@@ -45,7 +45,7 @@
   ],
   "Description": [
     {
-      "desc": "\nThe validation date must be before the date of first positive test plus 365 days\n",
+      "desc": "The validation date must be before the date of first positive test plus 365 days",
       "lang": "en"
     }
   ]

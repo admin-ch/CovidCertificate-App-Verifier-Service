@@ -50,7 +50,7 @@
   ],
   "Description": [
     {
-      "desc": "\nIf the test type is \\\"RAT\\\" then the validation date must be before the date of sample collection plus 48 hours\n",
+      "desc": "If the test type is \\\"RAT\\\" then the validation date must be before the date of sample collection plus 48 hours",
       "lang": "en"
     }
   ]

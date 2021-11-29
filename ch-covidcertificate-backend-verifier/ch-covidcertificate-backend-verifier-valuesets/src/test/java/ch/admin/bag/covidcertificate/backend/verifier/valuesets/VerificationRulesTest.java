@@ -128,7 +128,7 @@ public class VerificationRulesTest {
             String sourceFileContent = new String(sourceFile.readAllBytes());
             Matcher matcher = commentPattern.matcher(sourceFileContent);
             if (matcher.find()) {
-                String description = matcher.group();
+                String description = matcher.group().replace("\n", "");
                 ((ObjectNode) (((ArrayNode) rule.get("description")).get(0)))
                         .put("desc", description);
             } else {

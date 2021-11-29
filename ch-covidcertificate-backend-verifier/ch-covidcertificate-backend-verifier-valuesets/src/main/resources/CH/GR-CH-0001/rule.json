@@ -77,7 +77,7 @@
   ],
   "Description": [
     {
-      "desc": "\nThe targeted disease agent must be COVID-19 of the value set list.\n",
+      "desc": "The targeted disease agent must be COVID-19 of the value set list.",
       "lang": "en"
     }
   ]

@@ -45,7 +45,7 @@
   ],
   "Description": [
     {
-      "desc": "\nThe date of sample collection must be before the validation date\n",
+      "desc": "The date of sample collection must be before the validation date",
       "lang": "en"
     }
   ]

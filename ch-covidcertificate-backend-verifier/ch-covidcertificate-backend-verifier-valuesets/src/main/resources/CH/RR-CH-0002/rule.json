@@ -45,7 +45,7 @@
   ],
   "Description": [
     {
-      "desc": "\nThe validation date must be after the date of first positive test plus 10 day\n",
+      "desc": "The validation date must be after the date of first positive test plus 10 day",
       "lang": "en"
     }
   ]
