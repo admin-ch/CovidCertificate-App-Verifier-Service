@@ -4,7 +4,7 @@
 if [ "$(uname -s)" == Linux ]; then
   AIFC=./aifc-bin/aifc_linux_x86_64
 else
-  AIFC=./aifc-bin/aifc_linux_x86_64
+  AIFC=./aifc-bin/aifc_osx_x86_64
 fi
 
 cd "$(dirname "$0")" || exit
