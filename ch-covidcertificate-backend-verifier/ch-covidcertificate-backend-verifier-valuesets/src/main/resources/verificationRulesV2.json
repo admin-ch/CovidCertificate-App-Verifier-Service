@@ -581,7 +581,7 @@
                   {
                     "var": "payload.t.0.sc"
                   },
-                  48,
+                  24,
                   "hour"
                 ]
               }
@@ -596,7 +596,7 @@
       ],
       "description": [
         {
-          "desc": "If the test type is \\\"RAT\\\" then the validation date must be before the date of sample collection plus 48 hours",
+          "desc": "If the test type is \\\"RAT\\\" then the validation date must be before the date of sample collection plus 24 hours",
           "lang": "en"
         }
       ]
@@ -638,7 +638,7 @@
                   {
                     "var": "payload.t.0.sc"
                   },
-                  72,
+                  48,
                   "hour"
                 ]
               }
@@ -653,7 +653,7 @@
       ],
       "description": [
         {
-          "desc": "If the test type is \\\"PCR\\\" then the validation date must be before the date of sample collection plus 72 hours",
+          "desc": "If the test type is \\\"PCR\\\" then the validation date must be before the date of sample collection plus 48 hours",
           "lang": "en"
         }
       ]
@@ -2091,7 +2091,7 @@
                       {
                         "var": "payload.t.0.sc"
                       },
-                      72,
+                      48,
                       "hour"
                     ]
                   },
@@ -2110,7 +2110,7 @@
                           {
                             "var": "payload.t.0.sc"
                           },
-                          48,
+                          24,
                           "hour"
                         ]
                       },

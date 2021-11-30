@@ -35,7 +35,7 @@
               {
                 "var": "payload.t.0.sc"
               },
-              72,
+              48,
               "hour"
             ]
           }
@@ -50,7 +50,7 @@
   ],
   "Description": [
     {
-      "desc": "If the test type is \\\"PCR\\\" then the validation date must be before the date of sample collection plus 72 hours",
+      "desc": "If the test type is \\\"PCR\\\" then the validation date must be before the date of sample collection plus 48 hours",
       "lang": "en"
     }
   ]

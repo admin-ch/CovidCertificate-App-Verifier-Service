@@ -1,8 +1,8 @@
 /*
-If the test type is \"RAT\" then the validation date must be before the date of sample collection plus 48 hours
+If the test type is \"RAT\" then the validation date must be before the date of sample collection plus 24 hours
 */
 if (payload.t.0.tt === "LP217198-3") {
-  (now() + 0#days) is before (payload.t.0.sc as DateTime + 48#hours)
+  (now() + 0#days) is before (payload.t.0.sc as DateTime + 24#hours)
 } else {
   true
 }
