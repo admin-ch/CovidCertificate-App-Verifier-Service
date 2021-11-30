@@ -14,7 +14,7 @@ for f in verification-rules/*.aifc; do
 done
 
 for f in display-rules/*.aifc; do
-  $AIFC $f -o generated/$f.jsonyp
+  $AIFC $f -o generated/$f.json
 done
 
 for f in ch-only-rules/*.aifc; do

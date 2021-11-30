@@ -96,6 +96,7 @@ public class VerificationRulesTest {
 
         String[] logicFiles =
                 (new ClassPathResource(VERIFICATION_RULES_COMPILE_DIR).getFile().list());
+        Arrays.sort(logicFiles);
         List<ObjectNode> rules = new ArrayList<>();
         for (String filename : logicFiles) {
             ObjectNode rule =
