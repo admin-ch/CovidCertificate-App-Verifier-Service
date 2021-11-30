@@ -1,0 +1,8 @@
+/*
+Date of sample collection must exist
+*/
+if (payload.t.0) {
+  payload.t.0.sc as Boolean
+} else {
+  true
+}

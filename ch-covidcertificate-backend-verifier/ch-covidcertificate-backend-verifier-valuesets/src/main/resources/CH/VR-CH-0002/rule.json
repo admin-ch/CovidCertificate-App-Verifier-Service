@@ -1,19 +1,14 @@
 {
-  "AffectedFields": [
-    "v.0",
-    "v.0.mp"
-  ],
-  "CertificateType": "Vaccination",
   "Country": "CH",
-  "Description": [
-    {
-      "desc": "Only vaccines in the allowed valueset that have been approved by the EMA or are otherwise accepted in Switzerland are allowed.",
-      "lang": "en"
-    }
-  ],
   "Engine": "CERTLOGIC",
   "EngineVersion": "0.7.5",
+  "SchemaVersion": "1.0.0",
+  "Type": "Acceptance",
+  "ValidTo": "2031-01-01T00:00:00Z",
   "Identifier": "VR-CH-0002",
+  "Version": "1.0.5",
+  "ValidFrom": "2021-12-03T12:00:00Z",
+  "CertificateType": "Vaccination",
   "Logic": {
     "if": [
       {
@@ -42,9 +37,14 @@
       true
     ]
   },
-  "SchemaVersion": "1.0.0",
-  "Type": "Acceptance",
-  "ValidFrom": "2021-12-03T00:00:00Z",
-  "ValidTo": "2031-01-01T00:00:00Z",
-  "Version": "1.0.4"
+  "AffectedFields": [
+    "v.0.mp",
+    "v.0"
+  ],
+  "Description": [
+    {
+      "desc": "Only vaccines in the allowed valueset that have been approved by the EMA or are otherwise accepted in Switzerland are allowed.",
+      "lang": "en"
+    }
+  ]
 }

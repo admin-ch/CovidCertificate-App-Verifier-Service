@@ -1,0 +1,77 @@
+/*
+Logic to display valid until date
+*/
+if (payload.v.0) {
+    switch(payload.v.0.mp) {
+        "EU/1/20/1525" : if payload.v.0.dn === 1 => {
+             payload.v.0.dt as DateTime + 386#days
+        }
+        "EU/1/20/1525" : if payload.v.0.dn === 2 => {
+                     payload.v.0.dt as DateTime + 364#days
+                }
+        ["BBIBP-CorV_T","CoronaVac_T", "Covaxin_T"] => {
+            if (payload.h.exp) {
+                /* If we have a tourist certificate, we try to use exp (should be 30 days after iat) */
+                min((payload.v.0.dt as DateTime + 364#days), payload.h.exp as DateTime + 0#days)
+            } else {
+                /* Since we should not fail on older versions, just show always one day of validity */
+                if ((payload.v.0.dt as DateTime + 364#days) is before (now() + 0#days)) {
+                    payload.v.0.dt as DateTime + 364#days
+                } else {
+                    /* 
+                        We cannot use minimum, to prevent confusion of valid from today until today. 
+                        In  this edge case we just show valid from today until tomorrow, though technically not correct
+                    */
+                    now() + 1#days
+                }
+            }
+        }
+        ["EU/1/20/1528",
+        "EU/1/20/1507",
+        "EU/1/21/1529",
+        "CoronaVac",
+        "BBIBP-CorV",
+        "Covishield",
+        "Covaxin"] : if payload.v.0.dn >= payload.v.0.sd => {
+            /* If we have a 2 dose vaccine just show the dt + 364 days */
+            payload.v.0.dt as DateTime + 364#days
+        }
+        _ => {
+            /* We don't know the validity since this vaccine should not be valid */
+            undefined
+        }
+    }
+} else {
+    if (payload.t.0) {
+        switch (payload.t.0.tt) {
+            "LP6464-4" => {
+                /* PCR tests are valid for 72 hours */
+                payload.t.0.sc as DateTime + 72#hours
+            }
+            "LP217198-3" => {
+                /* RAT tests for 48 hours */
+                payload.t.0.sc as DateTime + 48#hours
+            }
+            "94504-8" => {
+                /* 
+                    Test type for people who were infected but did not have PCR test
+                    In this case, the certificate is valid for 90 days.
+
+                    The test has to be positive, since it should only ever be valid in switzerland
+                 */
+                payload.t.0.sc as DateTime + 90#days
+            }
+            _ => {
+                /* We only support the previous three test types */
+                undefined
+            }
+        }
+    } else {
+        if (payload.r.0) {
+            payload.r.0.fr as DateTime + 364#days
+        } else {
+            /* There has to be at least a vaccine, or a test or a recovery */
+            undefined
+        }
+    }
+}

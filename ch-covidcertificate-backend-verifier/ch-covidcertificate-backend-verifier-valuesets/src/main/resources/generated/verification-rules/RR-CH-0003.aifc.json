@@ -1,0 +1,30 @@
+{
+  "if": [
+    {
+      "var": "payload.r.0"
+    },
+    {
+      "before": [
+        {
+          "plusTime": [
+            {
+              "var": "external.validationClock"
+            },
+            0,
+            "day"
+          ]
+        },
+        {
+          "plusTime": [
+            {
+              "var": "payload.r.0.fr"
+            },
+            365,
+            "day"
+          ]
+        }
+      ]
+    },
+    true
+  ]
+}

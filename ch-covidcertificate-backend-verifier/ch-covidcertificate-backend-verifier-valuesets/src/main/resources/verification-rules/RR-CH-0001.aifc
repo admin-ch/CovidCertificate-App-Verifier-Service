@@ -1,0 +1,8 @@
+/*
+Date of first positive test must exist
+*/
+if (payload.r.0) {
+  payload.r.0.fr as Boolean
+} else {
+  true
+}

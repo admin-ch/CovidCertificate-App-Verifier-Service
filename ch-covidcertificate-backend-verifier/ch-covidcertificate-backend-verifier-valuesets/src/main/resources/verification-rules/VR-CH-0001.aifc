@@ -1,0 +1,13 @@
+/*
+Vaccination doses must be equal or greater than expected doses.
+*/
+
+if (payload.v.0) {
+    /*
+      dn: Dosis Number => how many shots have been shot
+      sd: Series Number => how many shots do we need to be considered fully vaccinated
+    */
+    payload.v.0.dn >= payload.v.0.sd
+} else {
+  true
+}

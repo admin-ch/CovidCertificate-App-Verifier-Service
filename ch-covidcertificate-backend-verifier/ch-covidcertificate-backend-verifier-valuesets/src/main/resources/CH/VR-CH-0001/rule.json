@@ -1,20 +1,14 @@
 {
-  "AffectedFields": [
-    "v.0",
-    "v.0.dn",
-    "v.0.sd"
-  ],
-  "CertificateType": "Vaccination",
   "Country": "CH",
-  "Description": [
-    {
-      "desc": "Vaccination doses must be equal or greater than expected doses.",
-      "lang": "en"
-    }
-  ],
   "Engine": "CERTLOGIC",
   "EngineVersion": "0.7.5",
+  "SchemaVersion": "1.0.0",
+  "Type": "Acceptance",
+  "ValidTo": "2031-01-01T00:00:00Z",
   "Identifier": "VR-CH-0001",
+  "Version": "1.0.5",
+  "ValidFrom": "2021-12-03T12:00:00Z",
+  "CertificateType": "Vaccination",
   "Logic": {
     "if": [
       {
@@ -33,9 +27,15 @@
       true
     ]
   },
-  "SchemaVersion": "1.0.0",
-  "Type": "Acceptance",
-  "ValidFrom": "2021-12-03T00:00:00Z",
-  "ValidTo": "2031-01-01T00:00:00Z",
-  "Version": "1.0.4"
+  "AffectedFields": [
+    "v.0",
+    "v.0.dn",
+    "v.0.sd"
+  ],
+  "Description": [
+    {
+      "desc": "Vaccination doses must be equal or greater than expected doses.",
+      "lang": "en"
+    }
+  ]
 }

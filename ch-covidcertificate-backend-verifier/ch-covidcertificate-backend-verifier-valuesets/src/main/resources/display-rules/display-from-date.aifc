@@ -1,0 +1,39 @@
+/*
+Rule to calculate the valid from date
+*/
+
+if (payload.v.0) {
+    if (payload.v.0.mp in ["EU/1/20/1525"] and payload.v.0.dn === 1 ) {
+        (payload.v.0.dt as DateTime + 21#days)
+    } else {
+        /* If we have a tourist certificate... */
+        if (payload.v.0.mp in [
+                        "BBIBP-CorV_T",
+                        "CoronaVac_T",
+                        "Covaxin_T"]) {
+            if (payload.h.iat) {
+                /*... and access to the iat of the cwt, show validity from issuing date on*/
+                (payload.h.iat as DateTime + 0#days)
+            } else {
+                /* ... else fallback to now */
+                now() + 0#days
+            }
+        } else {
+            /* if it is neither a one shot vaccine nor a tourist vaccine, show validity since vaccination date */
+            (payload.v.0.dt as DateTime + 0#days)
+        }
+    }
+} else {
+    if (payload.t.0) {
+        /* If we have a test, valid-from starts at the date of sample collection */
+        payload.t.0.sc as DateTime + 0#days
+    } else {
+        if(payload.r.0) {
+            /* if we recovered, validity starts 10 days after first positive test result */
+            payload.r.0.fr as DateTime + 10#days
+        } else {
+            /* This branch is unreachable, since we should have either a vaccine, a test or a recovery */
+            undefined
+        }
+    }
+ }

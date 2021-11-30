@@ -17,6 +17,11 @@ Serves various data used for verifying the validaty of Digital Covid Certificate
 * National rules
 * Value sets with test and vaccine mappings
 
+### National Rules
+
+The service serves a set of certificate validation rules for Switzerland. The validation logic is written in the human-readable [AifC](https://github.com/UbiqueInnovation/jsonlogic-compiler) which is compiled to [CertLogic](https://github.com/ehn-dcc-development/dgc-business-rules/blob/main/certlogic/specification/README.md).
+
+
 ## DGC Sync
 
 The `ch-covidcertificate-backend-verifier-sync` module implements `DGCSync`, which updates the local database to match the list provided by the [DGC gateway](https://github.com/eu-digital-green-certificates/dgc-gateway). 

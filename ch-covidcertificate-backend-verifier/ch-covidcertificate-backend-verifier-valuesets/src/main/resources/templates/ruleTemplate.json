@@ -1,0 +1,26 @@
+{
+
+  "country": "CH",
+
+  "engine": "CertLogic",
+  "engineVersion": "0.7.5",
+  "schemaVersion": "1.0.0",
+  "type": "Acceptance",
+  "validTo": "2031-01-01T00:00:00Z",
+
+
+  "identifier": "",
+  "version": "",
+  "validFrom": "",
+  "certificateType": "",
+  "logic": {
+  },
+  "affectedFields": [
+  ],
+  "description": [
+    {
+      "desc": "",
+      "lang": "en"
+    }
+  ]
+}

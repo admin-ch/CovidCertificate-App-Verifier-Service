@@ -1,0 +1,18 @@
+{
+  "if": [
+    {
+      "var": "payload.v.0"
+    },
+    {
+      ">=": [
+        {
+          "var": "payload.v.0.dn"
+        },
+        {
+          "var": "payload.v.0.sd"
+        }
+      ]
+    },
+    true
+  ]
+}

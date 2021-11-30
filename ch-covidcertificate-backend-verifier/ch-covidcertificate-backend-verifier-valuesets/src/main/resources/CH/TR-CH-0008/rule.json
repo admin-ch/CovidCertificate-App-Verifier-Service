@@ -1,20 +1,14 @@
 {
-  "AffectedFields": [
-    "t.0",
-    "t.0.tr",
-    "t.0.tt"
-  ],
-  "CertificateType": "Test",
   "Country": "CH",
-  "Description": [
-    {
-      "desc": "For serum antibody tests, the result must be positive.",
-      "lang": "en"
-    }
-  ],
   "Engine": "CERTLOGIC",
   "EngineVersion": "0.7.5",
+  "SchemaVersion": "1.0.0",
+  "Type": "Acceptance",
+  "ValidTo": "2031-01-01T00:00:00Z",
   "Identifier": "TR-CH-0008",
+  "Version": "1.0.5",
+  "ValidFrom": "2021-12-03T12:00:00Z",
+  "CertificateType": "Test",
   "Logic": {
     "if": [
       {
@@ -45,9 +39,15 @@
       true
     ]
   },
-  "SchemaVersion": "1.0.0",
-  "Type": "Acceptance",
-  "ValidFrom": "2021-12-03T00:00:00Z",
-  "ValidTo": "2031-01-01T00:00:00Z",
-  "Version": "1.0.4"
+  "AffectedFields": [
+    "t.0.tr",
+    "t.0",
+    "t.0.tt"
+  ],
+  "Description": [
+    {
+      "desc": "For serum antibody tests, the result must be positive.",
+      "lang": "en"
+    }
+  ]
 }

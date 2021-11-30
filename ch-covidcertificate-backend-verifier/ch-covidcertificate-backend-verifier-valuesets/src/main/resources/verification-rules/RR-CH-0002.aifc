@@ -1,0 +1,11 @@
+/*
+The validation date must be after the date of first positive test plus 10 day
+*/
+if (payload.r.0) {
+  /*
+`   fr: First (positive) test Result
+  */
+  (now() + 0#day) is after (payload.r.0.fr as DateTime + 10#days)
+} else {
+  true
+}

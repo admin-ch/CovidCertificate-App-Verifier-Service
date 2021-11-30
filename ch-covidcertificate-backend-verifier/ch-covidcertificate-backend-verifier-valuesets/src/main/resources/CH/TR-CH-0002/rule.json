@@ -1,19 +1,14 @@
 {
-  "AffectedFields": [
-    "t.0",
-    "t.0.tt"
-  ],
-  "CertificateType": "Test",
   "Country": "CH",
-  "Description": [
-    {
-      "desc": "The test type must be one of the value set list (RAT OR NAA or serum antibody).",
-      "lang": "en"
-    }
-  ],
   "Engine": "CERTLOGIC",
   "EngineVersion": "0.7.5",
+  "SchemaVersion": "1.0.0",
+  "Type": "Acceptance",
+  "ValidTo": "2031-01-01T00:00:00Z",
   "Identifier": "TR-CH-0002",
+  "Version": "1.0.5",
+  "ValidFrom": "2021-12-03T12:00:00Z",
+  "CertificateType": "Test",
   "Logic": {
     "if": [
       {
@@ -34,9 +29,14 @@
       true
     ]
   },
-  "SchemaVersion": "1.0.0",
-  "Type": "Acceptance",
-  "ValidFrom": "2021-12-03T00:00:00Z",
-  "ValidTo": "2031-01-01T00:00:00Z",
-  "Version": "1.0.4"
+  "AffectedFields": [
+    "t.0",
+    "t.0.tt"
+  ],
+  "Description": [
+    {
+      "desc": "The test type must be one of the value set list (RAT OR NAA or serum antibody).",
+      "lang": "en"
+    }
+  ]
 }

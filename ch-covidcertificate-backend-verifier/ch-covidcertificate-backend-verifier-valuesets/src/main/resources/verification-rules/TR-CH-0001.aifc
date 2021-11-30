@@ -1,0 +1,18 @@
+/*
+For rapid or PCR test, the result must be negative (\"not detected\").
+*/
+if (
+  /*
+    LP217198-3: Rapid Test
+    LP6464-4": PCR
+  */
+  payload.t.0 
+  && 
+  payload.t.0.tt in ["LP217198-3", "LP6464-4"]) {
+    /*
+      tr: TestResult => needs to be negative 
+     */
+    payload.t.0.tr === "260415000"
+} else {
+  true
+}

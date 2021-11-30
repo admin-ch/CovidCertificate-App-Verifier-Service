@@ -1,0 +1,15 @@
+/*
+At most one r-event.
+*/
+if (payload.r.0) {
+  if (
+    not payload.r.1 
+    && not payload.v.0 
+    && not payload.t.0) {
+    true
+  } else {
+    false
+  }
+} else {
+  true
+}

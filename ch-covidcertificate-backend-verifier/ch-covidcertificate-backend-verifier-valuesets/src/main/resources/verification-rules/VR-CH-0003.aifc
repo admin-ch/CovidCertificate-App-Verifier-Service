@@ -1,0 +1,9 @@
+/*
+Date of vaccination must exist
+*/
+
+if (payload.v.0) {
+  payload.v.0.dt as Boolean
+} else {
+  true
+}

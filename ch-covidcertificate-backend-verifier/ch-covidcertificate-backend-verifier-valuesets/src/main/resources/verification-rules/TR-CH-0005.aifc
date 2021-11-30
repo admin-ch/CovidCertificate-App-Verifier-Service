@@ -1,0 +1,8 @@
+/*
+The date of sample collection must be before the validation date
+*/
+if (payload.t.0) {
+  (payload.t.0.sc as DateTime + 0#days) is before (now() + 0#days)
+} else {
+  true
+}
