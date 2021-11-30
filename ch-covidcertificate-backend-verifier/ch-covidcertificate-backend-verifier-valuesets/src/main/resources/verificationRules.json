@@ -1013,8 +1013,8 @@
     "acceptance-criteria": {
       "single-vaccine-validity-offset": 21,
       "vaccine-immunity": 364,
-      "rat-test-validity": 48,
-      "pcr-test-validity": 72,
+      "rat-test-validity": 24,
+      "pcr-test-validity": 48,
       "recovery-offset-valid-from": 10,
       "recovery-offset-valid-until": 364
     }

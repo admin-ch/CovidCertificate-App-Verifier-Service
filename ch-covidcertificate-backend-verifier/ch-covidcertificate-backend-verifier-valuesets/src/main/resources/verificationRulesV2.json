@@ -1636,7 +1636,7 @@
                       {
                         "var": "payload.t.0.sc"
                       },
-                      72,
+                      48,
                       "hour"
                     ]
                   },
@@ -1655,7 +1655,7 @@
                           {
                             "var": "payload.t.0.sc"
                           },
-                          48,
+                          24,
                           "hour"
                         ]
                       },
@@ -1882,26 +1882,77 @@
               {
                 "if": [
                   {
-                    "in": [
+                    "and": [
                       {
-                        "var": "payload.v.0.mp"
+                        "===": [
+                          {
+                            "var": "payload.v.0.mp"
+                          },
+                          "EU/1/20/1525"
+                        ]
                       },
-                      [
-                        "BBIBP-CorV_T",
-                        "CoronaVac_T",
-                        "Covaxin_T"
-                      ]
+                      {
+                        "===": [
+                          {
+                            "var": "payload.v.0.dn"
+                          },
+                          2
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "plusTime": [
+                      {
+                        "var": "payload.v.0.dt"
+                      },
+                      364,
+                      "day"
                     ]
                   },
                   {
                     "if": [
                       {
-                        "var": "payload.h.exp"
+                        "in": [
+                          {
+                            "var": "payload.v.0.mp"
+                          },
+                          [
+                            "BBIBP-CorV_T",
+                            "CoronaVac_T",
+                            "Covaxin_T"
+                          ]
+                        ]
                       },
                       {
                         "if": [
                           {
-                            "before": [
+                            "var": "payload.h.exp"
+                          },
+                          {
+                            "if": [
+                              {
+                                "before": [
+                                  {
+                                    "plusTime": [
+                                      {
+                                        "var": "payload.v.0.dt"
+                                      },
+                                      364,
+                                      "day"
+                                    ]
+                                  },
+                                  {
+                                    "plusTime": [
+                                      {
+                                        "var": "payload.h.exp"
+                                      },
+                                      0,
+                                      "day"
+                                    ]
+                                  }
+                                ]
+                              },
                               {
                                 "plusTime": [
                                   {
@@ -1923,29 +1974,29 @@
                             ]
                           },
                           {
-                            "plusTime": [
+                            "if": [
                               {
-                                "var": "payload.v.0.dt"
+                                "before": [
+                                  {
+                                    "plusTime": [
+                                      {
+                                        "var": "payload.v.0.dt"
+                                      },
+                                      364,
+                                      "day"
+                                    ]
+                                  },
+                                  {
+                                    "plusTime": [
+                                      {
+                                        "var": "external.validationClock"
+                                      },
+                                      0,
+                                      "day"
+                                    ]
+                                  }
+                                ]
                               },
-                              364,
-                              "day"
-                            ]
-                          },
-                          {
-                            "plusTime": [
-                              {
-                                "var": "payload.h.exp"
-                              },
-                              0,
-                              "day"
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "if": [
-                          {
-                            "before": [
                               {
                                 "plusTime": [
                                   {
@@ -1960,8 +2011,42 @@
                                   {
                                     "var": "external.validationClock"
                                   },
-                                  0,
+                                  1,
                                   "day"
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "if": [
+                          {
+                            "and": [
+                              {
+                                "in": [
+                                  {
+                                    "var": "payload.v.0.mp"
+                                  },
+                                  [
+                                    "EU/1/20/1528",
+                                    "EU/1/20/1507",
+                                    "EU/1/21/1529",
+                                    "CoronaVac",
+                                    "BBIBP-CorV",
+                                    "Covishield",
+                                    "Covaxin"
+                                  ]
+                                ]
+                              },
+                              {
+                                ">=": [
+                                  {
+                                    "var": "payload.v.0.dn"
+                                  },
+                                  {
+                                    "var": "payload.v.0.sd"
+                                  }
                                 ]
                               }
                             ]
@@ -1976,61 +2061,9 @@
                             ]
                           },
                           {
-                            "plusTime": [
-                              {
-                                "var": "external.validationClock"
-                              },
-                              1,
-                              "day"
-                            ]
+                            "var": "undefined"
                           }
                         ]
-                      }
-                    ]
-                  },
-                  {
-                    "if": [
-                      {
-                        "and": [
-                          {
-                            "in": [
-                              {
-                                "var": "payload.v.0.mp"
-                              },
-                              [
-                                "EU/1/20/1528",
-                                "EU/1/20/1507",
-                                "EU/1/21/1529",
-                                "CoronaVac",
-                                "BBIBP-CorV",
-                                "Covishield",
-                                "Covaxin"
-                              ]
-                            ]
-                          },
-                          {
-                            ">=": [
-                              {
-                                "var": "payload.v.0.dn"
-                              },
-                              {
-                                "var": "payload.v.0.sd"
-                              }
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        "plusTime": [
-                          {
-                            "var": "payload.v.0.dt"
-                          },
-                          364,
-                          "day"
-                        ]
-                      },
-                      {
-                        "var": "undefined"
                       }
                     ]
                   }
@@ -2058,7 +2091,7 @@
                       {
                         "var": "payload.t.0.sc"
                       },
-                      72,
+                      48,
                       "hour"
                     ]
                   },
@@ -2077,7 +2110,7 @@
                           {
                             "var": "payload.t.0.sc"
                           },
-                          48,
+                          24,
                           "hour"
                         ]
                       },
