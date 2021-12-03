@@ -407,7 +407,7 @@
     },
     {
       "inputParameter": "[\"t.0.tt\",\"t.0.sc\"]",
-      "description": "If the test type is \\\"PCR\\\" then the validation date must be before the date of sample collection plus 48 hours",
+      "description": "If the test type is \\\"PCR\\\" then the validation date must be before the date of sample collection plus 72 hours",
       "id": "TR-CH-0007",
       "logic": {
         "if": [
@@ -435,7 +435,7 @@
                   {
                     "var": "payload.t.0.sc"
                   },
-                  48,
+                  72,
                   "hour"
                 ]
               }
@@ -1014,7 +1014,7 @@
       "single-vaccine-validity-offset": 21,
       "vaccine-immunity": 364,
       "rat-test-validity": 24,
-      "pcr-test-validity": 48,
+      "pcr-test-validity": 72,
       "recovery-offset-valid-from": 10,
       "recovery-offset-valid-until": 364
     }
