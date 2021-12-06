@@ -56,7 +56,7 @@ public class RulesSyncWs {
     }
 
     public void rulesSyncManual() {
-        final String name = "RULES_upload";
+        final String name = "rules_sync";
         final Duration lockAtMostFor = Duration.ofMinutes(10);
         final Duration lockAtLeastFor = Duration.ofSeconds(15);
         executor.executeWithLock(
