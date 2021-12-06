@@ -1,11 +1,17 @@
-// Copyright (c) 2021 Patrick Amrein <amrein@ubique.ch>
-//
-// This software is released under the MIT License.
-// https://opensource.org/licenses/MIT
+/*
+ * Copyright (c) 2021 Ubique Innovation AG <https://www.ubique.ch>
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * SPDX-License-Identifier: MPL-2.0
+ */
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
 import ch.admin.bag.covidcertificate.backend.verifier.model.sync.SigningPayload;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.model.RulesSyncResult;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.CmsUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,9 +58,10 @@ public class DgcRulesClient {
      *
      * @return successfully uploaded rule ids
      */
-    public List<String> upload(JsonNode rules) {
+    public RulesSyncResult upload(JsonNode rules) {
         logger.info("Uploading Swiss rules");
         List<String> uploadedRuleIds = new ArrayList<>();
+        List<String> failedRuleIds = new ArrayList<>();
         var mapper = new ObjectMapper();
         // load payload
         var fieldIterator = rules.fields();
@@ -87,20 +94,23 @@ public class DgcRulesClient {
                         logger.info("New version of rule {} uploaded", ruleId);
                         uploadedRuleIds.add(ruleId);
                     } catch (HttpStatusCodeException e) {
+                        failedRuleIds.add(ruleId);
                         if (e.getStatusCode().equals(HttpStatus.CONFLICT)) {
                             logger.info(
                                     ">= version of rule {} has already been uploaded", ruleId, e);
                         } else {
+                            logger.error("[FAILED CMS] {}", cms);
                             logger.error("Upload of rule {} failed", ruleId, e);
                         }
                         continue;
                     }
                 } catch (Exception ex) {
+                    failedRuleIds.add(ruleId);
                     logger.error("Failed to upload rule {}", ruleId, ex);
                 }
             }
         }
         logger.info("Finished uploading Swiss rules");
-        return uploadedRuleIds;
+        return new RulesSyncResult(uploadedRuleIds, failedRuleIds);
     }
 }
