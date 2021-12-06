@@ -42,7 +42,7 @@ public class DgcRulesSyncer {
                     "Successfully Uploaded rules {} in {} ms",
                     uploadedRuleIds.getSuccesssfullRules(),
                     end.toEpochMilli() - start.toEpochMilli());
-            if (uploadedRuleIds.getFailedRules().size() > 0) {
+            if (!uploadedRuleIds.getFailedRules().isEmpty()) {
                 logger.error("Failed to Upload rules {}", uploadedRuleIds.getFailedRules());
             }
         } catch (Exception e) {
