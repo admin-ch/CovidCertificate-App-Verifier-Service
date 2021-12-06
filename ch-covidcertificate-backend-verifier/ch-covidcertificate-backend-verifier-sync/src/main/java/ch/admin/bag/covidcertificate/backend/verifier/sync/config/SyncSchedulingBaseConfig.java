@@ -99,11 +99,4 @@ public class SyncSchedulingBaseConfig {
         LockAssert.assertLocked();
         dgcValueSetSyncer.sync();
     }
-
-    @Scheduled(fixedRate = Long.MAX_VALUE, initialDelay = 0)
-    @SchedulerLock(name = "rules_sync", lockAtLeastFor = "PT15S")
-    public void rulesSyncOnStartup() {
-        LockAssert.assertLocked();
-        dgcRulesSyncer.sync();
-    }
 }
