@@ -29,6 +29,8 @@ import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.DgcHubProxy;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.DscSyncWs;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.DscUploadWs;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.ResurrectionWs;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.RulesSyncWs;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
@@ -205,5 +207,10 @@ public abstract class SyncBaseConfig {
     @Bean
     public ResurrectionWs resurrectionWs(VerifierDataService verifierDataService) {
         return new ResurrectionWs(verifierDataService);
+    }
+
+    @Bean
+    public RulesSyncWs rulesSyncWs(DgcRulesSyncer rulesSyncer, LockProvider lockProvider) {
+        return new RulesSyncWs(rulesSyncer, lockProvider);
     }
 }
