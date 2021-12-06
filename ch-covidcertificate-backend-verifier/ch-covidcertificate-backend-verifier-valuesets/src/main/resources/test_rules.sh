@@ -1,6 +1,6 @@
 #!/bin/bash
 #Test master rules against test cases in EU repo
-
+set -eux
 if [ "$(uname -s)" == Linux ]; then
   AIFC=./aifc-bin/aifc_linux_x86_64
 else
@@ -8,6 +8,12 @@ else
 fi
 
 cd "$(dirname "$0")" || exit
+
+rm -r generated/*
+mkdir -p generated/verification-rules
+mkdir -p generated/display-rules
+mkdir -p generated/ch-only-rules
+mkdir -p generated/mode-rules
 
 for f in verification-rules/*.aifc; do
   $AIFC $f -o generated/$f.json
@@ -18,6 +24,10 @@ for f in display-rules/*.aifc; do
 done
 
 for f in ch-only-rules/*.aifc; do
+  $AIFC $f -o generated/$f.json
+done
+
+for f in mode-rules/*.aifc; do
   $AIFC $f -o generated/$f.json
 done
 
@@ -36,5 +46,5 @@ cp -R src/main/resources/CH dgc-business-rules-testdata
 cd dgc-business-rules-testdata
 
 #delete all other countries' rules to avoid failures
-find . -maxdepth 1 -regextype sed -type d -regex ".*/[A-Z][A-Z]" | grep -v CH | xargs rm -r
+find . -maxdepth 1 -regextype sed -type d -regex ".*/[A-Z][A-Z]" | grep -v CH | xargs -r rm -rf
 ./build.sh

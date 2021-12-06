@@ -1,0 +1,19 @@
+switch(payload.h.mode){
+    "THREE_G" => {
+        "SUCCESS"
+    }
+    "TWO_G" => {
+        if (payload.h.isLight){
+            "IS_LIGHT"
+        }else{
+            if(payload.t.0){
+               "INVALID"
+            }else{
+                "SUCCESS"
+            }
+        }
+    }
+    _ => {
+        "UNKNOWN_MODE"
+    }
+}

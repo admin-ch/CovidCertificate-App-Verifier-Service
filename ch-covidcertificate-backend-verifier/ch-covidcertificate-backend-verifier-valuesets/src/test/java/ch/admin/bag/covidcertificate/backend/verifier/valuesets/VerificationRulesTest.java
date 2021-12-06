@@ -22,9 +22,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -35,6 +38,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -47,6 +51,11 @@ import org.slf4j.LoggerFactory;
 
 @TestInstance(Lifecycle.PER_CLASS)
 public class VerificationRulesTest {
+    public enum CheckMode {
+        TWO_G,
+        THREE_G;
+    }
+
     private static final Logger logger = LoggerFactory.getLogger(VerificationRulesTest.class);
     private ObjectMapper mapper;
 
@@ -64,6 +73,8 @@ public class VerificationRulesTest {
     private static final String DISPLAY_RULES_COMPILE_DIR = "generated/display-rules";
     private static final String CH_ONLY_RULES_COMPILE_DIR = "generated/ch-only-rules";
     private static final String EU_TEST_RULES_OUTPUT_PATH = "src/main/resources/CH/";
+    private static final String MODE_RULE_PATH = "generated/mode-rules/modeRules.aifc.json";
+    private static final List<String> ACTIVE_MODES = Arrays.asList(CheckMode.TWO_G.name(), CheckMode.THREE_G.name());
 
     // matches multiline comments without the leading and trailing /* and */
     private static final Pattern commentPattern =
@@ -93,12 +104,12 @@ public class VerificationRulesTest {
     private JsonNode generateV2() throws Exception {
         JsonNode v2 =
                 mapper.readTree(new ClassPathResource(MASTER_TEMPLATE_CLASSPATH).getInputStream());
-
-        String[] logicFiles =
-                (new ClassPathResource(VERIFICATION_RULES_COMPILE_DIR).getFile().list());
-        Arrays.sort(logicFiles);
+        String[] sourceFiles = (new ClassPathResource(VERIFICATION_RULES_SOURCE_DIR).getFile().list());
+        Arrays.sort(sourceFiles);
         List<ObjectNode> rules = new ArrayList<>();
-        for (String filename : logicFiles) {
+
+        for (String sourceFile: sourceFiles) {
+            String filename = sourceFile + ".json";
             ObjectNode rule =
                     (ObjectNode)
                             mapper.readTree(
@@ -120,13 +131,13 @@ public class VerificationRulesTest {
                 default:
                     logger.error("Rule file name does not start with G, R, T or V: ?{}", filename);
             }
-            String ruleId = filename.split("\\.")[0];
-            InputStream sourceFile =
-                    new ClassPathResource(
-                                    Paths.get(VERIFICATION_RULES_SOURCE_DIR, ruleId.concat(".aifc"))
-                                            .toString())
-                            .getInputStream();
-            String sourceFileContent = new String(sourceFile.readAllBytes());
+            String[] nameComponents = sourceFile.split("([_.])");
+            String ruleId = nameComponents[0];
+            String sourceFileContent = new String(new ClassPathResource(
+                    Paths.get(VERIFICATION_RULES_SOURCE_DIR, sourceFile)
+                            .toString())
+                    .getInputStream()
+                    .readAllBytes());
             Matcher matcher = commentPattern.matcher(sourceFileContent);
             if (matcher.find()) {
                 String description = matcher.group().replace("\n", "");
@@ -136,7 +147,6 @@ public class VerificationRulesTest {
                 logger.warn(
                         "File contained no comment, rule description will be empty {}", filename);
             }
-            // File compiledFile = new ClassPathResource(.toString()).getFile();
             ObjectNode logic =
                     (ObjectNode)
                             mapper.readTree(
@@ -159,6 +169,16 @@ public class VerificationRulesTest {
             rules.add(rule);
         }
 
+        ObjectNode modeRule = (ObjectNode) v2.get("modeRules");
+        ArrayNode activeModesArray = modeRule.putArray("activeModes");
+        ACTIVE_MODES.forEach(activeModesArray::add);
+        modeRule.set("logic", mapper.readTree(new ClassPathResource(
+                Paths.get(MODE_RULE_PATH)
+                        .toString())
+                .getInputStream()));
+
+
+
         String[] displayRuleFiles =
                 (new ClassPathResource(DISPLAY_RULES_COMPILE_DIR).getFile().list());
         List<ObjectNode> displayRules = new ArrayList<>();
@@ -174,6 +194,7 @@ public class VerificationRulesTest {
                                     .getInputStream()));
             displayRules.add(rule);
         }
+
 
         ObjectNode chOnlyDisplayRule = ((ArrayNode) v2.get("displayRules")).addObject();
         chOnlyDisplayRule.put("id", "is-only-valid-in-ch");
@@ -222,6 +243,10 @@ public class VerificationRulesTest {
     }
 
     private void mapTestRules(Map<String, ArrayNode> uploadRules) throws IOException {
+        Files.walk(Path.of(EU_TEST_RULES_OUTPUT_PATH))
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
         for (Entry<String, ArrayNode> idToRule : uploadRules.entrySet()) {
             String ruleId = idToRule.getKey();
             new File(EU_TEST_RULES_OUTPUT_PATH + ruleId + "/tests").mkdirs();

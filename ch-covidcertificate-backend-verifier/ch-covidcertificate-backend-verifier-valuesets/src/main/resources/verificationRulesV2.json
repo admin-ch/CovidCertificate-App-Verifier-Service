@@ -1385,6 +1385,55 @@
       ]
     }
   ],
+  "modeRules": {
+    "activeModes": [
+      "TWO_G",
+      "THREE_G"
+    ],
+    "logic": {
+      "if": [
+        {
+          "===": [
+            {
+              "var": "payload.h.mode"
+            },
+            "THREE_G"
+          ]
+        },
+        "SUCCESS",
+        {
+          "if": [
+            {
+              "===": [
+                {
+                  "var": "payload.h.mode"
+                },
+                "TWO_G"
+              ]
+            },
+            {
+              "if": [
+                {
+                  "var": "payload.h.isLight"
+                },
+                "IS_LIGHT",
+                {
+                  "if": [
+                    {
+                      "var": "payload.t.0"
+                    },
+                    "INVALID",
+                    "SUCCESS"
+                  ]
+                }
+              ]
+            },
+            "UNKNOWN_MODE"
+          ]
+        }
+      ]
+    }
+  },
   "displayRules": [
     {
       "id": "display-from-date",

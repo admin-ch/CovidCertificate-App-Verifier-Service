@@ -1,5 +1,7 @@
 {
   "rules": [],
+  "modeRules": {
+  },
   "displayRules": [],
   "validDuration": 172800000,
   "valueSets": {
