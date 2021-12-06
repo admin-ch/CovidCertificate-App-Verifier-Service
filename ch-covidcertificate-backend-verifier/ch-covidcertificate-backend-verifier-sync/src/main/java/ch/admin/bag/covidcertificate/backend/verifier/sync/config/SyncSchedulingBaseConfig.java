@@ -14,7 +14,6 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.model.exception.DgcSyncException;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
-import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcRulesSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetSyncer;
 import net.javacrumbs.shedlock.core.LockAssert;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
@@ -35,7 +34,6 @@ public class SyncSchedulingBaseConfig {
     private final DgcCertSyncer dgcSyncer;
     private final DgcValueSetSyncer dgcValueSetSyncer;
     private final ValueSetDataService valueSetDataService;
-    private final DgcRulesSyncer dgcRulesSyncer;
     private final VerifierDataService verifierDataService;
     private final boolean syncCronEnabled;
 
@@ -43,13 +41,11 @@ public class SyncSchedulingBaseConfig {
             DgcCertSyncer dgcSyncer,
             DgcValueSetSyncer dgcValueSetSyncer,
             ValueSetDataService valueSetDataService,
-            DgcRulesSyncer dgcRulesSyncer,
             VerifierDataService verifierDataService,
             @Value("${dgc.sync.cron.enable:true}") boolean syncCronEnabled) {
         this.dgcSyncer = dgcSyncer;
         this.dgcValueSetSyncer = dgcValueSetSyncer;
         this.valueSetDataService = valueSetDataService;
-        this.dgcRulesSyncer = dgcRulesSyncer;
         this.verifierDataService = verifierDataService;
         this.syncCronEnabled = syncCronEnabled;
     }

@@ -210,7 +210,7 @@ public abstract class SyncBaseConfig {
     }
 
     @Bean
-    public RulesSyncWs rulesSyncWs(DgcRulesSyncer rulesSyncer, LockProvider lockProvider) {
-        return new RulesSyncWs(rulesSyncer, lockProvider);
+    public RulesSyncWs rulesSyncWs(DgcRulesSyncer rulesSyncer) {
+        return new RulesSyncWs(rulesSyncer);
     }
 }

@@ -32,7 +32,7 @@ public class DgcRulesSyncer {
         this.dgcRulesClient = dgcRulesClient;
     }
 
-    public void sync() {
+    public RulesSyncResult sync() {
         logger.info("Start rules sync with DGC Gateway");
         var start = Instant.now();
         try {
@@ -40,13 +40,15 @@ public class DgcRulesSyncer {
             var end = Instant.now();
             logger.info(
                     "Successfully Uploaded rules {} in {} ms",
-                    uploadedRuleIds.getSuccesssfullRules(),
+                    uploadedRuleIds.getSuccesssfulRules(),
                     end.toEpochMilli() - start.toEpochMilli());
             if (!uploadedRuleIds.getFailedRules().isEmpty()) {
                 logger.error("Failed to Upload rules {}", uploadedRuleIds.getFailedRules());
             }
+            return uploadedRuleIds;
         } catch (Exception e) {
             logger.error("rules sync failed.", e);
+            return new RulesSyncResult(null, null);
         }
     }
 }

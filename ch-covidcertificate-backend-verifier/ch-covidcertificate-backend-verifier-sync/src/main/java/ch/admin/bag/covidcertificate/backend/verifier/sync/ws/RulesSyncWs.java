@@ -11,12 +11,9 @@
 package ch.admin.bag.covidcertificate.backend.verifier.sync.ws;
 
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcRulesSyncer;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.model.RulesSyncResult;
 import ch.ubique.openapi.docannotations.Documentation;
-import java.time.Duration;
-import java.time.Instant;
 import net.javacrumbs.shedlock.core.DefaultLockingTaskExecutor;
-import net.javacrumbs.shedlock.core.LockAssert;
-import net.javacrumbs.shedlock.core.LockConfiguration;
 import net.javacrumbs.shedlock.core.LockProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,16 +28,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class RulesSyncWs {
     private static final Logger logger = LoggerFactory.getLogger(RulesSyncWs.class);
     private final DgcRulesSyncer rulesSyncer;
-    private final DefaultLockingTaskExecutor executor;
 
-    public RulesSyncWs(DgcRulesSyncer rulesSyncer, LockProvider lockProvider) {
+    public RulesSyncWs(DgcRulesSyncer rulesSyncer) {
         this.rulesSyncer = rulesSyncer;
-        this.executor = new DefaultLockingTaskExecutor(lockProvider);
     }
 
-    @Documentation(
-            description = "Echo endpoint",
-            responses = {"200 => Hello from internal rules sync WS"})
+    @Documentation(description = "Echo endpoint", responses = { "200 => Hello from internal rules sync WS" })
     @GetMapping(value = "")
     public @ResponseBody String hello() {
         return "Hello from internal rules sync WS";
@@ -48,25 +41,10 @@ public class RulesSyncWs {
 
     @Documentation(description = "internal endpoint for triggering rules upload")
     @GetMapping(value = "trigger")
-    public @ResponseBody ResponseEntity<String> triggerRulesUpload() {
+    public @ResponseBody ResponseEntity<RulesSyncResult> triggerRulesUpload() {
         String msg = "rules upload triggered";
-        rulesSyncManual();
+        var rules = rulesSyncer.sync();
         logger.info(msg);
-        return ResponseEntity.ok(msg);
-    }
-
-    public void rulesSyncManual() {
-        final String name = "rules_sync";
-        final Duration lockAtMostFor = Duration.ofMinutes(10);
-        final Duration lockAtLeastFor = Duration.ofSeconds(15);
-        executor.executeWithLock(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        LockAssert.assertLocked();
-                        rulesSyncer.sync();
-                    }
-                },
-                new LockConfiguration(Instant.now(), name, lockAtMostFor, lockAtLeastFor));
+        return ResponseEntity.ok(rules);
     }
 }
