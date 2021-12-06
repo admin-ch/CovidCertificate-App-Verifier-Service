@@ -1387,8 +1387,14 @@
   ],
   "modeRules": {
     "activeModes": [
-      "TWO_G",
-      "THREE_G"
+      {
+        "id": "THREE_G",
+        "displayName": "3G"
+      },
+      {
+        "id": "TWO_G",
+        "displayName": "2G"
+      }
     ],
     "logic": {
       "if": [

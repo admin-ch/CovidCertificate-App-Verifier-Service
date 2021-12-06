@@ -51,10 +51,26 @@ import org.slf4j.LoggerFactory;
 
 @TestInstance(Lifecycle.PER_CLASS)
 public class VerificationRulesTest {
-    public enum CheckMode {
-        TWO_G,
-        THREE_G;
+    private static class CheckMode {
+        private final String id;
+        private final String displayName;
+
+        private CheckMode(String id, String displayName) {
+            this.id = id;
+            this.displayName = displayName;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        private static final List<CheckMode> ACTIVE_MODES = Arrays.asList(new CheckMode("THREE_G", "3G"), new CheckMode("TWO_G", "2G"));
     }
+
 
     private static final Logger logger = LoggerFactory.getLogger(VerificationRulesTest.class);
     private ObjectMapper mapper;
@@ -74,7 +90,6 @@ public class VerificationRulesTest {
     private static final String CH_ONLY_RULES_COMPILE_DIR = "generated/ch-only-rules";
     private static final String EU_TEST_RULES_OUTPUT_PATH = "src/main/resources/CH/";
     private static final String MODE_RULE_PATH = "generated/mode-rules/modeRules.aifc.json";
-    private static final List<String> ACTIVE_MODES = Arrays.asList(CheckMode.TWO_G.name(), CheckMode.THREE_G.name());
 
     // matches multiline comments without the leading and trailing /* and */
     private static final Pattern commentPattern =
@@ -171,7 +186,7 @@ public class VerificationRulesTest {
 
         ObjectNode modeRule = (ObjectNode) v2.get("modeRules");
         ArrayNode activeModesArray = modeRule.putArray("activeModes");
-        ACTIVE_MODES.forEach(activeModesArray::add);
+        CheckMode.ACTIVE_MODES.forEach(activeModesArray::addPOJO);
         modeRule.set("logic", mapper.readTree(new ClassPathResource(
                 Paths.get(MODE_RULE_PATH)
                         .toString())
