@@ -13,8 +13,6 @@ package ch.admin.bag.covidcertificate.backend.verifier.sync.ws;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcRulesSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.model.RulesSyncResult;
 import ch.ubique.openapi.docannotations.Documentation;
-import net.javacrumbs.shedlock.core.DefaultLockingTaskExecutor;
-import net.javacrumbs.shedlock.core.LockProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
