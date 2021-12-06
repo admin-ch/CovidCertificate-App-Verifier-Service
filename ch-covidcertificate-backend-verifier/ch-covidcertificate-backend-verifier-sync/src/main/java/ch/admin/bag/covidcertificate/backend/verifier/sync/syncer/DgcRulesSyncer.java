@@ -40,7 +40,7 @@ public class DgcRulesSyncer {
             var end = Instant.now();
             logger.info(
                     "Successfully Uploaded rules {} in {} ms",
-                    uploadedRuleIds.getSuccesssfulRules(),
+                    uploadedRuleIds.getSuccessfulRules(),
                     end.toEpochMilli() - start.toEpochMilli());
             if (!uploadedRuleIds.getFailedRules().isEmpty()) {
                 logger.error("Failed to Upload rules {}", uploadedRuleIds.getFailedRules());

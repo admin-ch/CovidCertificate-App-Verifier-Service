@@ -13,11 +13,11 @@ package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.model;
 import java.util.List;
 
 public class RulesSyncResult {
-    private final List<String> successsfulRules;
+    private final List<String> successfulRules;
     private final List<String> failedRules;
 
     public RulesSyncResult(List<String> successfulRules, List<String> failedRules) {
-        this.successsfulRules = successfulRules;
+        this.successfulRules = successfulRules;
         this.failedRules = failedRules;
     }
 
@@ -31,7 +31,7 @@ public class RulesSyncResult {
     /**
      * @return the successsfullRules
      */
-    public List<String> getSuccesssfulRules() {
-        return successsfulRules;
+    public List<String> getSuccessfulRules() {
+        return successfulRules;
     }
 }
