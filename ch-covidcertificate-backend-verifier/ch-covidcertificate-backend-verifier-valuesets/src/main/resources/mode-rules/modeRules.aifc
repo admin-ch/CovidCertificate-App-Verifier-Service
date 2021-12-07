@@ -8,10 +8,10 @@ switch(payload.h.mode){
         }else{
             /* PCR and RAT tests are not valid in 2G, but antibody "tests" are since they count as recovery */
             if(payload.t.0){
-                if(payload.t.0.tt in ["LP6464-4", "LP217198-3"]){
-                   "INVALID"
-               }else{
+                if(payload.t.0.tt in ["94504-8"]){
                    "SUCCESS"
+               }else{
+                   "INVALID"
                }
             }else{
                 "SUCCESS"

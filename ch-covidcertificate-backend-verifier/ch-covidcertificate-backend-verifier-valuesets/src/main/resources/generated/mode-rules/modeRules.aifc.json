@@ -38,13 +38,12 @@
                           "var": "payload.t.0.tt"
                         },
                         [
-                          "LP6464-4",
-                          "LP217198-3"
+                          "94504-8"
                         ]
                       ]
                     },
-                    "INVALID",
-                    "SUCCESS"
+                    "SUCCESS",
+                    "INVALID"
                   ]
                 },
                 "SUCCESS"
