@@ -30,7 +30,6 @@ import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.DscSyncWs;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.DscUploadWs;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.ResurrectionWs;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.RulesSyncWs;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
