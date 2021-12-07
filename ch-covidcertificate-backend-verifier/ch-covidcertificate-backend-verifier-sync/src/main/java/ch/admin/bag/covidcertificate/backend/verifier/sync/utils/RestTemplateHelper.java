@@ -63,67 +63,6 @@ public class RestTemplateHelper {
         return buildRestTemplate(authClientCert, authClientCertPassword);
     }
 
-    public static RestTemplate signingServiceRestTemplate(
-            String trustStore,
-            String keyStore,
-            String trustStorePassword,
-            String keyStorePassword,
-            String keyPassword,
-            String keyAlias)
-            throws IOException, UnrecoverableKeyException, CertificateException,
-                    NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        KeyStore truststore = loadKeyStore(trustStore, trustStorePassword.toCharArray());
-        KeyStore store = loadKeyStore(keyStore, keyStorePassword.toCharArray());
-        SSLContext sslContext =
-                SSLContexts.custom()
-                        .loadTrustMaterial(truststore, null)
-                        .loadKeyMaterial(
-                                store, keyPassword.toCharArray(), (map, socket) -> keyAlias)
-                        .build();
-
-        HttpClientBuilder builder = HttpClients.custom();
-        builder.useSystemProperties().setUserAgent(COVIDCERT_VERIFIER);
-
-        var sslsf = new SSLConnectionSocketFactory(sslContext);
-        Registry<ConnectionSocketFactory> socketFactoryRegistry =
-                RegistryBuilder.<ConnectionSocketFactory>create()
-                        .register("https", sslsf)
-                        .register("http", PlainConnectionSocketFactory.INSTANCE)
-                        .build();
-        var manager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
-
-        manager.setDefaultMaxPerRoute(20);
-        manager.setMaxTotal(30);
-
-        builder.setConnectionManager(manager)
-                .disableCookieManagement()
-                .setDefaultRequestConfig(
-                        RequestConfig.custom()
-                                .setConnectTimeout(CONNECT_TIMEOUT)
-                                .setSocketTimeout(SOCKET_TIMEOUT)
-                                .build());
-        var client = builder.build();
-
-        HttpComponentsClientHttpRequestFactory requestFactory =
-                new HttpComponentsClientHttpRequestFactory();
-
-        requestFactory.setHttpClient(client);
-
-        return new RestTemplate(requestFactory);
-    }
-
-    private static KeyStore loadKeyStore(String base64Keystore, final char[] storePassword)
-            throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
-        KeyStore keyStoreInstance = KeyStore.getInstance(KeyStore.getDefaultType());
-
-        try (ByteArrayInputStream inStream = new ByteArrayInputStream(base64Keystore.getBytes())) {
-            var decodedKeystoreInputStream = Base64.getMimeDecoder().wrap(inStream);
-            keyStoreInstance.load(decodedKeystoreInputStream, storePassword);
-        }
-
-        return keyStoreInstance;
-    }
-
     private static RestTemplate buildRestTemplate(
             String authClientCert, String authClientCertPassword) {
         RestTemplate rt = null;
