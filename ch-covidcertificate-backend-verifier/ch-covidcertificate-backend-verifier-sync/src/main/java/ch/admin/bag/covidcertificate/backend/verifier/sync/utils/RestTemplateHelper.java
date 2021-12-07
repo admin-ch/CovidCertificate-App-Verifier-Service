@@ -14,10 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -27,7 +24,6 @@ import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import javax.net.ssl.SSLContext;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -63,67 +59,6 @@ public class RestTemplateHelper {
         return buildRestTemplate(authClientCert, authClientCertPassword);
     }
 
-    public static RestTemplate signingServiceRestTemplate(
-            String trustStore,
-            String keyStore,
-            String trustStorePassword,
-            String keyStorePassword,
-            String keyPassword,
-            String keyAlias)
-            throws IOException, UnrecoverableKeyException, CertificateException,
-                    NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        KeyStore truststore = loadKeyStore(trustStore, trustStorePassword.toCharArray());
-        KeyStore store = loadKeyStore(keyStore, keyStorePassword.toCharArray());
-        SSLContext sslContext =
-                SSLContexts.custom()
-                        .loadTrustMaterial(truststore, null)
-                        .loadKeyMaterial(
-                                store, keyPassword.toCharArray(), (map, socket) -> keyAlias)
-                        .build();
-
-        HttpClientBuilder builder = HttpClients.custom();
-        builder.useSystemProperties().setUserAgent(COVIDCERT_VERIFIER);
-
-        var sslsf = new SSLConnectionSocketFactory(sslContext);
-        Registry<ConnectionSocketFactory> socketFactoryRegistry =
-                RegistryBuilder.<ConnectionSocketFactory>create()
-                        .register("https", sslsf)
-                        .register("http", PlainConnectionSocketFactory.INSTANCE)
-                        .build();
-        var manager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
-
-        manager.setDefaultMaxPerRoute(20);
-        manager.setMaxTotal(30);
-
-        builder.setConnectionManager(manager)
-                .disableCookieManagement()
-                .setDefaultRequestConfig(
-                        RequestConfig.custom()
-                                .setConnectTimeout(CONNECT_TIMEOUT)
-                                .setSocketTimeout(SOCKET_TIMEOUT)
-                                .build());
-        var client = builder.build();
-
-        HttpComponentsClientHttpRequestFactory requestFactory =
-                new HttpComponentsClientHttpRequestFactory();
-
-        requestFactory.setHttpClient(client);
-
-        return new RestTemplate(requestFactory);
-    }
-
-    private static KeyStore loadKeyStore(String base64Keystore, final char[] storePassword)
-            throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException {
-        KeyStore keyStoreInstance = KeyStore.getInstance(KeyStore.getDefaultType());
-
-        try (ByteArrayInputStream inStream = new ByteArrayInputStream(base64Keystore.getBytes())) {
-            var decodedKeystoreInputStream = Base64.getMimeDecoder().wrap(inStream);
-            keyStoreInstance.load(decodedKeystoreInputStream, storePassword);
-        }
-
-        return keyStoreInstance;
-    }
-
     private static RestTemplate buildRestTemplate(
             String authClientCert, String authClientCertPassword) {
         RestTemplate rt = null;
@@ -157,15 +92,14 @@ public class RestTemplateHelper {
         builder.useSystemProperties().setUserAgent(COVIDCERT_VERIFIER);
 
         if (clientCert != null && clientCertPassword != null) {
-            Path clientCertFile = getFile(clientCert);
+            InputStream clientCertStream = getInputStream(clientCert);
             var cf = KeyStore.getInstance("pkcs12");
-            cf.load(new FileInputStream(clientCertFile.toFile()), clientCertPassword.toCharArray());
+            cf.load(clientCertStream, clientCertPassword.toCharArray());
             final var alias = cf.aliases().nextElement();
             var sslContext =
                     SSLContexts.custom()
                             .loadKeyMaterial(
-                                    clientCertFile.toFile(),
-                                    clientCertPassword.toCharArray(),
+                                    cf,
                                     clientCertPassword.toCharArray(),
                                     (map, socket) -> alias)
                             .build();
@@ -192,32 +126,18 @@ public class RestTemplateHelper {
         return builder.build();
     }
 
-    public static Path getFile(String path) throws IOException {
-        Path file = null;
+    public static InputStream getInputStream(String path) throws IOException {
+        InputStream inputStream = null;
         final var base64Protocol = "base64:/";
         if (path.startsWith(base64Protocol)) {
             byte[] decodedBytes = Base64.getDecoder().decode(path.replace(base64Protocol, ""));
-            file = Files.createTempFile(null, null);
-            Files.write(file.toAbsolutePath(), decodedBytes);
+            inputStream = new ByteArrayInputStream(decodedBytes);
         } else if (path.startsWith("classpath:/")) {
-            var in = createInputStream(path);
-            file = Files.createTempFile(null, null);
-            Files.copy(in, file, StandardCopyOption.REPLACE_EXISTING);
-            in.close();
+            inputStream = classPathInputStream(path.substring(11));
         } else {
-            file = Paths.get(path);
+            inputStream = new FileInputStream(Paths.get(path).toFile());
         }
-        return file;
-    }
-
-    public static InputStream createInputStream(String path) throws IOException {
-        InputStream in = null;
-        if (path.startsWith("classpath:/")) {
-            in = classPathInputStream(path.substring(11));
-        } else {
-            in = new FileInputStream(path);
-        }
-        return in;
+        return inputStream;
     }
 
     private static InputStream classPathInputStream(String src) throws IOException {

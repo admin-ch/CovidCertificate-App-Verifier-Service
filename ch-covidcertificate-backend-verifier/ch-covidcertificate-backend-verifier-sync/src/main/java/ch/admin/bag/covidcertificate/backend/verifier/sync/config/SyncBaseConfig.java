@@ -30,14 +30,8 @@ import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.DscSyncWs;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.DscUploadWs;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.ResurrectionWs;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.RulesSyncWs;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.time.Duration;
 import javax.sql.DataSource;
 import net.javacrumbs.shedlock.core.LockProvider;
@@ -65,23 +59,11 @@ public abstract class SyncBaseConfig {
     @Value("${sign.baseurl}")
     String signBaseUrl;
 
-    @Value("${sign.cc-signing-service.key-store}")
-    private String keyStore;
+    @Value("${sign.cc-signing-service.clientcert}")
+    private String signingServiceClientCert;
 
-    @Value("${sign.cc-signing-service.key-store-password}")
-    private String keyStorePassword;
-
-    @Value("${sign.cc-signing-service.key-alias}")
-    private String keyAlias;
-
-    @Value("${sign.cc-signing-service.key-password}")
-    private String keyPassword;
-
-    @Value("${sign.cc-signing-service.trust-store}")
-    private String trustStore;
-
-    @Value("${sign.cc-signing-service.trust-store-password}")
-    private String trustStorePassword;
+    @Value("${sign.cc-signing-service.clientcert.password}")
+    private String signingServiceClientCertPassword;
 
     @Value("${ws.keys.batch-size:1000}")
     protected Integer dscBatchSize;
@@ -110,11 +92,9 @@ public abstract class SyncBaseConfig {
     }
 
     @Bean
-    public RestTemplate signRestTemplate()
-            throws UnrecoverableKeyException, KeyManagementException, CertificateException,
-                    NoSuchAlgorithmException, KeyStoreException, IOException {
-        return RestTemplateHelper.signingServiceRestTemplate(
-                trustStore, keyStore, trustStorePassword, keyStorePassword, keyPassword, keyAlias);
+    public RestTemplate signRestTemplate() {
+        return RestTemplateHelper.getRestTemplateWithClientCerts(
+                signingServiceClientCert, signingServiceClientCertPassword);
     }
 
     @Bean
