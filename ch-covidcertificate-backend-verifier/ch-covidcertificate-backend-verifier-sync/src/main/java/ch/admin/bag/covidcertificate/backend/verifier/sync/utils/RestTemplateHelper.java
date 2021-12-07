@@ -96,15 +96,14 @@ public class RestTemplateHelper {
         builder.useSystemProperties().setUserAgent(COVIDCERT_VERIFIER);
 
         if (clientCert != null && clientCertPassword != null) {
-            Path clientCertFile = getFile(clientCert);
+            InputStream clientCertStream = getInputStream(clientCert);
             var cf = KeyStore.getInstance("pkcs12");
-            cf.load(new FileInputStream(clientCertFile.toFile()), clientCertPassword.toCharArray());
+            cf.load(clientCertStream, clientCertPassword.toCharArray());
             final var alias = cf.aliases().nextElement();
             var sslContext =
                     SSLContexts.custom()
                             .loadKeyMaterial(
-                                    clientCertFile.toFile(),
-                                    clientCertPassword.toCharArray(),
+                                    cf,
                                     clientCertPassword.toCharArray(),
                                     (map, socket) -> alias)
                             .build();
@@ -131,32 +130,18 @@ public class RestTemplateHelper {
         return builder.build();
     }
 
-    public static Path getFile(String path) throws IOException {
-        Path file = null;
+    public static InputStream getInputStream(String path) throws IOException {
+        InputStream inputStream = null;
         final var base64Protocol = "base64:/";
         if (path.startsWith(base64Protocol)) {
             byte[] decodedBytes = Base64.getDecoder().decode(path.replace(base64Protocol, ""));
-            file = Files.createTempFile(null, null);
-            Files.write(file.toAbsolutePath(), decodedBytes);
+            inputStream = new ByteArrayInputStream(decodedBytes);
         } else if (path.startsWith("classpath:/")) {
-            var in = createInputStream(path);
-            file = Files.createTempFile(null, null);
-            Files.copy(in, file, StandardCopyOption.REPLACE_EXISTING);
-            in.close();
+            inputStream = classPathInputStream(path.substring(11));
         } else {
-            file = Paths.get(path);
+            inputStream = new FileInputStream(Paths.get(path).toFile());
         }
-        return file;
-    }
-
-    public static InputStream createInputStream(String path) throws IOException {
-        InputStream in = null;
-        if (path.startsWith("classpath:/")) {
-            in = classPathInputStream(path.substring(11));
-        } else {
-            in = new FileInputStream(path);
-        }
-        return in;
+        return inputStream;
     }
 
     private static InputStream classPathInputStream(String src) throws IOException {
