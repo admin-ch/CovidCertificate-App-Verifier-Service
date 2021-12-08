@@ -19,7 +19,7 @@ if (payload.v.0) {
       "Covishield",
       "Covaxin",
       /* AstraZeneca-licensed products */
-      "COVI-R",
+      "R-COVI",
       "Covid-19-recombinant",
       /* Special Tourist vaccines */
       "BBIBP-CorV_T",

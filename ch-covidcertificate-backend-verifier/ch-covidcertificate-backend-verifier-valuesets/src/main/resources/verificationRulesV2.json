@@ -902,7 +902,7 @@
                 "BBIBP-CorV",
                 "Covishield",
                 "Covaxin",
-                "COVI-R",
+                "R-COVI",
                 "Covid-19-recombinant",
                 "BBIBP-CorV_T",
                 "CoronaVac_T",
@@ -999,7 +999,7 @@
                     "BBIBP-CorV_T",
                     "CoronaVac_T",
                     "Covaxin_T",
-                    "COVI-R",
+                    "R-COVI",
                     "Covid-19-recombinant"
                   ]
                 ]
@@ -1158,7 +1158,7 @@
                     "BBIBP-CorV_T",
                     "CoronaVac_T",
                     "Covaxin_T",
-                    "COVI-R",
+                    "R-COVI",
                     "Covid-19-recombinant"
                   ]
                 ]
@@ -1788,7 +1788,7 @@
                                     "BBIBP-CorV",
                                     "Covishield",
                                     "Covaxin",
-                                    "COVI-R",
+                                    "R-COVI",
                                     "Covid-19-recombinant"
                                   ]
                                 ]
