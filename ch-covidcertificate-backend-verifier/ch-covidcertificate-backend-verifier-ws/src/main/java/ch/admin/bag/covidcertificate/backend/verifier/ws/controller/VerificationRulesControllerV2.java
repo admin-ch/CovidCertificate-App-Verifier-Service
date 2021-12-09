@@ -59,7 +59,7 @@ public class VerificationRulesControllerV2 {
         while(modesIter.hasNext()){
             var mode = modesIter.next();
             for (String disabledMode : disabledVerificationModes) {
-                if (mode.get("id").asText().equals(disabledMode)) {
+                if (disabledMode.equals(mode.get("id").asText())) {
                     modesIter.remove();
                     break;
                 }
