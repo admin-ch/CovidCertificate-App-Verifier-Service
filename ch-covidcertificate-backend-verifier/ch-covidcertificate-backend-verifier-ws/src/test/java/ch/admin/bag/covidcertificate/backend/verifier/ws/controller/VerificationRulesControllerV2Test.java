@@ -61,19 +61,24 @@ public abstract class VerificationRulesControllerV2Test extends BaseControllerTe
                                 new ClassPathResource("verificationRulesV2.json").getInputStream());
 
         if(isNoModeRemovalTest()){
+            //Make sure Spring didn't somehow smuggle in any values
             assert(disabledModes.length == 0);
         } else {
+            //Check that we are actually trying to remove a mode
+            assert(disabledModes.length >= 1);
+
+            //Check if the modes we're trying to remove actually exist. Else we wouldn't be testing anything
             for (String disabledMode : disabledModes) {
-                boolean hasMode = false;
+                boolean modeExists = false;
                 var iter = expected.get("modeRules").get("activeModes").iterator();
                 while (iter.hasNext()) {
                     JsonNode mode = iter.next();
                     if (disabledMode.equals(mode.get("id").asText())) {
-                        hasMode = true;
+                        modeExists = true;
                         iter.remove();
                     }
                 }
-                if (!hasMode) {
+                if (!modeExists) {
                     throw new IllegalArgumentException(
                             "JSON doesn't seem to have the mode we're testing for. Edit test case or JSON");
                 }
