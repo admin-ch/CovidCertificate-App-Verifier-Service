@@ -52,18 +52,21 @@ public class VerificationRulesControllerV2 {
         ObjectMapper mapper = new ObjectMapper();
         InputStream verificationRulesFile =
                 new ClassPathResource("verificationRulesV2.json").getInputStream();
-        this.verificationRules = mapper.readValue(verificationRulesFile, Map.class);
-        JsonNode saas = mapper.readTree(verificationRulesFile);
+        JsonNode rules = mapper.readTree(verificationRulesFile);
 
-        Iterator<JsonNode> modesIter = saas.get("modeRules").get("activeModes").iterator();
+        Iterator<JsonNode> modesIter = rules.get("modeRules").get("activeModes").iterator();
 
-        for (var n = modesIter.next(); modesIter.hasNext(); n = modesIter.next()) {
+        while(modesIter.hasNext()){
+            var mode = modesIter.next();
             for (String disabledMode : disabledVerificationModes) {
-                if (n.get("id").asText().equals(disabledMode)) {
+                if (mode.get("id").asText().equals(disabledMode)) {
                     modesIter.remove();
+                    break;
                 }
             }
         }
+
+        this.verificationRules = mapper.treeToValue(rules, Map.class);
 
         this.verificationRulesEtag =
                 EtagUtil.getSha1HashForFiles(false, "classpath:verificationRulesV2.json");
