@@ -15,13 +15,17 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.model.DbRevokedCert;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import ch.ubique.openapi.docannotations.Documentation;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.bouncycastle.util.Arrays;
@@ -33,6 +37,7 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jndi.JndiAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,16 +54,25 @@ public class VerificationRulesControllerV2 {
     private final String verificationRulesEtag;
     private final ValueSetDataService valueSetDataService;
 
-
-    public VerificationRulesControllerV2(ValueSetDataService valueSetDataService, String[] disabledVerificationModes)
+    public VerificationRulesControllerV2(
+            ValueSetDataService valueSetDataService, String[] disabledVerificationModes)
             throws IOException, NoSuchAlgorithmException {
         ObjectMapper mapper = new ObjectMapper();
         InputStream verificationRulesFile =
                 new ClassPathResource("verificationRulesV2.json").getInputStream();
         this.verificationRules = mapper.readValue(verificationRulesFile, Map.class);
-        for(String disabledMode: disabledVerificationModes){
-            ((Map<String, List<Map<String,String>>>)verificationRules.get("modeRules")).get("activeModes").removeIf(mode -> mode.get("id").equals(disabledMode));
+        JsonNode saas = mapper.readTree(verificationRulesFile);
+
+        Iterator<JsonNode> modesIter = saas.get("modeRules").get("activeModes").iterator();
+
+        for (var n = modesIter.next(); modesIter.hasNext(); n = modesIter.next()) {
+            for (String disabledMode : disabledVerificationModes) {
+                if (n.get("id").asText().equals(disabledMode)) {
+                    modesIter.remove();
+                }
+            }
         }
+
         this.verificationRulesEtag =
                 EtagUtil.getSha1HashForFiles(false, "classpath:verificationRulesV2.json");
         this.valueSetDataService = valueSetDataService;
@@ -110,8 +124,8 @@ public class VerificationRulesControllerV2 {
 
     private HttpHeaders getVerificationRulesHeaders(Instant now) {
         HttpHeaders headers =
-            CacheUtil.createExpiresHeader(
-                CacheUtil.roundToNextVerificationRulesBucketStart(now));
+                CacheUtil.createExpiresHeader(
+                        CacheUtil.roundToNextVerificationRulesBucketStart(now));
         return headers;
     }
 }
