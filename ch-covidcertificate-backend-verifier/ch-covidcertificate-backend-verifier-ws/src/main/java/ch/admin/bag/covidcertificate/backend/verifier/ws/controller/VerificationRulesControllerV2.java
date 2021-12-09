@@ -24,8 +24,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.bouncycastle.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
@@ -47,12 +49,16 @@ public class VerificationRulesControllerV2 {
     private final String verificationRulesEtag;
     private final ValueSetDataService valueSetDataService;
 
-    public VerificationRulesControllerV2(ValueSetDataService valueSetDataService)
+
+    public VerificationRulesControllerV2(ValueSetDataService valueSetDataService, String[] disabledVerificationModes)
             throws IOException, NoSuchAlgorithmException {
         ObjectMapper mapper = new ObjectMapper();
         InputStream verificationRulesFile =
                 new ClassPathResource("verificationRulesV2.json").getInputStream();
         this.verificationRules = mapper.readValue(verificationRulesFile, Map.class);
+        for(String disabledMode: disabledVerificationModes){
+            ((Map<String, List<Map<String,String>>>)verificationRules.get("modeRules")).get("activeModes").removeIf(mode -> mode.get("id").equals(disabledMode));
+        }
         this.verificationRulesEtag =
                 EtagUtil.getSha1HashForFiles(false, "classpath:verificationRulesV2.json");
         this.valueSetDataService = valueSetDataService;

@@ -81,6 +81,9 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     @Value("${ws.keys.batch-size:1000}")
     protected Integer dscBatchSize;
 
+    @Value("${testing.disabledModes:}")
+    private String[] disabledVerificationModes;
+
     public abstract DataSource dataSource();
 
     public abstract Flyway flyway();
@@ -211,7 +214,7 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     @Bean
     public VerificationRulesControllerV2 verificationRulesControllerV2(
             ValueSetDataService valueSetDataService) throws IOException, NoSuchAlgorithmException {
-        return new VerificationRulesControllerV2(valueSetDataService);
+        return new VerificationRulesControllerV2(valueSetDataService, disabledVerificationModes);
     }
 
     @Bean
