@@ -27,6 +27,12 @@ public class WsProdConfig extends WsBaseConfig {
     @Value("${datasource.username}")
     String dataSourceUser;
 
+    @Override
+    protected String[] getDisabledVerificationModes(){
+        //Modes must never be dynamically disabled in production
+        return new String[]{};
+    }
+
     @Value("${datasource.password}")
     String dataSourcePassword;
 
