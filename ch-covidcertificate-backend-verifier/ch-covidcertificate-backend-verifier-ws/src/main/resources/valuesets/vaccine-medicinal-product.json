@@ -108,7 +108,7 @@
       "version": "1.0"
     },
     "Covishield": {
-      "display": "other AstraZeneca vaccines: COVISHIELD / AZD1222 / ChAdOx1 nCoV-19/ChAdOx1-S/…",
+      "display": "Covishield (ChAdOx1_nCoV-19)",
       "lang": "en",
       "active": true,
       "system": "http://ec.europa.eu/temp/vaccineproductname",
