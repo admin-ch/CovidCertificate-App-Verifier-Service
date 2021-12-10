@@ -6,8 +6,8 @@
   "Type": "Acceptance",
   "ValidTo": "2031-01-01T00:00:00Z",
   "Identifier": "TR-CH-0009",
-  "Version": "1.0.6",
-  "ValidFrom": "2021-12-06T00:00:00Z",
+  "Version": "1.0.7",
+  "ValidFrom": "2021-12-17T00:00:00Z",
   "CertificateType": "Test",
   "Logic": {
     "if": [
