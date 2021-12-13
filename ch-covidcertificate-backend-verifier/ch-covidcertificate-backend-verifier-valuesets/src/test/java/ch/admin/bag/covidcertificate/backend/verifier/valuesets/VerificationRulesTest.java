@@ -69,8 +69,12 @@ public class VerificationRulesTest {
         }
 
         private static final List<CheckMode> ACTIVE_MODES = Arrays.asList(new CheckMode("THREE_G", "3G"), new CheckMode("TWO_G", "2G"));
+        private static final List<CheckMode> VERIFIER_ACTIVE_MODES =
+                Arrays.asList(
+                        new CheckMode("THREE_G", "3G"),
+                        new CheckMode("TWO_G", "2G"),
+                        new CheckMode("TWO_G_PLUS", "2G+"));
     }
-
 
     private static final Logger logger = LoggerFactory.getLogger(VerificationRulesTest.class);
     private ObjectMapper mapper;
@@ -119,11 +123,12 @@ public class VerificationRulesTest {
     private JsonNode generateV2() throws Exception {
         JsonNode v2 =
                 mapper.readTree(new ClassPathResource(MASTER_TEMPLATE_CLASSPATH).getInputStream());
-        String[] sourceFiles = (new ClassPathResource(VERIFICATION_RULES_SOURCE_DIR).getFile().list());
+        String[] sourceFiles =
+                (new ClassPathResource(VERIFICATION_RULES_SOURCE_DIR).getFile().list());
         Arrays.sort(sourceFiles);
         List<ObjectNode> rules = new ArrayList<>();
 
-        for (String sourceFile: sourceFiles) {
+        for (String sourceFile : sourceFiles) {
             String filename = sourceFile + ".json";
             ObjectNode rule =
                     (ObjectNode)
@@ -148,11 +153,13 @@ public class VerificationRulesTest {
             }
             String[] nameComponents = sourceFile.split("([_.])");
             String ruleId = nameComponents[0];
-            String sourceFileContent = new String(new ClassPathResource(
-                    Paths.get(VERIFICATION_RULES_SOURCE_DIR, sourceFile)
-                            .toString())
-                    .getInputStream()
-                    .readAllBytes());
+            String sourceFileContent =
+                    new String(
+                            new ClassPathResource(
+                                            Paths.get(VERIFICATION_RULES_SOURCE_DIR, sourceFile)
+                                                    .toString())
+                                    .getInputStream()
+                                    .readAllBytes());
             Matcher matcher = commentPattern.matcher(sourceFileContent);
             if (matcher.find()) {
                 String description = matcher.group().replace("\n", "");
@@ -186,13 +193,14 @@ public class VerificationRulesTest {
 
         ObjectNode modeRule = (ObjectNode) v2.get("modeRules");
         ArrayNode activeModesArray = modeRule.putArray("activeModes");
+        ArrayNode verifierActiveModesArray = modeRule.putArray("verifierActiveModes");
         CheckMode.ACTIVE_MODES.forEach(activeModesArray::addPOJO);
-        modeRule.set("logic", mapper.readTree(new ClassPathResource(
-                Paths.get(MODE_RULE_PATH)
-                        .toString())
-                .getInputStream()));
-
-
+        CheckMode.VERIFIER_ACTIVE_MODES.forEach(verifierActiveModesArray::addPOJO);
+        modeRule.set(
+                "logic",
+                mapper.readTree(
+                        new ClassPathResource(Paths.get(MODE_RULE_PATH).toString())
+                                .getInputStream()));
 
         String[] displayRuleFiles =
                 (new ClassPathResource(DISPLAY_RULES_COMPILE_DIR).getFile().list());
@@ -209,7 +217,6 @@ public class VerificationRulesTest {
                                     .getInputStream()));
             displayRules.add(rule);
         }
-
 
         ObjectNode chOnlyDisplayRule = ((ArrayNode) v2.get("displayRules")).addObject();
         chOnlyDisplayRule.put("id", "is-only-valid-in-ch");
