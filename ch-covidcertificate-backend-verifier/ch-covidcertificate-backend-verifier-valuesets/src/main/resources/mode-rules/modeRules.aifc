@@ -18,6 +18,32 @@ switch(payload.h.mode){
             }
         }
     }
+    "TWO_G_PLUS" => {
+       if (payload.h.isLight){
+                "IS_LIGHT"
+       }else{
+         /* Vaccine and Recovery are 2G => SUCCESS */
+         if(payload.v.0 || payload.r.0){
+              "SUCCESS"
+         } else {
+              if(payload.t.0){
+                  /* RAT and PCR tests are the + of 2G+ => SUCCESS_PLUS */
+                  if(payload.t.0.tt in ["LP6464-4", "LP217198-3"]){
+                      "SUCCESS_PLUS"
+                  }else{
+                      /* Antibody "test" is recovery, so 2G => SUCCESS */
+                      if(payload.t.0.tt in ["94504-8"]){
+                          "SUCCESS"
+                      }else{
+                          "INVALID"
+                      }
+                  }
+              }else{
+                  "INVALID"
+              }
+         }
+       }
+    }
     _ => {
         "UNKNOWN_MODE"
     }
