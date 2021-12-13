@@ -92,7 +92,7 @@
                         }
                       ]
                     },
-                    "SUCCESS",
+                    "SUCCESS_2G",
                     {
                       "if": [
                         {
@@ -124,7 +124,7 @@
                                     ]
                                   ]
                                 },
-                                "SUCCESS",
+                                "SUCCESS_2G",
                                 "INVALID"
                               ]
                             }
