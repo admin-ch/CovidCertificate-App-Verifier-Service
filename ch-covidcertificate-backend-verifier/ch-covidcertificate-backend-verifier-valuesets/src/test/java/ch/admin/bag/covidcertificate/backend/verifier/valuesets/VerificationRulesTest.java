@@ -68,8 +68,7 @@ public class VerificationRulesTest {
             return displayName;
         }
 
-        private static final List<CheckMode> ACTIVE_MODES =
-                Arrays.asList(new CheckMode("THREE_G", "3G"), new CheckMode("TWO_G", "2G"));
+        private static final List<CheckMode> ACTIVE_MODES = Arrays.asList(new CheckMode("THREE_G", "3G"), new CheckMode("TWO_G", "2G"));
         private static final List<CheckMode> VERIFIER_ACTIVE_MODES =
                 Arrays.asList(
                         new CheckMode("THREE_G", "3G"),

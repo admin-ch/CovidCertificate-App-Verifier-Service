@@ -55,21 +55,33 @@
         {
           "if": [
             {
-              "===": [
+              "and": [
                 {
-                  "var": "payload.h.mode"
+                  "===": [
+                    {
+                      "var": "payload.h.mode"
+                    },
+                    "TWO_G_PLUS"
+                  ]
                 },
-                "TWO_G_PLUS"
+                {
+                  "var": "payload.h.isLight"
+                }
               ]
             },
+            "IS_LIGHT",
             {
               "if": [
                 {
-                  "var": "payload.h.isLight"
-                },
-                "IS_LIGHT",
-                {
-                  "if": [
+                  "and": [
+                    {
+                      "===": [
+                        {
+                          "var": "payload.h.mode"
+                        },
+                        "TWO_G_PLUS"
+                      ]
+                    },
                     {
                       "!": [
                         {
@@ -91,13 +103,41 @@
                           ]
                         }
                       ]
+                    }
+                  ]
+                },
+                "SUCCESS_2G",
+                {
+                  "if": [
+                    {
+                      "and": [
+                        {
+                          "===": [
+                            {
+                              "var": "payload.h.mode"
+                            },
+                            "TWO_G_PLUS"
+                          ]
+                        },
+                        {
+                          "var": "payload.t.0"
+                        }
+                      ]
                     },
-                    "SUCCESS_2G",
                     {
                       "if": [
                         {
-                          "var": "payload.t.0"
+                          "in": [
+                            {
+                              "var": "payload.t.0.tt"
+                            },
+                            [
+                              "LP6464-4",
+                              "LP217198-3"
+                            ]
+                          ]
                         },
+                        "SUCCESS_PLUS",
                         {
                           "if": [
                             {
@@ -106,38 +146,34 @@
                                   "var": "payload.t.0.tt"
                                 },
                                 [
-                                  "LP6464-4",
-                                  "LP217198-3"
+                                  "94504-8"
                                 ]
                               ]
                             },
-                            "SUCCESS_PLUS",
+                            "SUCCESS_2G",
+                            "INVALID"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "if": [
+                        {
+                          "===": [
                             {
-                              "if": [
-                                {
-                                  "in": [
-                                    {
-                                      "var": "payload.t.0.tt"
-                                    },
-                                    [
-                                      "94504-8"
-                                    ]
-                                  ]
-                                },
-                                "SUCCESS_2G",
-                                "INVALID"
-                              ]
-                            }
+                              "var": "payload.h.mode"
+                            },
+                            "TWO_G_PLUS"
                           ]
                         },
-                        "INVALID"
+                        "INVALID",
+                        "UNKNOWN_MODE"
                       ]
                     }
                   ]
                 }
               ]
-            },
-            "UNKNOWN_MODE"
+            }
           ]
         }
       ]
