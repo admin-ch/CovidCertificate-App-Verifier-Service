@@ -73,7 +73,8 @@ public class VerificationRulesTest {
                 Arrays.asList(
                         new CheckMode("THREE_G", "3G"),
                         new CheckMode("TWO_G", "2G"),
-                        new CheckMode("TWO_G_PLUS", "2G+"));
+                        new CheckMode("TWO_G_PLUS", "2G+"),
+                        new CheckMode("TEST_ONLY", "Testzertifikat"));
     }
 
     private static final Logger logger = LoggerFactory.getLogger(VerificationRulesTest.class);

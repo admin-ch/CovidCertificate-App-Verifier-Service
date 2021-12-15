@@ -1414,6 +1414,10 @@
       {
         "id": "TWO_G_PLUS",
         "displayName": "2G+"
+      },
+      {
+        "id": "TEST_ONLY",
+        "displayName": "Testzertifikat"
       }
     ],
     "logic": {
@@ -1638,7 +1642,51 @@
                                   ]
                                 },
                                 "INVALID",
-                                "UNKNOWN_MODE"
+                                {
+                                  "if": [
+                                    {
+                                      "and": [
+                                        {
+                                          "===": [
+                                            {
+                                              "var": "payload.h.mode"
+                                            },
+                                            "TEST_ONLY"
+                                          ]
+                                        },
+                                        {
+                                          "var": "payload.t.0"
+                                        },
+                                        {
+                                          "in": [
+                                            {
+                                              "var": "payload.t.0.tt"
+                                            },
+                                            [
+                                              "LP6464-4",
+                                              "LP217198-3"
+                                            ]
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "SUCCESS",
+                                    {
+                                      "if": [
+                                        {
+                                          "===": [
+                                            {
+                                              "var": "payload.h.mode"
+                                            },
+                                            "TEST_ONLY"
+                                          ]
+                                        },
+                                        "INVALID",
+                                        "UNKNOWN_MODE"
+                                      ]
+                                    }
+                                  ]
+                                }
                               ]
                             }
                           ]
