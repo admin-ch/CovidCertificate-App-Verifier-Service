@@ -22,9 +22,23 @@ switch(payload.h.mode){
         /*IS LIGHT*/
         "IS_LIGHT"
     }
-    "TWO_G_PLUS": if (payload.v.0 || payload.r.0) => {
-        /*First part of 2g plus*/
-        "SUCCESS_2G"
+    "TWO_G_PLUS": if (payload.v.0) => {
+        if((now() + 0#days) is not after (payload.v.0.dt as DateTime + 90#days)){
+            /* within 90 days, a test is not required */
+            "SUCCESS"
+        }else{
+            /*First part of 2g plus*/
+            "SUCCESS_2G"
+        }
+    }
+    "TWO_G_PLUS": if (payload.r.0) => {
+        if((now() + 0#days) is not after (payload.r.0.fr as DateTime + 90#days)){
+           /* within 90 days, a test is not required */
+           "SUCCESS"
+        }else{
+           /*First part of 2g plus*/
+           "SUCCESS_2G"
+        }
     }
     "TWO_G_PLUS": if (payload.t.0) => {
         switch(payload.t.0.tt){
