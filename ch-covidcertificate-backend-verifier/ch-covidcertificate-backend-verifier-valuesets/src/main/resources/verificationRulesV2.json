@@ -1501,30 +1501,38 @@
                           ]
                         },
                         {
-                          "!": [
-                            {
-                              "and": [
-                                {
-                                  "!": [
-                                    {
-                                      "var": "payload.v.0"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "!": [
-                                    {
-                                      "var": "payload.r.0"
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
+                          "var": "payload.v.0"
                         }
                       ]
                     },
-                    "SUCCESS_2G",
+                    {
+                      "if": [
+                        {
+                          "not-after": [
+                            {
+                              "plusTime": [
+                                {
+                                  "var": "external.validationClock"
+                                },
+                                0,
+                                "day"
+                              ]
+                            },
+                            {
+                              "plusTime": [
+                                {
+                                  "var": "payload.v.0.dt"
+                                },
+                                90,
+                                "day"
+                              ]
+                            }
+                          ]
+                        },
+                        "SUCCESS",
+                        "SUCCESS_2G"
+                      ]
+                    },
                     {
                       "if": [
                         {
@@ -1538,24 +1546,55 @@
                               ]
                             },
                             {
-                              "var": "payload.t.0"
+                              "var": "payload.r.0"
                             }
                           ]
                         },
                         {
                           "if": [
                             {
-                              "in": [
+                              "not-after": [
                                 {
-                                  "var": "payload.t.0.tt"
+                                  "plusTime": [
+                                    {
+                                      "var": "external.validationClock"
+                                    },
+                                    0,
+                                    "day"
+                                  ]
                                 },
-                                [
-                                  "LP6464-4",
-                                  "LP217198-3"
-                                ]
+                                {
+                                  "plusTime": [
+                                    {
+                                      "var": "payload.r.0.fr"
+                                    },
+                                    90,
+                                    "day"
+                                  ]
+                                }
                               ]
                             },
-                            "SUCCESS_2G_PLUS",
+                            "SUCCESS",
+                            "SUCCESS_2G"
+                          ]
+                        },
+                        {
+                          "if": [
+                            {
+                              "and": [
+                                {
+                                  "===": [
+                                    {
+                                      "var": "payload.h.mode"
+                                    },
+                                    "TWO_G_PLUS"
+                                  ]
+                                },
+                                {
+                                  "var": "payload.t.0"
+                                }
+                              ]
+                            },
                             {
                               "if": [
                                 {
@@ -1564,28 +1603,44 @@
                                       "var": "payload.t.0.tt"
                                     },
                                     [
-                                      "94504-8"
+                                      "LP6464-4",
+                                      "LP217198-3"
                                     ]
                                   ]
                                 },
-                                "SUCCESS_2G",
-                                "INVALID"
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "if": [
-                            {
-                              "===": [
+                                "SUCCESS_2G_PLUS",
                                 {
-                                  "var": "payload.h.mode"
-                                },
-                                "TWO_G_PLUS"
+                                  "if": [
+                                    {
+                                      "in": [
+                                        {
+                                          "var": "payload.t.0.tt"
+                                        },
+                                        [
+                                          "94504-8"
+                                        ]
+                                      ]
+                                    },
+                                    "SUCCESS_2G",
+                                    "INVALID"
+                                  ]
+                                }
                               ]
                             },
-                            "INVALID",
-                            "UNKNOWN_MODE"
+                            {
+                              "if": [
+                                {
+                                  "===": [
+                                    {
+                                      "var": "payload.h.mode"
+                                    },
+                                    "TWO_G_PLUS"
+                                  ]
+                                },
+                                "INVALID",
+                                "UNKNOWN_MODE"
+                              ]
+                            }
                           ]
                         }
                       ]
