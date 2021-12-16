@@ -44,7 +44,6 @@ public class VerificationRulesControllerV2 {
     private static String VALUE_SETS_KEY = "valueSets";
 
     private final Map verificationRules;
-    private final String verificationRulesEtag;
     private final ValueSetDataService valueSetDataService;
 
     public VerificationRulesControllerV2(
@@ -68,7 +67,7 @@ public class VerificationRulesControllerV2 {
 
     private void removeModes(ArrayNode modes, String[] modesToRemove) {
         var modesIter = modes.iterator();
-        while(modesIter.hasNext()){
+        while (modesIter.hasNext()) {
             var mode = modesIter.next();
             for (String disabledMode : modesToRemove) {
                 if (disabledMode.equals(mode.get("id").asText())) {
@@ -77,12 +76,6 @@ public class VerificationRulesControllerV2 {
                 }
             }
         }
-
-        this.verificationRules = mapper.treeToValue(rules, Map.class);
-
-        this.verificationRulesEtag =
-                EtagUtil.getSha1HashForFiles(false, "classpath:verificationRulesV2.json");
-        this.valueSetDataService = valueSetDataService;
     }
 
     @Documentation(
@@ -118,12 +111,21 @@ public class VerificationRulesControllerV2 {
                 }
             }
         }
-        var rulesEtag = EtagUtil.getSha1HashForStrings(false, strings.toArray(new String[0]));
-        String etag = EtagUtil.toWeakEtag(verificationRulesEtag + rulesEtag);
+
+        verificationRules.put(VALUE_SETS_KEY, valueSets);
+
+        String etag = "";
+        try {
+            etag =
+                    EtagUtil.getSha1HashForStrings(
+                            true, mapper.writeValueAsString(verificationRules));
+        } catch (JsonProcessingException e) {
+            logger.error("Failed to calculate ETag for rules", e);
+        }
         if (request.checkNotModified(etag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
-        verificationRules.put(VALUE_SETS_KEY, valueSets);
+
         return ResponseEntity.ok()
                 .headers(getVerificationRulesHeaders(now))
                 .body(verificationRules);
