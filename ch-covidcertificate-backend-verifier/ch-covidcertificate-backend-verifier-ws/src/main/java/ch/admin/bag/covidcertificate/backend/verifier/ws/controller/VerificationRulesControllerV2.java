@@ -40,15 +40,15 @@ import org.springframework.web.context.request.WebRequest;
 @Controller
 @RequestMapping("trust/v2")
 public class VerificationRulesControllerV2 {
-    private static final Logger logger = LoggerFactory.getLogger(VerificationRulesController.class);
-    private static String VALUE_SETS_KEY = "valueSets";
+    private static final Logger logger = LoggerFactory.getLogger(VerificationRulesControllerV2.class);
+    private static final String VALUE_SETS_KEY = "valueSets";
 
     private final Map verificationRules;
     private final ValueSetDataService valueSetDataService;
 
     public VerificationRulesControllerV2(
             ValueSetDataService valueSetDataService, String[] disabledVerificationModes)
-            throws IOException, NoSuchAlgorithmException {
+            throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         InputStream verificationRulesFile =
                 new ClassPathResource("verificationRulesV2.json").getInputStream();
@@ -91,14 +91,12 @@ public class VerificationRulesControllerV2 {
         Instant now = Instant.now();
         var allIds = valueSetDataService.findAllValueSetIds();
         HashMap<String, ArrayList<String>> valueSets = new HashMap<>();
-        ArrayList<String> strings = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
         for (var id : allIds) {
             var valueSet = valueSetDataService.findLatestValueSet(id);
             if (valueSet != null) {
                 try {
                     var entryJson = mapper.readTree(valueSet);
-                    strings.add(valueSet);
                     var fieldNameIterator = entryJson.get("valueSetValues").fieldNames();
                     var valueSetValues = new ArrayList<String>();
                     while (fieldNameIterator.hasNext()) {
@@ -106,8 +104,7 @@ public class VerificationRulesControllerV2 {
                     }
                     valueSets.put(id, valueSetValues);
                 } catch (Exception ex) {
-                    logger.error("Serving Rules failed: {}", ex);
-                    continue;
+                    logger.error("Serving Rules failed", ex);
                 }
             }
         }
@@ -132,9 +129,7 @@ public class VerificationRulesControllerV2 {
     }
 
     private HttpHeaders getVerificationRulesHeaders(Instant now) {
-        HttpHeaders headers =
-                CacheUtil.createExpiresHeader(
-                        CacheUtil.roundToNextVerificationRulesBucketStart(now));
-        return headers;
+        return CacheUtil.createExpiresHeader(
+                CacheUtil.roundToNextVerificationRulesBucketStart(now));
     }
 }
