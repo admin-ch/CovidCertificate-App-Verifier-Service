@@ -1416,7 +1416,7 @@
         "displayName": "2G+"
       },
       {
-        "id": "TEST_ONLY",
+        "id": "TEST_CERT",
         "displayName": "Testzertifikat"
       }
     ],
@@ -1651,7 +1651,7 @@
                                             {
                                               "var": "payload.h.mode"
                                             },
-                                            "TEST_ONLY"
+                                            "TEST_CERT"
                                           ]
                                         },
                                         {
@@ -1678,7 +1678,7 @@
                                             {
                                               "var": "payload.h.mode"
                                             },
-                                            "TEST_ONLY"
+                                            "TEST_CERT"
                                           ]
                                         },
                                         "INVALID",

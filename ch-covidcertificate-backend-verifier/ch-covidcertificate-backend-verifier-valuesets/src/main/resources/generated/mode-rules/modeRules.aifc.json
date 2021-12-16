@@ -229,7 +229,7 @@
                                         {
                                           "var": "payload.h.mode"
                                         },
-                                        "TEST_ONLY"
+                                        "TEST_CERT"
                                       ]
                                     },
                                     {
@@ -256,7 +256,7 @@
                                         {
                                           "var": "payload.h.mode"
                                         },
-                                        "TEST_ONLY"
+                                        "TEST_CERT"
                                       ]
                                     },
                                     "INVALID",
