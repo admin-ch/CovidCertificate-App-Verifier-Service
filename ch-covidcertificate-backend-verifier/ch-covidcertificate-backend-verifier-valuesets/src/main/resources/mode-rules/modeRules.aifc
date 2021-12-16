@@ -23,7 +23,7 @@ switch(payload.h.mode){
         "IS_LIGHT"
     }
     "TWO_G_PLUS": if (payload.v.0) => {
-        if((now() + 0#days) is not after (payload.v.0.dt as DateTime + 90#days)){
+        if((now() + 0#days) is before (payload.v.0.dt as DateTime + 91#days)){
             /* within 90 days, a test is not required */
             "SUCCESS"
         }else{
@@ -32,7 +32,7 @@ switch(payload.h.mode){
         }
     }
     "TWO_G_PLUS": if (payload.r.0) => {
-        if((now() + 0#days) is not after (payload.r.0.fr as DateTime + 90#days)){
+        if((now() + 0#days) is before (payload.r.0.fr as DateTime + 91#days)){
            /* within 90 days, a test is not required */
            "SUCCESS"
         }else{
