@@ -14,15 +14,16 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import ch.ubique.openapi.docannotations.Documentation;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,11 +55,22 @@ public class VerificationRulesControllerV2 {
                 new ClassPathResource("verificationRulesV2.json").getInputStream();
         JsonNode rules = mapper.readTree(verificationRulesFile);
 
-        Iterator<JsonNode> modesIter = rules.get("modeRules").get("activeModes").iterator();
+        ArrayNode modes = (ArrayNode) rules.get("modeRules").get("activeModes");
+        removeModes(modes, disabledVerificationModes);
 
+        ArrayNode verifierModes = (ArrayNode) rules.get("modeRules").get("verifierActiveModes");
+        removeModes(verifierModes, disabledVerificationModes);
+
+        this.verificationRules = mapper.treeToValue(rules, Map.class);
+
+        this.valueSetDataService = valueSetDataService;
+    }
+
+    private void removeModes(ArrayNode modes, String[] modesToRemove) {
+        var modesIter = modes.iterator();
         while(modesIter.hasNext()){
             var mode = modesIter.next();
-            for (String disabledMode : disabledVerificationModes) {
+            for (String disabledMode : modesToRemove) {
                 if (disabledMode.equals(mode.get("id").asText())) {
                     modesIter.remove();
                     break;
