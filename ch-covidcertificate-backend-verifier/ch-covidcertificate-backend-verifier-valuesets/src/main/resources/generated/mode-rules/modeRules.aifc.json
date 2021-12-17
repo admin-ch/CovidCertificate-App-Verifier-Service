@@ -233,34 +233,54 @@
                                       ]
                                     },
                                     {
-                                      "var": "payload.t.0"
-                                    },
-                                    {
-                                      "in": [
-                                        {
-                                          "var": "payload.t.0.tt"
-                                        },
-                                        [
-                                          "LP6464-4",
-                                          "LP217198-3"
-                                        ]
-                                      ]
+                                      "var": "payload.h.isLight"
                                     }
                                   ]
                                 },
-                                "SUCCESS",
+                                "IS_LIGHT",
                                 {
                                   "if": [
                                     {
-                                      "===": [
+                                      "and": [
                                         {
-                                          "var": "payload.h.mode"
+                                          "===": [
+                                            {
+                                              "var": "payload.h.mode"
+                                            },
+                                            "TEST_CERT"
+                                          ]
                                         },
-                                        "TEST_CERT"
+                                        {
+                                          "var": "payload.t.0"
+                                        },
+                                        {
+                                          "in": [
+                                            {
+                                              "var": "payload.t.0.tt"
+                                            },
+                                            [
+                                              "LP6464-4",
+                                              "LP217198-3"
+                                            ]
+                                          ]
+                                        }
                                       ]
                                     },
-                                    "INVALID",
-                                    "UNKNOWN_MODE"
+                                    "SUCCESS",
+                                    {
+                                      "if": [
+                                        {
+                                          "===": [
+                                            {
+                                              "var": "payload.h.mode"
+                                            },
+                                            "TEST_CERT"
+                                          ]
+                                        },
+                                        "INVALID",
+                                        "UNKNOWN_MODE"
+                                      ]
+                                    }
                                   ]
                                 }
                               ]
