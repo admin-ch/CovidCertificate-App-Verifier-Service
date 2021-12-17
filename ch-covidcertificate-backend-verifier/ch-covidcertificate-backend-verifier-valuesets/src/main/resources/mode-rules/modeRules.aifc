@@ -52,6 +52,10 @@ switch(payload.h.mode){
     "TWO_G_PLUS" => {
        "INVALID"
     }
+    "TEST_CERT": if (payload.h.isLight) => {
+            /*IS LIGHT*/
+            "IS_LIGHT"
+    }
     "TEST_CERT": if(payload.t.0 && payload.t.0.tt in ["LP6464-4", "LP217198-3"]) => {
             "SUCCESS"
     }
