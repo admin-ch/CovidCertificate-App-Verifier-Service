@@ -14,15 +14,16 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import ch.ubique.openapi.docannotations.Documentation;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,38 +40,42 @@ import org.springframework.web.context.request.WebRequest;
 @Controller
 @RequestMapping("trust/v2")
 public class VerificationRulesControllerV2 {
-    private static final Logger logger = LoggerFactory.getLogger(VerificationRulesController.class);
-    private static String VALUE_SETS_KEY = "valueSets";
+    private static final Logger logger = LoggerFactory.getLogger(VerificationRulesControllerV2.class);
+    private static final String VALUE_SETS_KEY = "valueSets";
 
     private final Map verificationRules;
-    private final String verificationRulesEtag;
     private final ValueSetDataService valueSetDataService;
 
     public VerificationRulesControllerV2(
             ValueSetDataService valueSetDataService, String[] disabledVerificationModes)
-            throws IOException, NoSuchAlgorithmException {
+            throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         InputStream verificationRulesFile =
                 new ClassPathResource("verificationRulesV2.json").getInputStream();
         JsonNode rules = mapper.readTree(verificationRulesFile);
 
-        Iterator<JsonNode> modesIter = rules.get("modeRules").get("activeModes").iterator();
+        ArrayNode modes = (ArrayNode) rules.get("modeRules").get("activeModes");
+        removeModes(modes, disabledVerificationModes);
 
-        while(modesIter.hasNext()){
+        ArrayNode verifierModes = (ArrayNode) rules.get("modeRules").get("verifierActiveModes");
+        removeModes(verifierModes, disabledVerificationModes);
+
+        this.verificationRules = mapper.treeToValue(rules, Map.class);
+
+        this.valueSetDataService = valueSetDataService;
+    }
+
+    private void removeModes(ArrayNode modes, String[] modesToRemove) {
+        var modesIter = modes.iterator();
+        while (modesIter.hasNext()) {
             var mode = modesIter.next();
-            for (String disabledMode : disabledVerificationModes) {
+            for (String disabledMode : modesToRemove) {
                 if (disabledMode.equals(mode.get("id").asText())) {
                     modesIter.remove();
                     break;
                 }
             }
         }
-
-        this.verificationRules = mapper.treeToValue(rules, Map.class);
-
-        this.verificationRulesEtag =
-                EtagUtil.getSha1HashForFiles(false, "classpath:verificationRulesV2.json");
-        this.valueSetDataService = valueSetDataService;
     }
 
     @Documentation(
@@ -86,14 +91,12 @@ public class VerificationRulesControllerV2 {
         Instant now = Instant.now();
         var allIds = valueSetDataService.findAllValueSetIds();
         HashMap<String, ArrayList<String>> valueSets = new HashMap<>();
-        ArrayList<String> strings = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
         for (var id : allIds) {
             var valueSet = valueSetDataService.findLatestValueSet(id);
             if (valueSet != null) {
                 try {
                     var entryJson = mapper.readTree(valueSet);
-                    strings.add(valueSet);
                     var fieldNameIterator = entryJson.get("valueSetValues").fieldNames();
                     var valueSetValues = new ArrayList<String>();
                     while (fieldNameIterator.hasNext()) {
@@ -101,26 +104,32 @@ public class VerificationRulesControllerV2 {
                     }
                     valueSets.put(id, valueSetValues);
                 } catch (Exception ex) {
-                    logger.error("Serving Rules failed: {}", ex);
-                    continue;
+                    logger.error("Serving Rules failed", ex);
                 }
             }
         }
-        var rulesEtag = EtagUtil.getSha1HashForStrings(false, strings.toArray(new String[0]));
-        String etag = EtagUtil.toWeakEtag(verificationRulesEtag + rulesEtag);
+
+        verificationRules.put(VALUE_SETS_KEY, valueSets);
+
+        String etag = "";
+        try {
+            etag =
+                    EtagUtil.getSha1HashForStrings(
+                            true, mapper.writeValueAsString(verificationRules));
+        } catch (JsonProcessingException e) {
+            logger.error("Failed to calculate ETag for rules", e);
+        }
         if (request.checkNotModified(etag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
-        verificationRules.put(VALUE_SETS_KEY, valueSets);
+
         return ResponseEntity.ok()
                 .headers(getVerificationRulesHeaders(now))
                 .body(verificationRules);
     }
 
     private HttpHeaders getVerificationRulesHeaders(Instant now) {
-        HttpHeaders headers =
-                CacheUtil.createExpiresHeader(
-                        CacheUtil.roundToNextVerificationRulesBucketStart(now));
-        return headers;
+        return CacheUtil.createExpiresHeader(
+                CacheUtil.roundToNextVerificationRulesBucketStart(now));
     }
 }

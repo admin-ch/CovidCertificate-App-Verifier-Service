@@ -71,11 +71,19 @@ public abstract class VerificationRulesControllerV2Test extends BaseControllerTe
             for (String disabledMode : disabledModes) {
                 boolean modeExists = false;
                 var iter = expected.get("modeRules").get("activeModes").iterator();
+                var verifierIter = expected.get("modeRules").get("verifierActiveModes").iterator();
                 while (iter.hasNext()) {
                     JsonNode mode = iter.next();
                     if (disabledMode.equals(mode.get("id").asText())) {
                         modeExists = true;
                         iter.remove();
+                    }
+                }
+                while (verifierIter.hasNext()) {
+                    JsonNode mode = verifierIter.next();
+                    if (disabledMode.equals(mode.get("id").asText())) {
+                        modeExists = true;
+                        verifierIter.remove();
                     }
                 }
                 if (!modeExists) {
