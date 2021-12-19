@@ -11,7 +11,6 @@
 package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.sync.config.configbeans.ActuatorSecurityConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.boot.actuate.info.InfoEndpoint;
@@ -76,7 +75,6 @@ public class ActuatorSecurity extends WebSecurityConfigurerAdapter {
         http.csrf().ignoringAntMatchers("/actuator/loggers/**");
     }
 
-    @Autowired
     protected void configureGlobal(
             AuthenticationManagerBuilder auth, ActuatorSecurityConfig securityConfig)
             throws Exception {
