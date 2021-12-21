@@ -1,8 +1,8 @@
 /*
-For serum antibody tests, the result must be positive.
+For serum antibody tests and exemption certificates, the result must be positive.
 */
 
-if(payload.t.0 && payload.t.0.tt in ["94504-8"]) {
+if(payload.t.0 && payload.t.0.tt in ["94504-8", "me"]) {
   /*
     tr: TestResult
     260373001: Positive test result

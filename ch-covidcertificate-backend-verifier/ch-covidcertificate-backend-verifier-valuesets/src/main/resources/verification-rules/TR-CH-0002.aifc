@@ -7,7 +7,7 @@ if (payload.t.0) {
     LP6464-4: NAA Test type
     94504-8: Serum Antibody Test type
   */
-  payload.t.0.tt in ["LP217198-3", "LP6464-4", "94504-8"]
+  payload.t.0.tt in ["LP217198-3", "LP6464-4", "94504-8", "me"]
 } else {
   true
 }
