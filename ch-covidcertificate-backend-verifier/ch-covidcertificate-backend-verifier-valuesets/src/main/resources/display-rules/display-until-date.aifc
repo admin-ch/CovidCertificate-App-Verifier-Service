@@ -63,7 +63,7 @@ if (payload.v.0) {
                  */
                 payload.t.0.sc as DateTime + 90#days
             }
-            "me" => {
+            "medical-exemption" => {
                payload.t.0.sc as DateTime + 365#days
             }
             _ => {

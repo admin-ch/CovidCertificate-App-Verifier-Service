@@ -1,0 +1,9 @@
+/*
+Sero test
+*/
+
+if (payload.t.0) {
+    payload.t.0.tt in ["medical-exemption"]
+} else {
+    false
+}

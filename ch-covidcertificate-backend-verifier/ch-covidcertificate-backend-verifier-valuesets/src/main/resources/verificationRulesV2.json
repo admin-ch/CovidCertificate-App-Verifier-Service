@@ -434,7 +434,7 @@
                 "LP217198-3",
                 "LP6464-4",
                 "94504-8",
-                "me"
+                "medical-exemption"
               ]
             ]
           },
@@ -684,7 +684,7 @@
                   },
                   [
                     "94504-8",
-                    "me"
+                    "medical-exemption"
                   ]
                 ]
               }
@@ -788,7 +788,7 @@
               {
                 "var": "payload.t.0.tt"
               },
-              "me"
+              "medical-exemption"
             ]
           },
           {
@@ -1500,7 +1500,7 @@
                   "var": "payload.t.0.tt"
                 },
                 [
-                  "me"
+                  "medical-exemption"
                 ]
               ]
             }
@@ -1539,7 +1539,7 @@
                           "var": "payload.t.0.tt"
                         },
                         [
-                          "me"
+                          "medical-exemption"
                         ]
                       ]
                     }
@@ -1610,7 +1610,7 @@
                                   "var": "payload.t.0.tt"
                                 },
                                 [
-                                  "me"
+                                  "medical-exemption"
                                 ]
                               ]
                             }
@@ -1806,7 +1806,7 @@
                                                           "var": "payload.t.0.tt"
                                                         },
                                                         [
-                                                          "me"
+                                                          "medical-exemption"
                                                         ]
                                                       ]
                                                     }
@@ -2333,7 +2333,7 @@
                                   {
                                     "var": "payload.t.0.tt"
                                   },
-                                  "me"
+                                  "medical-exemption"
                                 ]
                               },
                               {
@@ -2386,6 +2386,28 @@
         "!": [
           {
             "and": [
+              {
+                "!": [
+                  {
+                    "if": [
+                      {
+                        "var": "payload.t.0"
+                      },
+                      {
+                        "in": [
+                          {
+                            "var": "payload.t.0.tt"
+                          },
+                          [
+                            "medical-exemption"
+                          ]
+                        ]
+                      },
+                      false
+                    ]
+                  }
+                ]
+              },
               {
                 "!": [
                   {

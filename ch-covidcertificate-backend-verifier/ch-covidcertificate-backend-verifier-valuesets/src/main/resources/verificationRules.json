@@ -299,7 +299,7 @@
                 "LP217198-3",
                 "LP6464-4",
                 "94504-8",
-                "me"
+                "medical-exemption"
               ]
             ]
           },
@@ -464,7 +464,7 @@
                   },
                   [
                     "94504-8",
-                    "me"
+                    "medical-exemption"
                   ]
                 ]
               }
@@ -533,7 +533,7 @@
               {
                 "var": "payload.t.0.tt"
               },
-              "me"
+              "medical-exemption"
             ]
           },
           {

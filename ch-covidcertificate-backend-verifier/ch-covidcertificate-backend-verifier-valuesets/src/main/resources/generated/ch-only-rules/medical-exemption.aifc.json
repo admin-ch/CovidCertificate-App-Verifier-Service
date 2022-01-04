@@ -9,13 +9,10 @@
           "var": "payload.t.0.tt"
         },
         [
-          "LP217198-3",
-          "LP6464-4",
-          "94504-8",
           "medical-exemption"
         ]
       ]
     },
-    true
+    false
   ]
 }
