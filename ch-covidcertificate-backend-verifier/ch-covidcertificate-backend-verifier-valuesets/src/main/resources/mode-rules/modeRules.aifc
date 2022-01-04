@@ -1,6 +1,12 @@
 switch(payload.h.mode){
+    "THREE_G": if(payload.t.0 && payload.t.0.tt in ["medical-exemption"]) => {
+        "SUCCESS"
+    }
     "THREE_G" => {
         "SUCCESS"
+    }
+    "TWO_G": if(payload.t.0 && payload.t.0.tt in ["medical-exemption"]) => {
+            "SUCCESS"
     }
     "TWO_G" => {
         if (payload.h.isLight){
@@ -17,6 +23,9 @@ switch(payload.h.mode){
                 "SUCCESS"
             }
         }
+    }
+    "TWO_G_PLUS": if(payload.t.0 && payload.t.0.tt in ["medical-exemption"]) => {
+            "SUCCESS"
     }
     "TWO_G_PLUS": if (payload.h.isLight) => {
         /*IS LIGHT*/
@@ -51,6 +60,9 @@ switch(payload.h.mode){
     }
     "TWO_G_PLUS" => {
        "INVALID"
+    }
+    "TEST_CERT": if(payload.t.0 && payload.t.0.tt in ["medical-exemption"]) => {
+            "SUCCESS"
     }
     "TEST_CERT": if (payload.h.isLight) => {
             /*IS LIGHT*/

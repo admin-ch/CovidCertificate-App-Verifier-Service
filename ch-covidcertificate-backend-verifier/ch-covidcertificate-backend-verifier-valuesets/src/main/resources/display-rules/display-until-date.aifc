@@ -63,8 +63,11 @@ if (payload.v.0) {
                  */
                 payload.t.0.sc as DateTime + 90#days
             }
+            "medical-exemption" => {
+               payload.t.0.sc as DateTime + 365#days
+            }
             _ => {
-                /* We only support the previous three test types */
+                /* We only support the previous four test types */
                 undefined
             }
         }

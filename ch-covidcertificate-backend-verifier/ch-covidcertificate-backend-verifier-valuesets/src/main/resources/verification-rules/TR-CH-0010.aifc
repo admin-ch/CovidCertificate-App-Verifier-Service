@@ -1,0 +1,10 @@
+/*
+Exemption certificates are valid for 365 days
+*/
+
+if (
+  payload.t.0.tt === "medical-exemption") {
+    (now() + 0#days) is before (payload.t.0.sc as DateTime + 365#days)
+} else {
+  true
+}

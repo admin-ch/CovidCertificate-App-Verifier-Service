@@ -22,7 +22,8 @@
                 "var": "payload.t.0.tt"
               },
               [
-                "94504-8"
+                "94504-8",
+                "medical-exemption"
               ]
             ]
           }
@@ -46,7 +47,7 @@
   ],
   "Description": [
     {
-      "desc": "For serum antibody tests, the result must be positive.",
+      "desc": "For serum antibody tests and exemption certificates, the result must be positive.",
       "lang": "en"
     }
   ]

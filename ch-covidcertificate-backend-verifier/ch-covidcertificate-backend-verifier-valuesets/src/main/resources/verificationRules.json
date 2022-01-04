@@ -298,7 +298,8 @@
               [
                 "LP217198-3",
                 "LP6464-4",
-                "94504-8"
+                "94504-8",
+                "medical-exemption"
               ]
             ]
           },
@@ -447,7 +448,7 @@
     },
     {
       "inputParameter": "[\"t.0.tr\",\"t.0\",\"t.0.tt\"]",
-      "description": "For serum antibody tests, the result must be positive.",
+      "description": "For serum antibody tests and exemption certificates, the result must be positive.",
       "id": "TR-CH-0008",
       "logic": {
         "if": [
@@ -462,7 +463,8 @@
                     "var": "payload.t.0.tt"
                   },
                   [
-                    "94504-8"
+                    "94504-8",
+                    "medical-exemption"
                   ]
                 ]
               }
@@ -511,6 +513,46 @@
                     "var": "payload.t.0.sc"
                   },
                   90,
+                  "day"
+                ]
+              }
+            ]
+          },
+          true
+        ]
+      }
+    },
+    {
+      "inputParameter": "[\"t.0.tt\",\"t.0.sc\"]",
+      "description": "Exemption certificates are valid for 365 days",
+      "id": "TR-CH-0010",
+      "logic": {
+        "if": [
+          {
+            "===": [
+              {
+                "var": "payload.t.0.tt"
+              },
+              "medical-exemption"
+            ]
+          },
+          {
+            "<": [
+              {
+                "plusTime": [
+                  {
+                    "var": "external.validationClock"
+                  },
+                  0,
+                  "day"
+                ]
+              },
+              {
+                "plusTime": [
+                  {
+                    "var": "payload.t.0.sc"
+                  },
+                  365,
                   "day"
                 ]
               }

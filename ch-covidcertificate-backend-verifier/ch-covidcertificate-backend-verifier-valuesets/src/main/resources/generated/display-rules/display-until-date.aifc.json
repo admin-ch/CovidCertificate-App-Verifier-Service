@@ -291,7 +291,28 @@
                       ]
                     },
                     {
-                      "var": "undefined"
+                      "if": [
+                        {
+                          "===": [
+                            {
+                              "var": "payload.t.0.tt"
+                            },
+                            "medical-exemption"
+                          ]
+                        },
+                        {
+                          "plusTime": [
+                            {
+                              "var": "payload.t.0.sc"
+                            },
+                            365,
+                            "day"
+                          ]
+                        },
+                        {
+                          "var": "undefined"
+                        }
+                      ]
                     }
                   ]
                 }
