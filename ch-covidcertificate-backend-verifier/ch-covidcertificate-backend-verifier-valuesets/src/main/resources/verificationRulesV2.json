@@ -1461,6 +1461,20 @@
         "displayName": "2G"
       }
     ],
+    "walletActiveModes": [
+      {
+        "id": "THREE_G",
+        "displayName": "3G"
+      },
+      {
+        "id": "TWO_G",
+        "displayName": "2G"
+      },
+      {
+        "id": "TWO_G_PLUS",
+        "displayName": "2G+"
+      }
+    ],
     "verifierActiveModes": [
       {
         "id": "THREE_G",

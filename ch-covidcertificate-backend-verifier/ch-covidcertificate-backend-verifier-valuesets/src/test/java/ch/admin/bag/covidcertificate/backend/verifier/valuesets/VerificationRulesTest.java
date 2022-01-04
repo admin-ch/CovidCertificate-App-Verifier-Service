@@ -68,7 +68,13 @@ public class VerificationRulesTest {
             return displayName;
         }
 
-        private static final List<CheckMode> ACTIVE_MODES = Arrays.asList(new CheckMode("THREE_G", "3G"), new CheckMode("TWO_G", "2G"));
+        private static final List<CheckMode> ACTIVE_MODES =
+                Arrays.asList(new CheckMode("THREE_G", "3G"), new CheckMode("TWO_G", "2G"));
+        private static final List<CheckMode> WALLET_ACTIVE_MODES =
+                Arrays.asList(
+                        new CheckMode("THREE_G", "3G"),
+                        new CheckMode("TWO_G", "2G"),
+                        new CheckMode("TWO_G_PLUS", "2G+"));
         private static final List<CheckMode> VERIFIER_ACTIVE_MODES =
                 Arrays.asList(
                         new CheckMode("THREE_G", "3G"),
@@ -194,8 +200,10 @@ public class VerificationRulesTest {
 
         ObjectNode modeRule = (ObjectNode) v2.get("modeRules");
         ArrayNode activeModesArray = modeRule.putArray("activeModes");
+        ArrayNode walletActiveModesArray = modeRule.putArray("walletActiveModes");
         ArrayNode verifierActiveModesArray = modeRule.putArray("verifierActiveModes");
         CheckMode.ACTIVE_MODES.forEach(activeModesArray::addPOJO);
+        CheckMode.WALLET_ACTIVE_MODES.forEach(walletActiveModesArray::addPOJO);
         CheckMode.VERIFIER_ACTIVE_MODES.forEach(verifierActiveModesArray::addPOJO);
         modeRule.set(
                 "logic",
