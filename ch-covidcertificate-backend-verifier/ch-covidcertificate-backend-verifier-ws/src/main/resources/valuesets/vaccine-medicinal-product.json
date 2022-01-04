@@ -1,6 +1,6 @@
 {
   "valueSetId": "vaccines-covid-19-names",
-  "valueSetDate": "2021-09-29",
+  "valueSetDate": "2021-11-09",
   "valueSetValues": {
     "EU/1/20/1528": {
       "display": "Comirnaty",
@@ -32,6 +32,13 @@
     },
     "CVnCoV": {
       "display": "CVnCoV",
+      "lang": "en",
+      "active": true,
+      "system": "http://ec.europa.eu/temp/vaccineproductname",
+      "version": "1.0"
+    },
+    "NVX-CoV2373": {
+      "display": "NVX-CoV2373",
       "lang": "en",
       "active": true,
       "system": "http://ec.europa.eu/temp/vaccineproductname",
@@ -148,6 +155,27 @@
       "active": true,
       "system": "http://ec.europa.eu/temp/vaccineproductname",
       "version": "1.4"
+    },
+    "Abdala": {
+      "display": "Abdala",
+      "lang": "en",
+      "active": true,
+      "system": "http://ec.europa.eu/temp/vaccineproductname",
+      "version": "1.5"
+    },
+    "WIBP-CorV": {
+      "display": "WIBP-CorV",
+      "lang": "en",
+      "active": true,
+      "system": "http://ec.europa.eu/temp/vaccineproductname",
+      "version": "1.5"
+    },
+    "MVC-COV1901": {
+      "display": "MVC COVID-19 vaccine",
+      "lang": "en",
+      "active": true,
+      "system": "http://ec.europa.eu/temp/vaccineproductname",
+      "version": "1.6"
     }
   }
 }
