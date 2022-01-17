@@ -183,6 +183,13 @@
       "active": true,
       "system": "https://ec.europa.eu/health/documents/community-register/html/",
       "version": ""
+    },
+    "COVOVAX": {
+      "display": "COVOVAX (Novavax formulation)",
+      "lang": "en",
+      "active": true,
+      "system": "http://ec.europa.eu/temp/vaccineproductname",
+      "version": ""
     }
   }
 }
