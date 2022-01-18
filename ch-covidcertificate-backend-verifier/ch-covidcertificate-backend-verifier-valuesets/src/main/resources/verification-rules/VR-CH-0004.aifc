@@ -15,7 +15,9 @@ if (payload.v.0
         "CoronaVac_T",
         "Covaxin_T",
         "R-COVI",
-        "Covid-19-recombinant"
+        "Covid-19-recombinant",
+        "COVOVAX",
+        "EU/1/21/1618"
     ]) 
 {
   /*

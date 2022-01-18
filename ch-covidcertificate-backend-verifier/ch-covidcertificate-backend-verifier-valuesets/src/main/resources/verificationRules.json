@@ -648,12 +648,14 @@
                 "EU/1/20/1507",
                 "EU/1/21/1529",
                 "EU/1/20/1525",
+                "EU/1/21/1618",
                 "CoronaVac",
                 "BBIBP-CorV",
                 "Covishield",
                 "Covaxin",
                 "R-COVI",
                 "Covid-19-recombinant",
+                "COVOVAX",
                 "BBIBP-CorV_T",
                 "CoronaVac_T",
                 "Covaxin_T"
@@ -716,7 +718,9 @@
                     "CoronaVac_T",
                     "Covaxin_T",
                     "R-COVI",
-                    "Covid-19-recombinant"
+                    "Covid-19-recombinant",
+                    "COVOVAX",
+                    "EU/1/21/1618"
                   ]
                 ]
               }
@@ -838,7 +842,9 @@
                     "CoronaVac_T",
                     "Covaxin_T",
                     "R-COVI",
-                    "Covid-19-recombinant"
+                    "Covid-19-recombinant",
+                    "EU/1/21/1618",
+                    "COVOVAX"
                   ]
                 ]
               }
@@ -1038,6 +1044,8 @@
       "Covid-19-recombinant",
       "BBIBP-CorV_T",
       "CoronaVac_T",
+      "COVOVAX",
+      "EU/1/21/1618",
       "Covaxin_T"
     ],
     "two-dose-vaccines": [
@@ -1052,6 +1060,8 @@
       "Covid-19-recombinant",
       "BBIBP-CorV_T",
       "CoronaVac_T",
+      "COVOVAX",
+      "EU/1/21/1618",
       "Covaxin_T"
     ],
     "one-dose-vaccines-with-offset": [
