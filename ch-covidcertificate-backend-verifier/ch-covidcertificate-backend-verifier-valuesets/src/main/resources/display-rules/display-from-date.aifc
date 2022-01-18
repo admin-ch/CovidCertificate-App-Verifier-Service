@@ -25,8 +25,13 @@ if (payload.v.0) {
     }
 } else {
     if (payload.t.0) {
-        /* If we have a test, valid-from starts at the date of sample collection */
-        payload.t.0.sc as DateTime + 0#days
+        if(payload.t.0.tt === "LP217198-3" and payload.t.0.tr === "260373001"){
+            /* for positive antibody (recovery), validity starts after 10 days */
+            payload.t.0.sc as DateTime + 10#days
+        } else {
+            /* If we have a test, valid-from starts at the date of sample collection */
+            payload.t.0.sc as DateTime + 0#days
+        }
     } else {
         if(payload.r.0) {
             /* if we recovered, validity starts 10 days after first positive test result */

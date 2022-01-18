@@ -391,7 +391,6 @@
                     "var": "payload.t.0.tt"
                   },
                   [
-                    "LP217198-3",
                     "LP6464-4"
                   ]
                 ]
@@ -579,11 +578,23 @@
       "Logic": {
         "if": [
           {
-            "===": [
+            "and": [
               {
-                "var": "payload.t.0.tt"
+                "===": [
+                  {
+                    "var": "payload.t.0.tt"
+                  },
+                  "LP217198-3"
+                ]
               },
-              "LP217198-3"
+              {
+                "===": [
+                  {
+                    "var": "payload.t.0.tr"
+                  },
+                  "260415000"
+                ]
+              }
             ]
           },
           {
@@ -612,12 +623,13 @@
         ]
       },
       "AffectedFields": [
+        "t.0.tr",
         "t.0.tt",
         "t.0.sc"
       ],
       "Description": [
         {
-          "desc": "If the test type is \\\"RAT\\\" then the validation date must be before the date of sample collection plus 24 hours",
+          "desc": "If the test is a negative \\\"RAT\\\" then the validation date must be before the date of sample collection plus 24 hoursFor positive, see TR-CH-0011 and 0012",
           "lang": "en"
         }
       ]
@@ -851,6 +863,150 @@
       "Description": [
         {
           "desc": "Exemption certificates are valid for 365 days",
+          "lang": "en"
+        }
+      ]
+    }
+  ],
+  "TR-CH-0011": [
+    {
+      "Country": "CH",
+      "Engine": "CERTLOGIC",
+      "EngineVersion": "0.7.5",
+      "SchemaVersion": "1.0.0",
+      "Type": "Acceptance",
+      "ValidTo": "2031-01-01T00:00:00Z",
+      "Identifier": "TR-CH-0011",
+      "Version": "1.0.7",
+      "ValidFrom": "2021-12-17T00:00:00Z",
+      "CertificateType": "Test",
+      "Logic": {
+        "if": [
+          {
+            "and": [
+              {
+                "===": [
+                  {
+                    "var": "payload.t.0.tt"
+                  },
+                  "LP217198-3"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "payload.t.0.tr"
+                  },
+                  "260373001"
+                ]
+              }
+            ]
+          },
+          {
+            "after": [
+              {
+                "plusTime": [
+                  {
+                    "var": "external.validationClock"
+                  },
+                  0,
+                  "day"
+                ]
+              },
+              {
+                "plusTime": [
+                  {
+                    "var": "payload.t.0.sc"
+                  },
+                  10,
+                  "day"
+                ]
+              }
+            ]
+          },
+          true
+        ]
+      },
+      "AffectedFields": [
+        "t.0.tr",
+        "t.0.tt",
+        "t.0.sc"
+      ],
+      "Description": [
+        {
+          "desc": "  Positive RAT == recovery  => valid after 10 days",
+          "lang": "en"
+        }
+      ]
+    }
+  ],
+  "TR-CH-0012": [
+    {
+      "Country": "CH",
+      "Engine": "CERTLOGIC",
+      "EngineVersion": "0.7.5",
+      "SchemaVersion": "1.0.0",
+      "Type": "Acceptance",
+      "ValidTo": "2031-01-01T00:00:00Z",
+      "Identifier": "TR-CH-0012",
+      "Version": "1.0.7",
+      "ValidFrom": "2021-12-17T00:00:00Z",
+      "CertificateType": "Test",
+      "Logic": {
+        "if": [
+          {
+            "and": [
+              {
+                "===": [
+                  {
+                    "var": "payload.t.0.tt"
+                  },
+                  "LP217198-3"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "payload.t.0.tr"
+                  },
+                  "260373001"
+                ]
+              }
+            ]
+          },
+          {
+            "before": [
+              {
+                "plusTime": [
+                  {
+                    "var": "external.validationClock"
+                  },
+                  0,
+                  "day"
+                ]
+              },
+              {
+                "plusTime": [
+                  {
+                    "var": "payload.t.0.sc"
+                  },
+                  270,
+                  "day"
+                ]
+              }
+            ]
+          },
+          true
+        ]
+      },
+      "AffectedFields": [
+        "t.0.tr",
+        "t.0.tt",
+        "t.0.sc"
+      ],
+      "Description": [
+        {
+          "desc": "  Positive RAT == recovery  => valid for 270 days",
           "lang": "en"
         }
       ]

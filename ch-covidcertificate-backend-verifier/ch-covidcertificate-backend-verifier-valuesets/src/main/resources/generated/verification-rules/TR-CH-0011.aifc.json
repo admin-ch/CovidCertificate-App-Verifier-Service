@@ -15,13 +15,13 @@
             {
               "var": "payload.t.0.tr"
             },
-            "260415000"
+            "260373001"
           ]
         }
       ]
     },
     {
-      "before": [
+      "after": [
         {
           "plusTime": [
             {
@@ -36,8 +36,8 @@
             {
               "var": "payload.t.0.sc"
             },
-            24,
-            "hour"
+            10,
+            "day"
           ]
         }
       ]

@@ -5,7 +5,7 @@
   "SchemaVersion": "1.0.0",
   "Type": "Acceptance",
   "ValidTo": "2031-01-01T00:00:00Z",
-  "Identifier": "TR-CH-0006",
+  "Identifier": "TR-CH-0012",
   "Version": "1.0.7",
   "ValidFrom": "2021-12-17T00:00:00Z",
   "CertificateType": "Test",
@@ -26,7 +26,7 @@
               {
                 "var": "payload.t.0.tr"
               },
-              "260415000"
+              "260373001"
             ]
           }
         ]
@@ -47,8 +47,8 @@
               {
                 "var": "payload.t.0.sc"
               },
-              24,
-              "hour"
+              270,
+              "day"
             ]
           }
         ]
@@ -63,7 +63,7 @@
   ],
   "Description": [
     {
-      "desc": "If the test is a negative \\\"RAT\\\" then the validation date must be before the date of sample collection plus 24 hoursFor positive, see TR-CH-0011 and 0012",
+      "desc": "  Positive RAT == recovery  => valid for 270 days",
       "lang": "en"
     }
   ]

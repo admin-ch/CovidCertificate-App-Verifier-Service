@@ -1,0 +1,10 @@
+/*
+  Positive RAT == recovery
+  => valid after 10 days
+*/
+
+if (payload.t.0.tt === "LP217198-3" and payload.t.0.tr === "260373001") {
+  (now() + 0#days) is after (payload.t.0.sc as DateTime + 10#days)
+} else {
+  true
+}
