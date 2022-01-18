@@ -1,0 +1,10 @@
+/*
+  Positive RAT == recovery
+  => valid for 270 days
+*/
+
+if (payload.t.0.tt === "LP217198-3" and payload.t.0.tr === "260373001") {
+  (now() + 0#days) is before (payload.t.0.sc as DateTime + 270#days)
+} else {
+  true
+}

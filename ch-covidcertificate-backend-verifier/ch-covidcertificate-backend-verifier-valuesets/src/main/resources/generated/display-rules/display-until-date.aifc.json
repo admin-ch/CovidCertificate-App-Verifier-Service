@@ -265,12 +265,33 @@
                   ]
                 },
                 {
-                  "plusTime": [
+                  "if": [
                     {
-                      "var": "payload.t.0.sc"
+                      "===": [
+                        {
+                          "var": "payload.t.0.tr"
+                        },
+                        "260373001"
+                      ]
                     },
-                    24,
-                    "hour"
+                    {
+                      "plusTime": [
+                        {
+                          "var": "payload.t.0.sc"
+                        },
+                        270,
+                        "day"
+                      ]
+                    },
+                    {
+                      "plusTime": [
+                        {
+                          "var": "payload.t.0.sc"
+                        },
+                        24,
+                        "hour"
+                      ]
+                    }
                   ]
                 },
                 {

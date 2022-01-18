@@ -53,8 +53,12 @@ if (payload.v.0) {
                 payload.t.0.sc as DateTime + 72#hours
             }
             "LP217198-3" => {
-                /* RAT tests for 24 hours */
-                payload.t.0.sc as DateTime + 24#hours
+                /* negative RAT tests for 24 hours, positive (recovery) 270 days */
+                if (payload.t.0.tr === "260373001"){
+                    payload.t.0.sc as DateTime + 270#days
+                } else {
+                    payload.t.0.sc as DateTime + 24#hours
+                }
             }
             "94504-8" => {
                 /* 

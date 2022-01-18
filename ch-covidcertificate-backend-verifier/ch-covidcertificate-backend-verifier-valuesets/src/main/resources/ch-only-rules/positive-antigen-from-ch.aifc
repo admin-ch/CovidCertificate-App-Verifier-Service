@@ -1,0 +1,9 @@
+/*
+Positive antigen (recovery) issued in CH
+*/
+
+if (payload.t.0) {
+    payload.t.0.tt in ["LP217198-3"] and payload.t.0.tr === "260373001" and payload.t.0.co in ["CH"]
+} else {
+    false
+}

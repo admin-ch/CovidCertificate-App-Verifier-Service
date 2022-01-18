@@ -94,12 +94,45 @@
           "var": "payload.t.0"
         },
         {
-          "plusTime": [
+          "if": [
             {
-              "var": "payload.t.0.sc"
+              "and": [
+                {
+                  "===": [
+                    {
+                      "var": "payload.t.0.tt"
+                    },
+                    "LP217198-3"
+                  ]
+                },
+                {
+                  "===": [
+                    {
+                      "var": "payload.t.0.tr"
+                    },
+                    "260373001"
+                  ]
+                }
+              ]
             },
-            0,
-            "day"
+            {
+              "plusTime": [
+                {
+                  "var": "payload.t.0.sc"
+                },
+                10,
+                "day"
+              ]
+            },
+            {
+              "plusTime": [
+                {
+                  "var": "payload.t.0.sc"
+                },
+                0,
+                "day"
+              ]
+            }
           ]
         },
         {
