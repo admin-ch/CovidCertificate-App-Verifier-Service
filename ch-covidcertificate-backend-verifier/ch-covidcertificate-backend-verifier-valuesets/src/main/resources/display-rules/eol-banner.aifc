@@ -1,0 +1,69 @@
+/*
+Check whether to display a notice that a cert is about to expire
+*/
+
+let in_21_days = now() + 21#days;
+let cutoff = "2022-02-01";
+
+if (payload.v.0) {
+    let after_270 = payload.v.0.dt as DateTime + 270#days;
+    let after_291 = payload.v.0.dt as DateTime + 291#days;
+
+    switch(payload.v.0.mp) {
+        "EU/1/20/1525" : if payload.v.0.dn === 1 => {
+             /* single-dose JJ gets 21 days extra */
+             if((after_291) is not after cutoff as DateTime){
+                 "invalidFromFirstFebruary"
+             }else{
+                 if((after_291) is not after (in_21_days as DateTime)){
+                     "invalidInThreeWeeks"
+                 }else{
+                     undefined
+                 }
+             }
+        }
+        _ => {
+            /* two-dose vaccine */
+            if((after_270) is not after cutoff as DateTime){
+                "invalidFromFirstFebruary"
+            }else{
+                if((after_270) is not before in_21_days as DateTime){
+                    "invalidInThreeWeeks"
+                }else{
+                    undefined
+                }
+            }
+        }
+    }
+} else {
+    if (payload.r.0) {
+        let after_270 = payload.r.0 as DateTime + 270#days;
+            if((after_270) is not after cutoff as DateTime){
+                "invalidFromFirstFebruary"
+            }else{
+                if((after_270) is not after in_21_days as DateTime){
+                    "invalidInThreeWeeks"
+                }else{
+                    undefined
+                }
+            }
+    } else {
+        if (payload.t.0){
+            let after_270 = payload.t.0.sc as DateTime + 270#days;
+            if (payload.t.0.tt in [""] and payload.t.0.tr === ""){
+                 /* positive antigen == recovery */
+                             if((after_270) is not after cutoff as DateTime){
+                                 "invalidFromFirstFebruary"
+                             }else{
+                                 if((after_270) is not after in_21_days as DateTime){
+                                     "invalidInThreeWeeks"
+                                 }else{
+                                     undefined
+                                 }
+                             }
+            }
+        } else {
+            undefined
+        }
+    }
+}
