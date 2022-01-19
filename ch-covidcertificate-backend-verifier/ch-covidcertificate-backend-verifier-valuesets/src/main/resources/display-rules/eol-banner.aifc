@@ -27,7 +27,7 @@ if (payload.v.0) {
             if((after_270) is not after cutoff as DateTime){
                 "invalidFromFirstFebruary"
             }else{
-                if((after_270) is not before in_21_days as DateTime){
+                if((after_270) is not after in_21_days as DateTime){
                     "invalidInThreeWeeks"
                 }else{
                     undefined
@@ -37,7 +37,7 @@ if (payload.v.0) {
     }
 } else {
     if (payload.r.0) {
-        let after_270 = payload.r.0 as DateTime + 270#days;
+        let after_270 = payload.r.0.fr as DateTime + 270#days;
             if((after_270) is not after cutoff as DateTime){
                 "invalidFromFirstFebruary"
             }else{
@@ -50,7 +50,7 @@ if (payload.v.0) {
     } else {
         if (payload.t.0){
             let after_270 = payload.t.0.sc as DateTime + 270#days;
-            if (payload.t.0.tt in [""] and payload.t.0.tr === ""){
+            if (payload.t.0.tt in ["LP217198-3"] and payload.t.0.tr === "260373001"){
                  /* positive antigen == recovery */
                              if((after_270) is not after cutoff as DateTime){
                                  "invalidFromFirstFebruary"

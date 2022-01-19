@@ -106,7 +106,7 @@
             {
               "if": [
                 {
-                  "not-before": [
+                  "not-after": [
                     {
                       "plusTime": [
                         {
@@ -149,7 +149,7 @@
                 {
                   "plusTime": [
                     {
-                      "var": "payload.r.0"
+                      "var": "payload.r.0.fr"
                     },
                     270,
                     "day"
@@ -172,7 +172,7 @@
                     {
                       "plusTime": [
                         {
-                          "var": "payload.r.0"
+                          "var": "payload.r.0.fr"
                         },
                         270,
                         "day"
@@ -212,7 +212,7 @@
                           "var": "payload.t.0.tt"
                         },
                         [
-                          ""
+                          "LP217198-3"
                         ]
                       ]
                     },
@@ -221,7 +221,7 @@
                         {
                           "var": "payload.t.0.tr"
                         },
-                        ""
+                        "260373001"
                       ]
                     }
                   ]
