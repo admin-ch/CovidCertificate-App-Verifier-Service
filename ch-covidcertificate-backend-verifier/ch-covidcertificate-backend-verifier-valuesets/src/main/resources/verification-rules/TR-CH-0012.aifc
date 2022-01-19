@@ -4,7 +4,7 @@
 */
 
 if (payload.t.0.tt === "LP217198-3" and payload.t.0.tr === "260373001") {
-  (now() + 0#days) is before (payload.t.0.sc as DateTime + 270#days)
+  (now() + 0#days) is before (payload.t.0.sc as DateTime + 365#days)
 } else {
   true
 }
