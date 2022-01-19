@@ -1157,7 +1157,8 @@
                 "COVOVAX",
                 "BBIBP-CorV_T",
                 "CoronaVac_T",
-                "Covaxin_T"
+                "Covaxin_T",
+                "NVX-CoV2373"
               ]
             ]
           },
@@ -1257,7 +1258,8 @@
                     "R-COVI",
                     "Covid-19-recombinant",
                     "COVOVAX",
-                    "EU/1/21/1618"
+                    "EU/1/21/1618",
+                    "NVX-CoV2373"
                   ]
                 ]
               }
@@ -1422,7 +1424,8 @@
                     "R-COVI",
                     "Covid-19-recombinant",
                     "EU/1/21/1618",
-                    "COVOVAX"
+                    "COVOVAX",
+                    "NVX-CoV2373"
                   ]
                 ]
               }
