@@ -27,7 +27,9 @@ switch(payload.h.mode){
                     }
                     _ => {"SUCCESS"}
                 }
-            }
+            } else {
+                "INVALID"
+           }
         }
     }
     "TWO_G_PLUS": if(payload.t.0 && payload.t.0.tt in ["medical-exemption"]) => {
