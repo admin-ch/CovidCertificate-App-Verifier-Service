@@ -6,7 +6,7 @@ if (payload.v.0) {
         "EU/1/20/1525" : if payload.v.0.dn === 1 => {
              payload.v.0.dt as DateTime + 386#days
         }
-        "EU/1/20/1525" : if payload.v.0.dn === 2 => {
+        "EU/1/20/1525" : if payload.v.0.dn >= 2 => {
                      payload.v.0.dt as DateTime + 364#days
                 }
         ["BBIBP-CorV_T","CoronaVac_T", "Covaxin_T"] => {
