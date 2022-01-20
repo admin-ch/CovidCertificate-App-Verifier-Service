@@ -61,6 +61,8 @@ if (payload.v.0) {
                                      undefined
                                  }
                              }
+            } else {
+               undefined
             }
         } else {
             undefined
