@@ -27,7 +27,8 @@ if (payload.v.0) {
       /* Special Tourist vaccines */
       "BBIBP-CorV_T",
       "CoronaVac_T",
-      "Covaxin_T"
+      "Covaxin_T",
+      "NVX-CoV2373"
   ]
 } else {
   true

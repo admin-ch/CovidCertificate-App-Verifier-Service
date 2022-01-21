@@ -4,9 +4,9 @@ Logic to display valid until date
 if (payload.v.0) {
     switch(payload.v.0.mp) {
         "EU/1/20/1525" : if payload.v.0.dn === 1 => {
-             payload.v.0.dt as DateTime + 386#days
+             payload.v.0.dt as DateTime + 385#days
         }
-        "EU/1/20/1525" : if payload.v.0.dn === 2 => {
+        "EU/1/20/1525" : if payload.v.0.dn >= 2 => {
                      payload.v.0.dt as DateTime + 364#days
                 }
         ["BBIBP-CorV_T","CoronaVac_T", "Covaxin_T"] => {
@@ -36,6 +36,7 @@ if (payload.v.0) {
         "R-COVI",
         "EU/1/21/1618",
         "COVOVAX",
+        "NVX-CoV2373",
         "Covid-19-recombinant"] : if payload.v.0.dn >= payload.v.0.sd => {
             /* If we have a 2 dose vaccine just show the dt + 364 days */
             payload.v.0.dt as DateTime + 364#days

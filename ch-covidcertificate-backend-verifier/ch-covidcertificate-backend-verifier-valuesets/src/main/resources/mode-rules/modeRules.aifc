@@ -8,20 +8,34 @@ switch(payload.h.mode){
     "TWO_G": if(payload.t.0 && payload.t.0.tt in ["medical-exemption"]) => {
             "SUCCESS"
     }
+    "TWO_G": if (payload.v.0) => {
+        "SUCCESS"
+    }
+    "TWO_G": if (payload.r.0) => {
+        "SUCCESS"
+    }
     "TWO_G" => {
         if (payload.h.isLight){
             "IS_LIGHT"
         }else{
             /* PCR and RAT tests are not valid in 2G, but antibody "tests" are since they count as recovery */
             if(payload.t.0){
-                if(payload.t.0.tt in ["LP6464-4", "LP217198-3"]){
-                   "INVALID"
-               }else{
-                   "SUCCESS"
-               }
-            }else{
-                "SUCCESS"
-            }
+                switch(payload.t.0.tt){
+                    /* PCR */
+                    ["LP6464-4"] => {"INVALID"}
+                    /* RAT */
+                    ["LP217198-3"] => {
+                        if (payload.t.0.tr === "260373001"){
+                             "SUCCESS"
+                        }else{
+                             "INVALID"
+                        }
+                    }
+                    _ => {"SUCCESS"}
+                }
+            } else {
+                "INVALID"
+           }
         }
     }
     "TWO_G_PLUS": if(payload.t.0 && payload.t.0.tt in ["medical-exemption"]) => {
@@ -49,11 +63,20 @@ switch(payload.h.mode){
            "SUCCESS_2G"
         }
     }
+    /* positive RAT is equivalent to recovery */
+    "TWO_G_PLUS": if (payload.t.0 && payload.t.0.tt in ["LP217198-3"] && payload.t.0.tr === "260373001") => {
+        if((now() + 0#days) is before (payload.t.0.sc as DateTime + 131#days)){
+           /* within 120 days after the recovery cert becomes valid (after the 10 day waiting period), a test is not required */
+           "SUCCESS"
+        }else{
+           /*First part of 2g plus*/
+           "SUCCESS_2G"
+        }
+    }
     "TWO_G_PLUS": if (payload.t.0) => {
         switch(payload.t.0.tt){
-            /* RAT and PCR tests are the + of 2G+ => SUCCESS_2G_PLUS */
+            /* PCR tests are the + of 2G+ => SUCCESS_2G_PLUS */
             ["LP6464-4", "LP217198-3"] => {"SUCCESS_2G_PLUS"}
-            /* Antibody tests count as recovery => SUCCESS_2G */
             ["94504-8"] => {"SUCCESS_2G"}
             _ => {"INVALID"}
         }
@@ -68,8 +91,12 @@ switch(payload.h.mode){
             /*IS LIGHT*/
             "IS_LIGHT"
     }
-    "TEST_CERT": if(payload.t.0 && payload.t.0.tt in ["LP6464-4", "LP217198-3"]) => {
+    "TEST_CERT": if(payload.t.0 && payload.t.0.tt in ["LP6464-4"]) => {
             "SUCCESS"
+    }
+    /* only negative RAT are treated like test certs */
+    "TEST_CERT": if(payload.t.0 && payload.t.0.tt in ["LP217198-3"] && payload.t.0.tr === "260373001") => {
+         "SUCCESS"
     }
     "TEST_CERT" => {
         "INVALID"

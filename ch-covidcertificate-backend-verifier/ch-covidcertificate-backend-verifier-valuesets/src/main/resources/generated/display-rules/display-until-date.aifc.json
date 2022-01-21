@@ -30,7 +30,7 @@
             {
               "var": "payload.v.0.dt"
             },
-            386,
+            385,
             "day"
           ]
         },
@@ -47,7 +47,7 @@
                   ]
                 },
                 {
-                  "===": [
+                  ">=": [
                     {
                       "var": "payload.v.0.dn"
                     },
@@ -194,6 +194,7 @@
                               "R-COVI",
                               "EU/1/21/1618",
                               "COVOVAX",
+                              "NVX-CoV2373",
                               "Covid-19-recombinant"
                             ]
                           ]

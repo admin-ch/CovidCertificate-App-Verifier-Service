@@ -17,7 +17,8 @@ if (payload.v.0
       "R-COVI",
       "Covid-19-recombinant",
       "EU/1/21/1618",
-      "COVOVAX"
+      "COVOVAX",
+      "NVX-CoV2373"
     ]) {
       (now() + 0#days) is before (payload.v.0.dt as DateTime + 365#days)
 } else {
