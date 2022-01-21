@@ -8,9 +8,9 @@ if (
   */
   payload.t.0 
   && 
-  payload.t.0.tt in ["LP217198-3", "LP6464-4"]) {
+  payload.t.0.tt in ["LP6464-4"]) {
     /*
-      tr: TestResult => needs to be negative 
+      tr: TestResult => needs to be negative for PCR
      */
     payload.t.0.tr === "260415000"
 } else {

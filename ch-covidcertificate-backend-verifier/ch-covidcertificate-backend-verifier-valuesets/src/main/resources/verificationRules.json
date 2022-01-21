@@ -262,7 +262,6 @@
                     "var": "payload.t.0.tt"
                   },
                   [
-                    "LP217198-3",
                     "LP6464-4"
                   ]
                 ]
@@ -367,17 +366,29 @@
       }
     },
     {
-      "inputParameter": "[\"t.0.tt\",\"t.0.sc\"]",
-      "description": "If the test type is \\\"RAT\\\" then the validation date must be before the date of sample collection plus 24 hours",
+      "inputParameter": "[\"t.0.tr\",\"t.0.tt\",\"t.0.sc\"]",
+      "description": "If the test is a negative \\\"RAT\\\" then the validation date must be before the date of sample collection plus 24 hoursFor positive, see TR-CH-0011 and 0012",
       "id": "TR-CH-0006",
       "logic": {
         "if": [
           {
-            "===": [
+            "and": [
               {
-                "var": "payload.t.0.tt"
+                "===": [
+                  {
+                    "var": "payload.t.0.tt"
+                  },
+                  "LP217198-3"
+                ]
               },
-              "LP217198-3"
+              {
+                "===": [
+                  {
+                    "var": "payload.t.0.tr"
+                  },
+                  "260415000"
+                ]
+              }
             ]
           },
           {
@@ -553,6 +564,110 @@
                     "var": "payload.t.0.sc"
                   },
                   365,
+                  "day"
+                ]
+              }
+            ]
+          },
+          true
+        ]
+      }
+    },
+    {
+      "inputParameter": "[\"t.0.tr\",\"t.0.tt\",\"t.0.sc\"]",
+      "description": "  Positive RAT == recovery  => valid after 10 days",
+      "id": "TR-CH-0011",
+      "logic": {
+        "if": [
+          {
+            "and": [
+              {
+                "===": [
+                  {
+                    "var": "payload.t.0.tt"
+                  },
+                  "LP217198-3"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "payload.t.0.tr"
+                  },
+                  "260373001"
+                ]
+              }
+            ]
+          },
+          {
+            ">": [
+              {
+                "plusTime": [
+                  {
+                    "var": "external.validationClock"
+                  },
+                  0,
+                  "day"
+                ]
+              },
+              {
+                "plusTime": [
+                  {
+                    "var": "payload.t.0.sc"
+                  },
+                  10,
+                  "day"
+                ]
+              }
+            ]
+          },
+          true
+        ]
+      }
+    },
+    {
+      "inputParameter": "[\"t.0.tr\",\"t.0.tt\",\"t.0.sc\"]",
+      "description": "  Positive RAT == recovery  => valid for 270 days",
+      "id": "TR-CH-0012",
+      "logic": {
+        "if": [
+          {
+            "and": [
+              {
+                "===": [
+                  {
+                    "var": "payload.t.0.tt"
+                  },
+                  "LP217198-3"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "payload.t.0.tr"
+                  },
+                  "260373001"
+                ]
+              }
+            ]
+          },
+          {
+            "<": [
+              {
+                "plusTime": [
+                  {
+                    "var": "external.validationClock"
+                  },
+                  0,
+                  "day"
+                ]
+              },
+              {
+                "plusTime": [
+                  {
+                    "var": "payload.t.0.sc"
+                  },
+                  270,
                   "day"
                 ]
               }

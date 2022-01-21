@@ -379,7 +379,6 @@
                     "var": "payload.t.0.tt"
                   },
                   [
-                    "LP217198-3",
                     "LP6464-4"
                   ]
                 ]
@@ -559,11 +558,23 @@
       "logic": {
         "if": [
           {
-            "===": [
+            "and": [
               {
-                "var": "payload.t.0.tt"
+                "===": [
+                  {
+                    "var": "payload.t.0.tt"
+                  },
+                  "LP217198-3"
+                ]
               },
-              "LP217198-3"
+              {
+                "===": [
+                  {
+                    "var": "payload.t.0.tr"
+                  },
+                  "260415000"
+                ]
+              }
             ]
           },
           {
@@ -592,12 +603,13 @@
         ]
       },
       "affectedFields": [
+        "t.0.tr",
         "t.0.tt",
         "t.0.sc"
       ],
       "description": [
         {
-          "desc": "If the test type is \\\"RAT\\\" then the validation date must be before the date of sample collection plus 24 hours",
+          "desc": "If the test is a negative \\\"RAT\\\" then the validation date must be before the date of sample collection plus 24 hoursFor positive, see TR-CH-0011 and 0012",
           "lang": "en"
         }
       ]
@@ -823,6 +835,146 @@
       "description": [
         {
           "desc": "Exemption certificates are valid for 365 days",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "country": "CH",
+      "engine": "CertLogic",
+      "engineVersion": "0.7.5",
+      "schemaVersion": "1.0.0",
+      "type": "Acceptance",
+      "validTo": "2031-01-01T00:00:00Z",
+      "identifier": "TR-CH-0011",
+      "version": "1.0.7",
+      "validFrom": "2021-12-17T00:00:00Z",
+      "certificateType": "Test",
+      "logic": {
+        "if": [
+          {
+            "and": [
+              {
+                "===": [
+                  {
+                    "var": "payload.t.0.tt"
+                  },
+                  "LP217198-3"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "payload.t.0.tr"
+                  },
+                  "260373001"
+                ]
+              }
+            ]
+          },
+          {
+            "after": [
+              {
+                "plusTime": [
+                  {
+                    "var": "external.validationClock"
+                  },
+                  0,
+                  "day"
+                ]
+              },
+              {
+                "plusTime": [
+                  {
+                    "var": "payload.t.0.sc"
+                  },
+                  10,
+                  "day"
+                ]
+              }
+            ]
+          },
+          true
+        ]
+      },
+      "affectedFields": [
+        "t.0.tr",
+        "t.0.tt",
+        "t.0.sc"
+      ],
+      "description": [
+        {
+          "desc": "  Positive RAT == recovery  => valid after 10 days",
+          "lang": "en"
+        }
+      ]
+    },
+    {
+      "country": "CH",
+      "engine": "CertLogic",
+      "engineVersion": "0.7.5",
+      "schemaVersion": "1.0.0",
+      "type": "Acceptance",
+      "validTo": "2031-01-01T00:00:00Z",
+      "identifier": "TR-CH-0012",
+      "version": "1.0.7",
+      "validFrom": "2021-12-17T00:00:00Z",
+      "certificateType": "Test",
+      "logic": {
+        "if": [
+          {
+            "and": [
+              {
+                "===": [
+                  {
+                    "var": "payload.t.0.tt"
+                  },
+                  "LP217198-3"
+                ]
+              },
+              {
+                "===": [
+                  {
+                    "var": "payload.t.0.tr"
+                  },
+                  "260373001"
+                ]
+              }
+            ]
+          },
+          {
+            "before": [
+              {
+                "plusTime": [
+                  {
+                    "var": "external.validationClock"
+                  },
+                  0,
+                  "day"
+                ]
+              },
+              {
+                "plusTime": [
+                  {
+                    "var": "payload.t.0.sc"
+                  },
+                  270,
+                  "day"
+                ]
+              }
+            ]
+          },
+          true
+        ]
+      },
+      "affectedFields": [
+        "t.0.tr",
+        "t.0.tt",
+        "t.0.sc"
+      ],
+      "description": [
+        {
+          "desc": "  Positive RAT == recovery  => valid for 270 days",
           "lang": "en"
         }
       ]
@@ -2020,12 +2172,45 @@
                 "var": "payload.t.0"
               },
               {
-                "plusTime": [
+                "if": [
                   {
-                    "var": "payload.t.0.sc"
+                    "and": [
+                      {
+                        "===": [
+                          {
+                            "var": "payload.t.0.tt"
+                          },
+                          "LP217198-3"
+                        ]
+                      },
+                      {
+                        "===": [
+                          {
+                            "var": "payload.t.0.tr"
+                          },
+                          "260373001"
+                        ]
+                      }
+                    ]
                   },
-                  0,
-                  "day"
+                  {
+                    "plusTime": [
+                      {
+                        "var": "payload.t.0.sc"
+                      },
+                      10,
+                      "day"
+                    ]
+                  },
+                  {
+                    "plusTime": [
+                      {
+                        "var": "payload.t.0.sc"
+                      },
+                      0,
+                      "day"
+                    ]
+                  }
                 ]
               },
               {
@@ -2321,12 +2506,33 @@
                         ]
                       },
                       {
-                        "plusTime": [
+                        "if": [
                           {
-                            "var": "payload.t.0.sc"
+                            "===": [
+                              {
+                                "var": "payload.t.0.tr"
+                              },
+                              "260373001"
+                            ]
                           },
-                          24,
-                          "hour"
+                          {
+                            "plusTime": [
+                              {
+                                "var": "payload.t.0.sc"
+                              },
+                              270,
+                              "day"
+                            ]
+                          },
+                          {
+                            "plusTime": [
+                              {
+                                "var": "payload.t.0.sc"
+                              },
+                              24,
+                              "hour"
+                            ]
+                          }
                         ]
                       },
                       {
@@ -2423,6 +2629,50 @@
                           [
                             "medical-exemption"
                           ]
+                        ]
+                      },
+                      false
+                    ]
+                  }
+                ]
+              },
+              {
+                "!": [
+                  {
+                    "if": [
+                      {
+                        "var": "payload.t.0"
+                      },
+                      {
+                        "and": [
+                          {
+                            "in": [
+                              {
+                                "var": "payload.t.0.tt"
+                              },
+                              [
+                                "LP217198-3"
+                              ]
+                            ]
+                          },
+                          {
+                            "===": [
+                              {
+                                "var": "payload.t.0.tr"
+                              },
+                              "260373001"
+                            ]
+                          },
+                          {
+                            "in": [
+                              {
+                                "var": "payload.t.0.co"
+                              },
+                              [
+                                "CH"
+                              ]
+                            ]
+                          }
                         ]
                       },
                       false
