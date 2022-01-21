@@ -8,6 +8,12 @@ switch(payload.h.mode){
     "TWO_G": if(payload.t.0 && payload.t.0.tt in ["medical-exemption"]) => {
             "SUCCESS"
     }
+    "TWO_G": if (payload.v.0) => {
+        "SUCCESS"
+    }
+    "TWO_G": if (payload.r.0) => {
+        "SUCCESS"
+    }
     "TWO_G" => {
         if (payload.h.isLight){
             "IS_LIGHT"

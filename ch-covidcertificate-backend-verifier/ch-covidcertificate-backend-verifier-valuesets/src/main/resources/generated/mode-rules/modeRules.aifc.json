@@ -68,73 +68,21 @@
             {
               "if": [
                 {
-                  "===": [
+                  "and": [
                     {
-                      "var": "payload.h.mode"
-                    },
-                    "TWO_G"
-                  ]
-                },
-                {
-                  "if": [
-                    {
-                      "var": "payload.h.isLight"
-                    },
-                    "IS_LIGHT",
-                    {
-                      "if": [
+                      "===": [
                         {
-                          "var": "payload.t.0"
+                          "var": "payload.h.mode"
                         },
-                        {
-                          "if": [
-                            {
-                              "in": [
-                                {
-                                  "var": "payload.t.0.tt"
-                                },
-                                [
-                                  "LP6464-4"
-                                ]
-                              ]
-                            },
-                            "INVALID",
-                            {
-                              "if": [
-                                {
-                                  "in": [
-                                    {
-                                      "var": "payload.t.0.tt"
-                                    },
-                                    [
-                                      "LP217198-3"
-                                    ]
-                                  ]
-                                },
-                                {
-                                  "if": [
-                                    {
-                                      "===": [
-                                        {
-                                          "var": "payload.t.0.tr"
-                                        },
-                                        "260373001"
-                                      ]
-                                    },
-                                    "SUCCESS",
-                                    "INVALID"
-                                  ]
-                                },
-                                "SUCCESS"
-                              ]
-                            }
-                          ]
-                        },
-                        "INVALID"
+                        "TWO_G"
                       ]
+                    },
+                    {
+                      "var": "payload.v.0"
                     }
                   ]
                 },
+                "SUCCESS",
                 {
                   "if": [
                     {
@@ -144,21 +92,11 @@
                             {
                               "var": "payload.h.mode"
                             },
-                            "TWO_G_PLUS"
+                            "TWO_G"
                           ]
                         },
                         {
-                          "var": "payload.t.0"
-                        },
-                        {
-                          "in": [
-                            {
-                              "var": "payload.t.0.tt"
-                            },
-                            [
-                              "medical-exemption"
-                            ]
-                          ]
+                          "var": "payload.r.0"
                         }
                       ]
                     },
@@ -166,21 +104,73 @@
                     {
                       "if": [
                         {
-                          "and": [
+                          "===": [
                             {
-                              "===": [
-                                {
-                                  "var": "payload.h.mode"
-                                },
-                                "TWO_G_PLUS"
-                              ]
+                              "var": "payload.h.mode"
                             },
+                            "TWO_G"
+                          ]
+                        },
+                        {
+                          "if": [
                             {
                               "var": "payload.h.isLight"
+                            },
+                            "IS_LIGHT",
+                            {
+                              "if": [
+                                {
+                                  "var": "payload.t.0"
+                                },
+                                {
+                                  "if": [
+                                    {
+                                      "in": [
+                                        {
+                                          "var": "payload.t.0.tt"
+                                        },
+                                        [
+                                          "LP6464-4"
+                                        ]
+                                      ]
+                                    },
+                                    "INVALID",
+                                    {
+                                      "if": [
+                                        {
+                                          "in": [
+                                            {
+                                              "var": "payload.t.0.tt"
+                                            },
+                                            [
+                                              "LP217198-3"
+                                            ]
+                                          ]
+                                        },
+                                        {
+                                          "if": [
+                                            {
+                                              "===": [
+                                                {
+                                                  "var": "payload.t.0.tr"
+                                                },
+                                                "260373001"
+                                              ]
+                                            },
+                                            "SUCCESS",
+                                            "INVALID"
+                                          ]
+                                        },
+                                        "SUCCESS"
+                                      ]
+                                    }
+                                  ]
+                                },
+                                "INVALID"
+                              ]
                             }
                           ]
                         },
-                        "IS_LIGHT",
                         {
                           "if": [
                             {
@@ -194,38 +184,21 @@
                                   ]
                                 },
                                 {
-                                  "var": "payload.v.0"
+                                  "var": "payload.t.0"
+                                },
+                                {
+                                  "in": [
+                                    {
+                                      "var": "payload.t.0.tt"
+                                    },
+                                    [
+                                      "medical-exemption"
+                                    ]
+                                  ]
                                 }
                               ]
                             },
-                            {
-                              "if": [
-                                {
-                                  "before": [
-                                    {
-                                      "plusTime": [
-                                        {
-                                          "var": "external.validationClock"
-                                        },
-                                        0,
-                                        "day"
-                                      ]
-                                    },
-                                    {
-                                      "plusTime": [
-                                        {
-                                          "var": "payload.v.0.dt"
-                                        },
-                                        121,
-                                        "day"
-                                      ]
-                                    }
-                                  ]
-                                },
-                                "SUCCESS",
-                                "SUCCESS_2G"
-                              ]
-                            },
+                            "SUCCESS",
                             {
                               "if": [
                                 {
@@ -239,38 +212,11 @@
                                       ]
                                     },
                                     {
-                                      "var": "payload.r.0"
+                                      "var": "payload.h.isLight"
                                     }
                                   ]
                                 },
-                                {
-                                  "if": [
-                                    {
-                                      "before": [
-                                        {
-                                          "plusTime": [
-                                            {
-                                              "var": "external.validationClock"
-                                            },
-                                            0,
-                                            "day"
-                                          ]
-                                        },
-                                        {
-                                          "plusTime": [
-                                            {
-                                              "var": "payload.r.0.fr"
-                                            },
-                                            131,
-                                            "day"
-                                          ]
-                                        }
-                                      ]
-                                    },
-                                    "SUCCESS",
-                                    "SUCCESS_2G"
-                                  ]
-                                },
+                                "IS_LIGHT",
                                 {
                                   "if": [
                                     {
@@ -284,25 +230,7 @@
                                           ]
                                         },
                                         {
-                                          "var": "payload.t.0"
-                                        },
-                                        {
-                                          "in": [
-                                            {
-                                              "var": "payload.t.0.tt"
-                                            },
-                                            [
-                                              "LP217198-3"
-                                            ]
-                                          ]
-                                        },
-                                        {
-                                          "===": [
-                                            {
-                                              "var": "payload.t.0.tr"
-                                            },
-                                            "260373001"
-                                          ]
+                                          "var": "payload.v.0"
                                         }
                                       ]
                                     },
@@ -322,9 +250,9 @@
                                             {
                                               "plusTime": [
                                                 {
-                                                  "var": "payload.t.0.sc"
+                                                  "var": "payload.v.0.dt"
                                                 },
-                                                131,
+                                                121,
                                                 "day"
                                               ]
                                             }
@@ -347,53 +275,101 @@
                                               ]
                                             },
                                             {
-                                              "var": "payload.t.0"
+                                              "var": "payload.r.0"
                                             }
                                           ]
                                         },
                                         {
                                           "if": [
                                             {
-                                              "in": [
+                                              "before": [
                                                 {
-                                                  "var": "payload.t.0.tt"
+                                                  "plusTime": [
+                                                    {
+                                                      "var": "external.validationClock"
+                                                    },
+                                                    0,
+                                                    "day"
+                                                  ]
                                                 },
-                                                [
-                                                  "LP6464-4",
-                                                  "LP217198-3"
-                                                ]
+                                                {
+                                                  "plusTime": [
+                                                    {
+                                                      "var": "payload.r.0.fr"
+                                                    },
+                                                    131,
+                                                    "day"
+                                                  ]
+                                                }
                                               ]
                                             },
-                                            "SUCCESS_2G_PLUS",
+                                            "SUCCESS",
+                                            "SUCCESS_2G"
+                                          ]
+                                        },
+                                        {
+                                          "if": [
                                             {
-                                              "if": [
+                                              "and": [
+                                                {
+                                                  "===": [
+                                                    {
+                                                      "var": "payload.h.mode"
+                                                    },
+                                                    "TWO_G_PLUS"
+                                                  ]
+                                                },
+                                                {
+                                                  "var": "payload.t.0"
+                                                },
                                                 {
                                                   "in": [
                                                     {
                                                       "var": "payload.t.0.tt"
                                                     },
                                                     [
-                                                      "94504-8"
+                                                      "LP217198-3"
                                                     ]
                                                   ]
                                                 },
-                                                "SUCCESS_2G",
-                                                "INVALID"
-                                              ]
-                                            }
-                                          ]
-                                        },
-                                        {
-                                          "if": [
-                                            {
-                                              "===": [
                                                 {
-                                                  "var": "payload.h.mode"
-                                                },
-                                                "TWO_G_PLUS"
+                                                  "===": [
+                                                    {
+                                                      "var": "payload.t.0.tr"
+                                                    },
+                                                    "260373001"
+                                                  ]
+                                                }
                                               ]
                                             },
-                                            "INVALID",
+                                            {
+                                              "if": [
+                                                {
+                                                  "before": [
+                                                    {
+                                                      "plusTime": [
+                                                        {
+                                                          "var": "external.validationClock"
+                                                        },
+                                                        0,
+                                                        "day"
+                                                      ]
+                                                    },
+                                                    {
+                                                      "plusTime": [
+                                                        {
+                                                          "var": "payload.t.0.sc"
+                                                        },
+                                                        131,
+                                                        "day"
+                                                      ]
+                                                    }
+                                                  ]
+                                                },
+                                                "SUCCESS",
+                                                "SUCCESS_2G"
+                                              ]
+                                            },
                                             {
                                               "if": [
                                                 {
@@ -403,43 +379,57 @@
                                                         {
                                                           "var": "payload.h.mode"
                                                         },
-                                                        "TEST_CERT"
+                                                        "TWO_G_PLUS"
                                                       ]
                                                     },
                                                     {
                                                       "var": "payload.t.0"
-                                                    },
+                                                    }
+                                                  ]
+                                                },
+                                                {
+                                                  "if": [
                                                     {
                                                       "in": [
                                                         {
                                                           "var": "payload.t.0.tt"
                                                         },
                                                         [
-                                                          "medical-exemption"
+                                                          "LP6464-4",
+                                                          "LP217198-3"
                                                         ]
+                                                      ]
+                                                    },
+                                                    "SUCCESS_2G_PLUS",
+                                                    {
+                                                      "if": [
+                                                        {
+                                                          "in": [
+                                                            {
+                                                              "var": "payload.t.0.tt"
+                                                            },
+                                                            [
+                                                              "94504-8"
+                                                            ]
+                                                          ]
+                                                        },
+                                                        "SUCCESS_2G",
+                                                        "INVALID"
                                                       ]
                                                     }
                                                   ]
                                                 },
-                                                "SUCCESS",
                                                 {
                                                   "if": [
                                                     {
-                                                      "and": [
+                                                      "===": [
                                                         {
-                                                          "===": [
-                                                            {
-                                                              "var": "payload.h.mode"
-                                                            },
-                                                            "TEST_CERT"
-                                                          ]
+                                                          "var": "payload.h.mode"
                                                         },
-                                                        {
-                                                          "var": "payload.h.isLight"
-                                                        }
+                                                        "TWO_G_PLUS"
                                                       ]
                                                     },
-                                                    "IS_LIGHT",
+                                                    "INVALID",
                                                     {
                                                       "if": [
                                                         {
@@ -461,7 +451,7 @@
                                                                   "var": "payload.t.0.tt"
                                                                 },
                                                                 [
-                                                                  "LP6464-4"
+                                                                  "medical-exemption"
                                                                 ]
                                                               ]
                                                             }
@@ -481,41 +471,91 @@
                                                                   ]
                                                                 },
                                                                 {
-                                                                  "var": "payload.t.0"
-                                                                },
-                                                                {
-                                                                  "in": [
-                                                                    {
-                                                                      "var": "payload.t.0.tt"
-                                                                    },
-                                                                    [
-                                                                      "LP217198-3"
-                                                                    ]
-                                                                  ]
-                                                                },
-                                                                {
-                                                                  "===": [
-                                                                    {
-                                                                      "var": "payload.t.0.tr"
-                                                                    },
-                                                                    "260373001"
-                                                                  ]
+                                                                  "var": "payload.h.isLight"
                                                                 }
                                                               ]
                                                             },
-                                                            "SUCCESS",
+                                                            "IS_LIGHT",
                                                             {
                                                               "if": [
                                                                 {
-                                                                  "===": [
+                                                                  "and": [
                                                                     {
-                                                                      "var": "payload.h.mode"
+                                                                      "===": [
+                                                                        {
+                                                                          "var": "payload.h.mode"
+                                                                        },
+                                                                        "TEST_CERT"
+                                                                      ]
                                                                     },
-                                                                    "TEST_CERT"
+                                                                    {
+                                                                      "var": "payload.t.0"
+                                                                    },
+                                                                    {
+                                                                      "in": [
+                                                                        {
+                                                                          "var": "payload.t.0.tt"
+                                                                        },
+                                                                        [
+                                                                          "LP6464-4"
+                                                                        ]
+                                                                      ]
+                                                                    }
                                                                   ]
                                                                 },
-                                                                "INVALID",
-                                                                "UNKNOWN_MODE"
+                                                                "SUCCESS",
+                                                                {
+                                                                  "if": [
+                                                                    {
+                                                                      "and": [
+                                                                        {
+                                                                          "===": [
+                                                                            {
+                                                                              "var": "payload.h.mode"
+                                                                            },
+                                                                            "TEST_CERT"
+                                                                          ]
+                                                                        },
+                                                                        {
+                                                                          "var": "payload.t.0"
+                                                                        },
+                                                                        {
+                                                                          "in": [
+                                                                            {
+                                                                              "var": "payload.t.0.tt"
+                                                                            },
+                                                                            [
+                                                                              "LP217198-3"
+                                                                            ]
+                                                                          ]
+                                                                        },
+                                                                        {
+                                                                          "===": [
+                                                                            {
+                                                                              "var": "payload.t.0.tr"
+                                                                            },
+                                                                            "260373001"
+                                                                          ]
+                                                                        }
+                                                                      ]
+                                                                    },
+                                                                    "SUCCESS",
+                                                                    {
+                                                                      "if": [
+                                                                        {
+                                                                          "===": [
+                                                                            {
+                                                                              "var": "payload.h.mode"
+                                                                            },
+                                                                            "TEST_CERT"
+                                                                          ]
+                                                                        },
+                                                                        "INVALID",
+                                                                        "UNKNOWN_MODE"
+                                                                      ]
+                                                                    }
+                                                                  ]
+                                                                }
                                                               ]
                                                             }
                                                           ]
