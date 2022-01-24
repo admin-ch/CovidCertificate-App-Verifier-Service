@@ -2,6 +2,10 @@
 Check whether to display a notice that a cert is about to expire
 */
 
+import "../rule-constants/vaccine.aifc";
+import "../rule-constants/test.aifc";
+import "../rule-constants/recovery.aifc";
+
 let in_21_days = now() + 21#days;
 let cutoff = "2022-02-01";
 
@@ -10,7 +14,7 @@ if (payload.v.0) {
     let after_291 = payload.v.0.dt as DateTime + 291#days;
 
     switch(payload.v.0.mp) {
-        "EU/1/20/1525" : if payload.v.0.dn === 1 => {
+        SINGLE_DOSE_VACCINES : if payload.v.0.dn === 1 => {
              /* single-dose JJ gets 21 days extra */
              if((after_291) is not after cutoff as DateTime){
                  "invalidFromFirstFebruary"
@@ -50,7 +54,7 @@ if (payload.v.0) {
     } else {
         if (payload.t.0){
             let after_270 = payload.t.0.sc as DateTime + 270#days;
-            if (payload.t.0.tt in ["LP217198-3"] and payload.t.0.tr === "260373001"){
+            if (payload.t.0.tt in [ TEST_TYPE_RAT ] and payload.t.0.tr === TEST_RESULT_POSITIVE){
                  /* positive antigen == recovery */
                              if((after_270) is not after cutoff as DateTime){
                                  "invalidFromFirstFebruary"

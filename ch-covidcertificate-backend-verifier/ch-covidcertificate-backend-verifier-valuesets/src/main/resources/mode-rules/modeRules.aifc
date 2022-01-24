@@ -1,11 +1,16 @@
+import "../rule-constants/test.aifc";
+
+let TWOG_PLUS_PERIOD_VACCINE = 121;
+let TWOG_PLUS_PERIOD_RECOVERY = 131;
+
 switch(payload.h.mode){
-    "THREE_G": if(payload.t.0 && payload.t.0.tt in ["medical-exemption"]) => {
+    "THREE_G": if(payload.t.0 && payload.t.0.tt in [ TEST_TYPE_EXEMPTION ]) => {
         "SUCCESS"
     }
     "THREE_G" => {
         "SUCCESS"
     }
-    "TWO_G": if(payload.t.0 && payload.t.0.tt in ["medical-exemption"]) => {
+    "TWO_G": if(payload.t.0 && payload.t.0.tt in [ TEST_TYPE_EXEMPTION ]) => {
             "SUCCESS"
     }
     "TWO_G": if (payload.v.0) => {
@@ -21,11 +26,10 @@ switch(payload.h.mode){
             /* PCR and RAT tests are not valid in 2G, but antibody "tests" are since they count as recovery */
             if(payload.t.0){
                 switch(payload.t.0.tt){
-                    /* PCR */
-                    ["LP6464-4"] => {"INVALID"}
+                    [ TEST_TYPE_PCR ] => {"INVALID"}
                     /* RAT */
-                    ["LP217198-3"] => {
-                        if (payload.t.0.tr === "260373001"){
+                    [ TEST_TYPE_RAT ] => {
+                        if (payload.t.0.tr == TEST_RESULT_POSITIVE ){
                              "SUCCESS"
                         }else{
                              "INVALID"
@@ -38,7 +42,7 @@ switch(payload.h.mode){
            }
         }
     }
-    "TWO_G_PLUS": if(payload.t.0 && payload.t.0.tt in ["medical-exemption"]) => {
+    "TWO_G_PLUS": if(payload.t.0 && payload.t.0.tt in [ TEST_TYPE_EXEMPTION ]) => {
             "SUCCESS"
     }
     "TWO_G_PLUS": if (payload.h.isLight) => {
@@ -46,7 +50,7 @@ switch(payload.h.mode){
         "IS_LIGHT"
     }
     "TWO_G_PLUS": if (payload.v.0) => {
-        if((now() + 0#days) is before (payload.v.0.dt as DateTime + 121#days)){
+        if((now() + 0#days) is before (payload.v.0.dt as DateTime + TWOG_PLUS_PERIOD_VACCINE #days)){
             /* within 120 days, a test is not required */
             "SUCCESS"
         }else{
@@ -55,7 +59,7 @@ switch(payload.h.mode){
         }
     }
     "TWO_G_PLUS": if (payload.r.0) => {
-        if((now() + 0#days) is before (payload.r.0.fr as DateTime + 131#days)){
+        if((now() + 0#days) is before (payload.r.0.fr as DateTime + TWOG_PLUS_PERIOD_RECOVERY #days)){
            /* within 120 days after the recovery cert becomes valid (after the 10 day waiting period), a test is not required */
            "SUCCESS"
         }else{
@@ -64,8 +68,8 @@ switch(payload.h.mode){
         }
     }
     /* positive RAT is equivalent to recovery */
-    "TWO_G_PLUS": if (payload.t.0 && payload.t.0.tt in ["LP217198-3"] && payload.t.0.tr === "260373001") => {
-        if((now() + 0#days) is before (payload.t.0.sc as DateTime + 131#days)){
+    "TWO_G_PLUS": if (payload.t.0 && payload.t.0.tt in [ TEST_TYPE_RAT ] && payload.t.0.tr === TEST_RESULT_POSITIVE ) => {
+        if((now() + 0#days) is before (payload.t.0.sc as DateTime + TWOG_PLUS_PERIOD_RECOVERY #days)){
            /* within 120 days after the recovery cert becomes valid (after the 10 day waiting period), a test is not required */
            "SUCCESS"
         }else{
@@ -76,26 +80,26 @@ switch(payload.h.mode){
     "TWO_G_PLUS": if (payload.t.0) => {
         switch(payload.t.0.tt){
             /* PCR tests are the + of 2G+ => SUCCESS_2G_PLUS */
-            ["LP6464-4", "LP217198-3"] => {"SUCCESS_2G_PLUS"}
-            ["94504-8"] => {"SUCCESS_2G"}
+            [ TEST_TYPE_RAT, TEST_TYPE_PCR ] => {"SUCCESS_2G_PLUS"}
+            [ TEST_TYPE_SERO ] => {"SUCCESS_2G"}
             _ => {"INVALID"}
         }
     }
     "TWO_G_PLUS" => {
        "INVALID"
     }
-    "TEST_CERT": if(payload.t.0 && payload.t.0.tt in ["medical-exemption"]) => {
+    "TEST_CERT": if(payload.t.0 && payload.t.0.tt in [ TEST_TYPE_EXEMPTION ]) => {
             "SUCCESS"
     }
     "TEST_CERT": if (payload.h.isLight) => {
             /*IS LIGHT*/
             "IS_LIGHT"
     }
-    "TEST_CERT": if(payload.t.0 && payload.t.0.tt in ["LP6464-4"]) => {
+    "TEST_CERT": if(payload.t.0 && payload.t.0.tt in [ TEST_TYPE_PCR ]) => {
             "SUCCESS"
     }
     /* only negative RAT are treated like test certs */
-    "TEST_CERT": if(payload.t.0 && payload.t.0.tt in ["LP217198-3"] && payload.t.0.tr === "260373001") => {
+    "TEST_CERT": if(payload.t.0 && payload.t.0.tt in [ TEST_TYPE_RAT ] && payload.t.0.tr === TEST_RESULT_NEGATIVE ) => {
          "SUCCESS"
     }
     "TEST_CERT" => {

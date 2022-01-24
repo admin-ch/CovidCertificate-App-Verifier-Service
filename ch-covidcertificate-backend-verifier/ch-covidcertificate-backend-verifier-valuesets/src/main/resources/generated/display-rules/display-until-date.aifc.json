@@ -8,11 +8,13 @@
         {
           "and": [
             {
-              "===": [
+              "in": [
                 {
                   "var": "payload.v.0.mp"
                 },
-                "EU/1/20/1525"
+                [
+                  "EU/1/20/1525"
+                ]
               ]
             },
             {
@@ -39,11 +41,13 @@
             {
               "and": [
                 {
-                  "===": [
+                  "in": [
                     {
                       "var": "payload.v.0.mp"
                     },
-                    "EU/1/20/1525"
+                    [
+                      "EU/1/20/1525"
+                    ]
                   ]
                 },
                 {
@@ -187,15 +191,18 @@
                               "EU/1/20/1528",
                               "EU/1/20/1507",
                               "EU/1/21/1529",
+                              "EU/1/21/1618",
+                              "NVX-CoV2373",
                               "CoronaVac",
                               "BBIBP-CorV",
                               "Covishield",
                               "Covaxin",
                               "R-COVI",
-                              "EU/1/21/1618",
+                              "Covid-19-recombinant",
                               "COVOVAX",
-                              "NVX-CoV2373",
-                              "Covid-19-recombinant"
+                              "BBIBP-CorV_T",
+                              "CoronaVac_T",
+                              "Covaxin_T"
                             ]
                           ]
                         },

@@ -1,8 +1,11 @@
 /*
 If the test type is \"PCR\" then the validation date must be before the date of sample collection plus 72 hours
 */
-if (payload.t.0.tt === "LP6464-4") {
-  (now() + 0#days) is before (payload.t.0.sc as DateTime + 72#hours)
+
+import "../rule-constants/test.aifc";
+
+if (payload.t.0.tt === TEST_TYPE_PCR) {
+  (now() + 0#days) is before (payload.t.0.sc as DateTime + PCR_VALIDITY #hours)
 } else {
   true
 }
