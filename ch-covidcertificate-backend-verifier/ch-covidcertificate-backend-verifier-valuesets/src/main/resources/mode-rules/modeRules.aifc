@@ -95,7 +95,7 @@ switch(payload.h.mode){
             "SUCCESS"
     }
     /* only negative RAT are treated like test certs */
-    "TEST_CERT": if(payload.t.0 && payload.t.0.tt in ["LP217198-3"] && payload.t.0.tr === "260373001") => {
+    "TEST_CERT": if(payload.t.0 && payload.t.0.tt in ["LP217198-3"] && payload.t.0.tr === "260415000") => {
          "SUCCESS"
     }
     "TEST_CERT" => {
