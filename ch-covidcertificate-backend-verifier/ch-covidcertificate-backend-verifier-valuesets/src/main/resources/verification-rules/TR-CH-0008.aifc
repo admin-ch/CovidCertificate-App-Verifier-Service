@@ -2,12 +2,14 @@
 For serum antibody tests and exemption certificates, the result must be positive.
 */
 
-if(payload.t.0 && payload.t.0.tt in ["94504-8", "medical-exemption"]) {
+import "../rule-constants/test.aifc";
+
+if(payload.t.0 && payload.t.0.tt in [TEST_TYPE_SERO, TEST_TYPE_EXEMPTION]) {
   /*
     tr: TestResult
     260373001: Positive test result
   */
-  payload.t.0.tr === "260373001"
+  payload.t.0.tr === TEST_RESULT_POSITIVE
 } else {
   true
 }

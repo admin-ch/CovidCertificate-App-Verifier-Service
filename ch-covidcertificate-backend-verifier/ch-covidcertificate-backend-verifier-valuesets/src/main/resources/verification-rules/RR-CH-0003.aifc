@@ -1,8 +1,11 @@
 /*
 The validation date must be before the date of first positive test plus 365 days
 */
+
+import "../rule-constants/recovery.aifc";
+
 if (payload.r.0) {
-  (now() + 0#day) is before (payload.r.0.fr as DateTime + 365#days)
+  (now() + 0#day) is before (payload.r.0.fr as DateTime + RECOVERY_VALIDITY #days)
 } else {
   true
 }

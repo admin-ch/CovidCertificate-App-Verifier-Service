@@ -1,35 +1,14 @@
 /*
 Only vaccines in the allowed valueset that have been approved by the EMA or are otherwise accepted in Switzerland are allowed.
 */
+
+import "../rule-constants/vaccine.aifc";
+
 if (payload.v.0) {
   /*
     mp: Medical Product => specifies vaccines
   */
-  payload.v.0.mp in [
-      /* Comirnaty (BioNTech) */
-      "EU/1/20/1528",
-      /* Spikevax (Moderna) */
-      "EU/1/20/1507",
-      /* Vaxzevria (AstraZeneca) */
-      "EU/1/21/1529",
-      /* COVID-19 Vaccine Janssen */
-      "EU/1/20/1525",
-      /* Nuvavaxovid */
-      "EU/1/21/1618",
-      "CoronaVac",
-      "BBIBP-CorV",
-      "Covishield",
-      "Covaxin",
-      /* AstraZeneca-licensed products */
-      "R-COVI",
-      "Covid-19-recombinant",
-      "COVOVAX",
-      /* Special Tourist vaccines */
-      "BBIBP-CorV_T",
-      "CoronaVac_T",
-      "Covaxin_T",
-      "NVX-CoV2373"
-  ]
+  payload.v.0.mp in ALL_VACCINES
 } else {
   true
 }

@@ -282,7 +282,7 @@
     },
     {
       "inputParameter": "[\"t.0\",\"t.0.tt\"]",
-      "description": "The test type must be one of the value set list (RAT OR NAA or serum antibody).",
+      "description": "The test type must be one of the value set list (RAT OR NAA or serum antibody or exemption).",
       "id": "TR-CH-0002",
       "logic": {
         "if": [
@@ -295,8 +295,8 @@
                 "var": "payload.t.0.tt"
               },
               [
-                "LP217198-3",
                 "LP6464-4",
+                "LP217198-3",
                 "94504-8",
                 "medical-exemption"
               ]
@@ -764,6 +764,7 @@
                 "EU/1/21/1529",
                 "EU/1/20/1525",
                 "EU/1/21/1618",
+                "NVX-CoV2373",
                 "CoronaVac",
                 "BBIBP-CorV",
                 "Covishield",
@@ -773,8 +774,7 @@
                 "COVOVAX",
                 "BBIBP-CorV_T",
                 "CoronaVac_T",
-                "Covaxin_T",
-                "NVX-CoV2373"
+                "Covaxin_T"
               ]
             ]
           },
@@ -826,18 +826,18 @@
                     "EU/1/20/1528",
                     "EU/1/20/1507",
                     "EU/1/21/1529",
+                    "EU/1/21/1618",
+                    "NVX-CoV2373",
                     "CoronaVac",
                     "BBIBP-CorV",
                     "Covishield",
                     "Covaxin",
-                    "BBIBP-CorV_T",
-                    "CoronaVac_T",
-                    "Covaxin_T",
                     "R-COVI",
                     "Covid-19-recombinant",
                     "COVOVAX",
-                    "EU/1/21/1618",
-                    "NVX-CoV2373"
+                    "BBIBP-CorV_T",
+                    "CoronaVac_T",
+                    "Covaxin_T"
                   ]
                 ]
               }
@@ -951,18 +951,18 @@
                     "EU/1/20/1528",
                     "EU/1/20/1507",
                     "EU/1/21/1529",
+                    "EU/1/21/1618",
+                    "NVX-CoV2373",
                     "CoronaVac",
                     "BBIBP-CorV",
                     "Covishield",
                     "Covaxin",
-                    "BBIBP-CorV_T",
-                    "CoronaVac_T",
-                    "Covaxin_T",
                     "R-COVI",
                     "Covid-19-recombinant",
-                    "EU/1/21/1618",
                     "COVOVAX",
-                    "NVX-CoV2373"
+                    "BBIBP-CorV_T",
+                    "CoronaVac_T",
+                    "Covaxin_T"
                   ]
                 ]
               }

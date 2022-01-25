@@ -1,18 +1,17 @@
 /*
 For rapid or PCR test, the result must be negative (\"not detected\").
 */
+
+import "../rule-constants/test.aifc";
+
 if (
-  /*
-    LP217198-3: Rapid Test
-    LP6464-4": PCR
-  */
   payload.t.0 
   && 
-  payload.t.0.tt in ["LP6464-4"]) {
+  payload.t.0.tt in [TEST_TYPE_PCR]) {
     /*
       tr: TestResult => needs to be negative for PCR
      */
-    payload.t.0.tr === "260415000"
+    payload.t.0.tr === TEST_RESULT_NEGATIVE
 } else {
   true
 }

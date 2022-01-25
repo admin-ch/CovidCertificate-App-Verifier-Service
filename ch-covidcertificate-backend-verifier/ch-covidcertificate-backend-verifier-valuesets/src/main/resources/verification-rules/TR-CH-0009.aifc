@@ -2,12 +2,11 @@
 If the test is a serum antibody test, then the validation date must be before the date of sample collection plus 90 days
 */
 
+import "../rule-constants/test.aifc";
+
 if (
-  /*
-    94504-8: Serum Antibody Test type
-  */
-  payload.t.0.tt === "94504-8") {
-    (now() + 0#days) is before (payload.t.0.sc as DateTime + 90#days)
+  payload.t.0.tt === TEST_TYPE_SERO) {
+    (now() + 0#days) is before (payload.t.0.sc as DateTime + SERO_VALIDITY #days)
 } else {
   true
 }

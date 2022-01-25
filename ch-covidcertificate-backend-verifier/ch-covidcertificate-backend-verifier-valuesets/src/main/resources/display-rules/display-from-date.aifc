@@ -2,15 +2,17 @@
 Rule to calculate the valid from date
 */
 
+import "../rule-constants/vaccine.aifc";
+import "../rule-constants/test.aifc";
+import "../rule-constants/recovery.aifc";
+
+
 if (payload.v.0) {
-    if (payload.v.0.mp in ["EU/1/20/1525"] and payload.v.0.dn === 1 ) {
-        (payload.v.0.dt as DateTime + 21#days)
+    if (payload.v.0.mp in SINGLE_DOSE_VACCINES and payload.v.0.dn === 1 ) {
+        (payload.v.0.dt as DateTime + SINGLE_DOSE_OFFSET #days)
     } else {
         /* If we have a tourist certificate... */
-        if (payload.v.0.mp in [
-                        "BBIBP-CorV_T",
-                        "CoronaVac_T",
-                        "Covaxin_T"]) {
+        if (payload.v.0.mp in TOURIST_VACCINES ) {
             if (payload.h.iat) {
                 /*... and access to the iat of the cwt, show validity from issuing date on*/
                 (payload.h.iat as DateTime + 0#days)
@@ -25,9 +27,9 @@ if (payload.v.0) {
     }
 } else {
     if (payload.t.0) {
-        if(payload.t.0.tt === "LP217198-3" and payload.t.0.tr === "260373001"){
+        if(payload.t.0.tt === TEST_TYPE_RAT and payload.t.0.tr === TEST_RESULT_POSITIVE ){
             /* for positive antibody (recovery), validity starts after 10 days */
-            payload.t.0.sc as DateTime + 10#days
+            payload.t.0.sc as DateTime + RECOVERY_OFFSET #days
         } else {
             /* If we have a test, valid-from starts at the date of sample collection */
             payload.t.0.sc as DateTime + 0#days
@@ -35,7 +37,7 @@ if (payload.v.0) {
     } else {
         if(payload.r.0) {
             /* if we recovered, validity starts 10 days after first positive test result */
-            payload.r.0.fr as DateTime + 10#days
+            payload.r.0.fr as DateTime + RECOVERY_OFFSET #days
         } else {
             /* This branch is unreachable, since we should have either a vaccine, a test or a recovery */
             undefined

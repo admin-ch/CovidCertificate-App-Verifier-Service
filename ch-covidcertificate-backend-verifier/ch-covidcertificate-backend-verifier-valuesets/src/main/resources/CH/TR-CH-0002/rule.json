@@ -20,8 +20,8 @@
             "var": "payload.t.0.tt"
           },
           [
-            "LP217198-3",
             "LP6464-4",
+            "LP217198-3",
             "94504-8",
             "medical-exemption"
           ]
@@ -36,7 +36,7 @@
   ],
   "Description": [
     {
-      "desc": "The test type must be one of the value set list (RAT OR NAA or serum antibody).",
+      "desc": "The test type must be one of the value set list (RAT OR NAA or serum antibody or exemption).",
       "lang": "en"
     }
   ]

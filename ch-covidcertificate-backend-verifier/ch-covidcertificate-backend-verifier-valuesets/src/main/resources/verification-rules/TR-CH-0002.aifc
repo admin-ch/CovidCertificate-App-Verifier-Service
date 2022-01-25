@@ -1,13 +1,12 @@
 /*
-The test type must be one of the value set list (RAT OR NAA or serum antibody).
+The test type must be one of the value set list (RAT OR NAA or serum antibody or exemption).
 */
+
+import "../rule-constants/test.aifc";
+
 if (payload.t.0) {
-  /*
-    LP217198-3: RAT-Test type
-    LP6464-4: NAA Test type
-    94504-8: Serum Antibody Test type
-  */
-  payload.t.0.tt in ["LP217198-3", "LP6464-4", "94504-8", "medical-exemption"]
+
+  payload.t.0.tt in [TEST_TYPE_PCR, TEST_TYPE_RAT, TEST_TYPE_SERO, TEST_TYPE_EXEMPTION]
 } else {
   true
 }

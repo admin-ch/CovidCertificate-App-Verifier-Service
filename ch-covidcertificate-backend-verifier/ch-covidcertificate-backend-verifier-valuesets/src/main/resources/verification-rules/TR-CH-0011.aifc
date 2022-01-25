@@ -3,8 +3,11 @@
   => valid after 10 days
 */
 
-if (payload.t.0.tt === "LP217198-3" and payload.t.0.tr === "260373001") {
-  (now() + 0#days) is after (payload.t.0.sc as DateTime + 10#days)
+import "../rule-constants/test.aifc";
+import "../rule-constants/recovery.aifc";
+
+if (payload.t.0.tt === TEST_TYPE_RAT and payload.t.0.tr === TEST_RESULT_POSITIVE) {
+  (now() + 0#days) is after (payload.t.0.sc as DateTime + RECOVERY_OFFSET #days)
 } else {
   true
 }
