@@ -29,7 +29,7 @@ switch(payload.h.mode){
                     [ TEST_TYPE_PCR ] => {"INVALID"}
                     /* RAT */
                     [ TEST_TYPE_RAT ] => {
-                        if (payload.t.0.tr == TEST_RESULT_POSITIVE ){
+                        if (payload.t.0.tr === TEST_RESULT_POSITIVE ){
                              "SUCCESS"
                         }else{
                              "INVALID"
