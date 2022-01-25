@@ -81,11 +81,11 @@ public class VerificationRules {
                                         + "    ],\n"
                                         + "    \"acceptance-criteria\": {\n"
                                         + "        \"single-vaccine-validity-offset\": 21,\n"
-                                        + "        \"vaccine-immunity\": 364,\n"
+                                        + "        \"vaccine-immunity\": 269,\n"
                                         + "        \"rat-test-validity\": 24,\n"
                                         + "        \"pcr-test-validity\": 72,\n"
                                         + "        \"recovery-offset-valid-from\": 10,\n"
-                                        + "        \"recovery-offset-valid-until\": 364\n"
+                                        + "        \"recovery-offset-valid-until\": 269\n"
                                         + "    }\n"
                                         + "}");
     }

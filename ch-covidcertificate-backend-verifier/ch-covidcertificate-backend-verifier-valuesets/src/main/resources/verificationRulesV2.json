@@ -272,7 +272,7 @@
                   {
                     "var": "payload.r.0.fr"
                   },
-                  365,
+                  270,
                   "day"
                 ]
               }
@@ -958,7 +958,7 @@
                   {
                     "var": "payload.t.0.sc"
                   },
-                  365,
+                  270,
                   "day"
                 ]
               }
@@ -1401,7 +1401,7 @@
                   {
                     "var": "payload.v.0.dt"
                   },
-                  365,
+                  270,
                   "day"
                 ]
               }
@@ -1502,7 +1502,7 @@
                           {
                             "var": "payload.v.0.dt"
                           },
-                          365,
+                          270,
                           "day"
                         ]
                       }
@@ -1585,7 +1585,7 @@
                       {
                         "var": "payload.v.0.dt"
                       },
-                      386,
+                      291,
                       "day"
                     ]
                   }
@@ -2445,7 +2445,7 @@
                   {
                     "var": "payload.v.0.dt"
                   },
-                  385,
+                  290,
                   "day"
                 ]
               },
@@ -2478,7 +2478,7 @@
                       {
                         "var": "payload.v.0.dt"
                       },
-                      364,
+                      269,
                       "day"
                     ]
                   },
@@ -2510,7 +2510,7 @@
                                       {
                                         "var": "payload.v.0.dt"
                                       },
-                                      364,
+                                      269,
                                       "day"
                                     ]
                                   },
@@ -2530,7 +2530,7 @@
                                   {
                                     "var": "payload.v.0.dt"
                                   },
-                                  364,
+                                  269,
                                   "day"
                                 ]
                               },
@@ -2554,7 +2554,7 @@
                                       {
                                         "var": "payload.v.0.dt"
                                       },
-                                      364,
+                                      269,
                                       "day"
                                     ]
                                   },
@@ -2574,7 +2574,7 @@
                                   {
                                     "var": "payload.v.0.dt"
                                   },
-                                  364,
+                                  269,
                                   "day"
                                 ]
                               },
@@ -2636,7 +2636,7 @@
                               {
                                 "var": "payload.v.0.dt"
                               },
-                              364,
+                              269,
                               "day"
                             ]
                           },
@@ -2700,7 +2700,7 @@
                               {
                                 "var": "payload.t.0.sc"
                               },
-                              365,
+                              270,
                               "day"
                             ]
                           },
@@ -2774,7 +2774,7 @@
                       {
                         "var": "payload.r.0.fr"
                       },
-                      364,
+                      269,
                       "day"
                     ]
                   },
@@ -2834,43 +2834,18 @@
                       },
                       {
                         "plusTime": [
-                          "2022-02-01",
-                          0,
+                          {
+                            "var": "external.validationClock"
+                          },
+                          21,
                           "day"
                         ]
                       }
                     ]
                   },
-                  "invalidFromFirstFebruary",
+                  "invalidInThreeWeeks",
                   {
-                    "if": [
-                      {
-                        "not-after": [
-                          {
-                            "plusTime": [
-                              {
-                                "var": "payload.v.0.dt"
-                              },
-                              291,
-                              "day"
-                            ]
-                          },
-                          {
-                            "plusTime": [
-                              {
-                                "var": "external.validationClock"
-                              },
-                              21,
-                              "day"
-                            ]
-                          }
-                        ]
-                      },
-                      "invalidInThreeWeeks",
-                      {
-                        "var": "undefined"
-                      }
-                    ]
+                    "var": "undefined"
                   }
                 ]
               },
@@ -2889,43 +2864,18 @@
                       },
                       {
                         "plusTime": [
-                          "2022-02-01",
-                          0,
+                          {
+                            "var": "external.validationClock"
+                          },
+                          21,
                           "day"
                         ]
                       }
                     ]
                   },
-                  "invalidFromFirstFebruary",
+                  "invalidInThreeWeeks",
                   {
-                    "if": [
-                      {
-                        "not-after": [
-                          {
-                            "plusTime": [
-                              {
-                                "var": "payload.v.0.dt"
-                              },
-                              270,
-                              "day"
-                            ]
-                          },
-                          {
-                            "plusTime": [
-                              {
-                                "var": "external.validationClock"
-                              },
-                              21,
-                              "day"
-                            ]
-                          }
-                        ]
-                      },
-                      "invalidInThreeWeeks",
-                      {
-                        "var": "undefined"
-                      }
-                    ]
+                    "var": "undefined"
                   }
                 ]
               }
@@ -2951,43 +2901,18 @@
                       },
                       {
                         "plusTime": [
-                          "2022-02-01",
-                          0,
+                          {
+                            "var": "external.validationClock"
+                          },
+                          21,
                           "day"
                         ]
                       }
                     ]
                   },
-                  "invalidFromFirstFebruary",
+                  "invalidInThreeWeeks",
                   {
-                    "if": [
-                      {
-                        "not-after": [
-                          {
-                            "plusTime": [
-                              {
-                                "var": "payload.r.0.fr"
-                              },
-                              270,
-                              "day"
-                            ]
-                          },
-                          {
-                            "plusTime": [
-                              {
-                                "var": "external.validationClock"
-                              },
-                              21,
-                              "day"
-                            ]
-                          }
-                        ]
-                      },
-                      "invalidInThreeWeeks",
-                      {
-                        "var": "undefined"
-                      }
-                    ]
+                    "var": "undefined"
                   }
                 ]
               },
@@ -3035,16 +2960,35 @@
                               },
                               {
                                 "plusTime": [
-                                  "2022-02-01",
-                                  0,
+                                  {
+                                    "var": "external.validationClock"
+                                  },
+                                  21,
                                   "day"
                                 ]
                               }
                             ]
                           },
-                          "invalidFromFirstFebruary",
+                          "invalidInThreeWeeks",
                           {
-                            "if": [
+                            "var": "undefined"
+                          }
+                        ]
+                      },
+                      {
+                        "if": [
+                          {
+                            "and": [
+                              {
+                                "in": [
+                                  {
+                                    "var": "payload.t.0.tt"
+                                  },
+                                  [
+                                    "medical-exemption"
+                                  ]
+                                ]
+                              },
                               {
                                 "not-after": [
                                   {
@@ -3052,7 +2996,7 @@
                                       {
                                         "var": "payload.t.0.sc"
                                       },
-                                      270,
+                                      365,
                                       "day"
                                     ]
                                   },
@@ -3066,17 +3010,14 @@
                                     ]
                                   }
                                 ]
-                              },
-                              "invalidInThreeWeeks",
-                              {
-                                "var": "undefined"
                               }
                             ]
+                          },
+                          "invalidInThreeWeeks",
+                          {
+                            "var": "undefined"
                           }
                         ]
-                      },
-                      {
-                        "var": "undefined"
                       }
                     ]
                   },
