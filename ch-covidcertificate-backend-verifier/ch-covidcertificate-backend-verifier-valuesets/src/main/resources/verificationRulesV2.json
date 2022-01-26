@@ -3192,14 +3192,6 @@
       "LP217198-3",
       "LP6464-4",
       "94504-8"
-    ],
-    "acceptance-criteria": {
-      "single-vaccine-validity-offset": 21,
-      "vaccine-immunity": 364,
-      "rat-test-validity": 48,
-      "pcr-test-validity": 72,
-      "recovery-offset-valid-from": 10,
-      "recovery-offset-valid-until": 364
-    }
+    ]
   }
 }
