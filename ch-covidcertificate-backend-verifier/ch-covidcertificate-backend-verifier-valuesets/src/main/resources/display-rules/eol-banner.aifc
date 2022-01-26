@@ -16,57 +16,45 @@ if (payload.v.0) {
     switch(payload.v.0.mp) {
         SINGLE_DOSE_VACCINES : if payload.v.0.dn === 1 => {
              /* single-dose JJ gets 21 days extra */
-             if((after_291) is not after cutoff as DateTime){
-                 "invalidFromFirstFebruary"
+             if((after_291) is not after (in_21_days as DateTime)){
+                 "invalidInThreeWeeks"
              }else{
-                 if((after_291) is not after (in_21_days as DateTime)){
-                     "invalidInThreeWeeks"
-                 }else{
-                     undefined
-                 }
+                 undefined
              }
         }
         _ => {
             /* two-dose vaccine */
-            if((after_270) is not after cutoff as DateTime){
-                "invalidFromFirstFebruary"
+            if((after_270) is not after in_21_days as DateTime){
+                "invalidInThreeWeeks"
             }else{
-                if((after_270) is not after in_21_days as DateTime){
-                    "invalidInThreeWeeks"
-                }else{
-                    undefined
-                }
+                undefined
             }
-        }
+    }
     }
 } else {
     if (payload.r.0) {
         let after_270 = payload.r.0.fr as DateTime + 270#days;
-            if((after_270) is not after cutoff as DateTime){
-                "invalidFromFirstFebruary"
+            if((after_270) is not after in_21_days as DateTime){
+                "invalidInThreeWeeks"
             }else{
-                if((after_270) is not after in_21_days as DateTime){
-                    "invalidInThreeWeeks"
-                }else{
-                    undefined
-                }
+                undefined
             }
     } else {
         if (payload.t.0){
             let after_270 = payload.t.0.sc as DateTime + 270#days;
-            if (payload.t.0.tt in [ TEST_TYPE_RAT ] and payload.t.0.tr === TEST_RESULT_POSITIVE){
-                 /* positive antigen == recovery */
-                             if((after_270) is not after cutoff as DateTime){
-                                 "invalidFromFirstFebruary"
-                             }else{
-                                 if((after_270) is not after in_21_days as DateTime){
-                                     "invalidInThreeWeeks"
-                                 }else{
-                                     undefined
-                                 }
-                             }
-            } else {
-               undefined
+            let after_365 = payload.t.0.sc as DateTime + 365#days;
+            switch ( payload.t.0.tt ){
+                 [ TEST_TYPE_RAT ]: if (payload.t.0.tr === TEST_RESULT_POSITIVE ) => {
+                     if((after_270) is not after in_21_days as DateTime){
+                                              "invalidInThreeWeeks"
+                                          }else{
+                                              undefined
+                                          }
+                 }
+                 [ TEST_TYPE_EXEMPTION ]:  if( (after_365) is not after in_21_days as DateTime) => {
+                     "invalidInThreeWeeks"
+                 }
+                 _ => { undefined }
             }
         } else {
             undefined

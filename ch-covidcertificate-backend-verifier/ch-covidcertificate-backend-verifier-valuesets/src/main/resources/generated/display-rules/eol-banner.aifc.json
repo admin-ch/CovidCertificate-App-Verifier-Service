@@ -42,43 +42,18 @@
                 },
                 {
                   "plusTime": [
-                    "2022-02-01",
-                    0,
+                    {
+                      "var": "external.validationClock"
+                    },
+                    21,
                     "day"
                   ]
                 }
               ]
             },
-            "invalidFromFirstFebruary",
+            "invalidInThreeWeeks",
             {
-              "if": [
-                {
-                  "not-after": [
-                    {
-                      "plusTime": [
-                        {
-                          "var": "payload.v.0.dt"
-                        },
-                        291,
-                        "day"
-                      ]
-                    },
-                    {
-                      "plusTime": [
-                        {
-                          "var": "external.validationClock"
-                        },
-                        21,
-                        "day"
-                      ]
-                    }
-                  ]
-                },
-                "invalidInThreeWeeks",
-                {
-                  "var": "undefined"
-                }
-              ]
+              "var": "undefined"
             }
           ]
         },
@@ -97,43 +72,18 @@
                 },
                 {
                   "plusTime": [
-                    "2022-02-01",
-                    0,
+                    {
+                      "var": "external.validationClock"
+                    },
+                    21,
                     "day"
                   ]
                 }
               ]
             },
-            "invalidFromFirstFebruary",
+            "invalidInThreeWeeks",
             {
-              "if": [
-                {
-                  "not-after": [
-                    {
-                      "plusTime": [
-                        {
-                          "var": "payload.v.0.dt"
-                        },
-                        270,
-                        "day"
-                      ]
-                    },
-                    {
-                      "plusTime": [
-                        {
-                          "var": "external.validationClock"
-                        },
-                        21,
-                        "day"
-                      ]
-                    }
-                  ]
-                },
-                "invalidInThreeWeeks",
-                {
-                  "var": "undefined"
-                }
-              ]
+              "var": "undefined"
             }
           ]
         }
@@ -159,43 +109,18 @@
                 },
                 {
                   "plusTime": [
-                    "2022-02-01",
-                    0,
+                    {
+                      "var": "external.validationClock"
+                    },
+                    21,
                     "day"
                   ]
                 }
               ]
             },
-            "invalidFromFirstFebruary",
+            "invalidInThreeWeeks",
             {
-              "if": [
-                {
-                  "not-after": [
-                    {
-                      "plusTime": [
-                        {
-                          "var": "payload.r.0.fr"
-                        },
-                        270,
-                        "day"
-                      ]
-                    },
-                    {
-                      "plusTime": [
-                        {
-                          "var": "external.validationClock"
-                        },
-                        21,
-                        "day"
-                      ]
-                    }
-                  ]
-                },
-                "invalidInThreeWeeks",
-                {
-                  "var": "undefined"
-                }
-              ]
+              "var": "undefined"
             }
           ]
         },
@@ -243,16 +168,35 @@
                         },
                         {
                           "plusTime": [
-                            "2022-02-01",
-                            0,
+                            {
+                              "var": "external.validationClock"
+                            },
+                            21,
                             "day"
                           ]
                         }
                       ]
                     },
-                    "invalidFromFirstFebruary",
+                    "invalidInThreeWeeks",
                     {
-                      "if": [
+                      "var": "undefined"
+                    }
+                  ]
+                },
+                {
+                  "if": [
+                    {
+                      "and": [
+                        {
+                          "in": [
+                            {
+                              "var": "payload.t.0.tt"
+                            },
+                            [
+                              "medical-exemption"
+                            ]
+                          ]
+                        },
                         {
                           "not-after": [
                             {
@@ -260,7 +204,7 @@
                                 {
                                   "var": "payload.t.0.sc"
                                 },
-                                270,
+                                365,
                                 "day"
                               ]
                             },
@@ -274,17 +218,14 @@
                               ]
                             }
                           ]
-                        },
-                        "invalidInThreeWeeks",
-                        {
-                          "var": "undefined"
                         }
                       ]
+                    },
+                    "invalidInThreeWeeks",
+                    {
+                      "var": "undefined"
                     }
                   ]
-                },
-                {
-                  "var": "undefined"
                 }
               ]
             },

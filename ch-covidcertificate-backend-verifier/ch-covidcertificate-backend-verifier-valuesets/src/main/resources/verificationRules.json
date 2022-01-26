@@ -191,7 +191,7 @@
                   {
                     "var": "payload.r.0.fr"
                   },
-                  365,
+                  270,
                   "day"
                 ]
               }
@@ -667,7 +667,7 @@
                   {
                     "var": "payload.t.0.sc"
                   },
-                  365,
+                  270,
                   "day"
                 ]
               }
@@ -984,7 +984,7 @@
                   {
                     "var": "payload.v.0.dt"
                   },
-                  365,
+                  270,
                   "day"
                 ]
               }
@@ -1067,7 +1067,7 @@
                           {
                             "var": "payload.v.0.dt"
                           },
-                          365,
+                          270,
                           "day"
                         ]
                       }
@@ -1131,7 +1131,7 @@
                       {
                         "var": "payload.v.0.dt"
                       },
-                      386,
+                      291,
                       "day"
                     ]
                   }
@@ -1194,11 +1194,11 @@
     ],
     "acceptance-criteria": {
       "single-vaccine-validity-offset": 21,
-      "vaccine-immunity": 364,
+      "vaccine-immunity": 269,
       "rat-test-validity": 24,
       "pcr-test-validity": 72,
       "recovery-offset-valid-from": 10,
-      "recovery-offset-valid-until": 364
+      "recovery-offset-valid-until": 269
     }
   },
   "validDuration": 172800000
