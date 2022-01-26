@@ -509,23 +509,69 @@
             "var": "payload.t.0"
           },
           {
-            "before": [
+            "if": [
               {
-                "plusTime": [
+                "and": [
                   {
-                    "var": "payload.t.0.sc"
+                    "===": [
+                      {
+                        "var": "payload.t.0.tt"
+                      },
+                      "LP217198-3"
+                    ]
                   },
-                  0,
-                  "day"
+                  {
+                    "===": [
+                      {
+                        "var": "payload.t.0.tr"
+                      },
+                      "260373001"
+                    ]
+                  }
                 ]
               },
               {
-                "plusTime": [
+                "after": [
                   {
-                    "var": "external.validationClock"
+                    "plusTime": [
+                      {
+                        "var": "external.validationClock"
+                      },
+                      0,
+                      "day"
+                    ]
                   },
-                  0,
-                  "day"
+                  {
+                    "plusTime": [
+                      {
+                        "var": "payload.t.0.sc"
+                      },
+                      10,
+                      "day"
+                    ]
+                  }
+                ]
+              },
+              {
+                "before": [
+                  {
+                    "plusTime": [
+                      {
+                        "var": "payload.t.0.sc"
+                      },
+                      0,
+                      "day"
+                    ]
+                  },
+                  {
+                    "plusTime": [
+                      {
+                        "var": "external.validationClock"
+                      },
+                      0,
+                      "day"
+                    ]
+                  }
                 ]
               }
             ]
@@ -534,7 +580,9 @@
         ]
       },
       "affectedFields": [
+        "t.0.tr",
         "t.0",
+        "t.0.tt",
         "t.0.sc"
       ],
       "description": [
@@ -835,76 +883,6 @@
       "description": [
         {
           "desc": "Exemption certificates are valid for 365 days",
-          "lang": "en"
-        }
-      ]
-    },
-    {
-      "country": "CH",
-      "engine": "CertLogic",
-      "engineVersion": "0.7.5",
-      "schemaVersion": "1.0.0",
-      "type": "Acceptance",
-      "validTo": "2031-01-01T00:00:00Z",
-      "identifier": "TR-CH-0011",
-      "version": "1.0.7",
-      "validFrom": "2021-12-17T00:00:00Z",
-      "certificateType": "Test",
-      "logic": {
-        "if": [
-          {
-            "and": [
-              {
-                "===": [
-                  {
-                    "var": "payload.t.0.tt"
-                  },
-                  "LP217198-3"
-                ]
-              },
-              {
-                "===": [
-                  {
-                    "var": "payload.t.0.tr"
-                  },
-                  "260373001"
-                ]
-              }
-            ]
-          },
-          {
-            "after": [
-              {
-                "plusTime": [
-                  {
-                    "var": "external.validationClock"
-                  },
-                  0,
-                  "day"
-                ]
-              },
-              {
-                "plusTime": [
-                  {
-                    "var": "payload.t.0.sc"
-                  },
-                  10,
-                  "day"
-                ]
-              }
-            ]
-          },
-          true
-        ]
-      },
-      "affectedFields": [
-        "t.0.tr",
-        "t.0.tt",
-        "t.0.sc"
-      ],
-      "description": [
-        {
-          "desc": "  Positive RAT == recovery  => valid after 10 days",
           "lang": "en"
         }
       ]

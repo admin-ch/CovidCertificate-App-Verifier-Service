@@ -331,7 +331,7 @@
       }
     },
     {
-      "inputParameter": "[\"t.0\",\"t.0.sc\"]",
+      "inputParameter": "[\"t.0.tr\",\"t.0\",\"t.0.tt\",\"t.0.sc\"]",
       "description": "The date of sample collection must be before the validation date",
       "id": "TR-CH-0005",
       "logic": {
@@ -340,23 +340,69 @@
             "var": "payload.t.0"
           },
           {
-            "<": [
+            "if": [
               {
-                "plusTime": [
+                "and": [
                   {
-                    "var": "payload.t.0.sc"
+                    "===": [
+                      {
+                        "var": "payload.t.0.tt"
+                      },
+                      "LP217198-3"
+                    ]
                   },
-                  0,
-                  "day"
+                  {
+                    "===": [
+                      {
+                        "var": "payload.t.0.tr"
+                      },
+                      "260373001"
+                    ]
+                  }
                 ]
               },
               {
-                "plusTime": [
+                ">": [
                   {
-                    "var": "external.validationClock"
+                    "plusTime": [
+                      {
+                        "var": "external.validationClock"
+                      },
+                      0,
+                      "day"
+                    ]
                   },
-                  0,
-                  "day"
+                  {
+                    "plusTime": [
+                      {
+                        "var": "payload.t.0.sc"
+                      },
+                      10,
+                      "day"
+                    ]
+                  }
+                ]
+              },
+              {
+                "<": [
+                  {
+                    "plusTime": [
+                      {
+                        "var": "payload.t.0.sc"
+                      },
+                      0,
+                      "day"
+                    ]
+                  },
+                  {
+                    "plusTime": [
+                      {
+                        "var": "external.validationClock"
+                      },
+                      0,
+                      "day"
+                    ]
+                  }
                 ]
               }
             ]
@@ -564,58 +610,6 @@
                     "var": "payload.t.0.sc"
                   },
                   365,
-                  "day"
-                ]
-              }
-            ]
-          },
-          true
-        ]
-      }
-    },
-    {
-      "inputParameter": "[\"t.0.tr\",\"t.0.tt\",\"t.0.sc\"]",
-      "description": "  Positive RAT == recovery  => valid after 10 days",
-      "id": "TR-CH-0011",
-      "logic": {
-        "if": [
-          {
-            "and": [
-              {
-                "===": [
-                  {
-                    "var": "payload.t.0.tt"
-                  },
-                  "LP217198-3"
-                ]
-              },
-              {
-                "===": [
-                  {
-                    "var": "payload.t.0.tr"
-                  },
-                  "260373001"
-                ]
-              }
-            ]
-          },
-          {
-            ">": [
-              {
-                "plusTime": [
-                  {
-                    "var": "external.validationClock"
-                  },
-                  0,
-                  "day"
-                ]
-              },
-              {
-                "plusTime": [
-                  {
-                    "var": "payload.t.0.sc"
-                  },
-                  10,
                   "day"
                 ]
               }

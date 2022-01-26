@@ -1,8 +1,16 @@
 /*
 The date of sample collection must be before the validation date
 */
+
+import "../rule-constants/test.aifc";
+import "../rule-constants/recovery.aifc";
+
 if (payload.t.0) {
-  (payload.t.0.sc as DateTime + 0#days) is before (now() + 0#days)
+  if (payload.t.0.tt === TEST_TYPE_RAT and payload.t.0.tr === TEST_RESULT_POSITIVE){
+        (now() + 0#days) is after (payload.t.0.sc as DateTime + RECOVERY_OFFSET #days)
+  } else {
+      (payload.t.0.sc as DateTime + 0#days) is before (now() + 0#days)
+  }
 } else {
   true
 }
