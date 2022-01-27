@@ -51,7 +51,36 @@
                 }
               ]
             },
-            "invalidInThreeWeeks",
+            {
+              "if": [
+                {
+                  "after": [
+                    {
+                      "plusTime": [
+                        {
+                          "var": "payload.v.0.dt"
+                        },
+                        291,
+                        "day"
+                      ]
+                    },
+                    {
+                      "plusTime": [
+                        {
+                          "var": "external.validationClock"
+                        },
+                        0,
+                        "day"
+                      ]
+                    }
+                  ]
+                },
+                "invalidInThreeWeeks",
+                {
+                  "var": "undefined"
+                }
+              ]
+            },
             {
               "var": "undefined"
             }
@@ -81,7 +110,36 @@
                 }
               ]
             },
-            "invalidInThreeWeeks",
+            {
+              "if": [
+                {
+                  "after": [
+                    {
+                      "plusTime": [
+                        {
+                          "var": "payload.v.0.dt"
+                        },
+                        270,
+                        "day"
+                      ]
+                    },
+                    {
+                      "plusTime": [
+                        {
+                          "var": "external.validationClock"
+                        },
+                        0,
+                        "day"
+                      ]
+                    }
+                  ]
+                },
+                "invalidInThreeWeeks",
+                {
+                  "var": "undefined"
+                }
+              ]
+            },
             {
               "var": "undefined"
             }
@@ -118,7 +176,36 @@
                 }
               ]
             },
-            "invalidInThreeWeeks",
+            {
+              "if": [
+                {
+                  "after": [
+                    {
+                      "plusTime": [
+                        {
+                          "var": "payload.r.0.fr"
+                        },
+                        270,
+                        "day"
+                      ]
+                    },
+                    {
+                      "plusTime": [
+                        {
+                          "var": "external.validationClock"
+                        },
+                        0,
+                        "day"
+                      ]
+                    }
+                  ]
+                },
+                "invalidInThreeWeeks",
+                {
+                  "var": "undefined"
+                }
+              ]
+            },
             {
               "var": "undefined"
             }
@@ -177,7 +264,36 @@
                         }
                       ]
                     },
-                    "invalidInThreeWeeks",
+                    {
+                      "if": [
+                        {
+                          "after": [
+                            {
+                              "plusTime": [
+                                {
+                                  "var": "payload.t.0.sc"
+                                },
+                                270,
+                                "day"
+                              ]
+                            },
+                            {
+                              "plusTime": [
+                                {
+                                  "var": "external.validationClock"
+                                },
+                                0,
+                                "day"
+                              ]
+                            }
+                          ]
+                        },
+                        "invalidInThreeWeeks",
+                        {
+                          "var": "undefined"
+                        }
+                      ]
+                    },
                     {
                       "var": "undefined"
                     }
@@ -221,7 +337,36 @@
                         }
                       ]
                     },
-                    "invalidInThreeWeeks",
+                    {
+                      "if": [
+                        {
+                          "after": [
+                            {
+                              "plusTime": [
+                                {
+                                  "var": "payload.t.0.sc"
+                                },
+                                365,
+                                "day"
+                              ]
+                            },
+                            {
+                              "plusTime": [
+                                {
+                                  "var": "external.validationClock"
+                                },
+                                0,
+                                "day"
+                              ]
+                            }
+                          ]
+                        },
+                        "invalidInThreeWeeks",
+                        {
+                          "var": "undefined"
+                        }
+                      ]
+                    },
                     {
                       "var": "undefined"
                     }
