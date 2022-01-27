@@ -9,23 +9,33 @@ import "../rule-constants/recovery.aifc";
 let in_21_days = now() + 21#days;
 let cutoff = "2022-02-01";
 
+let nau = now() + 0#days;
+
 if (payload.v.0) {
-    let after_270 = payload.v.0.dt as DateTime + 270#days;
-    let after_291 = payload.v.0.dt as DateTime + 291#days;
+    let two_dose_cutoff = payload.v.0.dt as DateTime + TWO_DOSE_VALIDITY #days;
+    let single_dose_cutoff = payload.v.0.dt as DateTime + SINGLE_DOSE_VALIDITY #days;
 
     switch(payload.v.0.mp) {
         SINGLE_DOSE_VACCINES : if payload.v.0.dn === 1 => {
              /* single-dose JJ gets 21 days extra */
-             if((after_291) is not after (in_21_days as DateTime)){
-                 "invalidInThreeWeeks"
+             if((single_dose_cutoff) is not after (in_21_days as DateTime)){
+                 if( (single_dose_cutoff) is after nau as DateTime){
+                     "invalidInThreeWeeks"
+                 } else {
+                     undefined
+                 }
              }else{
                  undefined
              }
         }
         _ => {
             /* two-dose vaccine */
-            if((after_270) is not after in_21_days as DateTime){
-                "invalidInThreeWeeks"
+            if((two_dose_cutoff) is not after in_21_days as DateTime){
+                if((two_dose_cutoff) is after nau as DateTime){
+                    "invalidInThreeWeeks"
+                } else {
+                    undefined
+                }
             }else{
                 undefined
             }
@@ -33,26 +43,38 @@ if (payload.v.0) {
     }
 } else {
     if (payload.r.0) {
-        let after_270 = payload.r.0.fr as DateTime + 270#days;
-            if((after_270) is not after in_21_days as DateTime){
-                "invalidInThreeWeeks"
+        let recovery_cutoff = payload.r.0.fr as DateTime + RECOVERY_VALIDITY #days;
+            if((recovery_cutoff) is not after in_21_days as DateTime){
+                if((recovery_cutoff) is after nau as DateTime){
+                     "invalidInThreeWeeks"
+                } else {
+                    undefined
+                }
             }else{
                 undefined
             }
     } else {
         if (payload.t.0){
-            let after_270 = payload.t.0.sc as DateTime + 270#days;
-            let after_365 = payload.t.0.sc as DateTime + 365#days;
+            let recovery_cutoff = payload.t.0.sc as DateTime + RECOVERY_VALIDITY #days;
+            let exemption_cutoff = payload.t.0.sc as DateTime + EXEMPTION_VALIDITY #days;
             switch ( payload.t.0.tt ){
                  [ TEST_TYPE_RAT ]: if (payload.t.0.tr === TEST_RESULT_POSITIVE ) => {
-                     if((after_270) is not after in_21_days as DateTime){
-                                              "invalidInThreeWeeks"
-                                          }else{
-                                              undefined
-                                          }
+                     if((recovery_cutoff) is not after in_21_days as DateTime){
+                         if( (recovery_cutoff) is after nau as DateTime){
+                              "invalidInThreeWeeks"
+                         }else{
+                             undefined
+                         }
+                     }else{
+                         undefined
+                     }
                  }
-                 [ TEST_TYPE_EXEMPTION ]:  if( (after_365) is not after in_21_days as DateTime) => {
-                     "invalidInThreeWeeks"
+                 [ TEST_TYPE_EXEMPTION ]:  if( (exemption_cutoff) is not after in_21_days as DateTime) => {
+                     if((exemption_cutoff) is after nau as DateTime){
+                         "invalidInThreeWeeks"
+                     } else {
+                         undefined
+                     }
                  }
                  _ => { undefined }
             }
