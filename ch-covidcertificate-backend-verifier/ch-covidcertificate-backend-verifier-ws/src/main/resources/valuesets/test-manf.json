@@ -877,6 +877,13 @@
       "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
       "version": "2021-07-13 17:55:54 CET"
     },
+    "1353": {
+      "display": "Nantong Diagnos Biotechnology Co., Ltd, Covid-19 Antigen Test Kit (Colloidal Gold)",
+      "lang": "en",
+      "active": true,
+      "system": "https://covid-19-diagnostics.jrc.ec.europa.eu/devices",
+      "version": "2022-01-04 18:05:53 CET"
+    },
     "2241": {
       "display": "NESAPOR EUROPA SL, MARESKIT",
       "lang": "en",
