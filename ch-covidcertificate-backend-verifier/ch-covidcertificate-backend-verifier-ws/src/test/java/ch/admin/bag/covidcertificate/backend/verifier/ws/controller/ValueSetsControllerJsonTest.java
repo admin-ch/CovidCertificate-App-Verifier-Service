@@ -29,7 +29,8 @@ import org.springframework.test.context.ActiveProfiles;
 public class ValueSetsControllerJsonTest extends ValueSetsControllerTest {
 
     @BeforeAll
-    public void setup() {
+    public void setup() throws Exception {
         this.acceptMediaType = MediaType.APPLICATION_JSON;
+        super.setup();
     }
 }

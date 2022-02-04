@@ -15,23 +15,40 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.model.valuesets.ValueSets;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.util.TestHelper;
-import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.http.HttpHeaders;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+@TestInstance(Lifecycle.PER_CLASS)
 public abstract class ValueSetsControllerTest extends BaseControllerTest {
 
     protected MediaType acceptMediaType;
 
     private String valueSetsUrl = "/trust/v1/metadata";
+
+    @Autowired ValueSetDataService valueSetDataService;
+
+    @BeforeAll
+    public void setup() throws Exception {
+        final Map<String, String> valueSets = new HashMap<>();
+        valueSets.put(
+                "covid-19-lab-test-manufacturer-and-name",
+                Files.readString(Path.of("src/main/resources/valuesets/test-manf.json")));
+        this.valueSetDataService.insertValueSets(valueSets);
+    }
 
     @Test
     public void valueSetsTest() throws Exception {
@@ -109,14 +126,6 @@ public abstract class ValueSetsControllerTest extends BaseControllerTest {
 
     @Test
     public void notModifiedTest() throws Exception {
-        List<String> pathsToValueSets =
-                ValueSetsController.PATHS_TO_VALUE_SETS.stream()
-                        .map(p -> "classpath:" + p)
-                        .collect(Collectors.toList());
-        String expectedEtag =
-                EtagUtil.getSha1HashForFiles(
-                        true, pathsToValueSets.toArray(new String[pathsToValueSets.size()]));
-
         // get current etag
         MockHttpServletResponse response =
                 mockMvc.perform(
@@ -127,11 +136,8 @@ public abstract class ValueSetsControllerTest extends BaseControllerTest {
                         .andReturn()
                         .getResponse();
 
-        // verify etag
-        String etag = response.getHeader(HttpHeaders.ETAG);
-        assertEquals(expectedEtag, etag);
-
         // test not modified
+        String etag = response.getHeader(HttpHeaders.ETAG);
         mockMvc.perform(
                         get(valueSetsUrl)
                                 .accept(acceptMediaType)

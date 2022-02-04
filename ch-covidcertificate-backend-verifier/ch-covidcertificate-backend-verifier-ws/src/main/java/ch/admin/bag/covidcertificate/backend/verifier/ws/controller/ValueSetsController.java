@@ -10,18 +10,17 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.model.valuesets.TestValueSets;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.model.valuesets.VaccineValueSets;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.model.valuesets.ValueSets;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import ch.ubique.openapi.docannotations.Documentation;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,28 +40,14 @@ public class ValueSetsController {
 
     private static final Logger logger = LoggerFactory.getLogger(ValueSetsController.class);
 
-    public static final List<String> PATHS_TO_VALUE_SETS =
-            List.of(
-                    "valuesets/test-manf.json",
-                    "valuesets/test-type.json",
-                    "valuesets/vaccine-mah-manf.json",
-                    "valuesets/vaccine-medicinal-product.json",
-                    "valuesets/vaccine-prophylaxis.json");
-
     private final ValueSets valueSets;
-    private final String valueSetsEtag;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public ValueSetsController() throws IOException, NoSuchAlgorithmException {
-        this.valueSets = new ValueSets(getTestValueSet(), getVaccineValueSet());
+    private final ValueSetDataService valueSetDataService;
 
-        List<String> pathsToValueSets = new ArrayList<>();
-        for (String path : PATHS_TO_VALUE_SETS) {
-            pathsToValueSets.add(new ClassPathResource(path).getFile().getPath());
-        }
-        this.valueSetsEtag =
-                EtagUtil.getSha1HashForFiles(
-                        true, pathsToValueSets.toArray(new String[pathsToValueSets.size()]));
+    public ValueSetsController(ValueSetDataService valueSetDataService) throws IOException {
+        this.valueSetDataService = valueSetDataService;
+        this.valueSets = new ValueSets(getTestValueSet(), getVaccineValueSet());
     }
 
     private VaccineValueSets getVaccineValueSet() throws IOException {
@@ -75,7 +60,6 @@ public class ValueSetsController {
 
     private TestValueSets getTestValueSet() throws IOException {
         TestValueSets test = new TestValueSets();
-        test.setManf(readFileAsMap("valuesets/test-manf.json"));
         test.setType(readFileAsMap("valuesets/test-type.json"));
         return test;
     }
@@ -96,10 +80,27 @@ public class ValueSetsController {
             responses = {"200 => value sets", "304 => no changes since last request"},
             responseHeaders = {"ETag:etag to set for next request:string"})
     @GetMapping(value = "/metadata")
-    public @ResponseBody ResponseEntity<ValueSets> getValueSets(WebRequest request) {
-        if (request.checkNotModified(valueSetsEtag)) {
+    public @ResponseBody ResponseEntity<ValueSets> getValueSets(WebRequest request)
+            throws JsonProcessingException {
+        // load test manufacturers from db
+        final Map testManf =
+                mapper.readValue(
+                        valueSetDataService.findLatestValueSet(
+                                "covid-19-lab-test-manufacturer-and-name"),
+                        Map.class);
+        valueSets.getTest().setManf(testManf);
+
+        String etag = "";
+        try {
+            etag = EtagUtil.getSha1HashForStrings(true, mapper.writeValueAsString(valueSets));
+        } catch (Exception e) {
+            logger.error("Failed to calculate ETag for value sets", e);
+        }
+
+        if (request.checkNotModified(etag)) {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
+
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(CacheUtil.VALUE_SETS_MAX_AGE))
                 .body(valueSets);

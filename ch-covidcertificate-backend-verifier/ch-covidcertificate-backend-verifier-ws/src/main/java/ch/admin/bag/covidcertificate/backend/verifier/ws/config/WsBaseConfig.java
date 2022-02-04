@@ -84,8 +84,8 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     @Value("${testing.disabledModes:}")
     private String[] disabledVerificationModes;
 
-    //This is a safeguard so we can prevent the value from being read in the prod environment
-    protected String[] getDisabledVerificationModes(){
+    // This is a safeguard so we can prevent the value from being read in the prod environment
+    protected String[] getDisabledVerificationModes() {
         return disabledVerificationModes;
     }
 
@@ -170,7 +170,8 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     public VerifierDataService verifierDataService(
             DataSource dataSource,
             @Value("${dsc.deleted.keep.duration:P7D}") Duration keepDscsMarkedForDeletionDuration) {
-        return new JdbcVerifierDataServiceImpl(dataSource, dscBatchSize, keepDscsMarkedForDeletionDuration);
+        return new JdbcVerifierDataServiceImpl(
+                dataSource, dscBatchSize, keepDscsMarkedForDeletionDuration);
     }
 
     @Bean
@@ -216,16 +217,17 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
         return new VerificationRulesController();
     }
 
-
     @Bean
     public VerificationRulesControllerV2 verificationRulesControllerV2(
             ValueSetDataService valueSetDataService) throws IOException, NoSuchAlgorithmException {
-        return new VerificationRulesControllerV2(valueSetDataService, getDisabledVerificationModes());
+        return new VerificationRulesControllerV2(
+                valueSetDataService, getDisabledVerificationModes());
     }
 
     @Bean
-    public ValueSetsController valueSetsController() throws IOException, NoSuchAlgorithmException {
-        return new ValueSetsController();
+    public ValueSetsController valueSetsController(ValueSetDataService valueSetDataService)
+            throws IOException {
+        return new ValueSetsController(valueSetDataService);
     }
 
     @Bean

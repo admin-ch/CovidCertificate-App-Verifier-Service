@@ -29,7 +29,8 @@ import org.springframework.test.context.ActiveProfiles;
 public class ValueSetsControllerJwsTest extends ValueSetsControllerTest {
 
     @BeforeAll
-    public void setup() {
+    public void setup() throws Exception {
         this.acceptMediaType = JwsMessageConverter.JWS_MEDIA_TYPE;
+        super.setup();
     }
 }
