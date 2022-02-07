@@ -14,8 +14,11 @@ import java.time.Instant;
 
 public class CertToUpload {
     private String alias;
+    private String keyId;
     private Instant uploadedAt;
+    private Boolean doUpload;
     private Instant insertedAt;
+    private Boolean doInsert;
 
     public String getAlias() {
         return alias;
@@ -23,6 +26,14 @@ public class CertToUpload {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public String getKeyId() {
+        return keyId;
+    }
+
+    public void setKeyId(String keyId) {
+        this.keyId = keyId;
     }
 
     public Instant getUploadedAt() {
@@ -37,6 +48,14 @@ public class CertToUpload {
         return this.uploadedAt != null;
     }
 
+    public Boolean doUpload() {
+        return doUpload;
+    }
+
+    public void setDoUpload(Boolean doUpload) {
+        this.doUpload = doUpload;
+    }
+
     public Instant getInsertedAt() {
         return insertedAt;
     }
@@ -47,5 +66,13 @@ public class CertToUpload {
 
     public boolean wasInserted() {
         return this.insertedAt != null;
+    }
+
+    public Boolean doInsert() {
+        return doInsert;
+    }
+
+    public void setDoInsert(Boolean doInsert) {
+        this.doInsert = doInsert;
     }
 }
