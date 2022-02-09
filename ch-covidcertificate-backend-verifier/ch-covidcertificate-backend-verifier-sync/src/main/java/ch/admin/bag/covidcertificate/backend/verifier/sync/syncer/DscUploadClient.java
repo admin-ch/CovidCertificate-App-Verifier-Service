@@ -83,46 +83,61 @@ public class DscUploadClient {
             dsc.setFkCsca(verifierDataService.findChCscaPkId());
             String kid = dsc.getKeyId();
             uploadResult.setKid(kid);
+            certToUpload.setKeyId(kid);
 
-            if (!certToUpload.wasUploaded()) {
-                try {
-                    logger.info("uploading cms for alias {} to dgc hub", alias);
-                    dgcCertClient.upload(cms, kid);
-                    certToUpload.setUploadedAt(Instant.now());
-                    certUploadDataService.updateCertToUpload(certToUpload);
-                } catch (AlreadyUploadedException e) {
-                    uploadResult.addError(
-                            String.format(
-                                    "dgc reported that dsc with kid %s has already been uploaded",
-                                    kid));
-                } catch (Exception e) {
-                    String error =
-                            String.format("failed to upload cms for alias %s to dgc hub", alias);
-                    uploadResult.addError(error);
-                    logger.error(error, e);
+            if (certToUpload.doUpload()) {
+                if (!certToUpload.wasUploaded()) {
+                    try {
+                        logger.info("uploading cms for alias {} to dgc hub", alias);
+                        dgcCertClient.upload(cms, kid);
+                        certToUpload.setUploadedAt(Instant.now());
+                    } catch (AlreadyUploadedException e) {
+                        uploadResult.addError(
+                                String.format(
+                                        "dgc reported that dsc with kid %s has already been uploaded",
+                                        kid));
+                    } catch (Exception e) {
+                        String error =
+                                String.format(
+                                        "failed to upload cms for alias %s to dgc hub", alias);
+                        uploadResult.addError(error);
+                        logger.error(error, e);
+                    }
+                } else {
+                    String info = String.format("cms for alias %s already uploaded", alias);
+                    uploadResult.addInfo(info);
+                    logger.info(info);
                 }
             } else {
-                String info = String.format("cms for alias %s already uploaded", alias);
+                String info = String.format("cms for alias %s not marked for dgc upload", alias);
                 uploadResult.addInfo(info);
                 logger.info(info);
             }
 
-            if (!certToUpload.wasInserted()) {
-                try {
-                    logger.info("inserting dsc with kid {} into db", kid);
-                    verifierDataService.insertManualDsc(dsc);
-                    certToUpload.setInsertedAt(Instant.now());
-                    certUploadDataService.updateCertToUpload(certToUpload);
-                } catch (Exception e) {
-                    String error = String.format("failed to insert dsc with kid %s to db", kid);
-                    uploadResult.addError(error);
-                    logger.error(error, e);
+            if (certToUpload.doInsert()) {
+                if (!certToUpload.wasInserted()) {
+                    try {
+                        logger.info("inserting dsc with kid {} into db", kid);
+                        verifierDataService.insertManualDsc(dsc);
+                        certToUpload.setInsertedAt(Instant.now());
+                    } catch (Exception e) {
+                        String error = String.format("failed to insert dsc with kid %s to db", kid);
+                        uploadResult.addError(error);
+                        logger.error(error, e);
+                    }
+                } else {
+                    String info = String.format("cms for alias %s already in db", alias);
+                    uploadResult.addInfo(info);
+                    logger.info(info);
                 }
             } else {
-                String info = String.format("cms for alias %s already in db", alias);
+                String info = String.format("cms for alias %s not marked for insertion", alias);
                 uploadResult.addInfo(info);
                 logger.info(info);
             }
+
+            // update keyId, uploadedAt and insertedAt
+            certUploadDataService.updateCertToUpload(certToUpload);
         }
         logger.info(
                 "uploaded {} dscs in {}ms",

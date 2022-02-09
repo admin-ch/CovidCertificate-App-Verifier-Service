@@ -35,9 +35,7 @@ public class JdbcCertUploadDataServiceImpl implements CertUploadDataService {
     @Override
     public List<CertToUpload> findCertsToUpload() {
         return jt.query(
-                "select * from t_cert_to_upload"
-                        + " where inserted_at is null"
-                        + " or uploaded_at is null",
+                "select * from t_cert_to_upload where key_id is null",
                 new MapSqlParameterSource(),
                 new CertToUploadRowMapper());
     }
@@ -47,10 +45,12 @@ public class JdbcCertUploadDataServiceImpl implements CertUploadDataService {
         String sql =
                 "update t_cert_to_upload"
                         + " set inserted_at = :inserted_at,"
-                        + " uploaded_at = :uploaded_at"
+                        + " uploaded_at = :uploaded_at,"
+                        + " key_id = :key_id"
                         + " where pk_alias = :pk_alias";
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pk_alias", certToUpload.getAlias());
+        params.addValue("key_id", certToUpload.getKeyId());
         params.addValue("inserted_at", DateUtil.instantToDate(certToUpload.getInsertedAt()));
         params.addValue("uploaded_at", DateUtil.instantToDate(certToUpload.getUploadedAt()));
         jt.update(sql, params);
