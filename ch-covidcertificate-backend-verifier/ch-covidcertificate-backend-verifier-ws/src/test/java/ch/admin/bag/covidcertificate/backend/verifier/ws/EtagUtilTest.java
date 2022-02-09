@@ -13,12 +13,10 @@ package ch.admin.bag.covidcertificate.backend.verifier.ws;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.ValueSetsController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 public class EtagUtilTest {
@@ -52,9 +50,12 @@ public class EtagUtilTest {
     public void testFileHashMultiple() throws Exception {
         String expected = "W/\"acd0754cf3ac8fcee8ddba62cd6fe01dda8f7f82\"";
         List<String> pathsToValueSets =
-                ValueSetsController.PATHS_TO_VALUE_SETS.stream()
-                        .map(p -> "classpath:" + p)
-                        .collect(Collectors.toList());
+                List.of(
+                        "classpath:valuesets/test-manf.json",
+                        "classpath:valuesets/test-type.json",
+                        "classpath:valuesets/vaccine-mah-manf.json",
+                        "classpath:valuesets/vaccine-medicinal-product.json",
+                        "classpath:valuesets/vaccine-prophylaxis.json");
         String sha1 =
                 EtagUtil.getSha1HashForFiles(
                         true, pathsToValueSets.toArray(new String[pathsToValueSets.size()]));

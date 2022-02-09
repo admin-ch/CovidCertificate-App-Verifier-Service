@@ -4,7 +4,6 @@ services:
 
   covidcert_db:
     image: postgres:11
-    restart: always
     environment:
       POSTGRES_PASSWORD: covidcert
       POSTGRES_DB: covidcert
