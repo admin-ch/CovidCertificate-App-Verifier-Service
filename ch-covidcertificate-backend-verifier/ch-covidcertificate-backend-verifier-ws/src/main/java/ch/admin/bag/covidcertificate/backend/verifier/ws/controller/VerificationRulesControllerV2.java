@@ -60,6 +60,9 @@ public class VerificationRulesControllerV2 {
         ArrayNode verifierModes = (ArrayNode) rules.get("modeRules").get("verifierActiveModes");
         removeModes(verifierModes, disabledVerificationModes);
 
+        ArrayNode walletModes = (ArrayNode) rules.get("modeRules").get("walletActiveModes");
+        removeModes(walletModes, disabledVerificationModes);
+
         this.verificationRules = mapper.treeToValue(rules, Map.class);
 
         this.valueSetDataService = valueSetDataService;
