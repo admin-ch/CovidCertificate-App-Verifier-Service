@@ -41,3 +41,4 @@ jobs:
           ch-covidcertificate-backend-verifier/ch-covidcertificate-backend-verifier-sync/target/ch-covidcertificate-backend-verifier-sync.jar.sha256
           ch-covidcertificate-backend-verifier/ch-covidcertificate-backend-verifier-ws/target/ch-covidcertificate-backend-verifier-ws.jar
           ch-covidcertificate-backend-verifier/ch-covidcertificate-backend-verifier-ws/target/ch-covidcertificate-backend-verifier-ws.jar.sha256
+          ch-covidcertificate-backend-verifier/ch-covidcertificate-backend-verifier-ws/openapi.yaml
