@@ -11,8 +11,18 @@
       "Version": "1.0.9",
       "ValidFrom": "2022-02-28T00:00:00Z",
       "CertificateType": "General",
-      "Logic": true,
-      "AffectedFields": [ ],
+      "Logic": {
+        "if": [
+          true,
+          true,
+          {
+            "var": "payload.v"
+          }
+        ]
+      },
+      "AffectedFields": [
+        "v"
+      ],
       "Description": [
         {
           "desc": "EU/EFTA citizens and their family members, irrespective of their nationality, have rights of free movement. Entry to the country is currently possible without pandemic-related measures.",
