@@ -2,5 +2,9 @@
 EU/EFTA citizens and their family members, irrespective of their nationality, have rights of free movement. Entry to the country is currently possible without pandemic-related measures.
 */
 (
-  true
+  if(true){
+    true
+  }else{
+    true
+  }
 )
