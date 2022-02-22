@@ -84,8 +84,8 @@ public class VerificationRulesTest {
     private static final Logger logger = LoggerFactory.getLogger(VerificationRulesTest.class);
     private ObjectMapper mapper;
 
-    private static final String RULE_VERSION = "1.0.8";
-    private static final String RULE_VALID_FROM = "2022-01-31T00:00:00Z";
+    private static final String RULE_VERSION = "1.0.9";
+    private static final String RULE_VALID_FROM = "2022-02-28T00:00:00Z";
 
     private static final String RULES_V1_PATH = "src/main/resources/verificationRules.json";
     private static final String RULES_V2_PATH = "src/main/resources/verificationRulesV2.json";

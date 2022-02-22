@@ -6,8 +6,8 @@
   "Type": "Acceptance",
   "ValidTo": "2031-01-01T00:00:00Z",
   "Identifier": "VR-CH-0007",
-  "Version": "1.0.8",
-  "ValidFrom": "2022-01-31T00:00:00Z",
+  "Version": "1.0.9",
+  "ValidFrom": "2022-02-28T00:00:00Z",
   "CertificateType": "Vaccination",
   "Logic": {
     "if": [
