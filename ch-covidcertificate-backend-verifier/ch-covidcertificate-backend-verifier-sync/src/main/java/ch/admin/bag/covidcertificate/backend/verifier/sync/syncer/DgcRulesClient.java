@@ -19,11 +19,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -70,17 +72,15 @@ public class DgcRulesClient {
     }
 
     /**
-     * deletes all rules for Switzerland
-     *
+     * deletes the rules with the given IDs
+     * @param identifiers IDs of the rules to delete
      * @return successfully deleted rule IDs
      */
-    public RulesSyncResult deleteAll(){
-        logger.info("Deleting all Swiss rules");
-        Map<String, JsonNode> rules = download();
-        Set<String> ruleIds = rules.keySet();
+    public RulesSyncResult deleteRules(Collection<String> identifiers){
+        logger.info("Deleting {} rules", identifiers);
         List<String> deletedRuleIds = new ArrayList<>();
         List<String> failedRuleIds = new ArrayList<>();
-        ruleIds.forEach(ruleId -> {
+        identifiers.forEach(ruleId -> {
                 try {
                     // sign payload
                     String cms = null;
@@ -115,7 +115,7 @@ public class DgcRulesClient {
                 }
 
         });
-        logger.info("Finished uploading Swiss rules");
+        logger.info("Finished deleting rules. {} succeeded, {} failed", deletedRuleIds.size(), failedRuleIds.size());
         return new RulesSyncResult(deletedRuleIds, failedRuleIds);
     }
 
@@ -126,7 +126,7 @@ public class DgcRulesClient {
      * @return successfully uploaded rule ids
      */
     public RulesSyncResult upload(JsonNode rules) {
-        deleteAll();
+        Set<String> existingRules = download().keySet();
         logger.info("Uploading Swiss rules");
         List<String> uploadedRuleIds = new ArrayList<>();
         List<String> failedRuleIds = new ArrayList<>();
@@ -137,6 +137,7 @@ public class DgcRulesClient {
             Entry<String, JsonNode> ruleArray = fieldIterator.next();
             for (var rule : ruleArray.getValue()) {
                 String ruleId = ruleArray.getKey();
+                existingRules.remove(ruleId);
                 try {
                     // sign payload
                     String cms = null;
@@ -170,7 +171,6 @@ public class DgcRulesClient {
                             logger.error("[FAILED CMS] {}", cms);
                             logger.error("Upload of rule {} failed", ruleId, e);
                         }
-                        continue;
                     }
                 } catch (Exception ex) {
                     failedRuleIds.add(ruleId);
@@ -179,6 +179,13 @@ public class DgcRulesClient {
             }
         }
         logger.info("Finished uploading Swiss rules");
+        if (failedRuleIds.isEmpty()) {
+            logger.info(
+                    "Deleting {} remote rules that no longer exist locally", existingRules.size());
+            deleteRules(existingRules);
+        }else{
+            logger.warn("There were upload failures. Skipping rule deletion");
+        }
         return new RulesSyncResult(uploadedRuleIds, failedRuleIds);
     }
 }
