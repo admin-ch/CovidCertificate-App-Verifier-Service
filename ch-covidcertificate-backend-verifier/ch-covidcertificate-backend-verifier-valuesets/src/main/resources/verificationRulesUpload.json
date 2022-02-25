@@ -1,5 +1,5 @@
 {
-  "GR-CH-0001": [
+  "GR-CH-0002": [
     {
       "Country": "CH",
       "Engine": "CERTLOGIC",
@@ -7,8 +7,8 @@
       "SchemaVersion": "1.0.0",
       "Type": "Acceptance",
       "ValidTo": "2031-01-01T00:00:00Z",
-      "Identifier": "GR-CH-0001",
-      "Version": "1.0.10",
+      "Identifier": "GR-CH-0002",
+      "Version": "1.0.11",
       "ValidFrom": "2022-02-28T00:00:00Z",
       "CertificateType": "General",
       "Logic": {
