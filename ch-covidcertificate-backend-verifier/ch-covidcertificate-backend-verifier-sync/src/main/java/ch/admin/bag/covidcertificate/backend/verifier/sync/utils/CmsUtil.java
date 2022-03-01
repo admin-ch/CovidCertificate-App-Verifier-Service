@@ -12,6 +12,7 @@ package ch.admin.bag.covidcertificate.backend.verifier.sync.utils;
 
 import ch.admin.bag.covidcertificate.backend.verifier.model.cert.db.DbDsc;
 import ch.admin.bag.covidcertificate.backend.verifier.model.exception.InvalidSignatureException;
+import ch.admin.bag.covidcertificate.backend.verifier.model.sync.SigningPayload;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -38,12 +39,20 @@ public class CmsUtil {
 
     private CmsUtil() {}
 
-    public static HttpHeaders createCmsTextUploadHeaders() {
+    public static HttpHeaders createRuleExchangeHeaders() {
         var headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, "application/json");
         headers.add(HttpHeaders.CONTENT_TYPE, "application/cms-text");
         return headers;
     }
+
+    public static SigningPayload encodePayload(byte[] payload){
+        var base64encoded =
+                Base64.getEncoder()
+                        .encodeToString(payload);
+        return new SigningPayload(base64encoded);
+    }
+
 
     public static HttpHeaders createCmsUploadHeaders() {
         var headers = new HttpHeaders();
