@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "reviewers": [
+    "gstoehld"
+  ],
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["*"],
+      "groupName": "dependencies"
+    }
+  ],
+  "schedule": [
+    "before 3am on the first day of the month"
+  ]
+}
