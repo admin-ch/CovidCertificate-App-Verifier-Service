@@ -40,8 +40,10 @@ import org.springframework.web.context.request.WebRequest;
 @Controller
 @RequestMapping("trust/v2")
 public class VerificationRulesControllerV2 {
+
     private static final Logger logger = LoggerFactory.getLogger(VerificationRulesControllerV2.class);
     private static final String VALUE_SETS_KEY = "valueSets";
+    public static final String MODE_RULES = "modeRules";
 
     private final Map verificationRules;
     private final ValueSetDataService valueSetDataService;
@@ -54,11 +56,14 @@ public class VerificationRulesControllerV2 {
                 new ClassPathResource("verificationRulesV2.json").getInputStream();
         JsonNode rules = mapper.readTree(verificationRulesFile);
 
-        ArrayNode modes = (ArrayNode) rules.get("modeRules").get("activeModes");
+        ArrayNode modes = (ArrayNode) rules.get(MODE_RULES).get("activeModes");
         removeModes(modes, disabledVerificationModes);
 
-        ArrayNode verifierModes = (ArrayNode) rules.get("modeRules").get("verifierActiveModes");
+        ArrayNode verifierModes = (ArrayNode) rules.get(MODE_RULES).get("verifierActiveModes");
         removeModes(verifierModes, disabledVerificationModes);
+
+        ArrayNode walletModes = (ArrayNode) rules.get("modeRules").get("walletActiveModes");
+        removeModes(walletModes, disabledVerificationModes);
 
         this.verificationRules = mapper.treeToValue(rules, Map.class);
 

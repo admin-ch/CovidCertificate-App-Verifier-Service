@@ -72,6 +72,7 @@ public abstract class VerificationRulesControllerV2Test extends BaseControllerTe
                 boolean modeExists = false;
                 var iter = expected.get("modeRules").get("activeModes").iterator();
                 var verifierIter = expected.get("modeRules").get("verifierActiveModes").iterator();
+                var walletIter = expected.get("modeRules").get("walletActiveModes").iterator();
                 while (iter.hasNext()) {
                     JsonNode mode = iter.next();
                     if (disabledMode.equals(mode.get("id").asText())) {
@@ -84,6 +85,13 @@ public abstract class VerificationRulesControllerV2Test extends BaseControllerTe
                     if (disabledMode.equals(mode.get("id").asText())) {
                         modeExists = true;
                         verifierIter.remove();
+                    }
+                }
+                while (walletIter.hasNext()) {
+                    JsonNode mode = walletIter.next();
+                    if (disabledMode.equals(mode.get("id").asText())) {
+                        modeExists = true;
+                        walletIter.remove();
                     }
                 }
                 if (!modeExists) {
