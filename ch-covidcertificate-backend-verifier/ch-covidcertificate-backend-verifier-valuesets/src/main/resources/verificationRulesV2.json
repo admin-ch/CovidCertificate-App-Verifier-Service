@@ -8,8 +8,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "GR-CH-0001",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "General",
       "logic": {
         "and": [
@@ -92,8 +92,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "RR-CH-0000",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Recovery",
       "logic": {
         "if": [
@@ -155,8 +155,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "RR-CH-0001",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Recovery",
       "logic": {
         "if": [
@@ -196,8 +196,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "RR-CH-0002",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Recovery",
       "logic": {
         "if": [
@@ -248,8 +248,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "RR-CH-0003",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Recovery",
       "logic": {
         "if": [
@@ -300,8 +300,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "TR-CH-0000",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Test",
       "logic": {
         "if": [
@@ -363,8 +363,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "TR-CH-0001",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Test",
       "logic": {
         "if": [
@@ -416,8 +416,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "TR-CH-0002",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Test",
       "logic": {
         "if": [
@@ -459,8 +459,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "TR-CH-0004",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Test",
       "logic": {
         "if": [
@@ -500,8 +500,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "TR-CH-0005",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Test",
       "logic": {
         "if": [
@@ -552,8 +552,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "TR-CH-0006",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Test",
       "logic": {
         "if": [
@@ -622,8 +622,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "TR-CH-0007",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Test",
       "logic": {
         "if": [
@@ -679,8 +679,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "TR-CH-0008",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Test",
       "logic": {
         "if": [
@@ -733,8 +733,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "TR-CH-0009",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Test",
       "logic": {
         "if": [
@@ -790,8 +790,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "TR-CH-0010",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Test",
       "logic": {
         "if": [
@@ -847,8 +847,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "TR-CH-0011",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Test",
       "logic": {
         "if": [
@@ -917,8 +917,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "TR-CH-0012",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Test",
       "logic": {
         "if": [
@@ -987,8 +987,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "VR-CH-0000",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Vaccination",
       "logic": {
         "if": [
@@ -1050,8 +1050,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "VR-CH-0001",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Vaccination",
       "logic": {
         "if": [
@@ -1091,8 +1091,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "VR-CH-0002",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Vaccination",
       "logic": {
         "if": [
@@ -1146,8 +1146,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "VR-CH-0003",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Vaccination",
       "logic": {
         "if": [
@@ -1187,8 +1187,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "VR-CH-0004",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Vaccination",
       "logic": {
         "if": [
@@ -1268,8 +1268,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "VR-CH-0005",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Vaccination",
       "logic": {
         "if": [
@@ -1349,8 +1349,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "VR-CH-0006",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Vaccination",
       "logic": {
         "if": [
@@ -1430,8 +1430,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "VR-CH-0007",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Vaccination",
       "logic": {
         "if": [
@@ -1537,8 +1537,8 @@
       "type": "Acceptance",
       "validTo": "2031-01-01T00:00:00Z",
       "identifier": "VR-CH-0008",
-      "version": "1.0.11",
-      "validFrom": "2022-03-04T00:00:00Z",
+      "version": "1.0.12",
+      "validFrom": "2022-03-06T00:00:00Z",
       "certificateType": "Vaccination",
       "logic": {
         "if": [
