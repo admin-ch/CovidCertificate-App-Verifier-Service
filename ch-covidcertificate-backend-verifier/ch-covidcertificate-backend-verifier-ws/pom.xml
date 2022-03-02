@@ -26,7 +26,7 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
-        <testcontainers.version>1.15.1</testcontainers.version>
+        <testcontainers.version>1.16.3</testcontainers.version>
         <sonar.projectKey>${env.SONAR_PROJECTKEY}</sonar.projectKey>
     </properties>
 
@@ -147,7 +147,7 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk15on</artifactId>
-            <version>1.68</version>
+            <version>1.70</version>
         </dependency>
 
         <dependency>
@@ -260,7 +260,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.5</version>
+                <version>0.8.7</version>
                 <executions>
                     <!-- to avoid bugs in some situations -->
                     <execution>
