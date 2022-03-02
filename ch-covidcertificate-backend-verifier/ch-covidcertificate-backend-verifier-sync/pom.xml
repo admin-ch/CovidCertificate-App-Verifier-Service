@@ -82,13 +82,13 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.15.2</version>
+            <version>1.16.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>1.15.1</version>
+            <version>1.16.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -115,7 +115,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.5</version>
+                <version>0.8.7</version>
                 <executions>
                     <!-- to avoid bugs in some situations -->
                     <execution>
