@@ -1,0 +1,9 @@
+{
+  "if": [
+    true,
+    true,
+    {
+      "var": "payload.v"
+    }
+  ]
+}

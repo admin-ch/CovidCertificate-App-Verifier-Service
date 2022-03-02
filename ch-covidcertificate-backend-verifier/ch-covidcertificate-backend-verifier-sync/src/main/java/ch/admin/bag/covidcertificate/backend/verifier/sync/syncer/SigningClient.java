@@ -32,27 +32,41 @@ public class SigningClient {
         this.signBaseUrl = signBaseUrl;
     }
 
-    public String sign(SigningPayload toSign) {
-        String url = signBaseUrl + SIGNING_PATH;
-        logger.info("Requesting signed cms at {}", url);
-        return rt.exchange(RequestEntity.post(url).body(toSign), CmsResponse.class)
-                .getBody()
-                .getCms();
+    public String sign(SigningPayload toSign) throws SigningException {
+        try {
+            String url = signBaseUrl + SIGNING_PATH;
+            logger.info("Requesting signed cms at {}", url);
+            return rt.exchange(RequestEntity.post(url).body(toSign), CmsResponse.class)
+                    .getBody()
+                    .getCms();
+        } catch (Exception e) {
+            throw new SigningException(e);
+        }
     }
 
-    public String getCmsForAlias(String alias) {
-        String url = signBaseUrl + String.format(ALIAS_PATH, alias);
-        logger.info("Requesting cms alias {} at {}", alias, url);
-        return rt.exchange(
-                        RequestEntity.get(url).headers(acceptJsonHeaders()).build(),
-                        CmsResponse.class)
-                .getBody()
-                .getCms();
+    public String getCmsForAlias(String alias) throws SigningException {
+        try{
+            String url = signBaseUrl + String.format(ALIAS_PATH, alias);
+            logger.info("Requesting cms alias {} at {}", alias, url);
+            return rt.exchange(
+                            RequestEntity.get(url).headers(acceptJsonHeaders()).build(),
+                            CmsResponse.class)
+                    .getBody()
+                    .getCms();
+        }catch(Exception e){
+            throw new SigningException(e);
+        }
     }
 
     public static HttpHeaders acceptJsonHeaders() {
         var headers = new HttpHeaders();
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
         return headers;
+    }
+
+    public static class SigningException extends Exception {
+        public SigningException(Exception e) {
+            super(e);
+        }
     }
 }

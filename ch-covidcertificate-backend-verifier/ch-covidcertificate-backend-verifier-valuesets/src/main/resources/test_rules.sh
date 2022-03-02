@@ -19,6 +19,7 @@ mkdir -p generated/verification-rules
 mkdir -p generated/display-rules
 mkdir -p generated/ch-only-rules
 mkdir -p generated/mode-rules
+mkdir -p generated/upload-rules
 
 for f in verification-rules/*.aifc; do
   $AIFC $f -o generated/$f.json
@@ -33,6 +34,10 @@ for f in ch-only-rules/*.aifc; do
 done
 
 for f in mode-rules/*.aifc; do
+  $AIFC $f -o generated/$f.json
+done
+
+for f in upload-rules/*.aifc; do
   $AIFC $f -o generated/$f.json
 done
 

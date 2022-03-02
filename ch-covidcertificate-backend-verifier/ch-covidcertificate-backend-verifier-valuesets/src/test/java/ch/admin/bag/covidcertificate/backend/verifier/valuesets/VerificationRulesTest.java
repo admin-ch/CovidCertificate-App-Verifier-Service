@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,7 +29,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,8 +84,8 @@ public class VerificationRulesTest {
     private static final Logger logger = LoggerFactory.getLogger(VerificationRulesTest.class);
     private ObjectMapper mapper;
 
-    private static final String RULE_VERSION = "1.0.8";
-    private static final String RULE_VALID_FROM = "2022-01-31T00:00:00Z";
+    private static final String RULE_VERSION = "1.0.12";
+    private static final String RULE_VALID_FROM = "2022-03-06T00:00:00Z";
 
     private static final String RULES_V1_PATH = "src/main/resources/verificationRules.json";
     private static final String RULES_V2_PATH = "src/main/resources/verificationRulesV2.json";
@@ -96,8 +94,10 @@ public class VerificationRulesTest {
     private static final String MASTER_TEMPLATE_CLASSPATH = "templates/masterTemplate.json";
     private static final String RULE_TEMPLATE_CLASSPATH = "templates/ruleTemplate.json";
     private static final String VERIFICATION_RULES_SOURCE_DIR = "verification-rules";
+    private static final String UPLOAD_RULES_SOURCE_DIR = "upload-rules";
     private static final String VERIFICATION_RULES_COMPILE_DIR = "generated/verification-rules";
     private static final String DISPLAY_RULES_COMPILE_DIR = "generated/display-rules";
+    private static final String UPLOAD_RULES_COMPILE_DIR = "generated/upload-rules";
     private static final String CH_ONLY_RULES_COMPILE_DIR = "generated/ch-only-rules";
     private static final String EU_TEST_RULES_OUTPUT_PATH = "src/main/resources/CH/";
     private static final String MODE_RULE_PATH = "generated/mode-rules/modeRules.aifc.json";
@@ -125,13 +125,13 @@ public class VerificationRulesTest {
         JsonNode v2 = generateV2();
         mapV2RulesToUpload(v2);
         mapV2RulesToV1(v2);
+        mapTestRules(v2);
     }
 
-    private JsonNode generateV2() throws Exception {
-        JsonNode v2 =
-                mapper.readTree(new ClassPathResource(MASTER_TEMPLATE_CLASSPATH).getInputStream());
+
+    private List<ObjectNode> readRuleSet(String sourceDir, String compileDir) throws IOException {
         String[] sourceFiles =
-                (new ClassPathResource(VERIFICATION_RULES_SOURCE_DIR).getFile().list());
+                (new ClassPathResource(sourceDir).getFile().list());
         Arrays.sort(sourceFiles);
         List<ObjectNode> rules = new ArrayList<>();
 
@@ -163,8 +163,8 @@ public class VerificationRulesTest {
             String sourceFileContent =
                     new String(
                             new ClassPathResource(
-                                            Paths.get(VERIFICATION_RULES_SOURCE_DIR, sourceFile)
-                                                    .toString())
+                                    Paths.get(sourceDir, sourceFile)
+                                            .toString())
                                     .getInputStream()
                                     .readAllBytes());
             Matcher matcher = commentPattern.matcher(sourceFileContent);
@@ -176,14 +176,13 @@ public class VerificationRulesTest {
                 logger.warn(
                         "File contained no comment, rule description will be empty {}", filename);
             }
-            ObjectNode logic =
-                    (ObjectNode)
+            JsonNode logic =
                             mapper.readTree(
                                     new ClassPathResource(
-                                                    Paths.get(
-                                                                    VERIFICATION_RULES_COMPILE_DIR,
-                                                                    filename)
-                                                            .toString())
+                                            Paths.get(
+                                                            compileDir,
+                                                            filename)
+                                                    .toString())
                                             .getInputStream());
             rule.set("logic", logic);
             Matcher payloadMatcher = payloadPattern.matcher(logic.toString());
@@ -197,6 +196,15 @@ public class VerificationRulesTest {
             rule.put("version", RULE_VERSION);
             rules.add(rule);
         }
+        return rules;
+    }
+
+
+    private JsonNode generateV2() throws Exception {
+        JsonNode v2 =
+                mapper.readTree(new ClassPathResource(MASTER_TEMPLATE_CLASSPATH).getInputStream());
+
+        List<ObjectNode> rules = readRuleSet(VERIFICATION_RULES_SOURCE_DIR, VERIFICATION_RULES_COMPILE_DIR);
 
         ObjectNode modeRule = (ObjectNode) v2.get("modeRules");
         ArrayNode activeModesArray = modeRule.putArray("activeModes");
@@ -260,7 +268,8 @@ public class VerificationRulesTest {
 
     private void mapV2RulesToUpload(JsonNode v2) throws Exception {
         Map<String, ArrayNode> uploadRules = new LinkedHashMap<>();
-        for (var rule : v2.get("rules")) {
+        List<ObjectNode> rules = readRuleSet(UPLOAD_RULES_SOURCE_DIR, UPLOAD_RULES_COMPILE_DIR);
+        for (var rule : rules) {
             ArrayNode rulesNode = mapper.createArrayNode();
             JsonNode pascaleCase = getJsonNodeWithCapitalizedTopLevelKeys(rule);
             JsonNode v2Rule = getJsonNodeWithFixedCertLogic(pascaleCase);
@@ -270,10 +279,19 @@ public class VerificationRulesTest {
         mapper.writerWithDefaultPrettyPrinter()
                 .writeValue(new File(RULES_UPLOAD_PATH), uploadRules);
 
-        mapTestRules(uploadRules);
+
     }
 
-    private void mapTestRules(Map<String, ArrayNode> uploadRules) throws IOException {
+    private void mapTestRules(JsonNode v2) throws IOException {
+        Map<String, ArrayNode> uploadRules = new LinkedHashMap<>();
+        for (var rule : v2.get("rules")) {
+            ArrayNode rulesNode = mapper.createArrayNode();
+            JsonNode pascaleCase = getJsonNodeWithCapitalizedTopLevelKeys(rule);
+            JsonNode v2Rule = getJsonNodeWithFixedCertLogic(pascaleCase);
+            rulesNode.add(v2Rule);
+            uploadRules.put(rule.get("identifier").asText(), rulesNode);
+        }
+
         Files.walk(Path.of(EU_TEST_RULES_OUTPUT_PATH))
                 .sorted(Comparator.reverseOrder())
                 .map(Path::toFile)
