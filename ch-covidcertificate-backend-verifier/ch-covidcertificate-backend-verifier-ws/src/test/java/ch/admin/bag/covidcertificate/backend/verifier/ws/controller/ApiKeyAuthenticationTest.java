@@ -31,7 +31,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(
         properties = {
             "ws.monitor.prometheus.user=prometheus",
-            "ws.monitor.prometheus.password={bcrypt}$2y$10$umg27y0QSdCFuCBP6ibxdeR3CssS7TD5GjjikcLi5sUG1uSK9qe/.",
+            "ws.monitor.prometheus.password=prometheus",
             "management.endpoints.enabled-by-default=true",
             "management.endpoints.web.exposure.include=*",
             "ws.authentication.apiKeys.unit-test=4d1d5663-b4ef-46a5-85b6-3d1d376429da"

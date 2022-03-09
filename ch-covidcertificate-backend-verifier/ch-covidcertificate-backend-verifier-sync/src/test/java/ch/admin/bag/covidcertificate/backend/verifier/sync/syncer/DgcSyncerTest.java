@@ -42,7 +42,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest(
         properties = {
                 "sync.monitor.prometheus.user=prometheus",
-                "sync.monitor.prometheus.password={bcrypt}$2y$10$umg27y0QSdCFuCBP6ibxdeR3CssS7TD5GjjikcLi5sUG1uSK9qe/.",
+                "sync.monitor.prometheus.password=prometheus",
                 "management.endpoints.enabled-by-default=true",
                 "management.endpoints.web.exposure.include=*"
         })
