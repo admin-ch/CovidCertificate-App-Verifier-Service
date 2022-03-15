@@ -76,13 +76,8 @@ public class ActuatorSecurity extends WebSecurityConfigurerAdapter {
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
     auth.inMemoryAuthentication()
             .withUser(user)
-            .password(passwordEncoder().encode(password))
+            .password(password)
             .roles(PROMETHEUS_ROLE);
-  }
-
-  @Bean
-  public PasswordEncoder passwordEncoder(){
-    return new BCryptPasswordEncoder();
   }
 
 }
