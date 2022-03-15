@@ -17,6 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.model.exception.DgcSyncException;
@@ -28,12 +30,23 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.test.web.servlet.MockMvc;
 
+@SpringBootTest(
+        properties = {
+                "sync.monitor.prometheus.user=prometheus",
+                "sync.monitor.prometheus.password=prometheus",
+                "management.endpoints.enabled-by-default=true",
+                "management.endpoints.web.exposure.include=*"
+        })
+@ActiveProfiles({"actuator-security"})
 class DgcSyncerTest extends BaseDgcTest {
 
     private final String TEST_JSON_CSCA = "src/test/resources/csca.json";
@@ -61,6 +74,31 @@ class DgcSyncerTest extends BaseDgcTest {
     @Autowired DgcCertSyncer dgcSyncer;
 
     @Autowired VerifierDataService verifierDataService;
+    @Autowired MockMvc mockMvc;
+
+    @Test
+    public void testActuatorSecurity() throws Exception {
+        var response =
+                mockMvc.perform(get("/actuator/health"))
+                        .andExpect(status().is2xxSuccessful())
+                        .andReturn()
+                        .getResponse();
+        response =
+                mockMvc.perform(get("/actuator/loggers"))
+                        .andExpect(status().is(401))
+                        .andReturn()
+                        .getResponse();
+        response =
+                mockMvc.perform(
+                                get("/actuator/loggers")
+                                        .header(
+                                                "Authorization",
+                                                "Basic cHJvbWV0aGV1czpwcm9tZXRoZXVz"))
+                        .andExpect(status().isOk())
+                        .andReturn()
+                        .getResponse();
+    }
+
 
     @Test
     void downloadTest() throws Exception {

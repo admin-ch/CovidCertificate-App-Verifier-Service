@@ -10,7 +10,6 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.ws.config;
 
-import ch.admin.bag.covidcertificate.backend.verifier.ws.config.configbeans.ActuatorSecurityConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.boot.actuate.info.InfoEndpoint;
@@ -25,6 +24,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @Order(Ordered.HIGHEST_PRECEDENCE + 9)
@@ -40,10 +41,6 @@ public class ActuatorSecurity extends WebSecurityConfigurerAdapter {
   @Value("${ws.monitor.prometheus.password}")
   private String password;
 
-  @Bean
-  ActuatorSecurityConfig passwordDefault() {
-    return new ActuatorSecurityConfig(user, password);
-  }
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -75,11 +72,17 @@ public class ActuatorSecurity extends WebSecurityConfigurerAdapter {
     http.csrf().ignoringAntMatchers("/actuator/loggers/**");
   }
 
-  protected void configureGlobal(
-      AuthenticationManagerBuilder auth, ActuatorSecurityConfig securityConfig) throws Exception {
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
     auth.inMemoryAuthentication()
-        .withUser(securityConfig.getUsername())
-        .password(securityConfig.getPassword())
-        .roles(PROMETHEUS_ROLE);
+            .withUser(user)
+            .password(passwordEncoder().encode(password))
+            .roles(PROMETHEUS_ROLE);
   }
+
+  @Bean
+  public PasswordEncoder passwordEncoder(){
+    return new BCryptPasswordEncoder();
+  }
+
 }
