@@ -31,7 +31,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(
         properties = {
             "ws.monitor.prometheus.user=prometheus",
-            "ws.monitor.prometheus.password=prometheus",
+            "ws.monitor.prometheus.password={noop}prometheus",
             "management.endpoints.enabled-by-default=true",
             "management.endpoints.web.exposure.include=*",
             "ws.authentication.apiKeys.unit-test=4d1d5663-b4ef-46a5-85b6-3d1d376429da"
@@ -73,6 +73,30 @@ public class ApiKeyAuthenticationTest extends BaseControllerTest {
             testAuthenticationForEndpoint(endpoint);
         }
     }
+
+    @Test
+    public void testActuatorSecurity() throws Exception {
+        var response =
+                mockMvc.perform(get("/actuator/health"))
+                        .andExpect(status().is2xxSuccessful())
+                        .andReturn()
+                        .getResponse();
+        response =
+                mockMvc.perform(get("/actuator/loggers"))
+                        .andExpect(status().is(401))
+                        .andReturn()
+                        .getResponse();
+        response =
+                mockMvc.perform(
+                                get("/actuator/loggers")
+                                        .header(
+                                                "Authorization",
+                                                "Basic cHJvbWV0aGV1czpwcm9tZXRoZXVz"))
+                        .andExpect(status().isOk())
+                        .andReturn()
+                        .getResponse();
+    }
+
 
     private void testAuthenticationForEndpoint(String url) throws Exception {
         LOGGER.info("testing authentication for endpoint: {}", url);
