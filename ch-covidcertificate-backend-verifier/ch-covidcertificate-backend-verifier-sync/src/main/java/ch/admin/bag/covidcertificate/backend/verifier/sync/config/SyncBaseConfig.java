@@ -11,13 +11,17 @@
 package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.CertUploadDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.ForeignRulesDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcCertUploadDataServiceImpl;
+import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcForeignRulesDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcValueSetDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
+import ch.admin.bag.covidcertificate.backend.verifier.model.ForeignRule;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcForeignRulesSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcRulesClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcRulesSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetClient;
@@ -33,6 +37,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.sync.ws.RulesSyncWs;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.List;
 import javax.sql.DataSource;
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;
@@ -123,6 +128,12 @@ public abstract class SyncBaseConfig {
     }
 
     @Bean
+    public ForeignRulesDataService foreignRulesDataService(
+            DataSource dataSource) {
+        return new JdbcForeignRulesDataServiceImpl(dataSource);
+    }
+
+    @Bean
     public DgcValueSetClient dgcValueSetClient(RestTemplate restTemplate) {
         return new DgcValueSetClient(baseurl, restTemplate);
     }
@@ -152,6 +163,13 @@ public abstract class SyncBaseConfig {
                                 .readAllBytes(),
                         StandardCharsets.UTF_8);
         return new DgcRulesSyncer(verificationRulesUploadString, dgcRulesClient);
+    }
+
+    @Bean
+    public DgcForeignRulesSyncer dgcForeignRulesSyncer(
+            DgcRulesClient dgcRulesClient, ForeignRulesDataService foreignRulesDataService)
+            throws IOException {
+        return new DgcForeignRulesSyncer(dgcRulesClient, foreignRulesDataService);
     }
 
     @Bean

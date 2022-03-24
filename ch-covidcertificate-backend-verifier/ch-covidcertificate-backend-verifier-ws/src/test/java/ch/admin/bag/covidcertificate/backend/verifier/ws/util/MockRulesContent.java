@@ -1,0 +1,7 @@
+package ch.admin.bag.covidcertificate.backend.verifier.ws.util;
+
+public interface MockRulesContent {
+    String AT1_CONTENT = "{\"Identifier\":\"VR-AT-0000\",\"Type\":\"Acceptance\",\"Country\":\"AT\",\"Region\":\"AT\",\"Version\":\"1.0.12\",\"SchemaVersion\":\"1.0.0\",\"Engine\":\"CERTLOGIC\",\"EngineVersion\":\"0.7.5\",\"CertificateType\":\"Vaccination\",\"Description\":[{\"lang\":\"en\",\"desc\":\"At most one v-event.\"}],\"ValidFrom\":\"2021-11-29T00:00:00Z\",\"ValidTo\":\"2030-06-01T00:00:00Z\",\"AffectedFields\":[\"v.1\"],\"Logic\":{\"!\":[{\"var\":\"payload.v.1\"}]}}";
+    String AT2_CONTENT =
+            "{\"Identifier\":\"GR-AT-0001\",\"Type\":\"Acceptance\",\"Country\":\"AT\",\"Region\":\"AT\",\"Version\":\"1.0.12\",\"SchemaVersion\":\"1.0.0\",\"Engine\":\"CERTLOGIC\",\"EngineVersion\":\"0.7.5\",\"CertificateType\":\"General\",\"Description\":[{\"lang\":\"en\",\"desc\":\"The \\\"disease or agent targeted\\\" must be COVID-19 of the value set list.\"}],\"ValidFrom\":\"2021-11-29T00:00:00Z\",\"ValidTo\":\"2030-06-01T00:00:00Z\",\"AffectedFields\":[\"r.0\",\"r.0.tg\",\"t.0\",\"t.0.tg\",\"v.0\",\"v.0.tg\"],\"Logic\":{\"and\":[{\"if\":[{\"var\":\"payload.r.0\"},{\"in\":[{\"var\":\"payload.r.0.tg\"},{\"var\":\"external.valueSets.disease-agent-targeted\"}]},true]},{\"if\":[{\"var\":\"payload.t.0\"},{\"in\":[{\"var\":\"payload.t.0.tg\"},{\"var\":\"external.valueSets.disease-agent-targeted\"}]},true]},{\"if\":[{\"var\":\"payload.v.0\"},{\"in\":[{\"var\":\"payload.v.0.tg\"},{\"var\":\"external.valueSets.disease-agent-targeted\"}]},true]}]}}";
+}

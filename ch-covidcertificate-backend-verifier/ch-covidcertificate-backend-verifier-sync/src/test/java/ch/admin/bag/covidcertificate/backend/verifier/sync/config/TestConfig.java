@@ -10,10 +10,14 @@
 
 package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
+import ch.admin.bag.covidcertificate.backend.verifier.data.ForeignRulesDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcForeignRulesDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcForeignRulesSyncer;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcRulesClient;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.RestTemplateHelper;
 import java.time.Duration;
 import javax.sql.DataSource;
@@ -50,11 +54,27 @@ public class TestConfig {
     }
 
     @Bean
+    public DgcRulesClient rulesClient(RestTemplate restTemplate) {
+        logger.info("Instantiated Rules Client with baseurl: {}", baseurl);
+        return new DgcRulesClient(baseurl, restTemplate, null);
+    }
+
+    @Bean
+    public DgcForeignRulesSyncer rulesSyncer(DgcRulesClient rulesClient, ForeignRulesDataService dataService){
+        return new DgcForeignRulesSyncer(rulesClient, dataService);
+    }
+
+    @Bean
     public VerifierDataService verifierDataService(
             DataSource dataSource,
             @Value("${dsc.deleted.keep.duration:P7D}") Duration keepDscsMarkedForDeletionDuration) {
         return new JdbcVerifierDataServiceImpl(
                 dataSource, dscBatchSize, keepDscsMarkedForDeletionDuration);
+    }
+
+    @Bean
+    public ForeignRulesDataService foreignRulesDataService(DataSource dataSource){
+        return new JdbcForeignRulesDataServiceImpl(dataSource);
     }
 
     @Bean
