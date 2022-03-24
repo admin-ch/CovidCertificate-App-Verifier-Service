@@ -46,13 +46,10 @@ public class CmsUtil {
         return headers;
     }
 
-    public static SigningPayload encodePayload(byte[] payload){
-        var base64encoded =
-                Base64.getEncoder()
-                        .encodeToString(payload);
+    public static SigningPayload encodePayload(byte[] payload) {
+        var base64encoded = Base64.getEncoder().encodeToString(payload);
         return new SigningPayload(base64encoded);
     }
-
 
     public static HttpHeaders createCmsUploadHeaders() {
         var headers = new HttpHeaders();
@@ -68,6 +65,13 @@ public class CmsUtil {
         validateSignature(cmsSignedData);
         X509Certificate x509 = getPayload(cmsSignedData);
         return TrustListMapper.mapDsc(x509, "CH", getKeyId(x509));
+    }
+
+    public static Object decodeCms(String cms)
+            throws CMSException, CertificateException, IOException, OperatorCreationException {
+        CMSSignedData cmsSignedData = new CMSSignedData(Base64.getDecoder().decode(cms));
+        validateSignature(cmsSignedData);
+        return cmsSignedData.getSignedContent().getContent();
     }
 
     private static void validateSignature(CMSSignedData cmsSignedData)

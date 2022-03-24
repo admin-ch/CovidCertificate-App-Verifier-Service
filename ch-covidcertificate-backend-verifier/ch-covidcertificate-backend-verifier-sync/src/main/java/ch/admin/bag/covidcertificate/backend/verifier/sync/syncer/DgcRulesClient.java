@@ -17,6 +17,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.CmsUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,6 +39,7 @@ public class DgcRulesClient {
     private static final String RULE_UPLOAD_PATH = "/rules";
     private static final String RULE_DELETE_PATH = "/rules/delete";
     private static final String DOWNLOAD_PATH = "/rules/%s";
+    private static final String COUNTRY_LIST_PATH = "/countrylist";
     private final String dgcBaseUrl;
     private final RestTemplate dgcRT;
     private final SigningClient signingClient;
@@ -49,16 +51,16 @@ public class DgcRulesClient {
     }
 
     /**
-     * downloads rules for Switzerland
+     * downloads rules for the given country
      *
-     * @return rules for Switzerland
+     * @return downloaded rules
      */
-    public Map<String, JsonNode> download() {
+    public Map<String, JsonNode> download(String country) {
         logger.info("[DgcRulesClient] Downloading rules");
         Map<String, JsonNode> rules = new HashMap<>();
         ResponseEntity<String> response =
                 this.dgcRT.exchange(
-                        RequestEntity.get(dgcBaseUrl + String.format(DOWNLOAD_PATH, "CH"))
+                        RequestEntity.get(dgcBaseUrl + String.format(DOWNLOAD_PATH, country))
                                 .headers(CmsUtil.createRuleExchangeHeaders())
                                 .build(),
                         String.class);
@@ -76,6 +78,35 @@ public class DgcRulesClient {
 
         logger.info("[DgcRulesClient] downloaded {} rules", rules.size());
         return rules;
+    }
+
+    /**
+     * Get the list of countries on the DGC gateway
+     *
+     * @return 2-letter country codes
+     */
+    public List<String> getCountries() {
+        logger.info("[DgcRulesClient] Downloading country list");
+        ResponseEntity<String> response =
+                this.dgcRT.exchange(
+                        RequestEntity.get(dgcBaseUrl + COUNTRY_LIST_PATH)
+                                .headers(CmsUtil.createRuleExchangeHeaders())
+                                .build(),
+                        String.class);
+        List<String> countries = new ArrayList<>();
+        try {
+            countries =
+                    new ObjectMapper()
+                            .readValue(
+                                    response.getBody(),
+                                    TypeFactory.defaultInstance()
+                                            .constructCollectionType(List.class, String.class));
+        } catch (JsonProcessingException e) {
+            logger.error("[DgcRulesClient] Failed to deserialize downloaded rules", e);
+        }
+
+        logger.info("[DgcRulesClient] downloaded country list with {} entries", countries.size());
+        return countries;
     }
 
     /**
@@ -133,7 +164,7 @@ public class DgcRulesClient {
      */
     public RulesSyncResult deleteAll() {
         logger.info("Deleting all Swiss rules");
-        Map<String, JsonNode> rules = download();
+        Map<String, JsonNode> rules = download("CH");
         Set<String> ruleIds = rules.keySet();
         return delete(ruleIds);
     }
@@ -145,7 +176,7 @@ public class DgcRulesClient {
      */
     public RulesSyncResult upload(JsonNode rules) {
         // Download all remote rules and later remove the ones that should not be deleted
-        Set<String> rulesToDelete = download().keySet();
+        Set<String> rulesToDelete = download("CH").keySet();
 
         logger.info("Uploading Swiss rules");
         List<String> uploadedRuleIds = new ArrayList<>();
