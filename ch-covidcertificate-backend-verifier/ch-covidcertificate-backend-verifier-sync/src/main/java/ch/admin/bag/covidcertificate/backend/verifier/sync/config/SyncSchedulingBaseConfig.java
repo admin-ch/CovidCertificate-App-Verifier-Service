@@ -86,7 +86,7 @@ public class SyncSchedulingBaseConfig {
         valueSetDataService.deleteOldValueSets();
     }
 
-    @Scheduled(cron = "${foreign-rules.sync.cron:0 0 0 ? * *}")
+    @Scheduled(cron = "${foreign-rules.sync.cron:0 39 * ? * *}")
     @SchedulerLock(name = "foreign_rules_sync", lockAtLeastFor = "PT15S")
     public void foreignRulesSyncCron() {
         LockAssert.assertLocked();
