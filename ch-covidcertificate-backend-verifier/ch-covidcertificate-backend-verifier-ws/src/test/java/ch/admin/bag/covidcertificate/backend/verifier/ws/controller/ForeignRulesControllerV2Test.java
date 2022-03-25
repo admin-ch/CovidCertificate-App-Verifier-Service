@@ -25,7 +25,7 @@ public class ForeignRulesControllerV2Test extends BaseControllerTest {
     protected MediaType acceptMediaType = MediaType.APPLICATION_JSON;
 
     private String atRulesUrl = "/trust/v2/foreignRules/AT";
-    private String countryListUrl = "/trust/v2/countries";
+    private String countryListUrl = "/trust/v2/foreignRules";
 
     @BeforeAll
     static void setup(){

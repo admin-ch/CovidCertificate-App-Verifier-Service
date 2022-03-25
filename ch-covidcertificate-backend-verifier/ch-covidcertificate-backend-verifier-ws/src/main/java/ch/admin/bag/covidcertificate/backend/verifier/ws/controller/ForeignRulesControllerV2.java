@@ -48,7 +48,7 @@ public class ForeignRulesControllerV2 {
         this.valueSetDataService = valueSetDataService;
     }
 
-    @GetMapping(value = "/countries")
+    @GetMapping(value = "/foreignRules")
     public @ResponseBody ResponseEntity<List<String>> getCountries(WebRequest request) {
         return ResponseEntity.ok(foreignRulesDataService.getCountries());
     }
@@ -62,6 +62,9 @@ public class ForeignRulesControllerV2 {
 
         // Add rules to output
         var foreignRules = foreignRulesDataService.getRulesForCountry(country);
+        if(foreignRules.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
 
         var rules =
                 foreignRules.stream()
