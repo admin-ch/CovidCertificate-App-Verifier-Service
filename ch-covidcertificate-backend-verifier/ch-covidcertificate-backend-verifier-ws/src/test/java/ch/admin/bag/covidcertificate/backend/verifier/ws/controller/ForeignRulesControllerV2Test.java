@@ -14,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -63,9 +65,9 @@ public class ForeignRulesControllerV2Test extends BaseControllerTest {
     }
 
     @Test
-    @Disabled("calculating expected ETag from the file doesn't work for V2")
+    @Disabled
     public void notModifiedTest() throws Exception {
-        /*String expectedEtag = EtagUtil.getSha1HashForFiles(true, PATH_TO_VERIFICATION_RULES);
+        /*String expectedEtag = EtagUtil.getSha1HashForStrings()
 
         // get current etag
         MockHttpServletResponse response =
