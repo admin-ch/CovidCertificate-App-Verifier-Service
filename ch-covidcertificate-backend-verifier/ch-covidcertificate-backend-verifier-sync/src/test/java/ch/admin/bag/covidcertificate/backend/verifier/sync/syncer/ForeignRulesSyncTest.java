@@ -77,7 +77,8 @@ class ForeignRulesSyncTest extends BaseDgcTest {
                         withStatus(HttpStatus.OK)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .body(de));
-        rulesSyncer.sync();
+        int result = rulesSyncer.sync();
+        assertEquals(29, result);
     }
 
 }
