@@ -13,9 +13,12 @@ package ch.admin.bag.covidcertificate.backend.verifier.ws.controller;
 import ch.admin.bag.covidcertificate.backend.verifier.data.ForeignRulesDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +27,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties.Web;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,14 +60,14 @@ public class ForeignRulesControllerV2 {
 
     @GetMapping(value = "/foreignRules/{country}")
     public @ResponseBody ResponseEntity<Map> getForeignRules(
-            @PathVariable("country") String country) {
+            @PathVariable("country") String country, WebRequest request) {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> result = new HashMap<>();
         result.put("validDuration", 172800000);
 
         // Add rules to output
         var foreignRules = foreignRulesDataService.getRulesForCountry(country);
-        if(foreignRules.isEmpty()){
+        if (foreignRules.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
@@ -101,12 +106,20 @@ public class ForeignRulesControllerV2 {
             }
         }
         result.put("valueSets", valueSets);
+        String etag = "";
+        try {
+            etag = EtagUtil.getSha1HashForStrings(true, mapper.writeValueAsString(result));
+        } catch (JsonProcessingException | NoSuchAlgorithmException e) {
+            logger.error("Failed to calculate ETag for rules", e);
+        }
+        if (request.checkNotModified(etag)) {
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+        }
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok().headers(getVerificationRulesHeaders()).body(result);
     }
 
-    private HttpHeaders getVerificationRulesHeaders(Instant now) {
-        return CacheUtil.createExpiresHeader(
-                CacheUtil.roundToNextVerificationRulesBucketStart(now));
+    private HttpHeaders getVerificationRulesHeaders() {
+        return CacheUtil.createExpiresHeader(Instant.now().plus(48, ChronoUnit.HOURS));
     }
 }

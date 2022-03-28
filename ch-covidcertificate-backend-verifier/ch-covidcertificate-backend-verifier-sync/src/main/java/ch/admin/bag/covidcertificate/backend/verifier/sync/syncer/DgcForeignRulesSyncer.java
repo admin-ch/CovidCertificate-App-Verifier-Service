@@ -14,6 +14,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.ForeignRulesDataServi
 import ch.admin.bag.covidcertificate.backend.verifier.model.ForeignRule;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.CmsUtil;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.jdi.event.ExceptionEvent;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateException;
@@ -21,6 +22,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.slf4j.Logger;
@@ -43,19 +46,29 @@ public class DgcForeignRulesSyncer {
 
         List<String> countries = dgcRulesClient.getCountries();
         countries.remove("CH");
-        //download data for the country
-        countries.forEach(
-                //this gives us an array of rule IDs
-                country -> dgcRulesClient.download(country)
-                        //each rule ID has an array of rule versions
-                        .forEach((ruleId, ruleVersions) -> (ruleVersions).forEach(ruleVersion -> {
-                            //insert each rule version into the DB
-                            try {
-                                foreignRulesDataService.insertRule(decodeRule(ruleVersion));
-                            } catch (Exception e){
-                                logger.error("Failed to decode rule {}", ruleId, e);
-                            }
-                        })));
+
+        for(var country: countries){
+            var rules = dgcRulesClient.download(country).entrySet().stream()
+                    .map(
+                            rule -> {
+                                try {
+                                    return decodeRule(rule.getValue());
+                                } catch (Exception e) {
+                                    logger.error(
+                                            "Failed to decode rule {}",
+                                            rule.getKey(),
+                                            e);
+                                    return null;
+                                }
+                            })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+            foreignRulesDataService.removeRuleSet(country);
+            rules.forEach(foreignRulesDataService::insertRule);
+            if(rules.isEmpty()){
+                logger.warn("No rules were downloaded or decoded for {}", country);
+            }
+        }
         var end = Instant.now();
         logger.info(
                 "Successfully downloaded foreign rules {} ms",
