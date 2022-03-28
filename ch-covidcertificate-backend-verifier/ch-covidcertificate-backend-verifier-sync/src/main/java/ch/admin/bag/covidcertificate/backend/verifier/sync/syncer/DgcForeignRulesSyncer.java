@@ -14,7 +14,6 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.ForeignRulesDataServi
 import ch.admin.bag.covidcertificate.backend.verifier.model.ForeignRule;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.CmsUtil;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.jdi.event.ExceptionEvent;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateException;
@@ -46,13 +45,13 @@ public class DgcForeignRulesSyncer {
 
         List<String> countries = dgcRulesClient.getCountries();
         countries.remove("CH");
-
+        int successful = 0;
         for(var country: countries){
             var rules = dgcRulesClient.download(country).entrySet().stream()
                     .map(
                             rule -> {
                                 try {
-                                    return decodeRule(rule.getValue());
+                                    return decodeRule(rule.getValue(), country);
                                 } catch (Exception e) {
                                     logger.error(
                                             "Failed to decode rule {}",
@@ -65,17 +64,18 @@ public class DgcForeignRulesSyncer {
                     .collect(Collectors.toList());
             foreignRulesDataService.removeRuleSet(country);
             rules.forEach(foreignRulesDataService::insertRule);
+            successful += rules.size();
             if(rules.isEmpty()){
-                logger.warn("No rules were downloaded or decoded for {}", country);
+                logger.error("No rules were downloaded or decoded for {}", country);
             }
         }
         var end = Instant.now();
         logger.info(
-                "Successfully downloaded foreign rules {} ms",
+                "Successfully downloaded {} foreign rules {} ms", successful,
                 end.toEpochMilli() - start.toEpochMilli());
     }
 
-    private ForeignRule decodeRule(JsonNode rule)
+    private ForeignRule decodeRule(JsonNode rule, String country)
             throws CertificateException, IOException, OperatorCreationException, CMSException {
         var foreignRule = new ForeignRule();
         String content = new String((byte[]) CmsUtil.decodeCms(rule.get("cms").asText()), StandardCharsets.UTF_8);
@@ -85,7 +85,7 @@ public class DgcForeignRulesSyncer {
         var validFrom = LocalDateTime.ofInstant(Instant.parse(rule.get("validFrom").asText()), ZoneId.of("UTC"));
         foreignRule.setValidFrom(validFrom);
         foreignRule.setVersion(rule.get("version").asText());
-        foreignRule.setCountry(rule.get("country").asText());
+        foreignRule.setCountry(country);
         foreignRule.setId(rule.get("id").asText());
         return foreignRule;
     }
