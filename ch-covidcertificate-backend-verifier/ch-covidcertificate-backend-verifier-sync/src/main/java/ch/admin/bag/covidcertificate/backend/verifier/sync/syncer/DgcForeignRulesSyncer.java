@@ -14,6 +14,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.ForeignRulesDataServi
 import ch.admin.bag.covidcertificate.backend.verifier.model.ForeignRule;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.utils.CmsUtil;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -35,6 +36,7 @@ public class DgcForeignRulesSyncer {
     private static final Logger logger = LoggerFactory.getLogger(DgcForeignRulesSyncer.class);
     private final ForeignRulesDataService foreignRulesDataService;
     private final DgcRulesClient dgcRulesClient;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public DgcForeignRulesSyncer(
             DgcRulesClient dgcRulesClient, ForeignRulesDataService foreignRulesDataService) {
@@ -87,7 +89,11 @@ public class DgcForeignRulesSyncer {
             throws CertificateException, IOException, OperatorCreationException, CMSException {
         var foreignRule = new ForeignRule();
         String content = new String((byte[]) CmsUtil.decodeCms(rule.get("cms").asText()), StandardCharsets.UTF_8);
-        foreignRule.setContent(content);
+        ObjectNode convertedNode = mapper.createObjectNode();
+        mapper.readTree(content).fields().forEachRemaining(field -> {
+            convertedNode.set(field.getKey().toLowerCase(), field.getValue());
+        });
+        foreignRule.setContent(convertedNode.toString());
         var validUntil = LocalDateTime.parse(rule.get("validTo").asText(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         foreignRule.setValidUntil(validUntil);
         var validFrom = LocalDateTime.parse(rule.get("validTo").asText(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
@@ -95,6 +101,7 @@ public class DgcForeignRulesSyncer {
         foreignRule.setVersion(rule.get("version").asText());
         foreignRule.setCountry(country);
         foreignRule.setId(id);
+
         return foreignRule;
     }
 }
