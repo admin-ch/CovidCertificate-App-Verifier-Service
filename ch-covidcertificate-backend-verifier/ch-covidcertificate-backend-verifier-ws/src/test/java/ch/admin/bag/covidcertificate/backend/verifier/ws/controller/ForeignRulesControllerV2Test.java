@@ -15,7 +15,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import ch.admin.bag.covidcertificate.backend.verifier.ws.util.TestHelper;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.utils.EtagUtil;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -29,10 +33,6 @@ public class ForeignRulesControllerV2Test extends BaseControllerTest {
     private String atRulesUrl = "/trust/v2/foreignRules/AT";
     private String countryListUrl = "/trust/v2/foreignRules";
 
-    @BeforeAll
-    static void setup(){
-
-    }
 
     @Test
     public void countryListTest() throws Exception {
@@ -45,8 +45,11 @@ public class ForeignRulesControllerV2Test extends BaseControllerTest {
 
         // verify response
         assertNotNull(response);
-        assertTrue(response.getContentAsString().contains("AT"));
-        assertTrue(response.getContentAsString().contains("DE"));
+
+        ObjectNode countries = objectMapper.valueToTree(testHelper.verifyAndReadValue(
+                response, acceptMediaType, TestHelper.PATH_TO_CA_PEM, Map.class));
+        assertTrue(countries.get("countries").get(0).asText().equals("AT"));
+        assertTrue(countries.get("countries").get(1).asText().equals("DE"));
 
     }
 
@@ -61,7 +64,9 @@ public class ForeignRulesControllerV2Test extends BaseControllerTest {
 
         // verify response
         assertNotNull(response);
-
+        ObjectNode rules = objectMapper.valueToTree(testHelper.verifyAndReadValue(
+                response, acceptMediaType, TestHelper.PATH_TO_CA_PEM, Map.class));
+        assertNotNull(rules.get("rules").get(0));
     }
 
     @Test

@@ -54,8 +54,11 @@ public class ForeignRulesControllerV2 {
     }
 
     @GetMapping(value = "/foreignRules")
-    public @ResponseBody ResponseEntity<List<String>> getCountries(WebRequest request) {
-        return ResponseEntity.ok(foreignRulesDataService.getCountries());
+    public @ResponseBody ResponseEntity<Map> getCountries(WebRequest request) {
+        var countries = foreignRulesDataService.getCountries();
+        HashMap<String, List<String>> res = new HashMap<>();
+        res.put("countries", countries);
+        return ResponseEntity.ok(res);
     }
 
     @GetMapping(value = "/foreignRules/{country}")
