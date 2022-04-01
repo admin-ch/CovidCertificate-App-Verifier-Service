@@ -136,6 +136,12 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
         CacheUtil.KEYS_LIST_MAX_AGE = maxAge;
     }
 
+    @Value("${ws.foreignRules.max-age:PT1M}")
+    public void setForeignRulesMaxAge(Duration maxAge) {
+        CacheUtil.FOREIGN_RULES_MAX_AGE = maxAge;
+    }
+
+
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
         try {
