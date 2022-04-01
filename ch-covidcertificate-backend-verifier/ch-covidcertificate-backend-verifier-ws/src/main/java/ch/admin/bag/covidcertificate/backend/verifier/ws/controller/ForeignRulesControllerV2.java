@@ -58,7 +58,7 @@ public class ForeignRulesControllerV2 {
         var countries = foreignRulesDataService.getCountries();
         HashMap<String, List<String>> res = new HashMap<>();
         res.put("countries", countries);
-        return ResponseEntity.ok(res);
+        return ResponseEntity.ok().headers(getVerificationRulesHeaders()).body(res);
     }
 
     @GetMapping(value = "/foreignRules/{country}")
@@ -123,6 +123,6 @@ public class ForeignRulesControllerV2 {
     }
 
     private HttpHeaders getVerificationRulesHeaders() {
-        return CacheUtil.createExpiresHeader(Instant.now().plus(48, ChronoUnit.HOURS));
+        return CacheUtil.createExpiresHeader(Instant.now().plus(CacheUtil.FOREIGN_RULES_MAX_AGE));
     }
 }
