@@ -56,8 +56,9 @@ public class ForeignRulesControllerV2 {
     @GetMapping(value = "/foreignRules")
     public @ResponseBody ResponseEntity<Map> getCountries(WebRequest request) {
         var countries = foreignRulesDataService.getCountries();
-        HashMap<String, List<String>> res = new HashMap<>();
+        HashMap<String, Object> res = new HashMap<>();
         res.put("countries", countries);
+        res.put("validDuration", 172800000);
         return ResponseEntity.ok().headers(getVerificationRulesHeaders()).body(res);
     }
 
