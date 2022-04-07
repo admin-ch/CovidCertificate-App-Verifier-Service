@@ -43,6 +43,7 @@ import org.springframework.web.context.request.WebRequest;
 public class ForeignRulesControllerV2 {
 
     private static final Logger logger = LoggerFactory.getLogger(ForeignRulesControllerV2.class);
+    public static final int FOREIGN_RULES_VALID_DURATION = 172800000;
 
     private final ValueSetDataService valueSetDataService;
     private final ForeignRulesDataService foreignRulesDataService;
@@ -54,11 +55,11 @@ public class ForeignRulesControllerV2 {
     }
 
     @GetMapping(value = "/foreignRules")
-    public @ResponseBody ResponseEntity<Map> getCountries(WebRequest request) {
+    public @ResponseBody ResponseEntity<Map> getCountries() {
         var countries = foreignRulesDataService.getCountries();
         HashMap<String, Object> res = new HashMap<>();
         res.put("countries", countries);
-        res.put("validDuration", 172800000);
+        res.put("validDuration", FOREIGN_RULES_VALID_DURATION);
         return ResponseEntity.ok().headers(getVerificationRulesHeaders()).body(res);
     }
 
@@ -67,7 +68,7 @@ public class ForeignRulesControllerV2 {
             @PathVariable("country") String country, WebRequest request) {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> result = new HashMap<>();
-        result.put("validDuration", 172800000);
+        result.put("validDuration", FOREIGN_RULES_VALID_DURATION);
 
         // Add rules to output
         var foreignRules = foreignRulesDataService.getRulesForCountry(country);
