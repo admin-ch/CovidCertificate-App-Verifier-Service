@@ -11,13 +11,10 @@
 package ch.admin.bag.covidcertificate.backend.verifier.sync.syncer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 
-import ch.admin.bag.covidcertificate.backend.verifier.model.sync.CertificateType;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;

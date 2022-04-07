@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.slf4j.Logger;
@@ -48,28 +47,24 @@ public class DgcForeignRulesSyncer {
         List<String> countries = dgcRulesClient.getCountries();
         countries.remove("CH");
         int successful = 0;
-        for(var country: countries){
+        for (var country : countries) {
             var rules = new ArrayList<ForeignRule>();
             var downloaded = dgcRulesClient.download(country);
-            downloaded.forEach( (id, ruleVersions) -> {
-                ruleVersions.forEach( version ->{
-                    try {
-                        rules.add(
-                                decodeRule(
-                                        (ObjectNode) version, country, id));
-                    } catch (Exception e) {
-                        logger.error(
-                                "Failed to decode rule {}",
-                                id,
-                                e);
-                    }
-                        }
-                );
-            });
+            downloaded.forEach(
+                    (id, ruleVersions) -> {
+                        ruleVersions.forEach(
+                                version -> {
+                                    try {
+                                        rules.add(decodeRule((ObjectNode) version, country, id));
+                                    } catch (Exception e) {
+                                        logger.error("Failed to decode rule {}", id, e);
+                                    }
+                                });
+                    });
 
-            if(rules.isEmpty()){
+            if (rules.isEmpty()) {
                 logger.error("No rules were downloaded or decoded for {}", country);
-            }else{
+            } else {
                 foreignRulesDataService.removeRuleSet(country);
                 rules.forEach(foreignRulesDataService::insertRule);
                 successful += rules.size();
@@ -77,7 +72,8 @@ public class DgcForeignRulesSyncer {
         }
         var end = Instant.now();
         logger.info(
-                "Successfully downloaded {} foreign rules {} ms", successful,
+                "Successfully downloaded {} foreign rules {} ms",
+                successful,
                 end.toEpochMilli() - start.toEpochMilli());
         return successful;
     }
@@ -85,16 +81,30 @@ public class DgcForeignRulesSyncer {
     private ForeignRule decodeRule(ObjectNode rule, String country, String id)
             throws CertificateException, IOException, OperatorCreationException, CMSException {
         var foreignRule = new ForeignRule();
-        String content = new String((byte[]) CmsUtil.decodeCms(rule.get("cms").asText()), StandardCharsets.UTF_8);
+        String content =
+                new String(
+                        (byte[]) CmsUtil.decodeCms(rule.get("cms").asText()),
+                        StandardCharsets.UTF_8);
         ObjectNode convertedNode = mapper.createObjectNode();
-        mapper.readTree(content).fields().forEachRemaining(field -> {
-            String fieldName = field.getKey().substring(0,1).toLowerCase().concat(field.getKey().substring(1));
-            convertedNode.set(fieldName, field.getValue());
-        });
+        mapper.readTree(content)
+                .fields()
+                .forEachRemaining(
+                        field -> {
+                            String fieldName =
+                                    field.getKey()
+                                            .substring(0, 1)
+                                            .toLowerCase()
+                                            .concat(field.getKey().substring(1));
+                            convertedNode.set(fieldName, field.getValue());
+                        });
         foreignRule.setContent(convertedNode.toString());
-        var validUntil = LocalDateTime.parse(rule.get("validTo").asText(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        var validUntil =
+                LocalDateTime.parse(
+                        rule.get("validTo").asText(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         foreignRule.setValidUntil(validUntil);
-        var validFrom = LocalDateTime.parse(rule.get("validTo").asText(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        var validFrom =
+                LocalDateTime.parse(
+                        rule.get("validTo").asText(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         foreignRule.setValidFrom(validFrom);
         foreignRule.setVersion(rule.get("version").asText());
         foreignRule.setCountry(country);

@@ -15,7 +15,7 @@ public class MockForeignRuleDataService implements ForeignRulesDataService {
     private final ForeignRule at1 = new ForeignRule();
     private final ForeignRule at2 = new ForeignRule();
 
-    public MockForeignRuleDataService(){
+    public MockForeignRuleDataService() {
         at1.setId("GR-AT-0039");
         at1.setVersion("0.0.1");
         at1.setCountry("AT");
@@ -38,22 +38,18 @@ public class MockForeignRuleDataService implements ForeignRulesDataService {
 
     @Override
     public List<ForeignRule> getRulesForCountry(String country) {
-        if(country.equals("AT")){
+        if (country.equals("AT")) {
             return Arrays.asList(at1, at2);
-        }else if(country.equals("DE")){
+        } else if (country.equals("DE")) {
             return new ArrayList<>();
-        }else{
+        } else {
             return new ArrayList<>();
         }
     }
 
     @Override
-    public void insertRule(ForeignRule rule) {
-
-    }
+    public void insertRule(ForeignRule rule) {}
 
     @Override
-    public void removeRuleSet(String country) {
-
-    }
+    public void removeRuleSet(String country) {}
 }
