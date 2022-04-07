@@ -23,6 +23,7 @@ public class CacheUtil {
     public static Duration VALUE_SETS_MAX_AGE;
     public static Duration KEYS_UPDATES_MAX_AGE;
     public static Duration KEYS_LIST_MAX_AGE;
+    public static Duration FOREIGN_RULES_MAX_AGE;
 
     public static Duration KEYS_BUCKET_DURATION;
     public static Duration REVOCATION_RETENTION_BUCKET_DURATION;

@@ -11,9 +11,11 @@
 package ch.admin.bag.covidcertificate.backend.verifier.data.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.AppTokenDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.ForeignRulesDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.RevokedCertDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcAppTokenDataServiceImpl;
+import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcForeignRulesDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcRevokedCertDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
@@ -49,6 +51,13 @@ public class TestConfig {
             DataSource dataSource,
             @Value("${revocationList.batch-size:20000}") Integer revokedCertBatchSize) {
         return new JdbcRevokedCertDataServiceImpl(dataSource, revokedCertBatchSize);
+    }
+
+    @Bean
+    public ForeignRulesDataService foreignRulesDataService(
+            DataSource dataSource
+    ){
+        return new JdbcForeignRulesDataServiceImpl(dataSource);
     }
 
     @Value("${ws.revocation-list.retention-bucket-duration:PT6H}")

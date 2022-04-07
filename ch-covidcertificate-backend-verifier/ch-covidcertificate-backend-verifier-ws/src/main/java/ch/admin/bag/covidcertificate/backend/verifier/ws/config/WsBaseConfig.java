@@ -11,16 +11,19 @@
 package ch.admin.bag.covidcertificate.backend.verifier.ws.config;
 
 import ch.admin.bag.covidcertificate.backend.verifier.data.AppTokenDataService;
+import ch.admin.bag.covidcertificate.backend.verifier.data.ForeignRulesDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.RevokedCertDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcAppTokenDataServiceImpl;
+import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcForeignRulesDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcRevokedCertDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcValueSetDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.impl.JdbcVerifierDataServiceImpl;
 import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.client.RevocationListSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.DcgaController;
+import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.ForeignRulesControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyController;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.KeyControllerV2;
 import ch.admin.bag.covidcertificate.backend.verifier.ws.controller.RevocationListController;
@@ -133,6 +136,12 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
         CacheUtil.KEYS_LIST_MAX_AGE = maxAge;
     }
 
+    @Value("${ws.foreignRules.max-age:PT1M}")
+    public void setForeignRulesMaxAge(Duration maxAge) {
+        CacheUtil.FOREIGN_RULES_MAX_AGE = maxAge;
+    }
+
+
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
         try {
@@ -225,9 +234,21 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     }
 
     @Bean
+    public ForeignRulesControllerV2 foreignRulesControllerV2(
+            ValueSetDataService valueSetDataService, ForeignRulesDataService foreignRulesDataService) throws IOException {
+        return new ForeignRulesControllerV2(
+                valueSetDataService, foreignRulesDataService);
+    }
+
+    @Bean
     public ValueSetsController valueSetsController(ValueSetDataService valueSetDataService)
             throws IOException {
         return new ValueSetsController(valueSetDataService);
+    }
+
+    @Bean
+    public ForeignRulesDataService foreignRulesDataService(DataSource dataSource){
+        return new JdbcForeignRulesDataServiceImpl(dataSource);
     }
 
     @Bean

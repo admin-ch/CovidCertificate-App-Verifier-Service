@@ -14,6 +14,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.ValueSetDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.data.VerifierDataService;
 import ch.admin.bag.covidcertificate.backend.verifier.model.exception.DgcSyncException;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcCertSyncer;
+import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcForeignRulesSyncer;
 import ch.admin.bag.covidcertificate.backend.verifier.sync.syncer.DgcValueSetSyncer;
 import net.javacrumbs.shedlock.core.LockAssert;
 import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
@@ -36,15 +37,18 @@ public class SyncSchedulingBaseConfig {
     private final ValueSetDataService valueSetDataService;
     private final VerifierDataService verifierDataService;
     private final boolean syncCronEnabled;
+    private final DgcForeignRulesSyncer dgcForeignRulesSyncer;
 
     public SyncSchedulingBaseConfig(
             DgcCertSyncer dgcSyncer,
             DgcValueSetSyncer dgcValueSetSyncer,
+            DgcForeignRulesSyncer dgcForeignRulesSyncer,
             ValueSetDataService valueSetDataService,
             VerifierDataService verifierDataService,
             @Value("${dgc.sync.cron.enable:true}") boolean syncCronEnabled) {
         this.dgcSyncer = dgcSyncer;
         this.dgcValueSetSyncer = dgcValueSetSyncer;
+        this.dgcForeignRulesSyncer = dgcForeignRulesSyncer;
         this.valueSetDataService = valueSetDataService;
         this.verifierDataService = verifierDataService;
         this.syncCronEnabled = syncCronEnabled;
@@ -81,7 +85,7 @@ public class SyncSchedulingBaseConfig {
         LockAssert.assertLocked();
         valueSetDataService.deleteOldValueSets();
     }
-
+    
     @Scheduled(cron = "${value-set.sync.cron:0 0 0 ? * *}")
     @SchedulerLock(name = "value_set_sync", lockAtLeastFor = "PT15S")
     public void valueSetSyncCron() {
@@ -89,10 +93,25 @@ public class SyncSchedulingBaseConfig {
         dgcValueSetSyncer.sync();
     }
 
+
+    @Scheduled(cron = "${foreign-rules.sync.cron:0 39 * ? * *}")
+    @SchedulerLock(name = "foreign_rules_sync", lockAtLeastFor = "PT15S")
+    public void foreignRulesSyncCron() {
+        LockAssert.assertLocked();
+        dgcForeignRulesSyncer.sync();
+    }
+
     @Scheduled(fixedRate = Long.MAX_VALUE, initialDelay = 0)
     @SchedulerLock(name = "value_set_sync", lockAtLeastFor = "PT15S")
     public void valueSetSyncOnStartup() {
         LockAssert.assertLocked();
         dgcValueSetSyncer.sync();
+    }
+
+    @Scheduled(fixedRate = Long.MAX_VALUE, initialDelay = 0)
+    @SchedulerLock(name = "foreign_rules_sync", lockAtLeastFor = "PT15S")
+    public void foreignRulesSyncOnStartup() {
+        LockAssert.assertLocked();
+        dgcForeignRulesSyncer.sync();
     }
 }
