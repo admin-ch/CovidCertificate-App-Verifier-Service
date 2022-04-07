@@ -85,6 +85,14 @@ public class SyncSchedulingBaseConfig {
         LockAssert.assertLocked();
         valueSetDataService.deleteOldValueSets();
     }
+    
+    @Scheduled(cron = "${value-set.sync.cron:0 0 0 ? * *}")
+    @SchedulerLock(name = "value_set_sync", lockAtLeastFor = "PT15S")
+    public void valueSetSyncCron() {
+        LockAssert.assertLocked();
+        dgcValueSetSyncer.sync();
+    }
+
 
     @Scheduled(cron = "${foreign-rules.sync.cron:0 39 * ? * *}")
     @SchedulerLock(name = "foreign_rules_sync", lockAtLeastFor = "PT15S")
