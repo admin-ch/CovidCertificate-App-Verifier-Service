@@ -82,7 +82,7 @@ public class ForeignRulesControllerV2 {
                                     try {
                                         return mapper.readTree(rule.getContent());
                                     } catch (JsonProcessingException e) {
-                                        e.printStackTrace();
+                                        logger.error("Failed to read foreign rule", e);
                                         return null;
                                     }
                                 })
