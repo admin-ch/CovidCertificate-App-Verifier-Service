@@ -122,6 +122,6 @@ public class ForeignRulesControllerV2 {
     }
 
     private HttpHeaders getVerificationRulesHeaders() {
-        return CacheUtil.createExpiresHeader(Instant.now().plus(CacheUtil.FOREIGN_RULES_MAX_AGE));
+        return CacheUtil.createExpiresHeader(CacheUtil.roundToNextForeignRulesBucketStart(Instant.now()));
     }
 }
