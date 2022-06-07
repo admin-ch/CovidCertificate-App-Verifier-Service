@@ -2789,6 +2789,80 @@
       }
     },
     {
+      "id": "refresh-banner",
+      "logic": {
+        "if": [
+          {
+            "var": "payload.h.exp"
+          },
+          {
+            "if": [
+              {
+                "before": [
+                  {
+                    "var": "payload.h.exp"
+                  },
+                  {
+                    "plusTime": [
+                      {
+                        "var": "external.validationClock"
+                      },
+                      90,
+                      "day"
+                    ]
+                  }
+                ]
+              },
+              "showRefreshBanner",
+              {
+                "var": "undefined"
+              }
+            ]
+          },
+          {
+            "var": "undefined"
+          }
+        ]
+      }
+    },
+    {
+      "id": "renew-banner",
+      "logic": {
+        "if": [
+          {
+            "var": "payload.h.exp"
+          },
+          {
+            "if": [
+              {
+                "before": [
+                  {
+                    "var": "payload.h.exp"
+                  },
+                  {
+                    "plusTime": [
+                      {
+                        "var": "external.validationClock"
+                      },
+                      90,
+                      "day"
+                    ]
+                  }
+                ]
+              },
+              "showRenewBanner",
+              {
+                "var": "undefined"
+              }
+            ]
+          },
+          {
+            "var": "undefined"
+          }
+        ]
+      }
+    },
+    {
       "id": "eol-banner",
       "logic": {
         "if": [
