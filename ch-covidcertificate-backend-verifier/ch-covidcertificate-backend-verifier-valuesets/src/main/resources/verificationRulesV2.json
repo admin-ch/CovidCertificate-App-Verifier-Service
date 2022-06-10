@@ -2830,22 +2830,47 @@
       "logic": {
         "if": [
           {
-            "var": "payload.h.exp"
+            "and": [
+              {
+                "var": "payload.h.exp"
+              },
+              {
+                "var": "payload.v.0"
+              },
+              {
+                "var": "payload.h.iss"
+              }
+            ]
           },
           {
             "if": [
               {
-                "before": [
+                "and": [
                   {
-                    "var": "payload.h.exp"
+                    "before": [
+                      {
+                        "var": "payload.h.exp"
+                      },
+                      {
+                        "plusTime": [
+                          {
+                            "var": "external.validationClock"
+                          },
+                          90,
+                          "day"
+                        ]
+                      }
+                    ]
                   },
                   {
-                    "plusTime": [
+                    "in": [
                       {
-                        "var": "external.validationClock"
+                        "var": "payload.h.iss"
                       },
-                      90,
-                      "day"
+                      [
+                        "CH",
+                        "CH BAG"
+                      ]
                     ]
                   }
                 ]
