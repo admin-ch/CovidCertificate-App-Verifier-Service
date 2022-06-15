@@ -2789,43 +2789,6 @@
       }
     },
     {
-      "id": "refresh-banner",
-      "logic": {
-        "if": [
-          {
-            "var": "payload.h.exp"
-          },
-          {
-            "if": [
-              {
-                "before": [
-                  {
-                    "var": "payload.h.exp"
-                  },
-                  {
-                    "plusTime": [
-                      {
-                        "var": "external.validationClock"
-                      },
-                      90,
-                      "day"
-                    ]
-                  }
-                ]
-              },
-              "showRefreshBanner",
-              {
-                "var": "undefined"
-              }
-            ]
-          },
-          {
-            "var": "undefined"
-          }
-        ]
-      }
-    },
-    {
       "id": "renew-banner",
       "logic": {
         "if": [
@@ -2849,7 +2812,13 @@
                   {
                     "before": [
                       {
-                        "var": "payload.h.exp"
+                        "plusTime": [
+                          {
+                            "var": "payload.h.exp"
+                          },
+                          0,
+                          "day"
+                        ]
                       },
                       {
                         "plusTime": [

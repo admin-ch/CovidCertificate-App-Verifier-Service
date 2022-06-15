@@ -9,7 +9,8 @@ import "../rule-constants/recovery.aifc";
 let cutoff = now() + 90#days;
 
 if (payload.h.exp && payload.v.0 && payload.h.iss) {
-   if(((payload.h.exp as DateTime) is before (cutoff as DateTime)) && (payload.h.iss in ["CH", "CH BAG"])){
+   let exp = payload.h.exp as DateTime + 0#days;
+   if(((exp) is before (cutoff as DateTime)) && (payload.h.iss in ["CH", "CH BAG"])){
      "showRenewBanner"
    } else {
      undefined

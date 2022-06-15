@@ -20,7 +20,13 @@
             {
               "before": [
                 {
-                  "var": "payload.h.exp"
+                  "plusTime": [
+                    {
+                      "var": "payload.h.exp"
+                    },
+                    0,
+                    "day"
+                  ]
                 },
                 {
                   "plusTime": [
