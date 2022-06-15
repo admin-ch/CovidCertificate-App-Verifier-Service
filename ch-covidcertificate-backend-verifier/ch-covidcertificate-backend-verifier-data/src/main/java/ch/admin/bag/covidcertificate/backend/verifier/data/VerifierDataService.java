@@ -77,6 +77,10 @@ public interface VerifierDataService {
     /** returns a list of key ids of all active DSCs */
     public List<String> findActiveDscKeyIds();
 
+    /** returns a list of key ids of all active DSCs for a given country */
+    public List<String> findActiveDscKeyIdsByCountry(String country);
+
+
     /**
      * returns a list of key ids of all active DSCs before a certain timestamp
      *

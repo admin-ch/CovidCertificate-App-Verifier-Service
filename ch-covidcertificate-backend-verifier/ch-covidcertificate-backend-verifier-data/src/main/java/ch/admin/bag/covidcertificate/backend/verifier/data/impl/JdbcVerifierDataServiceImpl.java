@@ -299,6 +299,15 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
                 String.class);
     }
 
+    @Override
+    public List<String> findActiveDscKeyIdsByCountry(String country) {        return jt.queryForList(
+            "select key_id from t_document_signer_certificate"
+                    + " where deleted_at is null and origin = :country"
+                    + " order by pk_dsc_id",
+            new MapSqlParameterSource().addValue("country", country),
+            String.class);
+    }
+
     /** @deprecated only used in KeyController V1 */
     @Override
     @Transactional(readOnly = true)

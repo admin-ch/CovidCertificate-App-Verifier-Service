@@ -103,10 +103,15 @@ public class KeyControllerV2 {
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "list")
     public @ResponseBody ResponseEntity<ActiveCertsResponse> getActiveSignerCertKeyIds(
-            WebRequest request) {
+            WebRequest request, @RequestParam(value = "country", required = false) String country) {
         Instant now = Instant.now();
         long maxDscPkId = verifierDataService.findMaxDscPkId();
-        List<String> activeKeyIds = verifierDataService.findActiveDscKeyIds();
+        List<String> activeKeyIds;
+        if (country == null) {
+            activeKeyIds = verifierDataService.findActiveDscKeyIds();
+        }else{
+            activeKeyIds = verifierDataService.findActiveDscKeyIdsByCountry(country);
+        }
         List<String> etagComponents = new ArrayList<>(activeKeyIds);
         etagComponents.add(String.valueOf(maxDscPkId));
         // check etag
