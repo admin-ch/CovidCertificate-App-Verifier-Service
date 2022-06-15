@@ -257,6 +257,47 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
         return jt.query(sql, params, new ClientCertRowMapper(certFormat));
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<ClientCert> findDscsByCountry(Long since, CertFormat certFormat, Long upTo, String country) {
+        List<String> formatSpecificSelectFields;
+        switch (certFormat) {
+            case IOS:
+                formatSpecificSelectFields = List.of("subject_public_key_info");
+                break;
+            case ANDROID:
+                formatSpecificSelectFields = List.of("n", "e");
+                break;
+            default:
+                throw new RuntimeException("unexpected cert format received: " + certFormat);
+        }
+
+        String sql =
+                "select pk_dsc_id,"
+                        + " key_id,"
+                        + " origin,"
+                        + " use,"
+                        + " alg,"
+                        + " crv,"
+                        + " x,"
+                        + " y, "
+                        + String.join(", ", formatSpecificSelectFields)
+                        + " from t_document_signer_certificate"
+                        + " where pk_dsc_id > :since"
+                        + (upTo != null ? " and pk_dsc_id <= :up_to" : "")
+                        + " and deleted_at is null"
+                        + "and origin = :country"
+                        + " order by pk_dsc_id asc"
+                        + " limit :batch_size";
+
+        var params = new MapSqlParameterSource();
+        params.addValue("since", since);
+        params.addValue("up_to", upTo);
+        params.addValue("batch_size", dscBatchSize);
+        params.addValue("country", country);
+        return jt.query(sql, params, new ClientCertRowMapper(certFormat));
+    }
+
     /** @deprecated only used in KeyController V1 */
     @Override
     @Transactional(readOnly = true)
@@ -336,6 +377,23 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
             return 0L;
         }
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long findMaxDscPkIdForCountry(String country) {
+        try {
+            String sql =
+                    "select pk_dsc_id from t_document_signer_certificate"
+                            + " where deleted_at is null"
+                            + " and origin = :country"
+                            + " order by pk_dsc_id desc"
+                            + " limit 1";
+            return jt.queryForObject(sql, new MapSqlParameterSource().addValue("country", country) , Long.class);
+        } catch (EmptyResultDataAccessException e) {
+            return 0L;
+        }
+    }
+
 
     @Override
     public int getDscBatchSize() {

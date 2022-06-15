@@ -70,19 +70,27 @@ public class KeyControllerV2 {
     public @ResponseBody ResponseEntity<CertsResponse> getSignerCerts(
             @RequestParam(required = false, defaultValue = "0") Long since,
             @RequestParam Long upTo,
-            @RequestParam CertFormat certFormat) {
+            @RequestParam CertFormat certFormat,
+            @RequestParam(required = false) String country) {
         Instant now = Instant.now();
         List<ClientCert> dscs = verifierDataService.findDscs(since, certFormat, upTo);
         return ResponseEntity.ok()
-                .headers(getKeysUpdatesHeaders(dscs, upTo, now))
+                .headers(getKeysUpdatesHeaders(dscs, upTo, now, country))
                 .body(new CertsResponse(dscs));
     }
 
-    private HttpHeaders getKeysUpdatesHeaders(List<ClientCert> dscs, Long upTo, Instant now) {
+    private HttpHeaders getKeysUpdatesHeaders(List<ClientCert> dscs, Long upTo, Instant now, String country) {
         HttpHeaders headers =
             CacheUtil.createExpiresHeader(
                 CacheUtil.roundToNextKeysBucketStart(now));
-        long maxDscPkId = upTo != null ? upTo : verifierDataService.findMaxDscPkId();
+        long maxDscPkId;
+        if(upTo != null){
+            maxDscPkId = upTo;
+        }else if(country != null){
+            maxDscPkId = verifierDataService.findMaxDscPkIdForCountry(country);
+        }else{
+            maxDscPkId = verifierDataService.findMaxDscPkId();
+        }
         Long nextSince = dscs.stream().mapToLong(ClientCert::getPkId).max().orElse(maxDscPkId);
         headers.add(NEXT_SINCE_HEADER, nextSince.toString());
         boolean upToDate = nextSince >= maxDscPkId;
@@ -103,7 +111,7 @@ public class KeyControllerV2 {
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "list")
     public @ResponseBody ResponseEntity<ActiveCertsResponse> getActiveSignerCertKeyIds(
-            WebRequest request, @RequestParam(value = "country", required = false) String country) {
+            WebRequest request, @RequestParam(required = false) String country) {
         Instant now = Instant.now();
         long maxDscPkId = verifierDataService.findMaxDscPkId();
         List<String> activeKeyIds;
