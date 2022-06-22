@@ -406,7 +406,7 @@ public abstract class KeyControllerV2Test extends BaseControllerTest {
                         TestHelper.PATH_TO_CA_PEM,
                         ActiveCertsResponse.class);
 
-        //list of expected CH certs
+        //list of expected CH key IDs
         List<String> expectedActiveKeyIds =
                 dscs.stream()
                         .filter(dsc -> dsc.getOrigin().equals(ORIGIN_CH))

@@ -113,7 +113,13 @@ public class KeyControllerV2 {
     public @ResponseBody ResponseEntity<ActiveCertsResponse> getActiveSignerCertKeyIds(
             WebRequest request, @RequestParam(required = false) String country) {
         Instant now = Instant.now();
-        long maxDscPkId = verifierDataService.findMaxDscPkId();
+        long maxDscPkId;
+        if(country == null){
+            maxDscPkId = verifierDataService.findMaxDscPkId();
+        }else{
+            maxDscPkId = verifierDataService.findMaxDscPkIdForCountry(country);
+        }
+
         List<String> activeKeyIds;
         if (country == null) {
             activeKeyIds = verifierDataService.findActiveDscKeyIds();
