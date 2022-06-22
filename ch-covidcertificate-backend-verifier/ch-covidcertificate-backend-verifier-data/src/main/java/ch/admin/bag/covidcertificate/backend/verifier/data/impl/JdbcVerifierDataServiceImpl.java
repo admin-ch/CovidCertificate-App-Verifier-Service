@@ -286,7 +286,7 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
                         + " where pk_dsc_id > :since"
                         + (upTo != null ? " and pk_dsc_id <= :up_to" : "")
                         + " and deleted_at is null"
-                        + "and origin = :country"
+                        + " and origin = :country"
                         + " order by pk_dsc_id asc"
                         + " limit :batch_size";
 

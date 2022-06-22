@@ -2,10 +2,6 @@
 Check whether the cert signature is about to expire
 */
 
-import "../rule-constants/vaccine.aifc";
-import "../rule-constants/test.aifc";
-import "../rule-constants/recovery.aifc";
-
 let cutoff = now() + 90#days;
 
 if (payload.h.exp && payload.v.0 && payload.h.iss) {

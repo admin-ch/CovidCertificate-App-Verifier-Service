@@ -383,11 +383,11 @@ public abstract class KeyControllerV2Test extends BaseControllerTest {
     @Test
     @Transactional
     public void keysListByCountryTest() throws Exception {
-        // fill db
+        // fill db with certs from CH and DE
         final Long cscaId = insertCsca();
         List<DbDsc> dscs = insertMultiCountryDscs(cscaId);
 
-        // get active keys
+        // get active certs for CH
         MockHttpServletResponse response =
                 mockMvc.perform(
                                 get(BASE_URL + LIST_ENDPOINT)
@@ -406,19 +406,24 @@ public abstract class KeyControllerV2Test extends BaseControllerTest {
                         TestHelper.PATH_TO_CA_PEM,
                         ActiveCertsResponse.class);
 
+        //list of expected CH certs
         List<String> expectedActiveKeyIds =
                 dscs.stream()
                         .filter(dsc -> dsc.getOrigin().equals(ORIGIN_CH))
                         .map(DbDsc::getKeyId)
                         .collect(Collectors.toList());
         List<String> activeKeyIds = activeCerts.getActiveKeyIds();
+
+        //check we really got the CH certs
         assertEquals(expectedActiveKeyIds.size(), activeKeyIds.size());
         assertTrue(expectedActiveKeyIds.containsAll(activeKeyIds));
 
+        //validity field should be the same 48h as for the normal request
         assertEquals(Duration.ofHours(48).toMillis(), activeCerts.getValidDuration());
 
+        //check the up to header is set correctly
         String upTo = response.getHeader(UP_TO_HEADER);
-        assertEquals(String.valueOf((int) verifierDataService.findMaxDscPkId()), upTo);
+        assertEquals(String.valueOf((int) verifierDataService.findMaxDscPkIdForCountry(ORIGIN_CH)), upTo);
         assertExpiry(response, CacheUtil.KEYS_BUCKET_DURATION);
     }
 
