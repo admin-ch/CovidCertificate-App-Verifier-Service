@@ -259,7 +259,8 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ClientCert> findDscsByCountry(Long since, CertFormat certFormat, Long upTo, String country) {
+    public List<ClientCert> findDscsByCountry(
+            Long since, CertFormat certFormat, Long upTo, String country) {
         List<String> formatSpecificSelectFields;
         switch (certFormat) {
             case IOS:
@@ -341,12 +342,13 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
     }
 
     @Override
-    public List<String> findActiveDscKeyIdsByCountry(String country) {        return jt.queryForList(
-            "select key_id from t_document_signer_certificate"
-                    + " where deleted_at is null and origin = :country"
-                    + " order by pk_dsc_id",
-            new MapSqlParameterSource().addValue("country", country),
-            String.class);
+    public List<String> findActiveDscKeyIdsByCountry(String country) {
+        return jt.queryForList(
+                "select key_id from t_document_signer_certificate"
+                        + " where deleted_at is null and origin = :country"
+                        + " order by pk_dsc_id",
+                new MapSqlParameterSource().addValue("country", country),
+                String.class);
     }
 
     /** @deprecated only used in KeyController V1 */
@@ -388,12 +390,12 @@ public class JdbcVerifierDataServiceImpl implements VerifierDataService {
                             + " and origin = :country"
                             + " order by pk_dsc_id desc"
                             + " limit 1";
-            return jt.queryForObject(sql, new MapSqlParameterSource().addValue("country", country) , Long.class);
+            return jt.queryForObject(
+                    sql, new MapSqlParameterSource().addValue("country", country), Long.class);
         } catch (EmptyResultDataAccessException e) {
             return 0L;
         }
     }
-
 
     @Override
     public int getDscBatchSize() {

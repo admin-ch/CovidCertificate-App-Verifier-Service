@@ -21,7 +21,6 @@ import ch.ubique.openapi.docannotations.Documentation;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,16 +78,16 @@ public class KeyControllerV2 {
                 .body(new CertsResponse(dscs));
     }
 
-    private HttpHeaders getKeysUpdatesHeaders(List<ClientCert> dscs, Long upTo, Instant now, String country) {
+    private HttpHeaders getKeysUpdatesHeaders(
+            List<ClientCert> dscs, Long upTo, Instant now, String country) {
         HttpHeaders headers =
-            CacheUtil.createExpiresHeader(
-                CacheUtil.roundToNextKeysBucketStart(now));
+                CacheUtil.createExpiresHeader(CacheUtil.roundToNextKeysBucketStart(now));
         long maxDscPkId;
-        if(upTo != null){
+        if (upTo != null) {
             maxDscPkId = upTo;
-        }else if(country != null){
+        } else if (country != null) {
             maxDscPkId = verifierDataService.findMaxDscPkIdForCountry(country);
-        }else{
+        } else {
             maxDscPkId = verifierDataService.findMaxDscPkId();
         }
         Long nextSince = dscs.stream().mapToLong(ClientCert::getPkId).max().orElse(maxDscPkId);
@@ -114,16 +113,16 @@ public class KeyControllerV2 {
             WebRequest request, @RequestParam(required = false) String country) {
         Instant now = Instant.now();
         long maxDscPkId;
-        if(country == null){
+        if (country == null) {
             maxDscPkId = verifierDataService.findMaxDscPkId();
-        }else{
+        } else {
             maxDscPkId = verifierDataService.findMaxDscPkIdForCountry(country);
         }
 
         List<String> activeKeyIds;
         if (country == null) {
             activeKeyIds = verifierDataService.findActiveDscKeyIds();
-        }else{
+        } else {
             activeKeyIds = verifierDataService.findActiveDscKeyIdsByCountry(country);
         }
         List<String> etagComponents = new ArrayList<>(activeKeyIds);
@@ -141,8 +140,7 @@ public class KeyControllerV2 {
 
     private HttpHeaders getKeysListHeaders(Long upTo, Instant now) {
         HttpHeaders headers =
-            CacheUtil.createExpiresHeader(
-                CacheUtil.roundToNextKeysBucketStart(now));
+                CacheUtil.createExpiresHeader(CacheUtil.roundToNextKeysBucketStart(now));
         headers.add(UP_TO_HEADER, upTo.toString());
         return headers;
     }

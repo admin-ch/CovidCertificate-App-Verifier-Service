@@ -406,7 +406,7 @@ public abstract class KeyControllerV2Test extends BaseControllerTest {
                         TestHelper.PATH_TO_CA_PEM,
                         ActiveCertsResponse.class);
 
-        //list of expected CH key IDs
+        // list of expected CH key IDs
         List<String> expectedActiveKeyIds =
                 dscs.stream()
                         .filter(dsc -> dsc.getOrigin().equals(ORIGIN_CH))
@@ -414,16 +414,18 @@ public abstract class KeyControllerV2Test extends BaseControllerTest {
                         .collect(Collectors.toList());
         List<String> activeKeyIds = activeCerts.getActiveKeyIds();
 
-        //check we really got the CH certs
+        // check we really got the CH certs
         assertEquals(expectedActiveKeyIds.size(), activeKeyIds.size());
         assertTrue(expectedActiveKeyIds.containsAll(activeKeyIds));
 
-        //validity field should be the same 48h as for the normal request
+        // validity field should be the same 48h as for the normal request
         assertEquals(Duration.ofHours(48).toMillis(), activeCerts.getValidDuration());
 
-        //check the up to header is set correctly
+        // check the up to header is set correctly
         String upTo = response.getHeader(UP_TO_HEADER);
-        assertEquals(String.valueOf((int) verifierDataService.findMaxDscPkIdForCountry(ORIGIN_CH)), upTo);
+        assertEquals(
+                String.valueOf((int) verifierDataService.findMaxDscPkIdForCountry(ORIGIN_CH)),
+                upTo);
         assertExpiry(response, CacheUtil.KEYS_BUCKET_DURATION);
     }
 
