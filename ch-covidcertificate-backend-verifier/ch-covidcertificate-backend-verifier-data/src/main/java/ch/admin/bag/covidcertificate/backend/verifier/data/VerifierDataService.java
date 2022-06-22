@@ -65,6 +65,9 @@ public interface VerifierDataService {
     /** returns the next batch of DSCs after `since` up to `upTo` in the requested format */
     public List<ClientCert> findDscs(Long since, CertFormat certFormat, Long upTo);
 
+    /** returns the next batch of DSCs after `since` up to `upTo` in the requested format for a given country */
+    public List<ClientCert> findDscsByCountry(Long since, CertFormat certFormat, Long upTo, String country);
+
     /**
      * returns the next batch of DSCs after `since` but before `importedBefore` in the requested
      * format
@@ -77,6 +80,10 @@ public interface VerifierDataService {
     /** returns a list of key ids of all active DSCs */
     public List<String> findActiveDscKeyIds();
 
+    /** returns a list of key ids of all active DSCs for a given country */
+    public List<String> findActiveDscKeyIdsByCountry(String country);
+
+
     /**
      * returns a list of key ids of all active DSCs before a certain timestamp
      *
@@ -87,6 +94,8 @@ public interface VerifierDataService {
 
     /** returns the highest DSC pk id */
     public long findMaxDscPkId();
+
+    public long findMaxDscPkIdForCountry(String country);
 
     public int getDscBatchSize();
 

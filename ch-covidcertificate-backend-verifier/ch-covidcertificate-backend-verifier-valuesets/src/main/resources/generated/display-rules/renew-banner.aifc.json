@@ -1,0 +1,65 @@
+{
+  "if": [
+    {
+      "and": [
+        {
+          "var": "payload.h.exp"
+        },
+        {
+          "var": "payload.v.0"
+        },
+        {
+          "var": "payload.h.iss"
+        }
+      ]
+    },
+    {
+      "if": [
+        {
+          "and": [
+            {
+              "before": [
+                {
+                  "plusTime": [
+                    {
+                      "var": "payload.h.exp"
+                    },
+                    0,
+                    "day"
+                  ]
+                },
+                {
+                  "plusTime": [
+                    {
+                      "var": "external.validationClock"
+                    },
+                    90,
+                    "day"
+                  ]
+                }
+              ]
+            },
+            {
+              "in": [
+                {
+                  "var": "payload.h.iss"
+                },
+                [
+                  "CH",
+                  "CH BAG"
+                ]
+              ]
+            }
+          ]
+        },
+        "showRenewBanner",
+        {
+          "var": "undefined"
+        }
+      ]
+    },
+    {
+      "var": "undefined"
+    }
+  ]
+}

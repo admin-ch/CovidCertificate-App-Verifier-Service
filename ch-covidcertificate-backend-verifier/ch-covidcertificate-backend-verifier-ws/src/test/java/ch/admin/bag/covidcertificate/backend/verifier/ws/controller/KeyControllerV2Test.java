@@ -65,6 +65,7 @@ public abstract class KeyControllerV2Test extends BaseControllerTest {
     private static final String SINCE_QUERY_PARAM = "since";
 
     private static final String ORIGIN_CH = "CH";
+    private static final String ORIGIN_DE = "DE";
 
     private Random rand = new Random();
     private List<Integer> suffixes = new ArrayList<>();
@@ -283,8 +284,11 @@ public abstract class KeyControllerV2Test extends BaseControllerTest {
     }
 
     private void assertExpiry(MockHttpServletResponse response, Duration bucketDuration)
-        throws ParseException {
-        Instant expires = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz").parse(response.getHeader("Expires")).toInstant();
+            throws ParseException {
+        Instant expires =
+                new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz")
+                        .parse(response.getHeader("Expires"))
+                        .toInstant();
         assertTrue(expires.isAfter(Instant.now()));
         assertFalse(expires.isAfter(Instant.now().plus(bucketDuration)));
     }
@@ -378,6 +382,55 @@ public abstract class KeyControllerV2Test extends BaseControllerTest {
 
     @Test
     @Transactional
+    public void keysListByCountryTest() throws Exception {
+        // fill db with certs from CH and DE
+        final Long cscaId = insertCsca();
+        List<DbDsc> dscs = insertMultiCountryDscs(cscaId);
+
+        // get active certs for CH
+        MockHttpServletResponse response =
+                mockMvc.perform(
+                                get(BASE_URL + LIST_ENDPOINT)
+                                        .accept(acceptMediaType)
+                                        .queryParam("country", ORIGIN_CH))
+                        .andExpect(status().is2xxSuccessful())
+                        .andReturn()
+                        .getResponse();
+
+        // verify response
+        assertNotNull(response);
+        ActiveCertsResponse activeCerts =
+                testHelper.verifyAndReadValue(
+                        response,
+                        acceptMediaType,
+                        TestHelper.PATH_TO_CA_PEM,
+                        ActiveCertsResponse.class);
+
+        // list of expected CH key IDs
+        List<String> expectedActiveKeyIds =
+                dscs.stream()
+                        .filter(dsc -> dsc.getOrigin().equals(ORIGIN_CH))
+                        .map(DbDsc::getKeyId)
+                        .collect(Collectors.toList());
+        List<String> activeKeyIds = activeCerts.getActiveKeyIds();
+
+        // check we really got the CH certs
+        assertEquals(expectedActiveKeyIds.size(), activeKeyIds.size());
+        assertTrue(expectedActiveKeyIds.containsAll(activeKeyIds));
+
+        // validity field should be the same 48h as for the normal request
+        assertEquals(Duration.ofHours(48).toMillis(), activeCerts.getValidDuration());
+
+        // check the up to header is set correctly
+        String upTo = response.getHeader(UP_TO_HEADER);
+        assertEquals(
+                String.valueOf((int) verifierDataService.findMaxDscPkIdForCountry(ORIGIN_CH)),
+                upTo);
+        assertExpiry(response, CacheUtil.KEYS_BUCKET_DURATION);
+    }
+
+    @Test
+    @Transactional
     public void notModifiedTest() throws Exception {
         // get current etag
         MockHttpServletResponse response =
@@ -454,6 +507,18 @@ public abstract class KeyControllerV2Test extends BaseControllerTest {
 
     private List<DbDsc> insertSomeDscs(Long cscaId) {
         return insertNDscs(cscaId, null);
+    }
+
+    private List<DbDsc> insertMultiCountryDscs(Long cscaId) {
+        var result = insertNDscs(cscaId, null);
+        var dsc =
+                getRandomSuffixes().stream()
+                        .map(s -> getRsaDsc(s, ORIGIN_DE, cscaId))
+                        .findFirst()
+                        .get();
+        verifierDataService.insertManualDsc(dsc);
+        result.add(dsc);
+        return result;
     }
 
     /**

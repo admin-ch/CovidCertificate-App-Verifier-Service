@@ -1,0 +1,16 @@
+/*
+Check whether the cert signature is about to expire
+*/
+
+let cutoff = now() + 90#days;
+
+if (payload.h.exp && payload.v.0 && payload.h.iss) {
+   let exp = payload.h.exp as DateTime + 0#days;
+   if(((exp) is before (cutoff as DateTime)) && (payload.h.iss in ["CH", "CH BAG"])){
+     "showRenewBanner"
+   } else {
+     undefined
+   }
+} else {
+  undefined
+}
