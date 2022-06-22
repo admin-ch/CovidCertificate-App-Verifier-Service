@@ -35,7 +35,10 @@ public class JdbcCertUploadDataServiceImpl implements CertUploadDataService {
     @Override
     public List<CertToUpload> findCertsToUpload() {
         return jt.query(
-                "select * from t_cert_to_upload where key_id is null",
+                "select * from t_cert_to_upload"
+                        + " where key_id is null"
+                        + " or (do_upload is true and uploaded_at is null)"
+                        + " or (do_insert is true and inserted_at is null)",
                 new MapSqlParameterSource(),
                 new CertToUploadRowMapper());
     }
