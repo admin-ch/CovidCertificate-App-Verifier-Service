@@ -50,7 +50,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.3.6</version>
+            <version>42.4.0</version>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -65,7 +65,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>1.17.2</version>
+            <version>1.17.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
