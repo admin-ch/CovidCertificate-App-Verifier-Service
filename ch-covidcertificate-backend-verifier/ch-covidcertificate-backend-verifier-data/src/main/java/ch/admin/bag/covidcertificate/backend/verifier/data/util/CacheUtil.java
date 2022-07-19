@@ -23,11 +23,11 @@ public class CacheUtil {
     public static Duration VALUE_SETS_MAX_AGE;
     public static Duration KEYS_UPDATES_MAX_AGE;
     public static Duration KEYS_LIST_MAX_AGE;
-    public static Duration FOREIGN_RULES_MAX_AGE;
 
     public static Duration KEYS_BUCKET_DURATION;
     public static Duration REVOCATION_RETENTION_BUCKET_DURATION;
     public static Duration VERIFICATION_RULES_BUCKET_DURATION;
+    public static Duration FOREIGN_RULES_BUCKET_DURATION;
 
 
     private CacheUtil() {}
@@ -82,5 +82,9 @@ public class CacheUtil {
 
     public static Instant roundToNextVerificationRulesBucketStart(Instant now) {
         return roundToNextBucketStart(now, CacheUtil.VERIFICATION_RULES_BUCKET_DURATION);
+    }
+
+    public static Instant roundToNextForeignRulesBucketStart(Instant now) {
+        return roundToNextBucketStart(now, CacheUtil.FOREIGN_RULES_BUCKET_DURATION);
     }
 }

@@ -116,6 +116,11 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
         CacheUtil.VERIFICATION_RULES_MAX_AGE = maxAge;
     }
 
+    @Value("${ws.foreignRules.release-bucket-duration:PT6H}")
+    public void setForeignRulesBucketDuration(Duration bucketDuration) {
+        CacheUtil.FOREIGN_RULES_BUCKET_DURATION = bucketDuration;
+    }
+
     @Value("${ws.verificationRules.release-bucket-duration:PT6H}")
     public void setVerificationRulesBucketDuration(Duration bucketDuration) {
         CacheUtil.VERIFICATION_RULES_BUCKET_DURATION = bucketDuration;
@@ -135,12 +140,6 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
     public void setKeysListMaxAge(Duration maxAge) {
         CacheUtil.KEYS_LIST_MAX_AGE = maxAge;
     }
-
-    @Value("${ws.foreignRules.max-age:PT1M}")
-    public void setForeignRulesMaxAge(Duration maxAge) {
-        CacheUtil.FOREIGN_RULES_MAX_AGE = maxAge;
-    }
-
 
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
