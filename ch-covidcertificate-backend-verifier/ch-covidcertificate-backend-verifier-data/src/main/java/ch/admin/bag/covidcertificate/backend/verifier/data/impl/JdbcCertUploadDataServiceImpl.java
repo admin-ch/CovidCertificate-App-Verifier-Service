@@ -50,9 +50,10 @@ public class JdbcCertUploadDataServiceImpl implements CertUploadDataService {
                         + " set inserted_at = :inserted_at,"
                         + " uploaded_at = :uploaded_at,"
                         + " key_id = :key_id"
-                        + " where pk_alias = :pk_alias";
+                        + " where pk_alias = :pk_alias and pk_slot = :pk_slot";
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("pk_alias", certToUpload.getAlias());
+        params.addValue("pk_slot", certToUpload.getSlot());
         params.addValue("key_id", certToUpload.getKeyId());
         params.addValue("inserted_at", DateUtil.instantToDate(certToUpload.getInsertedAt()));
         params.addValue("uploaded_at", DateUtil.instantToDate(certToUpload.getUploadedAt()));

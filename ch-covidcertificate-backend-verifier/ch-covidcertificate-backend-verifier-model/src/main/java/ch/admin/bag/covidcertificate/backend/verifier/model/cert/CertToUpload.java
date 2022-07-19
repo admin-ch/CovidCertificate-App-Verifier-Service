@@ -19,6 +19,7 @@ public class CertToUpload {
     private Boolean doUpload;
     private Instant insertedAt;
     private Boolean doInsert;
+    private Integer slot;
 
     public String getAlias() {
         return alias;
@@ -74,5 +75,13 @@ public class CertToUpload {
 
     public void setDoInsert(Boolean doInsert) {
         this.doInsert = doInsert;
+    }
+
+    public Integer getSlot() {
+        return slot;
+    }
+
+    public void setSlot(Integer slot) {
+        this.slot = slot;
     }
 }
