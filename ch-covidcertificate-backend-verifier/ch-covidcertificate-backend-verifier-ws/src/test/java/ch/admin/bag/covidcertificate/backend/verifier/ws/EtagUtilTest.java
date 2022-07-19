@@ -48,7 +48,7 @@ public class EtagUtilTest {
 
     @Test
     public void testFileHashMultiple() throws Exception {
-        String expected = "W/\"8fd5d9f8c88f12eaf34309358f925604cced3d7d\"";
+        String expected = "W/\"142370e8da04d0b6804b6952634d7ed079ec7dfe\"";
         List<String> pathsToValueSets =
                 List.of(
                         "classpath:valuesets/test-manf.json",
