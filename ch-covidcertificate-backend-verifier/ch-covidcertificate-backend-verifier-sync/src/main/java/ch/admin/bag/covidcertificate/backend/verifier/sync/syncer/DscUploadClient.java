@@ -58,10 +58,11 @@ public class DscUploadClient {
 
         List<CertToUpload> certsToUpload = certUploadDataService.findCertsToUpload();
         logger.info(
-                "found {} dscs to upload. aliases/slots: {}/{}",
+                "found {} dscs to upload. aliases/slots: {}",
                 certsToUpload.size(),
-                certsToUpload.stream().map(CertToUpload::getAlias).collect(Collectors.toList()),
-                certsToUpload.stream().map(CertToUpload::getSlot).collect(Collectors.toList()));
+                certsToUpload.stream()
+                        .map(c -> c.getAlias() + "/" + c.getSlot())
+                        .collect(Collectors.toList()));
         for (CertToUpload certToUpload : certsToUpload) {
             String alias = certToUpload.getAlias();
             int slot = certToUpload.getSlot();
