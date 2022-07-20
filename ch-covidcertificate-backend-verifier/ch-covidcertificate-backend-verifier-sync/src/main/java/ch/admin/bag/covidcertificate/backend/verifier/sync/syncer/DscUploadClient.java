@@ -58,22 +58,25 @@ public class DscUploadClient {
 
         List<CertToUpload> certsToUpload = certUploadDataService.findCertsToUpload();
         logger.info(
-                "found {} dscs to upload. aliases: {}",
+                "found {} dscs to upload. aliases/slots: {}",
                 certsToUpload.size(),
-                certsToUpload.stream().map(CertToUpload::getAlias).collect(Collectors.toList()));
+                certsToUpload.stream()
+                        .map(c -> c.getAlias() + "/" + c.getSlot())
+                        .collect(Collectors.toList()));
         for (CertToUpload certToUpload : certsToUpload) {
             String alias = certToUpload.getAlias();
+            int slot = certToUpload.getSlot();
             DscUploadResult uploadResult = new DscUploadResult(alias);
             response.addResult(uploadResult);
 
             String cms = null;
             try {
-                logger.info("downloading cms for alias {} from signing service", alias);
-                cms = signingClient.getCmsForAlias(alias);
+                logger.info("downloading cms for alias {} slot {} from signing service", alias, slot);
+                cms = signingClient.getCmsForAlias(alias, slot);
             } catch (Exception e) {
                 String error =
                         String.format(
-                                "failed to download cms for alias %s from signing service", alias);
+                                "failed to download cms for alias %s slot %d from signing service", alias, slot);
                 uploadResult.addError(error);
                 logger.error(error, e);
                 continue;
@@ -88,7 +91,7 @@ public class DscUploadClient {
             if (certToUpload.doUpload()) {
                 if (!certToUpload.wasUploaded()) {
                     try {
-                        logger.info("uploading cms for alias {} to dgc hub", alias);
+                        logger.info("uploading cms for alias {} slot {} to dgc hub", alias, slot);
                         dgcCertClient.upload(cms, kid);
                         certToUpload.setUploadedAt(Instant.now());
                     } catch (AlreadyUploadedException e) {
@@ -99,17 +102,17 @@ public class DscUploadClient {
                     } catch (Exception e) {
                         String error =
                                 String.format(
-                                        "failed to upload cms for alias %s to dgc hub", alias);
+                                        "failed to upload cms for alias %s slot %d to dgc hub", alias, slot);
                         uploadResult.addError(error);
                         logger.error(error, e);
                     }
                 } else {
-                    String info = String.format("cms for alias %s already uploaded", alias);
+                    String info = String.format("cms for alias %s slot %d already uploaded", alias, slot);
                     uploadResult.addInfo(info);
                     logger.info(info);
                 }
             } else {
-                String info = String.format("cms for alias %s not marked for dgc upload", alias);
+                String info = String.format("cms for alias %s slot %d not marked for dgc upload", alias, slot);
                 uploadResult.addInfo(info);
                 logger.info(info);
             }
@@ -126,12 +129,12 @@ public class DscUploadClient {
                         logger.error(error, e);
                     }
                 } else {
-                    String info = String.format("cms for alias %s already in db", alias);
+                    String info = String.format("cms for alias %s slot %d already in db", alias, slot);
                     uploadResult.addInfo(info);
                     logger.info(info);
                 }
             } else {
-                String info = String.format("cms for alias %s not marked for insertion", alias);
+                String info = String.format("cms for alias %s slot %d not marked for insertion", alias, slot);
                 uploadResult.addInfo(info);
                 logger.info(info);
             }

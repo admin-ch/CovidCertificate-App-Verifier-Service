@@ -25,7 +25,7 @@ public class SigningClient {
     private final RestTemplate rt;
     private final String signBaseUrl;
     private static final String SIGNING_PATH = "/v1/cms/";
-    private static final String ALIAS_PATH = "/v1/cms/%s";
+    private static final String ALIAS_PATH = "/v1/cms/slots/%d/alias/%s";
 
     public SigningClient(RestTemplate rt, String signBaseUrl) {
         this.rt = rt;
@@ -44,10 +44,10 @@ public class SigningClient {
         }
     }
 
-    public String getCmsForAlias(String alias) throws SigningException {
+    public String getCmsForAlias(String alias, int slot) throws SigningException {
         try{
-            String url = signBaseUrl + String.format(ALIAS_PATH, alias);
-            logger.info("Requesting cms alias {} at {}", alias, url);
+            String url = signBaseUrl + String.format(ALIAS_PATH, slot, alias);
+            logger.info("Requesting cms alias {} slot {} at {}", alias, slot, url);
             return rt.exchange(
                             RequestEntity.get(url).headers(acceptJsonHeaders()).build(),
                             CmsResponse.class)

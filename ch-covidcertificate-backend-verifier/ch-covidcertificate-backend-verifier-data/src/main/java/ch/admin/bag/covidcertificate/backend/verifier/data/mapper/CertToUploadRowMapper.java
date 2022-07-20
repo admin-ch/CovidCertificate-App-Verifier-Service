@@ -22,6 +22,7 @@ public class CertToUploadRowMapper implements RowMapper<CertToUpload> {
     public CertToUpload mapRow(ResultSet rs, int i) throws SQLException {
         CertToUpload certToUpload = new CertToUpload();
         certToUpload.setAlias(rs.getString("pk_alias"));
+        certToUpload.setSlot(rs.getInt("pk_slot"));
         certToUpload.setKeyId(rs.getString("key_id"));
 
         Timestamp uploadedAt = rs.getTimestamp("uploaded_at");
