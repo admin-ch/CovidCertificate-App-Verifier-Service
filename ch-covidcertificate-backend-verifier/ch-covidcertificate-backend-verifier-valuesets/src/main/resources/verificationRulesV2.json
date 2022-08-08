@@ -1120,7 +1120,9 @@
                 "Covovax",
                 "BBIBP-CorV_T",
                 "CoronaVac_T",
-                "Covaxin_T"
+                "Covaxin_T",
+                "VLA2001",
+                "Convidecia"
               ]
             ]
           },
@@ -1217,7 +1219,8 @@
                     "Covovax",
                     "BBIBP-CorV_T",
                     "CoronaVac_T",
-                    "Covaxin_T"
+                    "Covaxin_T",
+                    "VLA2001"
                   ]
                 ]
               }
@@ -1286,7 +1289,8 @@
                         "var": "payload.v.0.mp"
                       },
                       [
-                        "EU/1/20/1525"
+                        "EU/1/20/1525",
+                        "Convidecia"
                       ]
                     ]
                   },
@@ -1379,7 +1383,8 @@
                     "Covovax",
                     "BBIBP-CorV_T",
                     "CoronaVac_T",
-                    "Covaxin_T"
+                    "Covaxin_T",
+                    "VLA2001"
                   ]
                 ]
               }
@@ -1448,7 +1453,8 @@
                         "var": "payload.v.0.mp"
                       },
                       [
-                        "EU/1/20/1525"
+                        "EU/1/20/1525",
+                        "Convidecia"
                       ]
                     ]
                   },
@@ -1555,7 +1561,8 @@
                         "var": "payload.v.0.mp"
                       },
                       [
-                        "EU/1/20/1525"
+                        "EU/1/20/1525",
+                        "Convidecia"
                       ]
                     ]
                   },
@@ -2263,7 +2270,8 @@
                         "var": "payload.v.0.mp"
                       },
                       [
-                        "EU/1/20/1525"
+                        "EU/1/20/1525",
+                        "Convidecia"
                       ]
                     ]
                   },
@@ -2426,7 +2434,8 @@
                         "var": "payload.v.0.mp"
                       },
                       [
-                        "EU/1/20/1525"
+                        "EU/1/20/1525",
+                        "Convidecia"
                       ]
                     ]
                   },
@@ -2459,7 +2468,8 @@
                             "var": "payload.v.0.mp"
                           },
                           [
-                            "EU/1/20/1525"
+                            "EU/1/20/1525",
+                            "Convidecia"
                           ]
                         ]
                       },
@@ -2615,7 +2625,8 @@
                                     "Covovax",
                                     "BBIBP-CorV_T",
                                     "CoronaVac_T",
-                                    "Covaxin_T"
+                                    "Covaxin_T",
+                                    "VLA2001"
                                   ]
                                 ]
                               },
@@ -2873,7 +2884,8 @@
                         "var": "payload.v.0.mp"
                       },
                       [
-                        "EU/1/20/1525"
+                        "EU/1/20/1525",
+                        "Convidecia"
                       ]
                     ]
                   },
