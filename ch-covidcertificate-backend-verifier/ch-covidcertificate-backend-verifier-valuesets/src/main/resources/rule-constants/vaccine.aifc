@@ -9,12 +9,13 @@ let CORV            = "BBIBP-CorV";
 let COVISHIELD      = "Covishield";
 let COVAXIN         = "Covaxin";
 let R_COVI          = "R-COVI";
-let RECOMBININANT   = "Covid-19-recombinant";
+let RECOMBINANT   = "Covid-19-recombinant";
 let COVOVAX         = "Covovax";
 let CORV_T          = "BBIBP-CorV_T";
 let CORONAVAC_T     = "CoronaVac_T";
 let COVAXIN_T       = "Covaxin_T";
-
+let VALNEVA         = "VLA2001";
+let CONVIDECIA      = "Convidecia";
 
 let ALL_VACCINES = [
     PFIZER,
@@ -28,11 +29,13 @@ let ALL_VACCINES = [
     COVISHIELD,
     COVAXIN,
     R_COVI,
-    RECOMBININANT,
+    RECOMBINANT,
     COVOVAX,
     CORV_T,
     CORONAVAC_T,
-    COVAXIN_T
+    COVAXIN_T,
+    VALNEVA,
+    CONVIDECIA
 ];
 
 
@@ -47,15 +50,17 @@ let TWO_DOSE_VACCINES = [
     COVISHIELD,
     COVAXIN,
     R_COVI,
-    RECOMBININANT,
+    RECOMBINANT,
     COVOVAX,
     CORV_T,
     CORONAVAC_T,
-    COVAXIN_T
+    COVAXIN_T,
+    VALNEVA
 ];
 
 let SINGLE_DOSE_VACCINES = [
-    JANSSEN
+    JANSSEN,
+    CONVIDECIA
 ];
 
 let TOURIST_VACCINES = [
