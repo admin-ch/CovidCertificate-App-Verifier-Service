@@ -29,6 +29,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpStatusCodeException;
+import java.io.InputStream;
+import org.springframework.core.io.ClassPathResource;
+import java.io.IOException;
 
 @Controller
 @RequestMapping("trust/v2")
@@ -66,6 +69,20 @@ public class RevocationListControllerV2 {
         return ResponseEntity.ok()
                 .headers(getRevokedCertsHeaders(revokedCerts, now))
                 .body(new RevocationResponse(revokedUvcis));
+    }
+
+    @Documentation(
+            description = "get (pruned) database of revocations",
+            responses = {"200 => current database as of last deployment"},
+            responseHeaders = {
+                "X-Next-Since:`since` to set for next request:string"
+            })
+    @CrossOrigin(origins = {"https://editor.swagger.io"})
+    @GetMapping(value = "/revocationDb")        
+    public @ResponseBody ResponseEntity<byte[]> getRevocationDb() throws IOException{
+        InputStream dbFile =
+                new ClassPathResource("revocations.sqlite").getInputStream();
+        return ResponseEntity.ok().body(dbFile.readAllBytes());
     }
 
     private HttpHeaders getRevokedCertsHeaders(List<DbRevokedCert> revokedCerts, Instant now) {
