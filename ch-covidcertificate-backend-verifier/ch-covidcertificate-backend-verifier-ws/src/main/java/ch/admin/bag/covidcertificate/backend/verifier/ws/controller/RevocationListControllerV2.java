@@ -15,6 +15,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.model.DbRevokedCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.RevocationResponse;
 import ch.ubique.openapi.docannotations.Documentation;
+import java.nio.file.Files;
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,11 +43,26 @@ public class RevocationListControllerV2 {
 
     private static final String NEXT_SINCE_HEADER = "X-Next-Since";
     private static final String UP_TO_DATE_HEADER = "up-to-date";
+    private final byte[] revocationDb;
+    private final String revocationDbNextSince;
 
     private final RevokedCertDataService revokedCertDataService;
 
     public RevocationListControllerV2(RevokedCertDataService revokedCertDataService) {
         this.revokedCertDataService = revokedCertDataService;
+        ClassPathResource dbFile =
+                new ClassPathResource("revocations.sqlite");
+        byte[] revocationDb;
+        String revocationDbNextSince;
+        try{
+            revocationDb = dbFile.getInputStream().readAllBytes();
+            revocationDbNextSince = Files.getAttribute(dbFile.getFile().toPath(), "creationTime").toString();
+        }catch(IOException e){
+            revocationDb = null;
+            revocationDbNextSince = null;
+        }
+        this.revocationDb = revocationDb;
+        this.revocationDbNextSince = revocationDbNextSince;
     }
 
     @Documentation(
@@ -80,10 +96,12 @@ public class RevocationListControllerV2 {
     @CrossOrigin(origins = {"https://editor.swagger.io"})
     @GetMapping(value = "/revocationDb")        
     public @ResponseBody ResponseEntity<byte[]> getRevocationDb() throws IOException{
-        InputStream dbFile =
-                new ClassPathResource("revocations.sqlite").getInputStream();
-        return ResponseEntity.ok().body(dbFile.readAllBytes());
+        if(revocationDb == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().header(NEXT_SINCE_HEADER, revocationDbNextSince).body(revocationDb);
     }
+
 
     private HttpHeaders getRevokedCertsHeaders(List<DbRevokedCert> revokedCerts, Instant now) {
         HttpHeaders headers =
