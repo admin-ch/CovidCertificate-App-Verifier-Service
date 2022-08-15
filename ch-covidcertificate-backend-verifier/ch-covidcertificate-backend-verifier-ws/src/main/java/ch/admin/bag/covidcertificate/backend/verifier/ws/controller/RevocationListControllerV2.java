@@ -30,6 +30,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpStatusCodeException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.InputStream;
 import org.springframework.core.io.ClassPathResource;
 import java.io.IOException;
@@ -56,8 +59,10 @@ public class RevocationListControllerV2 {
         String revocationDbNextSince;
         try{
             revocationDb = dbFile.getInputStream().readAllBytes();
-            revocationDbNextSince = Files.getAttribute(dbFile.getFile().toPath(), "creationTime").toString();
+            revocationDbNextSince = new ObjectMapper()
+            .readTree(new ClassPathResource("revocation_metadata.json").getInputStream()).get("nextSince").asText();
         }catch(IOException e){
+            logger.warn("Could not read revocation SQLite DB");
             revocationDb = null;
             revocationDbNextSince = null;
         }
