@@ -63,7 +63,7 @@ public class DgcForeignRulesSyncer {
                     });
 
             if (rules.isEmpty()) {
-                logger.error("No rules were downloaded or decoded for {}", country);
+                logger.warn("No rules were downloaded or decoded for {}", country);
             } else {
                 foreignRulesDataService.removeRuleSet(country);
                 rules.forEach(foreignRulesDataService::insertRule);
