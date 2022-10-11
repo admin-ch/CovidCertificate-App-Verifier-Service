@@ -14,7 +14,8 @@ let COVOVAX         = "Covovax";
 let CORV_T          = "BBIBP-CorV_T";
 let CORONAVAC_T     = "CoronaVac_T";
 let COVAXIN_T       = "Covaxin_T";
-let VALNEVA         = "VLA2001";
+let VALNEVA_LEGACY  = "VLA2001";
+let VALNEVA         = "EU/1/21/1624";
 let CONVIDECIA      = "Convidecia";
 
 let ALL_VACCINES = [
@@ -35,6 +36,7 @@ let ALL_VACCINES = [
     CORONAVAC_T,
     COVAXIN_T,
     VALNEVA,
+    VALNEVA_LEGACY,
     CONVIDECIA
 ];
 
@@ -55,6 +57,7 @@ let TWO_DOSE_VACCINES = [
     CORV_T,
     CORONAVAC_T,
     COVAXIN_T,
+    VALNEVA_LEGACY,
     VALNEVA
 ];
 

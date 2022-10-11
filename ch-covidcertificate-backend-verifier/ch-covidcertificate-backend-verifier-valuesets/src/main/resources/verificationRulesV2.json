@@ -1121,6 +1121,7 @@
                 "BBIBP-CorV_T",
                 "CoronaVac_T",
                 "Covaxin_T",
+                "EU/1/21/1624",
                 "VLA2001",
                 "Convidecia"
               ]
@@ -1220,7 +1221,8 @@
                     "BBIBP-CorV_T",
                     "CoronaVac_T",
                     "Covaxin_T",
-                    "VLA2001"
+                    "VLA2001",
+                    "EU/1/21/1624"
                   ]
                 ]
               }
@@ -1384,7 +1386,8 @@
                     "BBIBP-CorV_T",
                     "CoronaVac_T",
                     "Covaxin_T",
-                    "VLA2001"
+                    "VLA2001",
+                    "EU/1/21/1624"
                   ]
                 ]
               }
@@ -2626,7 +2629,8 @@
                                     "BBIBP-CorV_T",
                                     "CoronaVac_T",
                                     "Covaxin_T",
-                                    "VLA2001"
+                                    "VLA2001",
+                                    "EU/1/21/1624"
                                   ]
                                 ]
                               },
