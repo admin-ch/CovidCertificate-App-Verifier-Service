@@ -39,7 +39,7 @@ public class EtagUtilTest {
 
     @Test
     public void testFileHash() throws Exception {
-        String expected = "W/\"26ae209fb88525d3cdbb7fdaf0ffe6a26aa00089\"";
+        String expected = "W/\"efafab6552384bc2e12194c9456af0b4cdc0e208\"";
         String sha1 = EtagUtil.getSha1HashForFiles(true, PATH_TO_VERIFICATION_RULES);
         assertEquals(expected, sha1);
         assertNotEquals(
@@ -48,7 +48,7 @@ public class EtagUtilTest {
 
     @Test
     public void testFileHashMultiple() throws Exception {
-        String expected = "W/\"94261230f884b347f2edc72de643ef8e5be383bc\"";
+        String expected = "W/\"a6404df46692b7286374fe329d5cb5183a7c79c7\"";
         List<String> pathsToValueSets =
                 List.of(
                         "classpath:valuesets/test-manf.json",

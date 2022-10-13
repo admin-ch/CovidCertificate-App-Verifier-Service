@@ -15,6 +15,7 @@ import ch.admin.bag.covidcertificate.backend.verifier.data.util.CacheUtil;
 import ch.admin.bag.covidcertificate.backend.verifier.model.DbRevokedCert;
 import ch.admin.bag.covidcertificate.backend.verifier.model.RevocationResponse;
 import ch.ubique.openapi.docannotations.Documentation;
+import java.nio.file.Files;
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +31,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpStatusCodeException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.InputStream;
+import org.springframework.core.io.ClassPathResource;
+import java.io.IOException;
+
 @Controller
 @RequestMapping("trust/v2")
 @Documentation(description = "Endpoint to obtain the list of revoked certificates")
@@ -39,11 +46,28 @@ public class RevocationListControllerV2 {
 
     private static final String NEXT_SINCE_HEADER = "X-Next-Since";
     private static final String UP_TO_DATE_HEADER = "up-to-date";
+    private final byte[] revocationDb;
+    private final String revocationDbNextSince;
 
     private final RevokedCertDataService revokedCertDataService;
 
     public RevocationListControllerV2(RevokedCertDataService revokedCertDataService) {
         this.revokedCertDataService = revokedCertDataService;
+        ClassPathResource dbFile =
+                new ClassPathResource("revocations.sqlite");
+        byte[] revocationDb;
+        String revocationDbNextSince;
+        try{
+            revocationDb = dbFile.getInputStream().readAllBytes();
+            revocationDbNextSince = new ObjectMapper()
+            .readTree(new ClassPathResource("revocation_metadata.json").getInputStream()).get("nextSince").asText();
+        }catch(IOException e){
+            logger.warn("Could not read revocation SQLite DB");
+            revocationDb = null;
+            revocationDbNextSince = null;
+        }
+        this.revocationDb = revocationDb;
+        this.revocationDbNextSince = revocationDbNextSince;
     }
 
     @Documentation(
@@ -67,6 +91,22 @@ public class RevocationListControllerV2 {
                 .headers(getRevokedCertsHeaders(revokedCerts, now))
                 .body(new RevocationResponse(revokedUvcis));
     }
+
+    @Documentation(
+            description = "get (pruned) database of revocations",
+            responses = {"200 => current database as of last deployment"},
+            responseHeaders = {
+                "X-Next-Since:`since` to set for next request:string"
+            })
+    @CrossOrigin(origins = {"https://editor.swagger.io"})
+    @GetMapping(value = "/revocationDb")        
+    public @ResponseBody ResponseEntity<byte[]> getRevocationDb() throws IOException{
+        if(revocationDb == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().header(NEXT_SINCE_HEADER, revocationDbNextSince).body(revocationDb);
+    }
+
 
     private HttpHeaders getRevokedCertsHeaders(List<DbRevokedCert> revokedCerts, Instant now) {
         HttpHeaders headers =
