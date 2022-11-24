@@ -26,7 +26,7 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
-        <testcontainers.version>1.17.5</testcontainers.version>
+        <testcontainers.version>1.17.6</testcontainers.version>
         <sonar.projectKey>${env.SONAR_PROJECTKEY}</sonar.projectKey>
     </properties>
 
