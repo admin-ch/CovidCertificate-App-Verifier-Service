@@ -30,6 +30,7 @@
         <jackson-version>2.11.1</jackson-version>
         <jsonwebtoken-version>0.11.5</jsonwebtoken-version>
         <testcontainers-version>1.17.6</testcontainers-version>
+
         <shedlock.version>4.43.0</shedlock.version>
         <spring-cloud-connectors-version>2.2.13.RELEASE</spring-cloud-connectors-version>
 
