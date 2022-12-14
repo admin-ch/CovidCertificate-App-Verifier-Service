@@ -85,10 +85,10 @@
             <version>1.17.6</version>
             <scope>test</scope>
         </dependency>
-    
+
       <dependency>
         <groupId>io.pivotal.cfenv</groupId>
-        <artifactId>java-cfenv-jdbc</artifactId>
+        <artifactId>java-cfenv-boot</artifactId>
         <version>2.4.1</version>
       </dependency>
     </dependencies>
