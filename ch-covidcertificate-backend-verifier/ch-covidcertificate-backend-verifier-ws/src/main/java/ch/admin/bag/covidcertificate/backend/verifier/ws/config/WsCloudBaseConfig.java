@@ -29,7 +29,7 @@ public abstract class WsCloudBaseConfig extends WsBaseConfig {
     @Value("${datasource.leakDetectionThreshold:0}")
     int dataSourceLeakDetectionThreshold;
 
-    @Bean
+    /*@Bean
     @Override
     public DataSource dataSource() {
         /*    PoolConfig poolConfig =
@@ -41,16 +41,16 @@ public abstract class WsCloudBaseConfig extends WsBaseConfig {
                         null,
                         Map.of("leakDetectionThreshold", dataSourceLeakDetectionThreshold));
         CloudFactory factory = new CloudFactory();
-        return factory.getCloud().getSingletonServiceConnector(DataSource.class, dbConfig);*/
+        return factory.getCloud().getSingletonServiceConnector(DataSource.class, dbConfig);
 
-    }
+    }*/
 
     @Bean
     @Override
-    public Flyway flyway() {
+    public Flyway flyway(DataSource dataSource) {
         Flyway flyWay =
                 Flyway.configure()
-                        .dataSource(dataSource())
+                        .dataSource(dataSource)
                         .locations("classpath:/db/migration/pgsql_cluster")
                         .load();
         flyWay.migrate();

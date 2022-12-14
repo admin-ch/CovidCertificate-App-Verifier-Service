@@ -73,7 +73,7 @@ public abstract class SyncBaseConfig {
     @Value("${ws.keys.batch-size:1000}")
     protected Integer dscBatchSize;
 
-    public abstract Flyway flyway();
+    public abstract Flyway flyway(DataSource dataSource);
 
     public abstract String getDbType();
 
