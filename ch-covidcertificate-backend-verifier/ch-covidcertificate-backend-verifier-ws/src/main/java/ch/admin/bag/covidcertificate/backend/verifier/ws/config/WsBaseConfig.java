@@ -92,9 +92,8 @@ public abstract class WsBaseConfig implements WebMvcConfigurer {
         return disabledVerificationModes;
     }
 
-    public abstract DataSource dataSource();
 
-    public abstract Flyway flyway();
+    public abstract Flyway flyway(DataSource dataSource);
 
     @Value("${ws.keys.release-bucket-duration:PT6H}")
     public void setKeysBucketDuration(Duration bucketDuration) {
