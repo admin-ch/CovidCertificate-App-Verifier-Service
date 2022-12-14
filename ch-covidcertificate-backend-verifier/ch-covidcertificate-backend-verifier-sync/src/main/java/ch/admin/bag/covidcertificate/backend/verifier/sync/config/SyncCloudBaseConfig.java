@@ -14,11 +14,11 @@ import java.util.Map;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.CloudFactory;
-import org.springframework.cloud.service.PooledServiceConnectorConfig.PoolConfig;
-import org.springframework.cloud.service.relational.DataSourceConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import io.pivotal.cfenv.jdbc.CfJdbcEnv;
+import io.pivotal.cfenv.jdbc.CfJdbcService;
 
 @Configuration
 public abstract class SyncCloudBaseConfig extends SyncBaseConfig {
@@ -31,22 +31,20 @@ public abstract class SyncCloudBaseConfig extends SyncBaseConfig {
 
     @Value("${datasource.leakDetectionThreshold:0}")
     int dataSourceLeakDetectionThreshold;
-
+/*
     @Bean
     @Override
     public DataSource dataSource() {
-        PoolConfig poolConfig =
-                new PoolConfig(dataSourceMaximumPoolSize, dataSourceConnectionTimeout);
-        DataSourceConfig dbConfig =
-                new DataSourceConfig(
-                        poolConfig,
-                        null,
-                        null,
-                        Map.of("leakDetectionThreshold", dataSourceLeakDetectionThreshold));
-        CloudFactory factory = new CloudFactory();
-        return factory.getCloud().getSingletonServiceConnector(DataSource.class, dbConfig);
-    }
+        CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
+        CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcService();
 
+        String jdbcUrl = cfJdbcService.getJdbcUrl();
+        String username = cfJdbcService.getUsername();
+        String password = cfJdbcService.getPassword();
+        String driverClassName = cfJdbcService.getDriverClassName();
+        
+    }
+*/
     @Bean
     @Override
     public Flyway flyway() {
