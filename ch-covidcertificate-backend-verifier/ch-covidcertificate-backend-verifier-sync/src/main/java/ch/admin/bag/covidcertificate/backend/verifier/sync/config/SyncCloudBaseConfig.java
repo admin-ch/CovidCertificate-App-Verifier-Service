@@ -12,6 +12,8 @@ package ch.admin.bag.covidcertificate.backend.verifier.sync.config;
 
 import java.util.Map;
 import javax.sql.DataSource;
+import javax.xml.crypto.Data;
+
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -47,10 +49,10 @@ public abstract class SyncCloudBaseConfig extends SyncBaseConfig {
 */
     @Bean
     @Override
-    public Flyway flyway() {
+    public Flyway flyway(DataSource dataSource) {
         Flyway flyWay =
                 Flyway.configure()
-                        .dataSource(dataSource())
+                        .dataSource(dataSource)
                         .locations("classpath:/db/migration/pgsql_cluster")
                         .load();
         flyWay.migrate();
