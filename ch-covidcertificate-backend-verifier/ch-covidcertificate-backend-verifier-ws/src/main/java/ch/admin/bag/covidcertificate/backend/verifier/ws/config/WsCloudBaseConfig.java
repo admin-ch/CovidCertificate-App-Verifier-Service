@@ -14,9 +14,6 @@ import java.util.Map;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.CloudFactory;
-import org.springframework.cloud.service.PooledServiceConnectorConfig.PoolConfig;
-import org.springframework.cloud.service.relational.DataSourceConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -35,7 +32,7 @@ public abstract class WsCloudBaseConfig extends WsBaseConfig {
     @Bean
     @Override
     public DataSource dataSource() {
-        PoolConfig poolConfig =
+        /*    PoolConfig poolConfig =
                 new PoolConfig(dataSourceMaximumPoolSize, dataSourceConnectionTimeout);
         DataSourceConfig dbConfig =
                 new DataSourceConfig(
@@ -44,7 +41,8 @@ public abstract class WsCloudBaseConfig extends WsBaseConfig {
                         null,
                         Map.of("leakDetectionThreshold", dataSourceLeakDetectionThreshold));
         CloudFactory factory = new CloudFactory();
-        return factory.getCloud().getSingletonServiceConnector(DataSource.class, dbConfig);
+        return factory.getCloud().getSingletonServiceConnector(DataSource.class, dbConfig);*/
+
     }
 
     @Bean
