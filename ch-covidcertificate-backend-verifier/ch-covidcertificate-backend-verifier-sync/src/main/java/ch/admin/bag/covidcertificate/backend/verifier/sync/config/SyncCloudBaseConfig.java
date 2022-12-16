@@ -25,28 +25,6 @@ import io.pivotal.cfenv.jdbc.CfJdbcService;
 @Configuration
 public abstract class SyncCloudBaseConfig extends SyncBaseConfig {
 
-    @Value("${datasource.maximumPoolSize:5}")
-    int dataSourceMaximumPoolSize;
-
-    @Value("${datasource.connectionTimeout:30000}")
-    int dataSourceConnectionTimeout;
-
-    @Value("${datasource.leakDetectionThreshold:0}")
-    int dataSourceLeakDetectionThreshold;
-/*
-    @Bean
-    @Override
-    public DataSource dataSource() {
-        CfJdbcEnv cfJdbcEnv = new CfJdbcEnv();
-        CfJdbcService cfJdbcService = cfJdbcEnv.findJdbcService();
-
-        String jdbcUrl = cfJdbcService.getJdbcUrl();
-        String username = cfJdbcService.getUsername();
-        String password = cfJdbcService.getPassword();
-        String driverClassName = cfJdbcService.getDriverClassName();
-        
-    }
-*/
     @Bean
     @Override
     public Flyway flyway(DataSource dataSource) {
