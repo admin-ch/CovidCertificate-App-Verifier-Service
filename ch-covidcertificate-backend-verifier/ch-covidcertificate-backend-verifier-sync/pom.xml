@@ -73,24 +73,24 @@
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cloud-connectors</artifactId>
-            <version>${spring-cloud-connectors-version}</version>
-        </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.17.5</version>
+            <version>1.17.6</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>1.17.5</version>
+            <version>1.17.6</version>
             <scope>test</scope>
         </dependency>
+
+      <dependency>
+        <groupId>io.pivotal.cfenv</groupId>
+        <artifactId>java-cfenv-boot</artifactId>
+        <version>2.4.1</version>
+      </dependency>
     </dependencies>
 
     <build>

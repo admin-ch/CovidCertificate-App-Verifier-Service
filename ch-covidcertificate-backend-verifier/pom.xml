@@ -20,18 +20,17 @@
     <name>CH Covidcertificate Verifier Backend</name>
 
     <properties>
-        <java-version>11</java-version>
+        <java-version>17</java-version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <spring-boot-version>2.7.4</spring-boot-version>
-        <spring-cloud-sleuth-version>3.1.4</spring-cloud-sleuth-version>
+        <spring-boot-version>2.7.6</spring-boot-version>
+        <spring-cloud-sleuth-version>3.1.5</spring-cloud-sleuth-version>
         <jackson-version>2.11.1</jackson-version>
         <jsonwebtoken-version>0.11.5</jsonwebtoken-version>
-        <testcontainers-version>1.17.5</testcontainers-version>
+        <testcontainers-version>1.17.6</testcontainers-version>
         <shedlock.version>4.42.0</shedlock.version>
-        <spring-cloud-connectors-version>2.2.13.RELEASE</spring-cloud-connectors-version>
 
         <itCoverageAgent></itCoverageAgent>
 

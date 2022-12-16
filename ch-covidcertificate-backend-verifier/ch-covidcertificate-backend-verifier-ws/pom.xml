@@ -26,7 +26,7 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
-        <testcontainers.version>1.17.5</testcontainers.version>
+        <testcontainers.version>1.17.6</testcontainers.version>
         <sonar.projectKey>${env.SONAR_PROJECTKEY}</sonar.projectKey>
     </properties>
 
@@ -57,10 +57,10 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cloud-connectors</artifactId>
-            <version>${spring-cloud-connectors-version}</version>
-        </dependency>
+            <groupId>io.pivotal.cfenv</groupId>
+            <artifactId>java-cfenv-boot</artifactId>
+            <version>2.4.0</version>
+          </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
