@@ -19,32 +19,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public abstract class WsCloudBaseConfig extends WsBaseConfig {
-
-    @Value("${datasource.maximumPoolSize:5}")
-    int dataSourceMaximumPoolSize;
-
-    @Value("${datasource.connectionTimeout:30000}")
-    int dataSourceConnectionTimeout;
-
-    @Value("${datasource.leakDetectionThreshold:0}")
-    int dataSourceLeakDetectionThreshold;
-
-    /*@Bean
-    @Override
-    public DataSource dataSource() {
-        /*    PoolConfig poolConfig =
-                new PoolConfig(dataSourceMaximumPoolSize, dataSourceConnectionTimeout);
-        DataSourceConfig dbConfig =
-                new DataSourceConfig(
-                        poolConfig,
-                        null,
-                        null,
-                        Map.of("leakDetectionThreshold", dataSourceLeakDetectionThreshold));
-        CloudFactory factory = new CloudFactory();
-        return factory.getCloud().getSingletonServiceConnector(DataSource.class, dbConfig);
-
-    }*/
-
     @Bean
     @Override
     public Flyway flyway(DataSource dataSource) {
