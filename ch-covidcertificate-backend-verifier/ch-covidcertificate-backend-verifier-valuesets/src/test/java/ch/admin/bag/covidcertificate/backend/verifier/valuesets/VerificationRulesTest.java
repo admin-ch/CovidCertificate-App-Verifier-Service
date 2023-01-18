@@ -85,7 +85,7 @@ public class VerificationRulesTest {
     private ObjectMapper mapper;
 
     private static final String RULE_VERSION = "1.0.12";
-    private static final String RULE_VALID_FROM = "2022-09-08T00:00:00Z";
+    private static final String RULE_VALID_FROM = "2023-02-02T00:00:00Z";
 
     private static final String RULES_V1_PATH = "src/main/resources/verificationRules.json";
     private static final String RULES_V2_PATH = "src/main/resources/verificationRulesV2.json";

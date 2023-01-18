@@ -199,9 +199,9 @@
       "version": "1.8"
     },
     "Vidprevtyn": {
-      "display": "Vidprevtyn",
+      "display": "Vidprevtyn (deprecated)",
       "lang": "en",
-      "active": true,
+      "active": false,
       "system": "http://ec.europa.eu/temp/vaccineproductname",
       "version": "1.8"
     },
@@ -288,6 +288,13 @@
       "active": true,
       "system": "https://ec.europa.eu/health/documents/community-register/html/",
       "version": ""
+    },
+    "EU/1/21/1580": {
+      "display": "VidPrevtyn Beta",
+      "lang": "en",
+      "active": true,
+      "system": "https://ec.europa.eu/health/documents/community-register/html/",
+      "version": ""
+      }
     }
-  }
 }
