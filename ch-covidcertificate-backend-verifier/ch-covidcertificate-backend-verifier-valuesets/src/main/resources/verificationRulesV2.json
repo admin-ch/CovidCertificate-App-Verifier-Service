@@ -1123,7 +1123,9 @@
                 "Covaxin_T",
                 "EU/1/21/1624",
                 "VLA2001",
-                "Convidecia"
+                "Convidecia",
+                "EU/1/21/1580",
+                "Vidprevtyn"
               ]
             ]
           },
@@ -1222,7 +1224,9 @@
                     "CoronaVac_T",
                     "Covaxin_T",
                     "VLA2001",
-                    "EU/1/21/1624"
+                    "EU/1/21/1624",
+                    "EU/1/21/1580",
+                    "Vidprevtyn"
                   ]
                 ]
               }
@@ -1387,7 +1391,9 @@
                     "CoronaVac_T",
                     "Covaxin_T",
                     "VLA2001",
-                    "EU/1/21/1624"
+                    "EU/1/21/1624",
+                    "EU/1/21/1580",
+                    "Vidprevtyn"
                   ]
                 ]
               }
@@ -2257,12 +2263,6 @@
   },
   "displayRules": [
     {
-      "id": "eol-banner",
-      "logic": {
-        "var": "undefined"
-      }
-    },
-    {
       "id": "display-until-date",
       "logic": {
         "if": [
@@ -2472,7 +2472,9 @@
                                     "CoronaVac_T",
                                     "Covaxin_T",
                                     "VLA2001",
-                                    "EU/1/21/1624"
+                                    "EU/1/21/1624",
+                                    "EU/1/21/1580",
+                                    "Vidprevtyn"
                                   ]
                                 ]
                               },
@@ -2646,6 +2648,80 @@
       }
     },
     {
+      "id": "eol-banner",
+      "logic": {
+        "var": "undefined"
+      }
+    },
+    {
+      "id": "renew-banner",
+      "logic": {
+        "if": [
+          {
+            "and": [
+              {
+                "var": "payload.h.exp"
+              },
+              {
+                "var": "payload.v.0"
+              },
+              {
+                "var": "payload.h.iss"
+              }
+            ]
+          },
+          {
+            "if": [
+              {
+                "and": [
+                  {
+                    "before": [
+                      {
+                        "plusTime": [
+                          {
+                            "var": "payload.h.exp"
+                          },
+                          0,
+                          "day"
+                        ]
+                      },
+                      {
+                        "plusTime": [
+                          {
+                            "var": "external.validationClock"
+                          },
+                          90,
+                          "day"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "in": [
+                      {
+                        "var": "payload.h.iss"
+                      },
+                      [
+                        "CH",
+                        "CH BAG"
+                      ]
+                    ]
+                  }
+                ]
+              },
+              "showRenewBanner",
+              {
+                "var": "undefined"
+              }
+            ]
+          },
+          {
+            "var": "undefined"
+          }
+        ]
+      }
+    },
+    {
       "id": "display-from-date",
       "logic": {
         "if": [
@@ -2805,74 +2881,6 @@
                 ]
               }
             ]
-          }
-        ]
-      }
-    },
-    {
-      "id": "renew-banner",
-      "logic": {
-        "if": [
-          {
-            "and": [
-              {
-                "var": "payload.h.exp"
-              },
-              {
-                "var": "payload.v.0"
-              },
-              {
-                "var": "payload.h.iss"
-              }
-            ]
-          },
-          {
-            "if": [
-              {
-                "and": [
-                  {
-                    "before": [
-                      {
-                        "plusTime": [
-                          {
-                            "var": "payload.h.exp"
-                          },
-                          0,
-                          "day"
-                        ]
-                      },
-                      {
-                        "plusTime": [
-                          {
-                            "var": "external.validationClock"
-                          },
-                          90,
-                          "day"
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    "in": [
-                      {
-                        "var": "payload.h.iss"
-                      },
-                      [
-                        "CH",
-                        "CH BAG"
-                      ]
-                    ]
-                  }
-                ]
-              },
-              "showRenewBanner",
-              {
-                "var": "undefined"
-              }
-            ]
-          },
-          {
-            "var": "undefined"
           }
         ]
       }
