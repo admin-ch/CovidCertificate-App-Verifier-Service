@@ -9,7 +9,7 @@
       "ValidTo": "2031-01-01T00:00:00Z",
       "Identifier": "GR-CH-0002",
       "Version": "1.0.12",
-      "ValidFrom": "2022-09-08T00:00:00Z",
+      "ValidFrom": "2023-02-02T00:00:00Z",
       "CertificateType": "General",
       "Logic": {
         "if": [
