@@ -53,6 +53,9 @@ class DgcSyncerTest extends BaseDgcTest {
     private final String TEST_JSON_DSC = "src/test/resources/dsc.json";
     private final String TEST_JSON_TRUNCATED_CSCA = "src/test/resources/csca_truncated.json";
     private final String TEST_JSON_TRUNCATED_DSC = "src/test/resources/dsc_truncated.json";
+
+    private final String TEST_JSON_INVALID_CSCA = "src/test/resources/csca_invalid.json";
+
     private static final int CSCA_COUNT = 7;
     private static final int DSC_COUNT = CSCA_COUNT * 20;
     private static final int TRUNCATED_CSCA_COUNT = 6;
@@ -145,6 +148,29 @@ class DgcSyncerTest extends BaseDgcTest {
 
     @Test
     void rollbackOnErrorTest() throws Exception {
+        String expectedCsca = Files.readString(Path.of(TEST_JSON_CSCA));
+        String expectedDsc = Files.readString(Path.of(TEST_JSON_DSC));
+        // we set the mock server which returns 500 for any dsc request...
+        setErrorMockServer(expectedCsca);
+        // ...hence the function throws a DgcSyncException!
+        assertThrows(DgcSyncException.class, () -> dgcSyncer.sync());
+
+        // We did not insert anything and the request failed, so the database should be
+        // empty
+        assertEquals(0, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(0, verifierDataService.findActiveDscKeyIds().size());
+
+        // now set the server which succeeds and try sync again
+        setMockServer(expectedCsca, expectedDsc);
+        dgcSyncer.sync();
+
+        // Now the database should _not_ be empty
+        assertEquals(CSCA_COUNT, verifierDataService.findActiveCscaKeyIds().size());
+        assertEquals(DSC_COUNT, verifierDataService.findActiveDscKeyIds().size());
+    }
+
+    @Test
+    void ignoreKeyIdsTest() throws Exception {
         String expectedCsca = Files.readString(Path.of(TEST_JSON_CSCA));
         String expectedDsc = Files.readString(Path.of(TEST_JSON_DSC));
         // we set the mock server which returns 500 for any dsc request...

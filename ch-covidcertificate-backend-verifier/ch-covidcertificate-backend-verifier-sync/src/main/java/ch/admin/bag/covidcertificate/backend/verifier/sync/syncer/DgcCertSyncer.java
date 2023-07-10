@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 
 public class DgcCertSyncer {
@@ -39,6 +40,12 @@ public class DgcCertSyncer {
 
     private final DgcCertClient dgcClient;
     private final VerifierDataService verifierDataService;
+
+    @Value("#{'${dgc.sync.csca.ignoreKeyIds}'.split(',')}")
+    private List<String> cscaIgnoreKeyIds;
+
+    @Value("#{'${dgc.sync.dsc.ignoreKeyIds}'.split(',')}")
+    private List<String> dscIgnoreKeyIds;
 
     public DgcCertSyncer(DgcCertClient dgcClient, VerifierDataService verifierDataService) {
         this.dgcClient = dgcClient;
@@ -74,6 +81,9 @@ public class DgcCertSyncer {
         final var dbCscaList = new ArrayList<DbCsca>();
         final var cscaListToInsert = new ArrayList<DbCsca>();
         for (TrustList cscaTrustList : cscaTrustLists) {
+            if(cscaIgnoreKeyIds.contains(cscaTrustList.getKid()))
+                continue;
+
             try {
                 final var dbCsca = TrustListMapper.mapCsca(cscaTrustList);
                 dbCscaList.add(dbCsca);
@@ -129,6 +139,9 @@ public class DgcCertSyncer {
         final var dbDscList = new ArrayList<DbDsc>();
         final var dscListToInsert = new ArrayList<DbDsc>();
         for (TrustList dscTrustList : dscTrustLists) {
+            if(dscIgnoreKeyIds.contains(dscTrustList.getKid()))
+                continue;
+
             try {
                 final var dbDsc = TrustListMapper.mapDsc(dscTrustList);
                 // Verify signature
