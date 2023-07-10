@@ -44,7 +44,9 @@ import org.springframework.test.web.servlet.MockMvc;
                 "sync.monitor.prometheus.user=prometheus",
                 "sync.monitor.prometheus.password={noop}prometheus",
                 "management.endpoints.enabled-by-default=true",
-                "management.endpoints.web.exposure.include=*"
+                "management.endpoints.web.exposure.include=*",
+                "dgc.sync.csca.ignoreKeyIds=48WzqmcT7tE=",
+                "dgc.sync.dsc.ignoreKeyIds=1dfBJir6EgI="
         })
 @ActiveProfiles({"actuator-security"})
 class DgcSyncerTest extends BaseDgcTest {
@@ -55,6 +57,7 @@ class DgcSyncerTest extends BaseDgcTest {
     private final String TEST_JSON_TRUNCATED_DSC = "src/test/resources/dsc_truncated.json";
 
     private final String TEST_JSON_INVALID_CSCA = "src/test/resources/csca_invalid.json";
+    private final String TEST_JSON_INVALID_DSC = "src/test/resources/dsc_invalid.json";
 
     private static final int CSCA_COUNT = 7;
     private static final int DSC_COUNT = CSCA_COUNT * 20;
@@ -171,25 +174,15 @@ class DgcSyncerTest extends BaseDgcTest {
 
     @Test
     void ignoreKeyIdsTest() throws Exception {
-        String expectedCsca = Files.readString(Path.of(TEST_JSON_CSCA));
-        String expectedDsc = Files.readString(Path.of(TEST_JSON_DSC));
-        // we set the mock server which returns 500 for any dsc request...
-        setErrorMockServer(expectedCsca);
-        // ...hence the function throws a DgcSyncException!
-        assertThrows(DgcSyncException.class, () -> dgcSyncer.sync());
-
-        // We did not insert anything and the request failed, so the database should be
-        // empty
-        assertEquals(0, verifierDataService.findActiveCscaKeyIds().size());
-        assertEquals(0, verifierDataService.findActiveDscKeyIds().size());
-
-        // now set the server which succeeds and try sync again
+        String expectedCsca = Files.readString(Path.of(TEST_JSON_INVALID_CSCA));
+        String expectedDsc = Files.readString(Path.of(TEST_JSON_INVALID_DSC));
         setMockServer(expectedCsca, expectedDsc);
-        dgcSyncer.sync();
+       dgcSyncer.sync();
 
-        // Now the database should _not_ be empty
-        assertEquals(CSCA_COUNT, verifierDataService.findActiveCscaKeyIds().size());
-        assertEquals(DSC_COUNT, verifierDataService.findActiveDscKeyIds().size());
+        //The JSON contains 6 valid and one invalid CSCAs. The valid ones should be imported
+        assertEquals(6, verifierDataService.findActiveCscaKeyIds().size());
+        //For each CSCA, it should import 20 DSCs, except one that is invalid
+        assertEquals(119, verifierDataService.findActiveDscKeyIds().size());
     }
 
     @Test

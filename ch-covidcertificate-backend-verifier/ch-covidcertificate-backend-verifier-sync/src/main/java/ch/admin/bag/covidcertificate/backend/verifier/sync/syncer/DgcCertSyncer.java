@@ -41,10 +41,10 @@ public class DgcCertSyncer {
     private final DgcCertClient dgcClient;
     private final VerifierDataService verifierDataService;
 
-    @Value("#{'${dgc.sync.csca.ignoreKeyIds}'.split(',')}")
+    @Value("#{'${dgc.sync.csca.ignoreKeyIds:}'.split(',')}")
     private List<String> cscaIgnoreKeyIds;
 
-    @Value("#{'${dgc.sync.dsc.ignoreKeyIds}'.split(',')}")
+    @Value("#{'${dgc.sync.dsc.ignoreKeyIds:}'.split(',')}")
     private List<String> dscIgnoreKeyIds;
 
     public DgcCertSyncer(DgcCertClient dgcClient, VerifierDataService verifierDataService) {
