@@ -25,12 +25,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <spring-boot-version>2.7.8</spring-boot-version>
+        <spring-boot-version>3.1.3</spring-boot-version>
         <spring-cloud-sleuth-version>3.1.6</spring-cloud-sleuth-version>
         <jackson-version>2.11.1</jackson-version>
         <jsonwebtoken-version>0.11.5</jsonwebtoken-version>
         <testcontainers-version>1.17.6</testcontainers-version>
-        <shedlock.version>4.44.0</shedlock.version>
+        <shedlock.version>5.7.0</shedlock.version>
 
         <itCoverageAgent></itCoverageAgent>
 
@@ -197,11 +197,11 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
+                <version>3.1.2</version>
             </plugin>
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.22.2</version>
+                <version>3.1.2</version>
             </plugin>
         </plugins>
         <pluginManagement>
