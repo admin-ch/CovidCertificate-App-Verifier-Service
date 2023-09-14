@@ -25,12 +25,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <spring-boot-version>2.7.8</spring-boot-version>
-        <spring-cloud-sleuth-version>3.1.6</spring-cloud-sleuth-version>
+        <spring-boot-version>2.7.15</spring-boot-version>
+        <spring-cloud-sleuth-version>3.1.9</spring-cloud-sleuth-version>
         <jackson-version>2.11.1</jackson-version>
         <jsonwebtoken-version>0.11.5</jsonwebtoken-version>
-        <testcontainers-version>1.17.6</testcontainers-version>
-        <shedlock.version>4.44.0</shedlock.version>
+        <testcontainers-version>1.19.0</testcontainers-version>
+        <shedlock.version>4.46.0</shedlock.version>
 
         <itCoverageAgent></itCoverageAgent>
 
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <version>2.13.0</version>
         </dependency>
 
         <dependency>
@@ -119,7 +119,7 @@
         <dependency>
             <groupId>ch.admin.bag.covidcertificate</groupId>
             <artifactId>cc-backend-logging</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.6</version>
         </dependency>
 
         <dependency>
@@ -131,13 +131,13 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.2</version>
+            <version>5.10.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.9.2</version>
+            <version>5.10.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -214,7 +214,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.10.1</version>
+                    <version>3.11.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
@@ -224,7 +224,7 @@
                 <plugin>
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
-                    <version>3.9.1.2184</version>
+                    <version>3.10.0.2594</version>
                 </plugin>
             </plugins>
         </pluginManagement>
